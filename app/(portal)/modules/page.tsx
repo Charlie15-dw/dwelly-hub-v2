@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import {
   BookOpen, Lock, CheckCircle2, Play, Clock,
-  ClipboardCheck, Filter, ChevronRight, Brain, ArrowRight, Trophy,
+  ClipboardCheck, Filter, ChevronRight, Brain, ArrowRight,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Badge from '@/components/ui/Badge'
@@ -139,92 +139,21 @@ export default function ModulesPage() {
         })}
       </div>
 
-      {/* ── Full Assessment ─────────────────────────────────────────────── */}
-      <div className="card overflow-hidden">
-        {/* Header */}
-        <div className="p-6 relative overflow-hidden" style={{ backgroundColor: '#1D1D1F' }}>
-          <div className="absolute right-6 top-4 w-24 h-24 rounded-full bg-white/5" />
-          <div className="absolute right-16 bottom-2 w-14 h-14 rounded-full bg-white/5" />
-          <div className="relative flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
-                  <Trophy className="w-4.5 h-4.5 text-white" aria-hidden />
-                </div>
-                <span className="text-xs font-semibold text-white/50 uppercase tracking-widest">Final Assessment</span>
-              </div>
-              <h3 className="text-xl font-bold text-white">Full Assessment — All Sections</h3>
-              <p className="text-sm text-white/60 mt-1 max-w-lg">
-                Tests your knowledge across every section of the video modules. Questions are drawn from each area — Introduction, Maintenance, Compliance, Move-Outs, Inspections, Support, Right to Rent, and Onboarding.
-              </p>
-            </div>
-            <Link href="/quiz/full-assessment" className="btn-primary flex-shrink-0 mt-1">
-              Start Full Assessment
-              <ArrowRight className="w-4 h-4" aria-hidden />
-            </Link>
+      {/* Assessments CTA */}
+      <div className="rounded-2xl border border-[#E8E8ED] bg-[#F5F5F7] p-5 flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#0071E3]/10 flex items-center justify-center flex-shrink-0">
+            <ClipboardCheck className="w-4.5 h-4.5 text-[#0071E3]" aria-hidden />
           </div>
-          {/* Section pills */}
-          <div className="relative flex flex-wrap gap-2 mt-5">
-            {([
-              { label: 'Introduction',            icon: '👋' },
-              { label: 'Maintenance',             icon: '🔧' },
-              { label: 'Compliance',              icon: '⚖️' },
-              { label: 'Move-Outs',               icon: '📦' },
-              { label: 'Inspections',             icon: '🔍' },
-              { label: 'Support',                 icon: '🤝' },
-              { label: 'Right to Rent',           icon: '🪪' },
-              { label: 'Onboarding as a Provider',icon: '🏢' },
-            ] as const).map(s => (
-              <span key={s.label} className="flex items-center gap-1.5 text-xs font-medium text-white/70 bg-white/8 border border-white/12 px-2.5 py-1 rounded-full">
-                <span aria-hidden>{s.icon}</span>{s.label}
-              </span>
-            ))}
+          <div>
+            <p className="text-sm font-semibold text-[#1D1D1F]">Ready to test your knowledge?</p>
+            <p className="text-xs text-[#6E6E73] mt-0.5">Section assessments and the full assessment are in the Assessments tab.</p>
           </div>
         </div>
-
-        {/* Stats strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[#E8E8ED] border-t border-[#E8E8ED]">
-          {[
-            { label: 'Sections covered', value: '8' },
-            { label: 'Questions',        value: '24' },
-            { label: 'Est. time',        value: '~30 min' },
-            { label: 'Pass mark',        value: '80%' },
-          ].map(({ label, value }) => (
-            <div key={label} className="px-5 py-4 text-center">
-              <p className="text-xl font-black text-[#1D1D1F] tabular-nums">{value}</p>
-              <p className="text-xs text-[#6E6E73] mt-0.5">{label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Per-section assessment list */}
-        <div className="p-5 border-t border-[#E8E8ED]">
-          <p className="text-xs font-semibold text-[#6E6E73] uppercase tracking-widest mb-3">Or take a section assessment individually</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {([
-              { label: 'Maintenance',              icon: '🔧', id: 'mnt-02'  },
-              { label: 'Compliance',               icon: '⚖️', id: 'cmp-02'  },
-              { label: 'Move-Outs',                icon: '📦', id: 'mvt-02'  },
-              { label: 'Inspections',              icon: '🔍', id: 'ins-02'  },
-              { label: 'Support',                  icon: '🤝', id: 'sup-02'  },
-            ] as const).map(s => (
-              <Link
-                key={s.id}
-                href={`/quiz/${s.id}`}
-                className="flex items-center justify-between p-3 rounded-xl border border-[#E8E8ED] hover:border-[#0071E3]/30 hover:bg-[#0071E3]/3 transition-all group"
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="text-base" aria-hidden>{s.icon}</span>
-                  <span className="text-sm font-medium text-[#1D1D1F]">{s.label}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-[#6E6E73]">Assessment</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-[#D2D2D7] group-hover:text-[#0071E3] transition-colors" aria-hidden />
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+        <Link href="/assessments" className="btn-primary flex-shrink-0">
+          Go to Assessments
+          <ArrowRight className="w-4 h-4" aria-hidden />
+        </Link>
       </div>
 
     </div>
