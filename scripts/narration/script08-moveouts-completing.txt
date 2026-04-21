@@ -1,0 +1,49 @@
+Right, so in this video I'm going to show you how to complete a move-out from start to finish. We left off in the last video where we'd got the checkout booked in, so let's pick up from there.
+
+So the checkout has happened now. The inventory clerk has been round and done their thing. What I need to do first is get that report uploaded into the system.
+
+I'm going to click into the job here. You can see it's sitting at the checkout stage. If the Property Specialist did the checkout, they should have uploaded the report already. But in this case it was an external contractor, so I've chased them for it and I've got the PDF here on my desktop.
+
+I'm just going to drag that report straight in. There we go, uploaded. The red button here means tenancy ended. When I click this, it stops invoices being generated. The key thing to remember here is don't delay clicking this one. If you leave it, rent invoices will keep being generated after the tenancy has ended.
+
+OK so next up, meter readings. You can see here there are fields for water, gas, and electricity. I'm just going to pop in the final readings from the checkout report.
+
+Quick thing to watch out for. If you open this up and one of the meters is missing, like say there's no gas field showing, that means it hasn't been set up for this property. You'd need to nip over to Properties, then Maintenance, then Property Meters, add the missing one, and then come back here. it only takes a minute.
+
+Right, now this is the bit I really want to show you. You can see here the system is asking me to review the checkout report and it has prompts for the returned condition.
+
+Top means everything's fine. Property's clean, good condition, deposit goes straight back to the tenant. Lovely.
+
+Middle means it needs a bit of cleaning or some minor bits. Not ideal but not the end of the world.
+
+Bottom means there's actual damage. Things need fixing and we're probably going to be taking money out of the deposit.
+
+So in this example, we've got cleaning required here. I will select this option and in the comment to the landlord, I will simply say that details will follow in an email. This is a preference but, you can list the items to be rectified in this section to save sending another email, this is completely your choice. 
+
+So now I need to deal with the deposit deduction. You can see we can open a maintenance task from the move out, we can use this to request quotes or work to be done. The clever thing is that this will link the maintenance task to the move out I D as shown here. For the purpose of training, I will not create a full task but, we can see this has now been linked to the move out. 
+
+You can see this payment allocation section here with the pencil. There are two key fields. Total Quote, which is the full cost of all the work, and then Owed by Tenant, which is just the bit the tenant is responsible for.
+
+The way to think about it is this. Normal wear and tear, that's on the landlord. That's just stuff getting old. But actual damage, anything beyond reasonable wear and tear, that's on the tenant. Same with cleaning if they've left the place in a state.
+
+So I'm going to put the total in here, and then work out the tenant's share. In this case, the tenant is responsible for the full clean. 
+
+Now the deposit. The good news is Dwelly actually auto-calculates the return amount based on everything I've just entered. So that's done for me.
+
+But I do need to send two messages. First one goes to the landlord, explaining the cost breakdown and what the tenant is being charged for. Second one goes to the tenant, telling them what was found, what's being deducted, in a clear breakdown. This will be the mediation stage, coming to an agreement on charges and so on, please note, this is not always quick and simple, there may be some back and forth whilst the costs are agreed. 
+
+Right, now here's the closing stage. There are two buttons and you need to understand what each one does because they're not the same thing.
+
+The yellow button. This means mediation is finished. So all the financial stuff is agreed, disputes are resolved, everyone's happy with the deposit split. Click that.
+
+The blue button. I'm going to click that first. This one means the property is ready. It's clean, it's repaired, it's good to go for the next tenant. That's the physical condition sorted.
+
+A job is only properly completed when all of those have been clicked, the checkout report is uploaded, and a result has been selected. All of it.
+
+Last step. Keys. I need to confirm that all the keys have been returned by the tenant. The tenant's dropped them back, so I'm going to tick that off.
+
+And now I'm going to click Everything is ready. And that's it. Job permanently closed.
+
+One word of warning though. Once you click that, there's no going back. So just make sure everything genuinely is done before you hit it. Double check the report's uploaded, the buttons are all clicked, the keys are confirmed. Then go ahead.
+
+And that's the full move-out process done. Take your time with each step because getting it right here saves you a lot of headaches later on.

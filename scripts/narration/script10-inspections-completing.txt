@@ -1,0 +1,29 @@
+Right, so in this video I'm going to show you what happens after the inspection visit. The Property Specialist has been out, they've done the report, and now I need to process the results.
+
+So let me open the job. You can see it's moved on to the report stage. If a few days go by and you haven't seen the report come through, chase them. Don't just sit and wait.
+
+OK so in this case the report has come back. I'm going to upload it into the system now. Just drag that in or select from your files. And then I need to fill in a couple of fields here. The inspection date, which was last Thursday, and the expiry date. I'll also note down the current state of the property and flag anything that was mentioned in the report.
+
+Now here's where it goes one of two ways, and I want to show you both.
+
+Let me start with the easy one. Say the inspection was fine, everything looked good, no issues. The system is going to ask me if there are any issues. I click No. Then I hit Submit. And that's it. The job closes automatically and the landlord gets sent a copy of the report. Clean and simple. Love it when it's that easy.
+
+But let's say that's not what happened. Let's say the specialist found some issues. Maybe there's damp in the bathroom and a broken window handle.
+
+So this time when the system asks if there are issues, I'm going to click Yes. And now you can see this field has appeared called Comment for Landlord. This is where I write up a clear summary for the landlord about the state of the property and what needs attention. You can still use the activity feed too, I would not use this for landlord correspondence but, if I need to address something with the tenant, maybe cleanliness, I will do so in the activity feed to ensure there is a clear record of this. 
+
+I want to be professional and specific here. Not just "there are problems." Something like "damp identified in the main bathroom, likely caused by poor ventilation which we will address with the tenant. Window handle in bedroom two is broken and needs replacing, please confirm if we can instruct a provider to carry out the necessary repairs." Give the landlord enough detail that they understand the situation.
+
+Once I submit this, that comment goes straight to the landlord along with the report. So they get the full picture.
+
+Now here's the really important bit that catches people out. If something actually needs fixing, like that broken window handle, I do not try to deal with it inside this inspection job. The inspection job is just for recording what was found and telling the landlord about it. That's its job.
+
+For the actual repair, I need to go and create a separate maintenance job. So I'd go and create a new manual maintenance job specifically for that window handle, and another one for the damp if it needs work.
+
+I know it might feel like extra steps but it's the right way to do it. Each repair gets its own job, which means it gets tracked properly, invoiced properly, and there's a clear audit trail. If you try to bundle repairs into the inspection job it gets messy fast.
+
+So just to recap. Report comes in, upload it, then you're going one of two ways. No issues, click No, submit, done. Issues found, click Yes, write it up for the landlord, submit, and then go create separate maintenance jobs for anything that needs fixing.
+
+To remember, the inspection will close immediately after submitting so cannot be actions further. If the landlord replies to the email, this will open a support task, which we will go through in another session. 
+
+Great, That's inspections done from start to finish.

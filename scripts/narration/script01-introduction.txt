@@ -1,0 +1,31 @@
+Right, so in this video I'm going to give you a quick tour of the Dwelly portal and show you what everything means. Think of this as your first day — I'm just going to walk you through what you'll see when you log in and how it all fits together.
+
+So here we are on the home screen. This is where you'll start every single day. You can see on the left-hand side there's a menu, and the three things you'll live in are Properties, Property Management, and My Jobs. Let me show you what each one does.
+
+Properties is basically every property in the system. If you need to look something up about a specific flat or house, this is where you go.
+
+Property Management is where all the jobs live. Every repair, every compliance certificate, every move-out — it's all in here. Think of it as the master list of everything that's going on.
+
+And then My Jobs — this is the big one. This is your personal to-do list. Everything assigned to you sits here, sorted by what's most urgent at the top. Honestly, your goal every day is to get this list cleared by five o'clock. If My Jobs is empty at the end of the day, you've had a good day.
+
+Now let me actually open up a job so you can see what you're looking at. I'll click into this one here — you can see it's a maintenance job, a leaking tap at one of our properties.
+
+So at the top you've got the Flow, which just tells you what type of job it is. This one says Maintenance. Next to that is the Job ID — that's the unique reference number, so if you ever need to talk about a specific job with someone, that's what you quote.
+
+Underneath you can see the property address, and then there's a deadline. That's when this task needs to be done by. And next to it is the stage — which is basically how far through the process this job is.
+
+The easiest way to think about stages is like a pizza tracker. You know when you order a pizza and it says "order received," then "being prepared," then "out for delivery," then "delivered"? Jobs work the same way. Each stage is a step in the process, and the system moves the job along as things get done.
+
+If I scroll down a bit, you can see the Contacts section. That shows you who's involved — the tenant, the landlord, and any contractors or providers. Really useful when you need to quickly check who you're dealing with.
+
+Below that, you'll notice something called Modes. This is important. Every job runs in one of three modes. Auto means the system is handling things for you — sending reminders, chasing people, keeping it moving. Pause means the job is on hold, waiting for something. And Manual means you're driving everything yourself.
+
+The key thing to remember here is that Auto mode is your best friend. The Property Managers who use Auto mode consistently are the ones who manage the biggest portfolios without going mad. It does the chasing for you, it sends the reminders, it keeps things ticking along. Use it wherever you can.
+
+And then right at the bottom you've got your action buttons. Put on Hold if you need to pause something. Assign Progress to move the job forward. Change Task Manager if you need to hand it to someone else. And This Property Tasks, which shows you everything else going on at that same property.
+
+Now in terms of the types of jobs you'll deal with, there are a few different flows. Maintenance is repairs — leaking taps, broken boilers, that sort of thing. Compliance is certificates — gas safety, electrical, EPC. Then there's Inspections, Move-Outs, Support tickets, Right to Rent checks, and Rent Arrears. Each one has its own process, but they all follow the same basic structure of stages and modes.
+
+And one last thing — as a Property Manager, you own a specific portfolio of properties. Those are your properties. You're the point of contact for the tenants, the landlords, everything. So when a job comes in for one of your properties, it lands with you.
+
+That's your introduction to the portal. In the next video I'll show you how to actually navigate around and find what you need.

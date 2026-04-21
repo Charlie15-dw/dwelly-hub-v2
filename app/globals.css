@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Apple design tokens */
+    --navy:   #1D1D1F;
+    --teal:   #6E6E73;
+    --gold:   #3A3A3C;
+    --orange: #0071E3;
+
+    /* Apple surface palette */
+    --surface-bg:       #F5F5F7;
+    --surface-card:     #FFFFFF;
+    --border:           #D2D2D7;
+    --border-subtle:    #E8E8ED;
+    --text-primary:     #1D1D1F;
+    --text-secondary:   #6E6E73;
+    --text-tertiary:    #AEAEB2;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply antialiased;
+    background-color: #F5F5F7;
+    color: #1D1D1F;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+                 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #1D1D1F;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  /* ── Sidebar ──────────────────────────────────────────────────────── */
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+           transition-all duration-150;
+    color: rgba(29, 29, 31, 0.55);
+  }
+  .sidebar-link:hover {
+    background: rgba(255,255,255,0.55);
+    color: #1D1D1F;
+  }
+  .sidebar-link.active {
+    background: rgba(255,255,255,0.70);
+    color: #1D1D1F;
+    font-weight: 600;
+  }
+
+  /* ── Cards ────────────────────────────────────────────────────────── */
+  .card {
+    background: #FFFFFF;
+    border-radius: 18px;
+    border: 1px solid #E8E8ED;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04);
+  }
+  .card-hover {
+    transition: box-shadow 200ms ease, transform 200ms ease;
+  }
+  .card-hover:hover {
+    box-shadow: 0 4px 16px 0 rgba(0,0,0,0.10), 0 2px 4px -1px rgba(0,0,0,0.06);
+    transform: translateY(-1px);
+  }
+
+  /* ── Buttons ──────────────────────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full
+           text-white text-sm font-semibold
+           transition-all duration-150 active:scale-[0.97]
+           focus:outline-none focus:ring-2 focus:ring-offset-2;
+    background: #0071E3;
+    focus-ring-color: rgba(0, 113, 227, 0.4);
+  }
+  .btn-primary:hover { background: #0077ED; }
+  .btn-primary:focus { box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.3); }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full
+           text-white text-sm font-semibold
+           transition-all duration-150 active:scale-[0.97]
+           focus:outline-none;
+    background: #1D1D1F;
+  }
+  .btn-secondary:hover { background: #2C2C2E; }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full
+           text-sm font-medium
+           transition-all duration-150 active:scale-[0.97]
+           focus:outline-none;
+    background: #FFFFFF;
+    color: #1D1D1F;
+    border: 1px solid #D2D2D7;
+  }
+  .btn-outline:hover { background: #F5F5F7; border-color: #AEAEB2; }
+
+  .btn-teal {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full
+           text-white text-sm font-semibold
+           transition-all duration-150 active:scale-[0.97]
+           focus:outline-none;
+    background: #1D1D1F;
+  }
+  .btn-teal:hover { background: #3A3A3C; }
+
+  /* ── Progress ─────────────────────────────────────────────────────── */
+  .progress-track {
+    @apply h-2 rounded-full overflow-hidden;
+    background: #E8E8ED;
+  }
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-500;
+  }
+
+  /* ── Status badges ────────────────────────────────────────────────── */
+  .rag-red   { background:#FFF0F0; color:#CC0000; border:1px solid #FFCCCC; }
+  .rag-amber { background:#FFFBF0; color:#995500; border:1px solid #FFE4B0; }
+  .rag-green { background:#F0FFF4; color:#1A7F37; border:1px solid #B0EACC; }
+
+  /* ── Phase badges (grayscale Apple style) ─────────────────────────── */
+  .phase-foundation { background:#F5F5F7; color:#1D1D1F; border:1px solid #D2D2D7; }
+  .phase-onboarding { background:#F0F7FF; color:#0071E3; border:1px solid #CCE4FF; }
+  .phase-embedding  { background:#F5F5F7; color:#3A3A3C; border:1px solid #D2D2D7; }
+  .phase-optimise   { background:#1D1D1F; color:#FFFFFF; border:1px solid #1D1D1F; }
+
+  /* ── Form inputs ──────────────────────────────────────────────────── */
+  .input {
+    @apply w-full px-4 py-3 text-sm
+           placeholder:text-[#AEAEB2]
+           transition-colors duration-150
+           focus:outline-none;
+    background: #FFFFFF;
+    color: #1D1D1F;
+    border: 1px solid #D2D2D7;
+    border-radius: 12px;
+  }
+  .input:focus {
+    border-color: #0071E3;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+  }
+}
+
+@layer utilities {
+  .text-balance  { text-wrap: balance; }
+  .scrollbar-hide { scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+}

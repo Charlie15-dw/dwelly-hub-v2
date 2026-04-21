@@ -1,0 +1,33 @@
+Right, so in this video I'm going to show you how to actually get into the system and find your way around. I'll log in from scratch and click through everything so you can see how it works.
+
+First things first — before you do anything, make sure your VPN is switched on. You can see mine's connected up here in the toolbar. If your VPN isn't on, you won't be able to reach the portal at all. You'll just get a blank page or an error.
+
+OK so with the VPN on, I'm going to open my browser and type in panel.dwelly.team. Bookmark this, by the way. You'll be opening it every single morning, so save yourself the hassle.
+
+Right, so it's asking me to log in. I'll pop in my email and password. Now depending on your role, you'll have a different level of access. Most of you will be at the Manager level, which is the standard Property Manager view. There's also Supervisor, Admin, and Superadmin, but you don't need to worry about those for now.
+
+And here we are — the home screen. Let me show you around.
+
+So the first thing I want to point out is this search bar right at the top. This is Global Search, and it's incredibly useful. You can search for pretty much anything — a property address, a tenant's name, a landlord, a provider. Let me show you.
+
+I'll type in "Johnson" — and you can see it's pulling up results across the whole system. There's a landlord called Johnson, and a couple of tenants with that name. Let me click on the landlord.
+
+So this opens up their profile. Now here's a really handy trick — you can see this Properties button here? If I click that, it shows me every single property this landlord owns that we manage. So if a landlord calls you and you need a quick overview of their portfolio, this is the fastest way to get it.
+
+Let me go back to the home screen. Now I'll click into Properties. You can see this is the full list of every property in the system. Each one has a status next to it, and it's worth knowing what these mean. Tenanted means someone's living there and it's active — that's the most common one you'll see. Let Agreed means we've found a tenant but they haven't moved in yet. Published means it's listed and available. New means it's been added but isn't live yet. Prospect is early discussions. Withdrawn means it's off the market. And Offboarding means we're ending our management of that property.
+
+Let me open one of these properties. I'll click on this tenanted one here.
+
+So now you can see across the top there are a load of tabs. The Property tab is where you are now — it's got the core details like the address, the landlord, the tenant, key dates. If I click Maintenance, that shows me every repair job linked to this property. Ledger is the financial history. File Manager is where all the documents and certificates are stored — really important for compliance. Deals shows the tenancy agreements. Notes is for internal comments. And Fees shows the fee structure.
+
+You'll be in and out of these tabs all day, so get comfortable with them. The ones you'll use most are Property, Maintenance, and File Manager.
+
+Right, let me go back to the main menu. Below Properties you've got Finance, which gives you access to invoices and payment records. You won't use this as much day to day, but it's there when you need it.
+
+Now let me click into Property Management. This is the big one — every single job in the system lives here. Maintenance, compliance, inspections, move-outs, the lot. You can see there's a load of filters along the top. I can filter by mode, by stage, by flow type, by who it's assigned to. So if I just want to see all my compliance jobs that are in Auto mode, I can do that really quickly.
+
+And finally — My Jobs. I'll click in here. You can see this is just my stuff. Everything assigned to me, sorted by urgency. The most pressing tasks are at the top. This is what you work through every day. Start at the top and work your way down.
+
+One thing I do want to flag before we finish. Once you close a job, it's closed for good. You can't reopen it. So always double-check that everything's complete and documented before you hit that close button. If you close something too early, you'll have to create a brand new job to pick up where you left off, which is a pain.
+
+That's navigation covered. You know how to log in, search for anything, find your properties, and work through your jobs. In the next video we'll get into the actual work — starting with maintenance.

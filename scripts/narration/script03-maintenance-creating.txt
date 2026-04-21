@@ -1,0 +1,35 @@
+Right, so in this video I'm going to show you how to create a maintenance job from scratch and get landlord approval. I'll do the whole thing live so you can see exactly what to click.
+
+Now before we start, a lot of your maintenance jobs will actually appear automatically. When a tenant reports a problem through the tenant portal, the system creates the job for you and it just lands in your queue. But sometimes you'll spot something during an inspection, and you need to create the job yourself. That's what I'm going to show you now.
+
+So I'm on the Property Management screen. I'm going to click Add Request up here, and from the dropdown I'll select Maintenance Request.
+
+OK so it's asking me for the property address first. I'll start typing — you can search by the address, postcode or property ID — and you can see it autocompletes. I'll select the right one from the list.
+
+Now I need to give the job a name. Keep this clear and descriptive. I'm going to type "Leaking kitchen tap." Don't just put "leak" or "plumbing issue" — the more specific you are, the easier it is for everyone to know what's going on at a glance.
+
+In the description field, I'll add the detail. So I'll write something like "Tenant reported in the inspection that the kitchen tap has been dripping constantly for two days. Tenant says it's the hot tap." And if you have photos or a video, this is where you upload them — just click the attachment button here and add them in.
+
+That all looks good, so I'll click Create Job.
+
+And there we go — you can see the system has generated a Job ID and dropped it into the maintenance flow. Nice and straightforward.
+
+Now here's the really important bit. Before you do anything else — before you call a plumber, before you schedule a visit — you need to get landlord consent. This is not optional. It's policy. You must have the landlord's approval before any work gets instructed. If the task is an emergency, for example, there is no hot water or heating, inform the landlord and instruct an urgent repair. 
+
+So what I'm going to do is go into the activity feed. You can see it here on the job. I'll click into it and write a message to the landlord.
+
+Something like, "Hi, on the recent inspection at the above property, we noticed that the kitchen tap is leaking. Please confirm if you would like me to organise for a contractor to visit and carry out the necessary works? Thanks."
+
+I'll now hit send. Now everything I've just written is logged and timestamped in this chat. That's your audit trail. If there's ever a dispute about what was agreed, this is your evidence.
+
+The key thing to remember here is to always use activity feed for landlord communication. Never use your personal email or text. If it's not in the chat, it didn't happen — that's the rule.
+
+So now we wait for the landlord to come back. Let me show you the three things that can happen.
+
+The most common outcome is the landlord says yes, go ahead. When that happens, I come back to the job and click landlord approved. That tells the system that consent has been granted and we can instruct a provider — once selected, the system will start contacting provider, sending reminders, all of that.
+
+Now sometimes you'll find a landlord has pre-approved maintenance up to a certain value, or they've got a blanket consent in place. If that's the case, you'll see it on the pinned notes. You can just select Approved straight without needing to message them. That saves a bit of time.
+
+The third scenario is the landlord says they want to use their own contractor. That's absolutely fine. When that happens, what you do is share the tenant's contact details with the landlord through the chat so they can coordinate the visit directly. Then put the job on hold. The landlord's contractor does the work, and once it's done, we can close the task. You don't need to manage that repair — just make sure it gets logged properly.
+
+And that's it for creating a maintenance job. You know how to set it up, how to get landlord approval through the chat, and what to do in each scenario. In the next video I'll show you what happens once the landlord has said yes and we need to actually get the repair done.

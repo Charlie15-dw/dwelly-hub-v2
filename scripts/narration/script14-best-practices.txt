@@ -1,0 +1,37 @@
+Right, so this last one is less of a walkthrough and more of a quick chat about good habits. Things that'll make your life easier and keep everything running smoothly.
+
+First thing, and honestly this is the most important one. All your communication needs to go through Dwelly. Don't use Outlook, don't use WhatsApp, don't send things from your personal email. Everything goes through the system.
+
+I know it can be tempting when a landlord texts you directly or a tenant calls your mobile, but if it's not in Dwelly, it didn't happen. If you go off sick and someone picks up your jobs, they're going to look at the chat in the system. If half the conversation happened on your phone, they've got no idea what's going on. So keep it all in one place.
+
+Same goes for phone numbers. Dwelly uses masked numbers to protect everyone's privacy. So when a tenant or provider needs to call someone, they use the number the system gives them. Never give out direct numbers or personal numbers. It might seem like you're being helpful but it creates problems down the line.
+
+Now let me talk about chasing, because this is one of those things that the system actually handles really well for you. When you're waiting on a provider, Dwelly sends automatic reminders. It chases at 24 hours, then another 24 hours, then 96 hours.
+
+So you don't need to be manually following up for the first few days. The system's doing it for you. But if that whole sequence has gone through and you've still heard nothing, that's when you pick up the phone. The auto-chase is great but it doesn't replace actually calling someone when they're not responding.
+
+And if a provider is consistently ghosting the auto-reminders, have a think about whether they should still be on the list. There's no point having someone in the system if they never reply.
+
+OK so let me talk about job modes because this comes up a lot. There are four modes. Auto, Pause, Manual, and Hold.
+
+Auto is where you want your jobs to be. The system handles reminders, sends notifications, moves things along. That's the default and it's the ideal.
+
+Pause is for when you need to temporarily stop the automations. Like say you're waiting for a landlord to confirm something before you can move forward. You'd pause it, deal with whatever you need to deal with, and then put it back in Auto.
+
+Manual means you're driving everything. No automations at all. Support jobs are always in Manual, and sometimes you'll put other jobs in Manual if the situation needs a more hands-on approach.
+
+And then Hold. This is the one people misuse. Hold is only for when there's a genuine future date you're waiting for. Like the tenant's said they won't be back from holiday until the 15th and there's nothing you can do until then. That's a Hold.
+
+What Hold is not for is parking jobs you haven't got round to yet. I've seen people stick jobs in Hold because their queue is busy and they want to deal with them later. Don't do that. If a job needs attention, keep it visible. Put it in Auto or Manual. Don't bury it in Hold and forget about it.
+
+Last thing, and this is just about your daily routine. Clear your queue every day. Start at the top, work by urgency. The jobs closest to a deadline or with the most pressing issues, do those first.
+
+Make sure everyone's kept in the loop. Tenants, landlords, providers. Nobody should have to chase you for an update. If you've done something on a job, put it in the chat. If nothing's happened yet but someone's waiting, send a quick message to let them know it's in hand.
+
+Use the notes system too. There are task notes, property notes, landlord notes, and tenancy notes. If there's something important that anyone picking up this property should know, pin it. Pinned notes are visible across all related jobs so it's a really good way of flagging things.
+
+A clean queue at the end of the day means nothing's been forgotten. Even if a job can't be finished today, at least make sure it's been acknowledged, documented, and you know when you're coming back to it.
+
+And that's it. That's the whole training series done. If you stick to these habits you'll be absolutely fine. Consistency, documentation, and keeping everyone informed. That's what separates good from great on this platform.
+
+Cheers for watching.

@@ -1,0 +1,31 @@
+Right, so in this video I'm going to show you how to action a compliance job once the landlord has given the go-ahead. I'll use the same gas safety job from the last video — and walk you through from scheduling the provider all the way through to the certificate being uploaded.
+
+So I'm on the job now. The landlord has approved the renewal, and I need to get a gas engineer out there. I'll click into the provider selection, Before I just go with them, though, I'll quickly check the previous certificate for this property — it's in the File Manager tab — and you can see who the last gas safety was done by. So they already know the property, which usually makes things smoother. 
+
+Now I select the provider and switch the job to Auto mode. The system will contact them and start the scheduling process — same as maintenance. The provider confirms a date, either through a masked call, an email reply, or I enter it manually if they've told me over the phone. Once the date is in, the system sends confirmations and a twenty-four-hour SMS reminder to the tenant automatically.
+
+So let's fast forward. The gas engineer has been out. Now I need to upload the certificate and the invoice.
+
+Now here's a useful thing — if the provider hasn't sent the certificate within forty-eight hours of the visit, the system will automatically chase them. You don't need to follow up yourself during that window. Just let Auto mode do its thing. If they still haven't sent it after the chase, then you step in and give them a nudge manually.
+
+OK so the certificate has come through. Before I upload it, I'm going to check it. I want to make sure the property address matches, the date is correct, and the certificate is valid. Don't just upload things blindly — take thirty seconds to check it looks right.
+
+Everything checks out on this one, so I'll upload both the certificate and the invoice. Nice and straightforward.
+
+But now let me show you what happens when things don't go so smoothly. Let's say instead of a clean pass, the certificate comes back unsatisfactory. This is where it gets a bit more involved, so pay attention to this bit.
+
+For example, with an EICR — an Electrical Installation Condition Report — you might get C1 or C2 flags. C1 means there's an immediate danger. C2 means there's a potential danger and, you've got twenty-eight days to get remedial works done. For gas safety, if it comes back as unsafe, the gas supply might need isolating, repairs carried out, and then a new certificate issued after the work. Same kind of thing applies to fire alarm certificates, PAT testing, E P C reports, and fire risk assessments.
+
+So here's what I'd do. First — and this is really important — I upload the unsatisfactory certificate to the property's File Manager, not to the job. Let me show you. I go to the property, click File Manager, and upload the document there. The reason is that the File Manager is the property's permanent record. The job itself is only for the final satisfactory certificate.
+
+The key thing to remember here is unsatisfactory certificates go to File Manager on the property. Satisfactory final certificates go on the job. Don't mix them up.
+
+OK so I've uploaded the unsatisfactory certificate to File Manager. Now I go back to the compliance job and raise the remedial works with the landlord via the activity feed set it to on Hold. In the reason field I'll type "remedial works required." That pauses the compliance job while we wait for approval. Once landlord approval is received, instruct the contractor by email within the compliance task. Keep everything within the compliance task — this ensures the full audit trail, original cert, correspondence, remedial instruction, final cert, is all in one place. Set to on Hold with comment "Remedial works required" and hold for one week. If there is no update when hold expires, follow up by phone or email before applying a further hold. When the satisfactory certificate is issued, upload it to the compliance job to complete the flow.
+
+One more thing — property licences. These work differently from other compliance types. Licence tasks are fully manual. There are no automated emails or chasing sequences. You'll need to handle everything yourself — contacting the council, gathering documents, submitting applications, chasing progress. Just make sure you keep detailed notes in the activity feed throughout so there's a record of everything.
+
+And one last thing before we wrap up. If you ever see a flag called MP_TIME_FORCE on a compliance job, that means the certificate is less than fourteen days from expiry. When you see that, deal with it immediately. An expired certificate is a compliance breach, and it puts both the landlord and the company at serious risk.
+
+Oh and also — vacant properties. Even if nobody's living there, the certificates still need to be valid. Gas safety, electrical, all of it. The process is exactly the same, you might just need to sort access differently since there's no tenant to let the provider in. Check the key access, or arrange to meet the provider at the property yourself.
+
+That's compliance fully covered. Creating the job, managing the landlord, scheduling providers, dealing with unsatisfactory certificates and remedials, and getting it all closed out properly.

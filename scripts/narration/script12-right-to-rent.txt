@@ -1,0 +1,29 @@
+Right, so in this video I'm going to show you how Right to Rent checks work. This is a legal requirement in England. Every tenant needs to have permission to live in the UK and it's our job to verify that.
+
+Now the initial check gets done by the Tenant Find team when the tenancy starts. But some tenants have time-limited immigration status, so their right to rent expires and needs rechecking. That's where we come in.
+
+Let me show you. I've got this Right to Rent job sitting in my queue here. I didn't create it. Dwelly made it automatically, two months before the tenant's current status expires. That gives us plenty of time to get it sorted.
+
+Now here's what the system has already done without me lifting a finger. It's emailed the tenant asking them for their share code and date of birth. If the tenant doesn't reply, the system sends a reminder after 96 hours, and then it waits for a week.
+
+If after 7 days the tenant still hasn't responded, the job flips to Manual mode. That means the automations stop and it's on me to pick up the phone, send a text, send an email, whatever I need to do to get hold of them. Don't let these sit. Right to Rent is a legal obligation and you really don't want to be the one who let it slide.
+
+OK so in this case the tenant has come back with their details. I can see them in the chat. So I'm going to enter the share code here in this field. And the date of birth goes in here.
+
+Now I click Send RTR Request. And that puts the job back into Auto mode.
+
+So what happens next depends on whether the share code checks out.
+
+If it's valid, the system confirms the check and the job completes automatically. You'll see it move across to the completed column. Brilliant, nothing else to do.
+
+But if the share code is invalid, the job comes back to my queue. That means something didn't match up, so I need to get in touch with the tenant again and get the right details. Maybe they copied it wrong, maybe it's expired. Either way, chase it up, get the correct share code, and run it through again.
+
+Now there's one more step. The visual likeness verification. This is a video call with the tenant where I check that they actually look like the person in their documentation. So I'd get on a call with them, check their face against their photo ID, confirm their name, confirm their date of birth.
+
+If everything matches up, great, I can close the job.
+
+But if something doesn't look right, if the photo doesn't match or the details don't add up, do not close the job yourself. Escalate it straight to your Team Coordinator. This isn't a judgement call you should be making on your own.
+
+One more thing. Closing or cancelling Right to Rent tasks is restricted to the Supervisor role. So if you need one closed or cancelled and you don't have the permission, reach out to Product Support and they'll help you out.
+
+And that's the full Right to Rent process. Jobs appear automatically two months before expiry, the system handles the initial contact, but if the tenant goes quiet you need to step in. Always do the video call for visual verification, and if anything feels off, escalate rather than guessing.

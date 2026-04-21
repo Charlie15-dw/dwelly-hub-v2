@@ -1,0 +1,33 @@
+Right, so in this video I'm picking up from where we left off. We've got our maintenance job — the leaking kitchen tap — and the landlord has given us the go-ahead. Now I need to actually get a provider out there to fix it.
+
+First thing — before I instruct anyone, I need to check whether the landlord has asked for a quote first. Some landlords want to know the cost before they commit. If that's the case, I'd update the task description to say "Quote required." That way the provider knows they're going out to assess and price it up, not to do the repair on the spot. For this one, the landlord has said just get it sorted, so we're good to go.
+
+OK so I need to select a provider. I'll click in here and you can see it's asking me for a service category. This is a leaking tap, so I'll select Plumbing. And now it shows me the available providers for plumbing in this area.
+
+I'll pick this one here. Now you can see two buttons at the bottom. The first one says Submit and Launch Triggered Flow, and the second says Submit and Keep Paused. Always go with the first one — Submit and Launch Triggered Flow. That puts the job into Auto mode, and the system will contact the provider, request available dates, send reminders, all of that. The only time you'd use Keep Paused is if you specifically need to handle the provider communication yourself for some reason, but honestly that's rare.
+
+So I'll click Submit and Launch Triggered Flow.
+
+And now the system is doing its thing. It's contacted the provider and asked them to arrange a visit with the tenant. 
+
+If the provider doesn't reply, the system automatically chases them. It sends three reminders over five days. You don't need to do anything during that time — just let Auto mode handle it. If after five days they still haven't responded, the job will flag back up for your attention. At that point you've got two choices — you can give them another nudge by calling them through the task or, to allow more time for the contractor to arrange this, select "Resume waiting for visit date," or you can just pick a different provider altogether.
+
+OK so let's say the provider has come back and given us a date. I need to get that into the system. There are a few ways this can happen. Sometimes the provider calls in and the system records the date through a masked call. Sometimes they reply by email and the system picks it up. And sometimes you'll get a call or a message and you just need to type it in manually.
+
+I'll enter the date here — let's say it's next Thursday at 10am. And once that's in, the system takes over again. It sends a confirmation to both the tenant and the provider, and then twenty-four hours before the visit, it fires off an automatic SMS reminder to the tenant. You don't need to chase anyone — just make sure the date in the system is right.
+
+Right, so now the provider has been out. I need to update the job with what happened. There are three possible outcomes, so let me walk you through each one.
+
+The first outcome is the provider went out to quote rather. So they've sent back a quote, the landlord has approved it, and now we need to book the actual repair. I upload the quote document here, and what happens is the job loops back to the scheduling stage. So I go through the same process again, submit with Auto mode, get a date, and this time they go out to do the actual work.
+
+The second outcome is the landlord wants a second opinion. Maybe they think the quote is too high, or they just want a comparison. In that case, I select a different provider, upload the first quote so they can see it, and add a note in the chat explaining that we need a comparison quote. The job goes back through the scheduling process with the new provider.
+
+The final outcome is the job's done. The tap is fixed. Happy days. So I'll click into the job and select Completed. Now it asks me who's paying. There are three options. "We pay for landlord" means the cost comes out of the landlord's account with us. "Landlord pays directly" means the landlord settles with the provider themselves. And "Tenant pays" is for cases where the tenant caused the damage. For this one, it's a standard repair, so I'll select "We pay for landlord."
+
+Now I need to upload the invoice. The provider should have sent this over. I'll click here and upload it. And if they've sent any photos of the completed work or a completion report, I'll add those too. It also asks whether any keys were used for access and whether they've been returned — just tick that and confirm.
+
+Before we wrap up, I want to quickly mention the activity feed again, because it's so important. You can see here you can leave internal notes that only your team sees. You can send an SMS to a tenant or provider. You can send an email. You can even make a call that gets logged.
+
+The absolute golden rule is this — every single thing you do on a job needs to go in the chat. If you have a thirty-second phone call with the tenant confirming access, log it. Something like "Called tenant, confirmed access for Thursday 10am." It takes five seconds to type and it could save you hours if there's ever a dispute. If it's not in the chat, it didn't happen.
+
+And that's the full maintenance workflow. From creating the job right through to getting it fixed and uploading the invoice. You'll do this one a lot, so it'll become second nature pretty quickly.

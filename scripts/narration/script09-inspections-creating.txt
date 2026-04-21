@@ -1,0 +1,27 @@
+Okay, so in this video I'm going to show you how inspection jobs work and how to get them scheduled. Let me jump into my queue.
+
+So you can see here I've got this inspection request that's appeared. Now the important thing to understand is I didn't create this. Nobody created this manually. Dwelly made it automatically.
+
+The system knows when an inspection is due based on two things. When the last inspection was, and the frequency that's been set for the managing agency. So for example, Lime properties get their first inspection at 3 months and then every 6 months after that. Gallant Richardson properties are tighter, first one at 1 month then every 4 months. Pennington is the same as Lime, 3 then 6.
+
+Dwelly creates the job 14 days before the due date, which gives you a nice window to get it booked in.
+
+So, although they are created automatically, we can also create one manually using the same process as before. Going to the property management tab, add request, compliance and then inspection. The reason the inspection appears under compliance is to ensure that the system automates this onto the property managers jobs. 
+
+Now, I created the inspection and need to schedule the visit. In this case it's going to be done by one of our internal Property Specialists, so watch what happens here. I can actually see their Google Calendar right inside Dwelly.
+
+Let me scroll through. I'm looking for a slot that works. There's one on Thursday afternoon. But hang on, let me just check something first. I need to look at where this property is and where the Property Specialist is going to be that day. Dwelly doesn't have a routing system, so it's on me to make sure I'm not booking someone in one area in the morning and then sending them to a different area in the afternoon. That's a waste of everyone's time. Some of the property experts will assign postcodes to dates to allow easier booking, as shown in an example from Lime property here. 
+
+OK so Thursday works. I'm going to select that slot. Now I fill in the visit time here, and I can add a comment if there's anything the specialist needs to know about the property. Maybe there's a tricky key safe code or the tenant works from home and prefers afternoon visits.
+
+Done. And you can see a calendar event has been created automatically. The tenant is going to get a confirmation message once we fill out this section, and then they'll also get a reminder SMS 24 hours before the visit. I didn't have to do any of that, the system handles it.
+
+Now let me show you what it looks like when it's an external contractor doing the inspection. So if I had an external person booked for this, I wouldn't be able to see their calendar in Dwelly. Makes sense, they're not on our system. So what I'd do is contact them directly, agree on a date and time, and then come back here and just type that date into the system manually. Everything else works the same, the tenant still gets notified and the calendar event still gets created.
+
+One more thing I want to show you. What happens if you need to change the date. Say the tenant calls and says they can't do Thursday anymore. No problem.
+
+I'm going to click Pause first. Then I go to Assign Progress, and you can see there's an option here called Change Inspection Time. I click that, enter the new date, and the system updates the calendar event and lets the tenant know. Nice and easy.
+
+Now what about cancelling altogether? You can't do that yourself. That's a Team Coordinator thing. If an inspection genuinely needs to be cancelled, have a chat with your Team Coordinator and they'll sort it out.
+
+And that's inspections scheduled. In the next video I'll show you what happens after the visit, when the report comes back and you need to process the results.

@@ -1,0 +1,625 @@
+export interface GlossaryTerm {
+  id: string
+  term: string
+  definition: string
+  context: string
+  category: 'legal' | 'operational' | 'financial' | 'compliance' | 'tenant-relations'
+  relatedTerms: string[]
+}
+
+export const GLOSSARY_TERMS: GlossaryTerm[] = [
+  // ─── LEGAL ────────────────────────────────────────────────────────────────────
+
+  {
+    id: 'ast',
+    term: 'Assured Shorthold Tenancy (AST)',
+    definition:
+      'The most common form of residential tenancy in England and Wales, introduced by the Housing Act 1988 and amended by the Housing Act 1996. It gives landlords the right to repossess their property at the end of the fixed term, provided correct legal procedure is followed. Most private residential lettings automatically become ASTs unless specific conditions make them ineligible.',
+    context:
+      'When a new applicant passes referencing, the property manager drafts an AST setting out the fixed term, rent, and tenant obligations.',
+    category: 'legal',
+    relatedTerms: ['periodic-tenancy', 'section-8', 'prescribed-information'],
+  },
+  {
+    id: 'section-8',
+    term: 'Section 8 Notice',
+    definition:
+      'A notice served under Section 8 of the Housing Act 1988 seeking possession of a property on one or more specified grounds listed in Schedule 2 of the Act. The landlord must cite the relevant grounds (e.g. rent arrears, anti-social behaviour) and serve the notice in the prescribed form. The tenant may contest the claim in court, and a judge will decide whether possession should be granted.',
+    context:
+      'After three months of unpaid rent, the landlord instructed the agent to serve a Section 8 notice citing Ground 8 and Ground 10.',
+    category: 'legal',
+    relatedTerms: ['ground-8', 'possession-order', 'ast'],
+  },
+  {
+    id: 'ground-8',
+    term: 'Ground 8',
+    definition:
+      "A mandatory ground for possession under Schedule 2 of the Housing Act 1988, triggered when a tenant owes at least two months' rent (if paying monthly) both at the time the notice is served and at the date of the court hearing. Because it is mandatory, the court must grant possession if the ground is proven. Landlords often cite Ground 8 alongside the discretionary Grounds 10 and 11 to strengthen their case.",
+    context:
+      "The landlord's solicitor confirmed that Ground 8 was established because the tenant owed four months' arrears, making possession almost certain.",
+    category: 'legal',
+    relatedTerms: ['section-8', 'possession-order', 'arrears'],
+  },
+  {
+    id: 'possession-order',
+    term: 'Possession Order',
+    definition:
+      'A court order directing a tenant to vacate a property by a specified date, obtained after a successful possession claim. It can be outright (requiring the tenant to leave by a fixed date) or suspended (allowing the tenant to remain provided they meet certain conditions, such as paying current rent plus arrears). If the tenant does not comply, the landlord must apply for a warrant of possession to enforce the order.',
+    context:
+      'Following the hearing, the judge granted an outright possession order requiring the tenants to vacate within 14 days.',
+    category: 'legal',
+    relatedTerms: ['section-8', 'ground-8', 'illegal-eviction'],
+  },
+  {
+    id: 'hmo',
+    term: 'HMO (House in Multiple Occupation)',
+    definition:
+      'A property rented out to three or more people who are not from one household (e.g. a family) but share facilities such as a kitchen or bathroom, as defined by the Housing Act 2004. Mandatory HMO licensing applies to properties with five or more occupants from two or more households. Local authorities may also introduce additional or selective licensing schemes covering smaller HMOs.',
+    context:
+      'The property manager checked whether the six-bed student house required a mandatory HMO licence before marketing it for the next academic year.',
+    category: 'legal',
+    relatedTerms: ['selective-licensing', 'fire-risk-assessment', 'hhsrs'],
+  },
+  {
+    id: 'forfeiture',
+    term: 'Forfeiture',
+    definition:
+      'A legal remedy allowing a landlord to bring a lease to an end before its expiry date when the tenant has breached a condition of the tenancy, such as non-payment of rent or causing nuisance. Forfeiture is most commonly used in commercial leases and long residential leases rather than standard ASTs. The landlord must follow strict procedural rules, including serving a Section 146 notice for breaches other than non-payment of rent.',
+    context:
+      'The freeholder threatened forfeiture proceedings against the leaseholder after they sublet the flat without consent.',
+    category: 'legal',
+    relatedTerms: ['ast', 'possession-order', 'deed-of-surrender'],
+  },
+  {
+    id: 'licence-to-occupy',
+    term: 'Licence to Occupy',
+    definition:
+      "A permission granted to an occupier to use a property without creating a tenancy, meaning the occupier has no security of tenure under the Housing Act 1988. A licence does not grant exclusive possession of the premises and is commonly used for lodgers, short-term lets, or employer-provided accommodation. Mischaracterising a tenancy as a licence to deny security of tenure is not legally effective.",
+    context:
+      'Staff accommodation at the hotel was provided under a licence to occupy, which ended automatically when the employee left.',
+    category: 'legal',
+    relatedTerms: ['ast', 'periodic-tenancy', 'right-to-quiet-enjoyment'],
+  },
+  {
+    id: 'mesne-profits',
+    term: 'Mesne Profits',
+    definition:
+      "Compensation claimed by a landlord from a former tenant who remains in the property after the tenancy has legally ended, equivalent to the value of the occupation for that period. Unlike rent, mesne profits are damages rather than a contractual payment and are calculated at the market rental rate. A landlord can pursue mesne profits through the courts if a tenant refuses to vacate after a possession order.",
+    context:
+      "Because the tenant stayed for six weeks after the possession order, the landlord's solicitor pursued mesne profits to recover the cost of that unlawful occupation.",
+    category: 'legal',
+    relatedTerms: ['possession-order', 'void-period', 'illegal-eviction'],
+  },
+  {
+    id: 'break-clause',
+    term: 'Break Clause',
+    definition:
+      "A provision within a fixed-term tenancy agreement that allows either the landlord, the tenant, or both parties to end the tenancy early by giving the required notice, usually after a minimum period has elapsed. To be valid, the break clause must be exercised strictly in accordance with the conditions set out in the agreement. Courts have held that even minor procedural failures can invalidate a break notice.",
+    context:
+      "The tenant exercised the break clause after six months, giving two months' written notice as required by the agreement.",
+    category: 'legal',
+    relatedTerms: ['ast', 'periodic-tenancy', 'tenancy-renewal'],
+  },
+  {
+    id: 'prescribed-information',
+    term: 'Prescribed Information',
+    definition:
+      'Specific information that a landlord must provide to a tenant within 30 days of receiving a deposit, as required by the Housing (Tenancy Deposits) (Prescribed Information) Order 2007. It must include details of the tenancy deposit protection scheme being used, how to apply for release of the deposit, and what to do in the event of a dispute. Failure to comply can result in a fine of one to three times the deposit amount and prevent the landlord from serving a valid possession notice.',
+    context:
+      'The compliance officer flagged that prescribed information had not been issued for three tenancies, creating potential liability for the landlord.',
+    category: 'legal',
+    relatedTerms: ['ast', 'holding-deposit', 'rent-deposit'],
+  },
+  {
+    id: 'deed-of-surrender',
+    term: 'Deed of Surrender',
+    definition:
+      'A formal legal document signed by both landlord and tenant that brings a tenancy to an end by mutual agreement before the fixed term expires. It must be executed as a deed to be legally effective in most circumstances. Once signed, the tenant relinquishes all rights to the property and the landlord can re-let or take possession immediately.',
+    context:
+      'Rather than pursue a Section 8 claim, the landlord negotiated a deed of surrender with the tenant, allowing both parties to part ways without court proceedings.',
+    category: 'legal',
+    relatedTerms: ['ast', 'forfeiture', 'void-period'],
+  },
+  {
+    id: 'assignment',
+    term: 'Assignment',
+    definition:
+      "The transfer of a tenant's rights and obligations under a tenancy agreement to a new party (the assignee), who steps into the original tenant's position. Most residential ASTs prohibit assignment without the landlord's written consent. Unlike subletting, an assignment transfers the entire tenancy rather than creating a new one beneath it.",
+    context:
+      "The tenant asked to assign the remaining nine months of the tenancy to a colleague, but the agreement required the landlord's prior written consent.",
+    category: 'legal',
+    relatedTerms: ['ast', 'licence-to-occupy', 'break-clause'],
+  },
+  {
+    id: 'periodic-tenancy',
+    term: 'Periodic Tenancy',
+    definition:
+      'A tenancy that runs from period to period (e.g. month to month or week to week) rather than for a fixed term. A statutory periodic tenancy arises automatically at the end of an AST fixed term if neither party serves notice to end the arrangement. The tenancy continues until either party gives the correct notice to quit.',
+    context:
+      'When the fixed term expired and no renewal was signed, the tenancy became a statutory periodic tenancy running on a monthly basis.',
+    category: 'legal',
+    relatedTerms: ['ast', 'statutory-periodic', 'tenancy-renewal'],
+  },
+  {
+    id: 'rent-repayment-order',
+    term: 'Rent Repayment Order (RRO)',
+    definition:
+      "A civil penalty introduced by the Housing and Planning Act 2016, allowing a tenant or local authority to apply to the First-tier Tribunal for repayment of up to 12 months' rent where a landlord has committed a specified offence, such as operating an unlicensed HMO, illegal eviction, or breach of a banning order. The Tribunal decides the amount based on factors including the seriousness of the offence and the landlord's conduct. RROs can also be applied to lettings agents acting on behalf of the landlord.",
+    context:
+      "The tenant applied for a rent repayment order after discovering the landlord had been operating the property as an unlicensed HMO throughout their tenancy.",
+    category: 'legal',
+    relatedTerms: ['hmo', 'selective-licensing', 'illegal-eviction'],
+  },
+
+  // ─── OPERATIONAL ──────────────────────────────────────────────────────────────
+
+  {
+    id: 'void-period',
+    term: 'Void Period',
+    definition:
+      'The time between tenancies when a property is unoccupied and generating no rental income, during which the landlord typically bears all running costs including council tax, utilities, and insurance. Minimising void periods is a key performance indicator for property managers. Extended voids can signal pricing issues, poor presentation, or underlying compliance problems.',
+    context:
+      'The portfolio review showed an average void period of 18 days per property, which the manager aimed to reduce to 10 days through proactive re-let activity.',
+    category: 'operational',
+    relatedTerms: ['re-let', 'tenancy-renewal', 'dilapidation'],
+  },
+  {
+    id: 'dilapidation',
+    term: 'Dilapidation',
+    definition:
+      'Damage or deterioration to a property beyond fair wear and tear, for which the tenant may be held financially responsible at the end of the tenancy. A schedule of dilapidations is often prepared by a surveyor or property manager to document each item of disrepair. Deductions from the security deposit may be made for dilapidations, subject to evidence from the check-in and check-out inventories.',
+    context:
+      'The checkout report identified significant dilapidations including a broken door handle, stained carpets, and a cracked bathroom tile, all of which exceeded normal wear and tear.',
+    category: 'operational',
+    relatedTerms: ['inventory', 'wear-and-tear', 'check-in-checkout'],
+  },
+  {
+    id: 'inventory',
+    term: 'Inventory',
+    definition:
+      "A detailed written record of a property's contents, fixtures, fittings, and their condition at the start of a tenancy, usually accompanied by photographs or video evidence. A professionally compiled inventory provides a neutral baseline for assessing any changes at the end of the tenancy. It is one of the most important documents in resolving deposit disputes.",
+    context:
+      'The inventory clerk produced a 42-page report with over 200 photographs before the tenants moved in, which proved invaluable when settling the end-of-tenancy deposit dispute.',
+    category: 'operational',
+    relatedTerms: ['check-in-checkout', 'schedule-of-condition', 'dilapidation'],
+  },
+  {
+    id: 'check-in-checkout',
+    term: 'Check-in / Check-out',
+    definition:
+      "The formal process of handing over and returning a property at the start and end of a tenancy respectively, during which the condition of the property is recorded against the inventory. A check-in establishes the baseline condition and confirms the tenant has received keys and relevant documents. A check-out compares current condition against the check-in report to identify any tenant-caused damage.",
+    context:
+      'The property manager attended the check-out in person and noted five items of damage not present at check-in, which were later deducted from the deposit.',
+    category: 'operational',
+    relatedTerms: ['inventory', 'dilapidation', 'key-handover'],
+  },
+  {
+    id: 'key-handover',
+    term: 'Key Handover',
+    definition:
+      'The formal transfer of property keys (and any access fobs or codes) from landlord or agent to tenant at the start of a tenancy, or from tenant back to landlord or agent at the end. A key receipt should be signed by both parties to confirm the number and type of keys transferred. Failure to return all keys at checkout may result in a charge for replacement locks or key cutting.',
+    context:
+      'During the key handover, the tenant signed a receipt confirming they had received two sets of keys and one parking fob.',
+    category: 'operational',
+    relatedTerms: ['check-in-checkout', 'inventory', 'void-period'],
+  },
+  {
+    id: 'pre-tenancy-inspection',
+    term: 'Pre-tenancy Inspection',
+    definition:
+      'An inspection of the property carried out before a new tenancy commences to ensure the property is in a suitable condition for occupation and that all compliance obligations have been met. It typically covers cleanliness, maintenance issues, safety certificate status, and any outstanding snagging items. The findings inform the final inventory and any last-minute remedial works.',
+    context:
+      "The pre-tenancy inspection revealed that the boiler service had lapsed, so a CP12 was arranged before the move-in date.",
+    category: 'operational',
+    relatedTerms: ['snagging', 'inventory', 'property-compliance-matrix'],
+  },
+  {
+    id: 'mid-term-inspection',
+    term: 'Mid-term Inspection',
+    definition:
+      "A routine visit to a tenanted property, usually every three to six months, to check its general condition, identify maintenance issues, and ensure the tenant is complying with the terms of the tenancy agreement. Landlords and agents must give at least 24 hours' written notice before entering the property. Findings are recorded in a written report shared with both the landlord and tenant.",
+    context:
+      'The mid-term inspection flagged a slow-draining bath and a broken extractor fan, both of which were resolved within a week.',
+    category: 'operational',
+    relatedTerms: ['right-to-quiet-enjoyment', 'schedule-of-condition', 'property-compliance-matrix'],
+  },
+  {
+    id: 'schedule-of-condition',
+    term: 'Schedule of Condition',
+    definition:
+      "A detailed photographic and written record of a property's condition at a specific point in time, most commonly prepared at the start of a tenancy or lease to limit a tenant's repairing liability. It is typically appended to the tenancy agreement and signed by both parties. A well-prepared schedule of condition can prevent disputes about pre-existing defects at the end of the tenancy.",
+    context:
+      'The surveyor prepared a schedule of condition before the commercial lease was signed, documenting the existing cracks in the plasterwork.',
+    category: 'operational',
+    relatedTerms: ['inventory', 'dilapidation', 'check-in-checkout'],
+  },
+  {
+    id: 'wear-and-tear',
+    term: 'Wear and Tear',
+    definition:
+      "The reasonable deterioration of a property's fixtures, fittings, and decorations that occurs through normal everyday use over time, for which a tenant cannot be charged. Landlords are expected to budget for gradual wear and cannot use the deposit to fund routine redecoration. The distinction between fair wear and tear and tenant-caused damage is frequently the basis of deposit disputes.",
+    context:
+      "The adjudicator rejected the landlord's claim for full carpet replacement, ruling that most of the deterioration was fair wear and tear given the three-year tenancy.",
+    category: 'operational',
+    relatedTerms: ['dilapidation', 'inventory', 'check-in-checkout'],
+  },
+  {
+    id: 'snagging',
+    term: 'Snagging',
+    definition:
+      "The process of identifying and rectifying minor defects, unfinished works, or issues in a newly built or recently refurbished property before or shortly after it is handed over for occupation. A snagging list documents each item that requires attention, and the contractor or developer is expected to remedy them within an agreed timeframe. Thorough snagging protects the landlord's investment and prevents tenant complaints at the outset of a tenancy.",
+    context:
+      'After the refurbishment was completed, the property manager carried out a full snagging visit and issued a list of 14 items to the contractor.',
+    category: 'operational',
+    relatedTerms: ['pre-tenancy-inspection', 'inventory', 'dilapidation'],
+  },
+  {
+    id: 're-let',
+    term: 'Re-let',
+    definition:
+      'The process of marketing, finding a new tenant, and re-occupying a property after the end of a tenancy. An efficient re-let process minimises void periods and ensures the property is compliant before the new tenant moves in. It typically involves checking and updating all safety certificates, refreshing any marketing materials, and conducting viewings.',
+    context:
+      'The property manager began the re-let process as soon as the outgoing tenant gave notice, aiming to have a new tenant in place before the void commenced.',
+    category: 'operational',
+    relatedTerms: ['void-period', 'pre-tenancy-inspection', 'property-compliance-matrix'],
+  },
+  {
+    id: 'property-compliance-matrix',
+    term: 'Property Compliance Matrix',
+    definition:
+      'A structured document or system used by property managers to track the expiry dates and renewal requirements of all statutory certificates and legal obligations for a property or portfolio. It typically covers gas safety, electrical testing, EPCs, fire alarms, and any licensing conditions. A well-maintained compliance matrix helps prevent certification lapses and associated legal liability.',
+    context:
+      'The portfolio manager used the property compliance matrix to flag that six EPCs were due for renewal in the next 60 days.',
+    category: 'operational',
+    relatedTerms: ['cp12', 'eicr', 'epc', 'fire-risk-assessment'],
+  },
+  {
+    id: 'tenancy-renewal',
+    term: 'Tenancy Renewal',
+    definition:
+      'The process of agreeing a new fixed-term tenancy agreement with an existing tenant at the end of their current term, often involving a rent review. Renewals avoid the cost and uncertainty of re-letting and can be beneficial for both parties. If no renewal is agreed and the tenant remains in occupation, the tenancy will continue as a statutory periodic tenancy.',
+    context:
+      'The property manager contacted the tenant three months before the end date to discuss a tenancy renewal and agree on a revised rent.',
+    category: 'operational',
+    relatedTerms: ['ast', 'periodic-tenancy', 'statutory-periodic'],
+  },
+  {
+    id: 'statutory-periodic',
+    term: 'Statutory Periodic Tenancy',
+    definition:
+      'A periodic tenancy that arises automatically by operation of law when a fixed-term AST expires and neither the landlord nor the tenant has ended the arrangement. The period mirrors the rent payment frequency (typically monthly), and the terms of the original fixed-term agreement continue to apply. Either party may end a statutory periodic tenancy by giving the legally required notice.',
+    context:
+      'Because no new fixed term was agreed after the initial 12-month AST expired, the tenancy continued as a statutory periodic tenancy on a month-to-month basis.',
+    category: 'operational',
+    relatedTerms: ['periodic-tenancy', 'ast', 'tenancy-renewal'],
+  },
+
+  // ─── FINANCIAL ────────────────────────────────────────────────────────────────
+
+  {
+    id: 'yield',
+    term: 'Yield',
+    definition:
+      "A measure of the annual rental income generated by a property expressed as a percentage of its value, used by investors to assess the financial performance of a rental property. Gross yield is calculated by dividing annual rent by property value; net yield adjusts for costs such as management fees, maintenance, and voids. Yields vary significantly by location, property type, and market conditions.",
+    context:
+      'The investor compared gross yields across three cities before deciding to acquire a buy-to-let property in Manchester, where yields averaged 6.2%.',
+    category: 'financial',
+    relatedTerms: ['gross-rent', 'net-rent', 'management-fee'],
+  },
+  {
+    id: 'gross-rent',
+    term: 'Gross Rent',
+    definition:
+      "The total rental income received from a property before deducting any costs, fees, or expenses such as management charges, maintenance, insurance, or void periods. Gross rent is a headline figure and does not reflect the actual return to the landlord. It is used as the starting point when calculating yield and comparing rental income across a portfolio.",
+    context:
+      "The property generated a gross rent of £18,000 per annum, but after costs the landlord's net rent was closer to £13,500.",
+    category: 'financial',
+    relatedTerms: ['net-rent', 'yield', 'management-fee'],
+  },
+  {
+    id: 'net-rent',
+    term: 'Net Rent',
+    definition:
+      "The rental income remaining after all costs of letting and managing a property have been deducted, including management fees, maintenance, insurance, void periods, and compliance expenditure. Net rent represents the landlord's actual income and is a more useful measure than gross rent for assessing profitability. It forms the basis of a profit and loss account for a rental property.",
+    context:
+      'After accounting for the letting fee, ongoing management, two weeks of void, and a boiler repair, the net rent for the year came to £11,200.',
+    category: 'financial',
+    relatedTerms: ['gross-rent', 'yield', 'profit-and-loss'],
+  },
+  {
+    id: 'service-charge',
+    term: 'Service Charge',
+    definition:
+      'A charge levied on leaseholders to cover the cost of maintaining, repairing, and insuring the shared parts of a building or development, such as communal areas, lifts, and roof. Service charges must be "reasonable" under the Landlord and Tenant Act 1985 and are subject to consultation requirements for major works. Landlords who sublet leasehold flats typically pass through the service charge to tenants or absorb it as a running cost.',
+    context:
+      'The annual service charge for the apartment block increased by 12% following major roof repairs, which the leaseholder-landlord factored into the rent review.',
+    category: 'financial',
+    relatedTerms: ['ground-rent', 'reserve-fund', 'profit-and-loss'],
+  },
+  {
+    id: 'ground-rent',
+    term: 'Ground Rent',
+    definition:
+      "An annual charge paid by a leaseholder to the freeholder as a condition of holding a long lease, historically a nominal sum reflecting the leaseholder's right to occupy the land. The Leasehold Reform (Ground Rent) Act 2022 restricts ground rent on new regulated leases to a peppercorn (effectively zero). Ground rents on older leases can still be significant and may affect a property's mortgageability.",
+    context:
+      "The solicitor warned the buyer that the ground rent doubled every 25 years, which could affect their ability to remortgage in the future.",
+    category: 'financial',
+    relatedTerms: ['service-charge', 'reserve-fund', 'profit-and-loss'],
+  },
+  {
+    id: 'arrears',
+    term: 'Arrears',
+    definition:
+      'Rent that has not been paid by the due date and remains outstanding, representing a debt owed by the tenant to the landlord. Prompt identification and management of arrears is essential to minimise financial loss and preserve the landlord-tenant relationship. Persistent arrears may justify serving a Section 8 notice under Grounds 8, 10, and 11.',
+    context:
+      "The arrears report showed that two tenants had balances exceeding two months' rent, triggering the agency's formal arrears management procedure.",
+    category: 'financial',
+    relatedTerms: ['ground-8', 'section-8', 'rent-deposit'],
+  },
+  {
+    id: 'reserve-fund',
+    term: 'Reserve Fund',
+    definition:
+      "Money set aside by a landlord, managing agent, or residents' management company to cover future large-scale maintenance or repair costs, such as external redecoration or roof replacement, without requiring a large one-off levy. Building up a reserve fund smooths expenditure over time and is considered good financial management for any property. Leaseholders' contributions to a reserve fund are held on trust and must be protected.",
+    context:
+      'The managing agent recommended increasing annual reserve fund contributions to £500 per flat in anticipation of the planned external works in three years.',
+    category: 'financial',
+    relatedTerms: ['service-charge', 'ground-rent', 'profit-and-loss'],
+  },
+  {
+    id: 'management-fee',
+    term: 'Management Fee',
+    definition:
+      'The charge levied by a letting or managing agent for the ongoing day-to-day management of a tenanted property, typically expressed as a percentage of the monthly rent (commonly 8–15% plus VAT). The fee covers services such as rent collection, arranging maintenance, conducting inspections, and dealing with tenant queries. It should be clearly set out in the management agreement and agency terms of business.',
+    context:
+      "The landlord compared three agents' proposals, noting that management fees ranged from 10% to 14% of monthly rent, not including VAT or additional maintenance charges.",
+    category: 'financial',
+    relatedTerms: ['gross-rent', 'net-rent', 'yield'],
+  },
+  {
+    id: 'holding-deposit',
+    term: 'Holding Deposit',
+    definition:
+      "A payment made by a prospective tenant to reserve a property while referencing and right-to-rent checks are completed, capped at one week's rent under the Tenant Fees Act 2019. It must be repaid (or offset against the first rent payment or security deposit) within 15 days unless the tenant withdraws, provides false information, or fails a right-to-rent check. Retaining a holding deposit beyond permitted circumstances constitutes a prohibited payment.",
+    context:
+      'The applicant paid a holding deposit of £250 to secure the property while their employer reference was being obtained.',
+    category: 'financial',
+    relatedTerms: ['tenant-fees-act', 'rent-deposit', 'prescribed-information'],
+  },
+  {
+    id: 'tenant-fees-act',
+    term: 'Tenant Fees Act 2019',
+    definition:
+      "Legislation that came into force on 1 June 2019 banning landlords and letting agents from charging tenants fees other than a defined list of permitted payments, including rent, a refundable tenancy deposit (capped at five weeks' rent), a refundable holding deposit (capped at one week's rent), and certain default fees. Charging a prohibited payment is a civil offence, subject to a fine of up to £5,000 for a first breach. A landlord or agent cannot serve a valid possession notice while a prohibited payment remains outstanding.",
+    context:
+      "The agency's fee schedule was reviewed following the introduction of the Tenant Fees Act 2019 to remove all administration and referencing charges.",
+    category: 'financial',
+    relatedTerms: ['holding-deposit', 'rent-deposit', 'ast'],
+  },
+  {
+    id: 'rent-deposit',
+    term: 'Rent Deposit (Security Deposit)',
+    definition:
+      "A sum of money collected from the tenant at the start of the tenancy as security against potential unpaid rent or damage beyond fair wear and tear, capped at five weeks' rent where annual rent is below £50,000 under the Tenant Fees Act 2019. The deposit must be registered with and protected by a government-approved tenancy deposit protection scheme within 30 days of receipt. Prescribed information must also be provided to the tenant within the same timeframe.",
+    context:
+      'The property manager registered the £1,200 security deposit with the Deposit Protection Service on the day the tenancy commenced.',
+    category: 'financial',
+    relatedTerms: ['prescribed-information', 'tenant-fees-act', 'holding-deposit'],
+  },
+  {
+    id: 'profit-and-loss',
+    term: 'Profit and Loss (Rental Property)',
+    definition:
+      'A financial statement summarising the income and expenditure of a rental property over a given period, showing whether the investment is generating a surplus or a deficit. Income typically includes rent received, while expenditure covers mortgage interest, management fees, maintenance, insurance, void periods, and compliance costs. It is an essential tool for landlords to assess portfolio performance and meet HMRC reporting obligations.',
+    context:
+      "The landlord's accountant prepared a profit and loss statement showing that despite a full void month, the property generated a net profit of £4,200 for the tax year.",
+    category: 'financial',
+    relatedTerms: ['net-rent', 'gross-rent', 'management-fee'],
+  },
+
+  // ─── COMPLIANCE ───────────────────────────────────────────────────────────────
+
+  {
+    id: 'cp12',
+    term: 'CP12 (Gas Safety Certificate)',
+    definition:
+      'The document issued following an annual gas safety check carried out by a Gas Safe registered engineer, as required by the Gas Safety (Installation and Use) Regulations 1998. Landlords must provide a copy of the current CP12 to existing tenants within 28 days of the check and to new tenants before they move in. Failure to comply is a criminal offence and can prevent a landlord from serving a valid possession notice.',
+    context:
+      "The compliance dashboard showed that one property's CP12 was expiring in two weeks, so the property manager booked the gas safety check immediately.",
+    category: 'compliance',
+    relatedTerms: ['property-compliance-matrix', 'eicr', 'pre-tenancy-inspection'],
+  },
+  {
+    id: 'eicr',
+    term: 'EICR (Electrical Installation Condition Report)',
+    definition:
+      "A report produced by a qualified electrician following an inspection of a property's fixed electrical installation, required at least every five years for private rented properties in England under the Electrical Safety Standards in the Private Rented Sector (England) Regulations 2020. Any unsatisfactory outcome (coded C1 or C2) must be remedied within 28 days. A copy of the current EICR must be provided to new tenants before they move in and to existing tenants on request.",
+    context:
+      'The EICR identified a C2 coding for an unprotected circuit in the kitchen, which the electrician remedied before the new tenancy began.',
+    category: 'compliance',
+    relatedTerms: ['cp12', 'pat-testing', 'property-compliance-matrix'],
+  },
+  {
+    id: 'epc',
+    term: 'EPC (Energy Performance Certificate)',
+    definition:
+      "A document rating a property's energy efficiency on a scale from A (most efficient) to G (least efficient), valid for ten years and required before a property can be marketed for sale or let. Under the Minimum Energy Efficiency Standards (MEES), it is currently unlawful to let most privately rented properties in England and Wales with an EPC rating below E. The Government has consulted on raising the minimum to C for new tenancies.",
+    context:
+      "The property's EPC showed an F rating, meaning the landlord needed to carry out energy efficiency improvements to meet MEES before re-letting.",
+    category: 'compliance',
+    relatedTerms: ['mees', 'property-compliance-matrix', 'hhsrs'],
+  },
+  {
+    id: 'mees',
+    term: 'MEES (Minimum Energy Efficiency Standards)',
+    definition:
+      'Regulations introduced under the Energy Efficiency (Private Rented Property) (England and Wales) Regulations 2015 that prohibit landlords from granting new tenancies (and from continuing existing tenancies) where the property has an EPC rating below E, unless a valid exemption is registered. From April 2023, MEES applies to all privately rented properties in England and Wales, not just new lets. Landlords in breach may be fined up to £5,000 per property.',
+    context:
+      'Before renewing the tenancy, the landlord upgraded the loft insulation and installed a more efficient boiler to achieve the minimum E rating required under MEES.',
+    category: 'compliance',
+    relatedTerms: ['epc', 'property-compliance-matrix', 'decent-homes-standard'],
+  },
+  {
+    id: 'hhsrs',
+    term: 'HHSRS (Housing Health and Safety Rating System)',
+    definition:
+      'A risk-based evaluation tool used by local authorities under the Housing Act 2004 to assess potential risks to health and safety in residential properties, covering 29 hazard categories including excess cold, damp and mould, falls, and electrical hazards. Local authorities have a duty to act on Category 1 hazards (most serious) and discretionary powers for Category 2. Landlords who fail to address HHSRS hazards may face improvement notices, emergency remedial action, and prohibition orders.',
+    context:
+      'Following a tenant complaint about severe damp, the council carried out an HHSRS inspection and issued a Category 1 improvement notice requiring the landlord to remedy the hazard within three months.',
+    category: 'compliance',
+    relatedTerms: ['fitness-for-habitation', 'hmo', 'epc'],
+  },
+  {
+    id: 'legionella-risk-assessment',
+    term: 'Legionella Risk Assessment',
+    definition:
+      "An assessment of the risk of Legionella bacteria developing in a property's water system, required under the Health and Safety at Work Act 1974 and supporting Approved Code of Practice L8. While dedicated sampling and treatment programmes are more common in commercial or large HMO settings, all landlords have a legal duty to assess and control Legionella risk in domestic properties. The assessment should be reviewed whenever there are changes to the water system or the property is unoccupied for an extended period.",
+    context:
+      'After the property had been vacant for three months, the property manager commissioned a Legionella risk assessment before the new tenant moved in.',
+    category: 'compliance',
+    relatedTerms: ['hmo', 'property-compliance-matrix', 'asbestos-survey'],
+  },
+  {
+    id: 'asbestos-survey',
+    term: 'Asbestos Survey',
+    definition:
+      'An inspection carried out to identify the presence, location, and condition of asbestos-containing materials (ACMs) in a property, required under the Control of Asbestos Regulations 2012 before any refurbishment or demolition work on buildings constructed before 2000. For non-domestic premises, duty holders must manage asbestos through a written plan. In residential lettings, landlords should be aware of potential ACMs and ensure contractors are informed before carrying out intrusive works.',
+    context:
+      'Before the kitchen was refitted, the contractor requested an asbestos survey, which revealed textured ceiling coating containing chrysotile fibres.',
+    category: 'compliance',
+    relatedTerms: ['property-compliance-matrix', 'legionella-risk-assessment', 'fire-risk-assessment'],
+  },
+  {
+    id: 'fire-risk-assessment',
+    term: 'Fire Risk Assessment',
+    definition:
+      "A systematic evaluation of a property to identify fire hazards, assess the risk to occupants, and determine appropriate fire safety measures, required under the Regulatory Reform (Fire Safety) Order 2005. For HMOs it is a mandatory legal requirement, and local authorities can inspect and enforce compliance. The assessment must be reviewed regularly and whenever significant changes are made to the property.",
+    context:
+      'The HMO licence application required a current fire risk assessment confirming that inter-connected smoke alarms, fire doors, and an escape route were all in place.',
+    category: 'compliance',
+    relatedTerms: ['hmo', 'smoke-detector-regulations', 'carbon-monoxide-alarm'],
+  },
+  {
+    id: 'pat-testing',
+    term: 'PAT Testing (Portable Appliance Testing)',
+    definition:
+      "The inspection and testing of portable electrical appliances to confirm they are safe to use, carried out by a competent person. While not a specific legal requirement for residential landlords in England, providing unsafe electrical appliances that injure a tenant can create significant civil and criminal liability. PAT testing is strongly recommended for all landlord-supplied appliances and is often a condition of HMO licences.",
+    context:
+      'The inventory listed six landlord-supplied appliances, all of which had current PAT testing labels showing they had been checked within the past 12 months.',
+    category: 'compliance',
+    relatedTerms: ['eicr', 'property-compliance-matrix', 'hmo'],
+  },
+  {
+    id: 'smoke-detector-regulations',
+    term: 'Smoke Detector Regulations',
+    definition:
+      'Requirements under the Smoke and Carbon Monoxide Alarm (Amendment) Regulations 2022 that mandate at least one smoke alarm on every storey of a privately rented property where there is a room used as living accommodation, and that all alarms are in working order at the start of each tenancy. Landlords are required to repair or replace alarms promptly when informed they are faulty. Local authorities can issue remedial notices and charge landlords up to £5,000 for non-compliance.',
+    context:
+      'The pre-tenancy inspection checklist included testing each smoke alarm and replacing batteries where necessary to comply with the smoke detector regulations.',
+    category: 'compliance',
+    relatedTerms: ['carbon-monoxide-alarm', 'fire-risk-assessment', 'property-compliance-matrix'],
+  },
+  {
+    id: 'carbon-monoxide-alarm',
+    term: 'Carbon Monoxide Alarm',
+    definition:
+      'A detector required under the Smoke and Carbon Monoxide Alarm (Amendment) Regulations 2022 in any room of a privately rented property that contains a fixed combustion appliance (excluding gas cookers), including boilers, gas fires, and solid fuel burners. Alarms must be in working order at the start of each tenancy, and landlords must repair or replace faulty alarms as soon as practicable. Non-compliance can result in a remedial notice and a civil penalty of up to £5,000.',
+    context:
+      'A carbon monoxide alarm was installed in the living room next to the gas fire before the tenancy commenced, and its operation was confirmed at check-in.',
+    category: 'compliance',
+    relatedTerms: ['smoke-detector-regulations', 'cp12', 'property-compliance-matrix'],
+  },
+  {
+    id: 'selective-licensing',
+    term: 'Selective Licensing',
+    definition:
+      'A local authority scheme, introduced under Part 3 of the Housing Act 2004, requiring all private landlords in a designated area to hold a licence regardless of property size or the number of occupants, typically aimed at tackling poor management practices and improving housing standards. The local authority sets licence conditions relating to property management, tenant conduct, and maintenance. Operating a property without a required licence is a criminal offence, and tenants can apply for a rent repayment order.',
+    context:
+      'When the council introduced a selective licensing scheme, the property manager applied for licences on all 23 properties in the designated ward within the required three-month window.',
+    category: 'compliance',
+    relatedTerms: ['hmo', 'rent-repayment-order', 'property-compliance-matrix'],
+  },
+
+  // ─── TENANT RELATIONS ─────────────────────────────────────────────────────────
+
+  {
+    id: 'right-to-quiet-enjoyment',
+    term: 'Right to Quiet Enjoyment',
+    definition:
+      "An implied covenant in every tenancy agreement that entitles the tenant to use their home without interference from the landlord or anyone acting on the landlord's behalf. It does not refer to noise but to peaceful, uninterrupted occupation of the property. Entering the property without notice or consent, or persistently disturbing the tenant, can amount to a breach of this covenant and potentially to harassment.",
+    context:
+      "The tenant complained that the landlord had entered the property three times without notice, which the property manager explained was a potential breach of their right to quiet enjoyment.",
+    category: 'tenant-relations',
+    relatedTerms: ['harassment', 'illegal-eviction', 'licence-to-occupy'],
+  },
+  {
+    id: 'harassment',
+    term: 'Harassment (Landlord)',
+    definition:
+      "Conduct by a landlord or their agents intended to cause a residential occupier to give up occupation or to refrain from exercising their legal rights, as defined by the Protection from Eviction Act 1977. Examples include persistent unannounced visits, cutting off utilities, removing doors or windows, or making threats. Harassment is a criminal offence and may also give rise to civil claims for damages.",
+    context:
+      "The tenant reported that since falling into arrears, the landlord had been visiting daily and had removed the front gate, conduct the solicitor confirmed amounted to harassment.",
+    category: 'tenant-relations',
+    relatedTerms: ['right-to-quiet-enjoyment', 'illegal-eviction', 'retaliatory-eviction'],
+  },
+  {
+    id: 'illegal-eviction',
+    term: 'Illegal Eviction',
+    definition:
+      "The unlawful removal of a residential occupier from their home without a court order, or the deliberate act of making their occupation unreasonably difficult, as prohibited by the Protection from Eviction Act 1977. Common examples include changing the locks while the tenant is out, removing their belongings, or physically forcing them to leave. Illegal eviction is a criminal offence carrying an unlimited fine and/or imprisonment, and the tenant may also claim substantial civil damages.",
+    context:
+      "After the landlord changed the locks, the tenant called the out-of-hours line and the property manager immediately advised them to contact the police and the council's tenancy relations officer, as this was an illegal eviction.",
+    category: 'tenant-relations',
+    relatedTerms: ['harassment', 'possession-order', 'rent-repayment-order'],
+  },
+  {
+    id: 'retaliatory-eviction',
+    term: 'Retaliatory Eviction',
+    definition:
+      "The practice of a landlord attempting to evict a tenant in response to a legitimate complaint about the condition of the property, effectively punishing the tenant for reporting disrepair. The Deregulation Act 2015 introduced protections against retaliatory eviction by preventing landlords from serving certain possession notices within six months of a tenant making a formal complaint that has resulted in an improvement notice. These protections apply to assured shorthold tenancies in England.",
+    context:
+      "When the tenant raised a formal complaint about damp and the council issued an improvement notice, the landlord was barred from serving a possession notice for six months under the retaliatory eviction provisions.",
+    category: 'tenant-relations',
+    relatedTerms: ['harassment', 'hhsrs', 'right-to-quiet-enjoyment'],
+  },
+  {
+    id: 'reasonable-adjustments',
+    term: 'Reasonable Adjustments',
+    definition:
+      "Changes that a landlord or letting agent is legally required to make under the Equality Act 2010 to remove or reduce a substantial disadvantage faced by a disabled person in connection with accessing or using the property or services. Whether an adjustment is 'reasonable' depends on factors such as cost, practicality, and the landlord's resources. Failure to make reasonable adjustments where required is unlawful discrimination.",
+    context:
+      'When the tenant was diagnosed with a mobility impairment, the property manager discussed with the landlord what reasonable adjustments could be made, including installing grab rails in the bathroom.',
+    category: 'tenant-relations',
+    relatedTerms: ['protected-characteristics', 'fitness-for-habitation', 'decent-homes-standard'],
+  },
+  {
+    id: 'protected-characteristics',
+    term: 'Protected Characteristics',
+    definition:
+      'The nine characteristics protected by the Equality Act 2010 against discrimination in housing and related services: age, disability, gender reassignment, marriage and civil partnership, pregnancy and maternity, race, religion or belief, sex, and sexual orientation. Landlords and letting agents must not discriminate against applicants or tenants on the basis of any protected characteristic, directly or indirectly. Breaches can result in civil claims in the County Court or Employment Tribunal.',
+    context:
+      "The lettings manager reminded the negotiator that refusing a prospective tenant solely because of a protected characteristic could constitute unlawful discrimination under the Equality Act 2010.",
+    category: 'tenant-relations',
+    relatedTerms: ['reasonable-adjustments', 'harassment', 'fitness-for-habitation'],
+  },
+  {
+    id: 'fitness-for-habitation',
+    term: 'Fitness for Habitation',
+    definition:
+      "The statutory obligation under the Homes (Fitness for Human Habitation) Act 2018 requiring landlords to ensure that a rented property is fit for human habitation at the start of and throughout the tenancy, covering issues such as damp, structural instability, inadequate heating, and poor sanitation. Tenants have a right to take court action against landlords who breach this duty. The Act applies to most residential tenancies in England, regardless of tenure length.",
+    context:
+      "The tenant's solicitor wrote to the landlord citing the fitness for habitation duty after the property suffered persistent rising damp and failed to meet a basic living standard.",
+    category: 'tenant-relations',
+    relatedTerms: ['hhsrs', 'decent-homes-standard', 'reasonable-adjustments'],
+  },
+  {
+    id: 'decent-homes-standard',
+    term: 'Decent Homes Standard',
+    definition:
+      "A Government standard that sets minimum requirements for the condition of social housing in England, requiring properties to meet the current statutory minimum (free from Category 1 HHSRS hazards), be in a reasonable state of repair, have reasonably modern facilities, and provide a reasonable degree of thermal comfort. The Government has proposed extending a version of the standard to the private rented sector as part of its Renters' Rights reforms. Failure to meet the standard can trigger enforcement action by local authorities.",
+    context:
+      "The housing association's stock condition survey identified 14 properties that fell below the Decent Homes Standard and required urgent investment to meet the required threshold.",
+    category: 'tenant-relations',
+    relatedTerms: ['fitness-for-habitation', 'hhsrs', 'mees'],
+  },
+]

@@ -1,0 +1,33 @@
+Right, so in this video I'm going to walk you through the move-out process. Specifically, how to create a move-out request, check everything is in order, and get the checkout inspection booked. There's a fair bit to cover, so let me just work through it step by step.
+
+Now like most things in Dwelly, move-out jobs can come in automatically — when a tenant submits a request through the tenant portal, the system creates the job for you. But I'm going to show you how to do it manually, because sometimes you'll get the request by email or letter and you'll need to set it up yourself.
+
+So I'm on the Property Management screen. I'll click Add Request and select Move-Out Request. It's asking me for the property address, so I'll start typing and select the right one.
+
+Now I need to enter the proposed move-out date. The tenant has said they want to leave on the 29th of the next month. I'll put that in. And in the description field I'll add some context — "Tenant has emailed to say they're relocating for work and wish to end the tenancy." Just enough so anyone looking at this job knows what's going on.
+
+That looks right, so I'll click Create Job.
+
+Now one thing to flag here — if there are two or more tenants on the tenancy, you need written confirmation from all of them before you proceed. Don't just take one tenant's word for it. This is a legal safeguard, so make sure you've got everyone's agreement in writing before moving forward.
+
+OK so the job's created. Now I need to check that the tenant is actually allowed to move out on the date they've given. There are a couple of things to verify here.
+
+First, the notice period. You will need to check the tenancy agreement to see how much notice the tenant is required to give. So, we will say this tenant is on a rolling periodic tenancy and needs to give one month's notice. They've given us enough notice, so that's fine.
+
+But if they hadn't given enough notice — say they emailed today wanting to leave in two weeks — I'd need to go back to them through the activity feed and explain that they need to serve the correct notice period before we can proceed.
+
+Second thing to check is any special conditions. Some tenancies have break clauses with specific dates, or fixed-end dates, or other stipulations. Always have a look at the agreement before you confirm anything.
+
+Now once you're satisfied the move-out date is legitimate, make sure it's accurate in the system. This is really important because the Lettings Negotiators use this date to start the re-letting process. If the date is wrong, they could be late getting the property listed, which means the landlord loses rent. So keep it up to date.
+
+One more thing on this — confirming the move-out date does not stop invoices from being generated. That's a completely separate action. If invoices need to be paused, you have to do that independently. Just be aware of that.
+
+Right, now let me move on to scheduling the checkout inventory. This is where someone goes to the property to check the condition and document everything before the tenant hands back the keys.
+
+How you book this depends on whether you're using an internal employee or an external contractor.
+
+If it's one of our own Property Specialists doing the checkout, Dwelly makes this really easy. When I click to schedule, you can see it's pulling up their Google Calendar right here in the system. I can browse the available slots, pick one that works — let's go with this one on the 29th at 2pm, the day of the move-out. I'll select it, and Dwelly handles the rest. It creates a calendar event for them and we will use this section to confirm to the tenant and ensure they get a notification. Done.
+
+Now if you're using an external contractor instead, their calendar won't show up in Dwelly. So for that, you'd need to contact the contractor directly — give them a call or send them an email — agree on a date and time, and then come back into Dwelly and enter that date manually. A bit more legwork, but same end result.
+
+And that's the first half of the move-out process covered. You know how to create the request, verify the tenant's notice period, check the tenancy terms, and get the checkout inspection booked. In the next video we'll pick up from the checkout itself and work through to closing the whole thing out.

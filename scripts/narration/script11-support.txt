@@ -1,0 +1,21 @@
+Okay, so in this video I'm going to show you how support tickets work. These are a bit different from everything else you've seen so far, so let me walk you through one.
+
+So I'm looking at a queue here and you can see this support job has appeared. Now I didn't create this. A tenant has contacted the agency about something, and when that happened Dwelly automatically created this support ticket. This is why it states that it is from a closed task. 
+
+And that's one way these get created. You can also make one yourself. There is a button to create a support job manually next to the maintenance and move out tasks as shown here. We will create these tasks for general correspondence that does not relate to the other tasks such as maintenance or compliance. The support tasks will also appear when a third party, a tenant or landlord, contacts the agency through the system on a closed task, such as an inspection as previously shown or a request through their portal.
+
+Let me create one from this property and show you what we're working with. So we have received a request from a tenant on a phone call to paint the master bedroom in white instead of the current beige colour, let me add this into the description here and create the task. 
+
+Now the other thing that's different about support jobs is there are no automations. None at all. The system isn't going to send any messages on your behalf, it's not going to chase anyone, it's not going to move the job forward. It's all on you. The job is always in Manual mode.
+
+So what I'm going to do is raise the request to the landlord in an email via the activity feed. And then I'll handle the request in this task. Again, I will hold the task for 48 hours whilst I wait for a response. 
+
+This is really important because the chat is the record of everything that happens on this job. If you're off sick tomorrow and someone else picks it up, they need to be able to read the chat and know exactly what's been said and what's been agreed.
+
+We can email the tenant and landlord through the support task, the task will remain open until we complete what we need to do. In this instance, we can say that the landlord is happy with the request and we inform the tenant of their approval. So, once everything has been completed and the tenant has been informed, we have finished the task. 
+
+Now to close it. I'm going to go to Assign Progress. And you can see there's an option here called Complete Support Task. I click that, and the job moves over to the Completed column. We will explain why we are closing the task here, simply confirming that the request has been completed. Done. Of course, there is no automation with the support task so, we will do everything manually. 
+
+So the key things to remember with support. There are no automations whatsoever, so you're driving the whole thing yourself. Use the chat to record everything, resolve the issue, and then close it through Assign Progress.
+
+Pretty straightforward really, just make sure you're on top of them because nobody's going to chase you if they slip.

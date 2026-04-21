@@ -1,0 +1,27 @@
+Right, so in this video I'm going to walk you through compliance jobs — specifically how they get created and how you get landlord approval. Compliance is all about making sure every property has valid, up-to-date certificates. Gas safety, electrical safety, E P C's, fire risk assessments — all that stuff. And this isn't just good practice, it's a legal requirement, so it's really important.
+
+So let me show you what this looks like in practice. If I go into My Jobs, you can see there's a few compliance jobs sitting here. Now I didn't create these — the system did. Dwelly tracks the expiry date of every certificate, and thirty days before one is due to expire, it automatically creates a compliance job and assigns it to you. So you've got a full month to get it sorted.
+
+That's the most common way compliance jobs appear. But you can also create them manually if you need to. I'll quickly show you — go to Property Management, click Add Request, select Compliance, type in the property address, choose the compliance type from the dropdown — gas safety, EICR, EPC, whatever it is — and click Create Job. Simple as that.
+
+OK so let me go back to this gas safety job that I just created. The first thing I need to do is get landlord consent. So I'll go to the activity feed and send the landlord a message.
+
+Something like, "Hi, the gas safety certificate for the above property is due to expire on the 15th of next month. Are you happy for us to arrange the renewal using one of our approved gas engineers?"
+
+And then we wait, placing the task on hold for 48 hours and chasing the landlord if we do not receive a response in this time. But here's the thing with compliance — and this is really important — if the landlord doesn't respond and we're within two weeks of the certificate expiring, we go ahead anyway. We can't let a certificate lapse. It's just not an option. So if we hit that two-week mark and there's still no reply, I'd send one final message through the activity feed saying we're proceeding, and then I move forward with booking a provider.
+
+The key thing to remember here is that two weeks before expiry is your cut-off. After that, you act regardless of whether the landlord has come back to you. Never let a certificate expire because someone hasn't replied to a message.
+
+OK so let's say the landlord has responded and they're happy for us to go ahead. Great — I'll select the provider and set the job to Auto mode and we'll move on to scheduling, which I'll cover in the next video.
+
+But let me also show you what happens when the landlord says they want to use their own provider. This is a slightly different process. When that happens, I don't select a provider in the system. Instead, I click Assign Progress and select Certificate Issued. That tells the system the certificate is being handled externally.
+
+Then I message the landlord through the chat and ask them to send me the certificate once their provider has done the work. And I set the job to On Hold. That keeps it active but stops all the automated chasing while we wait.
+
+When the certificate comes through from the landlord, I upload it to the job. For the payment question, I select "Landlord pays directly" since they arranged it themselves. And once it's uploaded, Dwelly automatically sends a copy to both the tenant and the landlord for their records. That bit is all taken care of.
+
+Now there's one special case I want to flag — E P C's. An Energy Performance Certificate is valid for ten years, which is much longer than most other certificates. As a reminder, where there are no changes to the tenancy, there is no legal requirement for a valid E P C to be maintained throughout. However, we should contact the landlord to make them aware and give them the option to renew.
+
+Please also bear in mind that the agency position on this is may differ — some agencies will require all compliance to be kept up to date regardless, we should advise the landlord accordingly and follow up to ensure renewal.
+
+That's how compliance jobs are created and how you handle the landlord side of things. In the next video I'll show you how to actually action the compliance task — getting the provider out there and dealing with the certificate when it comes back.

@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const ts = require\\('typescript'\\); const result = ts.transpileModule\\(require\\('fs'\\).readFileSync\\('lib/training-content.ts', 'utf8'\\), {compilerOptions: {module: ts.ModuleKind.CommonJS}}\\); const mod = {}; eval\\(result.outputText.replace\\('Object.defineProperty\\(exports, \\\\\"__esModule\\\\\", { value: true }\\);', ''\\)\\); console.log\\('Pages count:', TRAINING_PAGES.length\\); TRAINING_PAGES.forEach\\(p => console.log\\(p.id, '—', p.content.length, 'blocks'\\)\\);\")",
+      "Bash(grep -l \"completed\" /private/tmp/claude-501/-Users-charlielockwood-Portal-build/a37371b3-ded5-4289-9807-ed642faa5339/tasks/*.output)",
+      "Bash(grep -l \"error\\\\|Error\\\\|FAIL\\\\|failed\" /private/tmp/claude-501/-Users-charlielockwood-Portal-build/a37371b3-ded5-4289-9807-ed642faa5339/tasks/*.output)",
+      "Bash(npx next:*)",
+      "Bash(npx tsc:*)",
+      "Bash(python3 -)",
+      "Bash(python3 -c \"import sys, json; print\\(list\\(json.load\\(sys.stdin\\).keys\\(\\)\\)\\)\")",
+      "Bash(python3)",
+      "Bash(ls -t /Users/charlielockwood/.claude/projects/-Users-charlielockwood-Portal-build/*.jsonl)",
+      "Bash(find \"/Users/charlielockwood/.claude/projects/-Users-charlielockwood-Portal-build\" -type f \\\\\\( -name \"*.json\" -o -name \"*.jsonl\" -o -name \"*.txt\" \\\\\\) -exec grep -l \"q-m-onb\\\\|q-r-onb\\\\|q-onb-03\" {} \\\\;)",
+      "Bash(python3 -m json.tool)",
+      "Bash(sed -n '1083p' \"/Users/charlielockwood/.claude/projects/-Users-charlielockwood-Portal-build/a37371b3-ded5-4289-9807-ed642faa5339.jsonl\")",
+      "Read(//tmp/**)",
+      "Bash(python3 -c \"import sys, json; d=json.load\\(sys.stdin\\); print\\(list\\(d.get\\('message', {}\\).get\\('content', [{}]\\)[0].keys\\(\\)\\) if d.get\\('message', {}\\).get\\('content'\\) else 'No content'\\)\")",
+      "Bash(python3 -c \"import sys, json; d=json.load\\(sys.stdin\\); item=d.get\\('message', {}\\).get\\('content', [{}]\\)[0]; print\\(item.get\\('name'\\)\\); inp=item.get\\('input', {}\\); print\\('Input keys:', list\\(inp.keys\\(\\)\\)\\)\")",
+      "Bash(ls /Users/charlielockwood/.claude/projects/-Users-charlielockwood-Portal-build/*.jsonl)",
+      "Bash(python3 -c ':*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(xargs kill:*)"
+    ]
+  }
+}
