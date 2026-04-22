@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
-  Shield, AlertTriangle, BarChart3, BookA,
+  AlertTriangle, BarChart3, BookA,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -20,7 +20,6 @@ const journeyItems = [
 
 const referenceItems = [
   { href: '/glossary',    label: 'Glossary',              icon: BookA },
-  { href: '/compliance',  label: 'Compliance Hub',         icon: Shield },
   { href: '/emergency',   label: 'Emergency Procedures',   icon: AlertTriangle },
 ]
 

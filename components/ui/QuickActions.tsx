@@ -1,15 +1,14 @@
 import Link from 'next/link'
-import { Play, ClipboardCheck, Shield } from 'lucide-react'
+import { Play, ClipboardCheck } from 'lucide-react'
 
 const actions = [
   { href: '/modules',     label: 'Continue Module',   icon: Play,           colour: 'bg-orange/8 text-orange border-orange/20 hover:bg-orange/12' },
   { href: '/assessments', label: 'Take Assessment',   icon: ClipboardCheck, colour: 'bg-teal/8 text-teal border-teal/20 hover:bg-teal/12' },
-  { href: '/compliance',  label: 'Check Compliance',  icon: Shield,         colour: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100' },
 ]
 
 export default function QuickActions() {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 gap-3">
       {actions.map(({ href, label, icon: Icon, colour }) => (
         <Link
           key={href}
