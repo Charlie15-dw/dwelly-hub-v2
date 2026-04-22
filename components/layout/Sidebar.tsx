@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  LayoutDashboard, BookOpen, Award, Users, MessageCircle,
+  LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
   Shield, AlertTriangle, BarChart3, BookA,
 } from 'lucide-react'
@@ -22,11 +22,6 @@ const referenceItems = [
   { href: '/glossary',    label: 'Glossary',              icon: BookA },
   { href: '/compliance',  label: 'Compliance Hub',         icon: Shield },
   { href: '/emergency',   label: 'Emergency Procedures',   icon: AlertTriangle },
-]
-
-const pmItems = [
-  { href: '/dobby', label: 'Ask Dobby',        icon: MessageCircle },
-  // Recap & Refresh rendered separately with Monthly badge
 ]
 
 const managerItems = [
@@ -102,21 +97,6 @@ export default function Sidebar() {
 
         {/* Property Managers */}
         <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Property Managers</p>
-        {pmItems.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(href)
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={cn('sidebar-link', active && 'active')}
-              aria-current={active ? 'page' : undefined}
-            >
-              <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
-              <span className="flex-1">{label}</span>
-              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-            </Link>
-          )
-        })}
         {(() => {
           const active = pathname.startsWith('/recap')
           return (

@@ -14,7 +14,6 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
   '/glossary':     { title: 'Glossary',             subtitle: 'A-Z of property management terminology' },
   '/compliance':   { title: 'Compliance Hub',       subtitle: 'Regulatory compliance tracking and key deadlines' },
   '/emergency':    { title: 'Emergency Procedures', subtitle: 'Quick-reference guides for property emergencies' },
-  '/dobby':        { title: 'Ask Dobby',            subtitle: 'Your day-to-day Q&A and reminders assistant' },
   '/recap':        { title: 'Recap & Refresh',      subtitle: 'Monthly check-ins and refresher content for experienced PMs' },
   '/analytics':    { title: 'My Analytics',         subtitle: 'Your learning performance and development insights' },
   '/settings':     { title: 'Settings',             subtitle: 'Profile, preferences, and accessibility' },

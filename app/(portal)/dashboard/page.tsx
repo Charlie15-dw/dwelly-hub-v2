@@ -26,7 +26,7 @@ const pendingSignOffs = SIGN_OFF_GATES.filter(g => !g.signedOff).slice(0, 3)
 // Forgetting curve data
 const RETENTION_SCHEDULE = [
   { label: 'Day 1',    pct: 58,  done: true,  action: 'Micro quiz completed' },
-  { label: 'Day 3',    pct: 35,  done: true,  action: 'Dobby recall prompt completed' },
+  { label: 'Day 3',    pct: 35,  done: true,  action: 'Recall prompt completed' },
   { label: 'Week 1',   pct: 20,  done: false, action: 'Knowledge check due' },
   { label: 'Month 1',  pct: 10,  done: false, action: 'Scenario review pending' },
   { label: 'Quarter',  pct: 5,   done: false, action: 'Quarterly refresher' },
