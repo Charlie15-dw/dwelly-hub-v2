@@ -22,7 +22,6 @@ export interface EmergencyContact {
 export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   { label: 'Emergency Services', number: '999', note: 'Fire, police, ambulance — life-threatening' },
   { label: 'Gas Emergency', number: '0800 111 999', note: 'National Gas Emergency Service — 24/7' },
-  { label: 'Dwelly Emergency Line', number: '0333 000 0000', note: 'Out-of-hours property emergencies' },
   { label: 'Water Emergency', number: '0800 714 614', note: 'Report burst mains or supply issues' },
   { label: 'Electricity Emergency', number: '105', note: 'Power cuts & electrical emergencies' },
   { label: 'Non-Emergency Police', number: '101', note: 'Report crime that is not an emergency' },
@@ -43,10 +42,10 @@ export const EMERGENCY_PROCEDURES: EmergencyProcedure[] = [
     ],
     whoToContact: [
       { role: 'Emergency Services', detail: '999' },
-      { role: 'Dwelly Emergency Line', detail: '0333 000 0000' },
+      { role: 'Agency Out-of-Hours Line', detail: 'See your agency contact sheet' },
       { role: 'Property Owner', detail: 'Via Dwelly CRM' },
     ],
-    escalationPath: ['On-site PM', 'Dwelly Emergency Line', 'Operations Director', 'Insurer'],
+    escalationPath: ['On-site PM', 'Agency Out-of-Hours Line', 'Operations Director', 'Insurer'],
     documentationRequired: [
       'Incident report within 1 hour',
       'Photographs of damage (when safe)',
@@ -74,10 +73,10 @@ export const EMERGENCY_PROCEDURES: EmergencyProcedure[] = [
     ],
     whoToContact: [
       { role: 'Gas Emergency', detail: '0800 111 999' },
-      { role: 'Dwelly Emergency Line', detail: '0333 000 0000' },
+      { role: 'Agency Out-of-Hours Line', detail: 'See your agency contact sheet' },
       { role: 'Property Owner', detail: 'Via Dwelly CRM' },
     ],
-    escalationPath: ['On-site PM', 'Gas Emergency Service', 'Dwelly Emergency Line', 'Operations Director'],
+    escalationPath: ['On-site PM', 'Gas Emergency Service', 'Agency Out-of-Hours Line', 'Operations Director'],
     documentationRequired: [
       'Gas engineer report and reference number',
       'CO alarm reading if available',
@@ -101,14 +100,14 @@ export const EMERGENCY_PROCEDURES: EmergencyProcedure[] = [
       'Turn off the water at the stopcock if accessible',
       'Switch off electricity at the mains if water is near electrics',
       'Move tenants and valuables to higher ground or dry areas',
-      'Call Dwelly Emergency Line and arrange emergency plumber',
+      'Call your agency out-of-hours line and arrange emergency plumber',
     ],
     whoToContact: [
-      { role: 'Dwelly Emergency Line', detail: '0333 000 0000' },
+      { role: 'Agency Out-of-Hours Line', detail: 'See your agency contact sheet' },
       { role: 'Emergency Plumber', detail: 'Via approved contractor list' },
       { role: 'Property Owner', detail: 'Via Dwelly CRM' },
     ],
-    escalationPath: ['On-site PM', 'Emergency Plumber', 'Dwelly Emergency Line', 'Insurer'],
+    escalationPath: ['On-site PM', 'Emergency Plumber', 'Agency Out-of-Hours Line', 'Insurer'],
     documentationRequired: [
       'Photographs and video of flooding',
       'Stopcock location confirmed',
