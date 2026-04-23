@@ -137,7 +137,7 @@ export const EMERGENCY_PROCEDURES: EmergencyProcedure[] = [
     ],
     whoToContact: [
       { role: 'Approved Gas Engineer', detail: 'Via contractor list' },
-      { role: 'Dwelly Maintenance Team', detail: 'maintenance@dwelly.co.uk' },
+      { role: 'Agency Maintenance Contact', detail: 'Via your agency contact sheet' },
       { role: 'Property Owner', detail: 'Via Dwelly CRM' },
     ],
     escalationPath: ['PM / Maintenance Coordinator', 'Gas Engineer', 'Operations Manager'],
@@ -200,7 +200,7 @@ export const EMERGENCY_PROCEDURES: EmergencyProcedure[] = [
     whoToContact: [
       { role: 'Power Cut Hotline', detail: '105' },
       { role: 'Approved Electrician', detail: 'Via contractor list' },
-      { role: 'Dwelly Maintenance Team', detail: 'maintenance@dwelly.co.uk' },
+      { role: 'Agency Maintenance Contact', detail: 'Via your agency contact sheet' },
     ],
     escalationPath: ['PM / Maintenance Coordinator', 'Electrician', 'Operations Manager'],
     documentationRequired: [
@@ -232,7 +232,7 @@ export const EMERGENCY_PROCEDURES: EmergencyProcedure[] = [
     ],
     whoToContact: [
       { role: 'Pest Control', detail: 'Via approved contractor list' },
-      { role: 'Dwelly Maintenance Team', detail: 'maintenance@dwelly.co.uk' },
+      { role: 'Agency Maintenance Contact', detail: 'Via your agency contact sheet' },
       { role: 'Local Council EH', detail: 'If persistent issue' },
     ],
     escalationPath: ['PM / Maintenance Coordinator', 'Pest Control', 'Environmental Health'],
@@ -262,7 +262,7 @@ export const EMERGENCY_PROCEDURES: EmergencyProcedure[] = [
       'Schedule plumber or damp specialist visit',
     ],
     whoToContact: [
-      { role: 'Dwelly Maintenance Team', detail: 'maintenance@dwelly.co.uk' },
+      { role: 'Agency Maintenance Contact', detail: 'Via your agency contact sheet' },
       { role: 'Approved Plumber', detail: 'Via contractor list' },
       { role: 'Property Owner', detail: 'Via Dwelly CRM' },
     ],
