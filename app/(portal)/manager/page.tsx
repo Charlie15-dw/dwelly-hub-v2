@@ -1,10 +1,11 @@
 import { redirect } from 'next/navigation'
 import {
   Users, TrendingUp, AlertTriangle, BarChart3,
-  CheckCircle2, Clock,
+  CheckCircle2,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import StatCard from '@/components/ui/StatCard'
+import TeamAssignmentPanel from '@/components/ui/TeamAssignmentPanel'
 import { MODULES } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
@@ -52,14 +53,29 @@ export default async function ManagerDashboard() {
 
   if (currentProfile?.role !== 'manager') redirect('/dashboard')
 
-  // Fetch all team members
+  // Fetch my team members (assigned to me)
   const { data: profiles } = await supabase
     .from('user_profiles')
-    .select('id, full_name, email, role, created_at')
-    .neq('role', 'manager')
+    .select('id, full_name, email, role, created_at, manager_id')
+    .eq('manager_id', user.id)
     .order('created_at', { ascending: true })
 
+  // Fetch unassigned users (no manager yet, not managers themselves)
+  const { data: unassignedProfiles } = await supabase
+    .from('user_profiles')
+    .select('id, full_name, email, manager_id')
+    .is('manager_id', null)
+    .neq('role', 'manager')
+
   const teamMembers = profiles ?? []
+  const unassigned = (unassignedProfiles ?? []).map(u => ({
+    id: u.id,
+    displayName: u.full_name
+      || u.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
+      || 'Unknown',
+    email: u.email ?? null,
+    manager_id: u.manager_id ?? null,
+  }))
 
   // Fetch module progress for all users
   const { data: allProgress } = await supabase
@@ -292,6 +308,18 @@ export default async function ManagerDashboard() {
         )}
       </div>
 
+      {/* Team assignment */}
+      <TeamAssignmentPanel
+        unassigned={unassigned}
+        myTeam={memberStats.map(m => ({
+          id: m.id,
+          displayName: m.displayName,
+          email: m.email ?? null,
+          manager_id: user.id,
+        }))}
+        managerId={user.id}
+      />
+
       {/* Info note */}
       <div className="rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 flex items-start gap-3">
         <CheckCircle2 className="w-4 h-4 text-teal mt-0.5 flex-shrink-0" />
@@ -299,7 +327,7 @@ export default async function ManagerDashboard() {
           <p className="text-sm font-semibold text-navy">Live data from Supabase</p>
           <p className="text-xs text-slate-500 mt-0.5">
             Progress and scores update in real time as team members complete modules and assessments.
-            To add a new team member, go to Supabase → Authentication → Users → Add User.
+            To add a new team member, go to Supabase → Authentication → Users → Add User, then assign them here.
           </p>
         </div>
       </div>
