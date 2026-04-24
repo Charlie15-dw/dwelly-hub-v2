@@ -9,6 +9,7 @@ import {
 import { QUIZ_QUESTIONS, MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { isLocked, getLastAttempt, saveAttempt, type AttemptRecord } from '@/lib/assessmentStorage'
+import { createClient } from '@/lib/supabase/client'
 
 // Shuffle helper — randomises question order for recap quizzes
 function shuffle<T>(arr: T[]): T[] {
@@ -82,10 +83,38 @@ export default function QuizPage({ params }: { params: { id: string } }) {
     }
   }, [moduleId, isRecapQuiz])
 
-  // Save attempt to localStorage when the results screen appears
+  // Save attempt to localStorage AND Supabase when the results screen appears
   useEffect(() => {
     if (!showResults || isRecapQuiz) return
     saveAttempt({ moduleId, completedAt: new Date().toISOString(), score, passed })
+
+    // Also persist to Supabase so managers and analytics can see real data
+    async function saveToSupabase() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      // Save assessment result
+      await supabase.from('assessment_results').insert({
+        user_id: user.id,
+        assessment_id: moduleId,
+        score,
+        passed,
+        completed_at: new Date().toISOString(),
+      })
+
+      // If passed a module-level assessment, mark that module as completed
+      if (passed && !isFullAssessment && !isMasterAssessment) {
+        await supabase.from('module_progress').upsert({
+          user_id: user.id,
+          module_id: moduleId,
+          progress: 100,
+          completed: true,
+          last_watched_at: new Date().toISOString(),
+        }, { onConflict: 'user_id,module_id' })
+      }
+    }
+    saveToSupabase()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showResults])
 

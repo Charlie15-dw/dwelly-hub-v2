@@ -1,65 +1,90 @@
-'use client'
-
-import { Clock, Target, BookOpen, Flame, TrendingUp, Award, BarChart3 } from 'lucide-react'
-import SkillsRadar from '@/components/ui/SkillsRadar'
-import LearningStreak from '@/components/ui/LearningStreak'
+import { redirect } from 'next/navigation'
+import { Clock, Target, BookOpen, TrendingUp, Award, BarChart3 } from 'lucide-react'
 import StatCard from '@/components/ui/StatCard'
+import SkillsRadar from '@/components/ui/SkillsRadar'
+import { createServerClient } from '@/lib/supabase/server'
+import { MODULES } from '@/lib/data'
 
-// ── Data ─────────────────────────────────────────────────────────────────────
+const TOTAL_MODULES = MODULES.filter(m => !m.locked).length
 
-const RADAR_SCORES = [
-  { label: 'Maintenance',    value: 85, max: 100 },
-  { label: 'Compliance',     value: 45, max: 100 },
-  { label: 'Inspections',    value: 30, max: 100 },
-  { label: 'Move-Outs',      value: 20, max: 100 },
-  { label: 'Support',        value: 25, max: 100 },
-  { label: 'Knowledge',      value: 65, max: 100 },
-  { label: 'Communication',  value: 70, max: 100 },
-]
+// Map assessment IDs to readable labels and sections
+const ASSESSMENT_META: Record<string, { label: string; section: string }> = {
+  'mnt-01': { label: 'Maintenance 1/2 — Repair Requests',      section: 'Maintenance'  },
+  'mnt-02': { label: 'Maintenance 2/2 — Actioning Tasks',       section: 'Maintenance'  },
+  'cmp-02': { label: 'Compliance — Deposit Protection',         section: 'Compliance'   },
+  'mvt-02': { label: 'Move-Outs — End of Tenancy',              section: 'Move-Outs'    },
+  'ins-02': { label: 'Inspections — Mid-Term Reports',          section: 'Inspections'  },
+  'sup-02': { label: 'Support — Tenant Relations',              section: 'Support'      },
+  'kno-01': { label: 'Knowledge — Difficult Conversations',     section: 'Knowledge'    },
+  'kno-02': { label: 'Knowledge — Disrepair Claims',            section: 'Knowledge'    },
+  'kno-03': { label: 'Knowledge — Understanding a P&L',         section: 'Knowledge'    },
+  'full-assessment':   { label: 'Full Assessment — All Video Modules', section: 'Combined' },
+  'master-assessment': { label: 'Master Assessment — All Sections',    section: 'Combined' },
+}
 
-const ASSESSMENT_HISTORY = [
-  { id: 'mnt-01', label: 'MNT-01: Maintenance Basics',   score: 90 },
-  { id: 'mnt-02', label: 'MNT-02: Property Inspections', score: 72 },
-  { id: 'cmp-02', label: 'CMP-02: Compliance Essentials',score: 78 },
-  { id: 'ins-02', label: 'INS-02: Property Inspections', score: 30 },
-  { id: 'sup-02', label: 'SUP-02: Tenant Support',       score: 65 },
-]
-
-const STRENGTHS = [
-  'Maintenance scheduling and contractor coordination',
-  'Clear written communication with tenants',
-  'General property knowledge and terminology',
-]
-
-const DEVELOPMENT_AREAS = [
-  'Property inspections — low assessment scores indicate gaps',
-  'Move-out process and deposit adjudication procedures',
-  'Compliance checks and record-keeping procedures',
-]
-
-const RECOMMENDATIONS = [
-  { text: 'Revisit the Inspections module — your score of 30% suggests the process needs reinforcement.', icon: '⚠' },
-  { text: 'Complete CMP-03: Deposit Adjudication to strengthen your Move-Out understanding.', icon: '📋' },
-  { text: 'Review the Compliance section in the Knowledge Base to strengthen your record-keeping procedures.', icon: '✓' },
-]
-
-// ── Score colour helper ───────────────────────────────────────────────────────
-
-function scoreColour(score: number): string {
+function scoreColour(score: number) {
   if (score >= 80) return 'bg-green-500'
   if (score >= 65) return 'bg-orange'
   return 'bg-amber-400'
 }
-
-function scoreTextColour(score: number): string {
+function scoreTextColour(score: number) {
   if (score >= 80) return 'text-green-700'
   if (score >= 65) return 'text-orange'
   return 'text-amber-600'
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+export default async function AnalyticsPage() {
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/')
 
-export default function AnalyticsPage() {
+  // Fetch assessment results
+  const { data: results } = await supabase
+    .from('assessment_results')
+    .select('assessment_id, score, passed, completed_at')
+    .eq('user_id', user.id)
+    .order('completed_at', { ascending: false })
+
+  // Fetch module progress
+  const { data: progress } = await supabase
+    .from('module_progress')
+    .select('module_id, completed')
+    .eq('user_id', user.id)
+
+  const allResults = results ?? []
+  const allProgress = progress ?? []
+
+  const completedModules = allProgress.filter(p => p.completed).length
+  const avgScore = allResults.length > 0
+    ? Math.round(allResults.reduce((s, r) => s + r.score, 0) / allResults.length)
+    : null
+
+  // Most recent attempt per assessment (for history display)
+  const seen = new Set<string>()
+  const recentResults = allResults.filter(r => {
+    if (seen.has(r.assessment_id)) return false
+    seen.add(r.assessment_id)
+    return true
+  }).slice(0, 8)
+
+  // Radar scores — average score per section
+  const sectionScores: Record<string, number[]> = {
+    Maintenance: [], Compliance: [], Inspections: [], 'Move-Outs': [], Support: [], Knowledge: [],
+  }
+  allResults.forEach(r => {
+    const meta = ASSESSMENT_META[r.assessment_id]
+    if (meta?.section && sectionScores[meta.section]) {
+      sectionScores[meta.section].push(r.score)
+    }
+  })
+  const radarScores = Object.entries(sectionScores).map(([label, scores]) => ({
+    label,
+    value: scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0,
+    max: 100,
+  }))
+
+  const hasAnyData = allResults.length > 0 || completedModules > 0
+
   return (
     <div className="space-y-6 pb-12">
 
@@ -70,9 +95,7 @@ export default function AnalyticsPage() {
             <BarChart3 className="w-5 h-5 text-orange" aria-hidden />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-0.5">
-              Personal
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-0.5">Personal</p>
             <h1 className="text-3xl font-bold text-navy tracking-tight">My Analytics</h1>
             <p className="text-slate-500 mt-1 text-sm leading-relaxed">
               Track your learning journey and identify areas for development.
@@ -82,226 +105,159 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Total Learning Time"
-          value="12.5 hrs"
-          icon={<Clock className="w-5 h-5" />}
-          accent="orange"
-          trend={{ value: '+1.5 hrs this week', positive: true }}
-        />
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <StatCard
           label="Assessment Average"
-          value="76%"
+          value={avgScore !== null ? `${avgScore}%` : '—'}
           icon={<Target className="w-5 h-5" />}
           accent="teal"
           sub="Passing threshold: 80%"
         />
         <StatCard
           label="Modules Completed"
-          value="4 / 19"
+          value={`${completedModules} / ${TOTAL_MODULES}`}
           icon={<BookOpen className="w-5 h-5" />}
           accent="gold"
-          trend={{ value: '1 completed this week', positive: true }}
         />
         <StatCard
-          label="Current Streak"
-          value="5 days"
-          icon={<Flame className="w-5 h-5" />}
+          label="Assessments Taken"
+          value={allResults.length}
+          icon={<Award className="w-5 h-5" />}
           accent="navy"
-          sub="Personal best: 7 days"
         />
       </div>
 
-      {/* Two-column layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {!hasAnyData ? (
+        <div className="card p-10 text-center">
+          <BarChart3 className="w-10 h-10 text-slate-300 mx-auto mb-3" aria-hidden />
+          <p className="text-sm font-semibold text-slate-500">No data yet</p>
+          <p className="text-xs text-slate-400 mt-1">
+            Complete a module assessment to start tracking your progress here.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {/* Left column — spans 2 */}
-        <div className="lg:col-span-2 space-y-6">
+          {/* Left — spans 2 */}
+          <div className="lg:col-span-2 space-y-6">
 
-          {/* Skills Radar */}
-          <div className="card p-5">
-            <div className="flex items-start justify-between gap-4 mb-1">
-              <div>
-                <h2 className="text-sm font-bold text-navy">Skills Overview</h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Competency across all training areas based on assessment performance.
-                </p>
+            {/* Skills Radar */}
+            <div className="card p-5">
+              <div className="flex items-start justify-between gap-4 mb-1">
+                <div>
+                  <h2 className="text-sm font-bold text-navy">Skills Overview</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Average assessment score per training area.
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                  <div className="w-2.5 h-2.5 rounded-full bg-orange/20 border border-orange/40" />
+                  <span className="text-[11px] text-slate-400">Your score</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1.5 flex-shrink-0">
-                <div className="w-2.5 h-2.5 rounded-full bg-orange/20 border border-orange/40" />
-                <span className="text-[11px] text-slate-400">Your score</span>
-              </div>
+              <SkillsRadar scores={radarScores} />
             </div>
-            <SkillsRadar scores={RADAR_SCORES} />
-          </div>
 
-          {/* Assessment Score History */}
-          <div className="card p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-4 h-4 text-orange" aria-hidden />
-              <h2 className="text-sm font-bold text-navy">Assessment Score History</h2>
-            </div>
-            <p className="text-xs text-slate-500 mb-5">Last 5 completed assessments</p>
-
-            <div className="space-y-4">
-              {ASSESSMENT_HISTORY.map(({ id, label, score }) => (
-                <div key={id}>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-medium text-navy truncate max-w-[75%]">{label}</span>
-                    <span className={`text-xs font-bold tabular-nums ${scoreTextColour(score)}`}>
-                      {score}%
-                    </span>
+            {/* Assessment Score History */}
+            {recentResults.length > 0 && (
+              <div className="card p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <TrendingUp className="w-4 h-4 text-orange" aria-hidden />
+                  <h2 className="text-sm font-bold text-navy">Assessment Score History</h2>
+                </div>
+                <p className="text-xs text-slate-500 mb-5">Most recent attempt per assessment</p>
+                <div className="space-y-4">
+                  {recentResults.map((r) => {
+                    const meta = ASSESSMENT_META[r.assessment_id]
+                    const label = meta?.label ?? r.assessment_id
+                    return (
+                      <div key={r.assessment_id}>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-xs font-medium text-navy truncate max-w-[75%]">{label}</span>
+                          <span className={`text-xs font-bold tabular-nums ${scoreTextColour(r.score)}`}>
+                            {r.score}%
+                          </span>
+                        </div>
+                        <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${scoreColour(r.score)}`}
+                            style={{ width: `${r.score}%` }}
+                            role="progressbar"
+                            aria-valuenow={r.score}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+                <div className="flex items-center gap-4 mt-5 pt-4 border-t border-slate-100">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                    <span className="text-[11px] text-slate-500">80%+ Pass</span>
                   </div>
-                  <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${scoreColour(score)}`}
-                      style={{ width: `${score}%` }}
-                      role="progressbar"
-                      aria-valuenow={score}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      aria-label={`${label}: ${score}%`}
-                    />
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-orange" />
+                    <span className="text-[11px] text-slate-500">65–79% Near pass</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                    <span className="text-[11px] text-slate-500">Below 65%</span>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-4 mt-5 pt-4 border-t border-slate-100">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                <span className="text-[11px] text-slate-500">80%+ Pass</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-orange" />
-                <span className="text-[11px] text-slate-500">65–79% Near pass</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                <span className="text-[11px] text-slate-500">Below 65%</span>
-              </div>
-            </div>
+            )}
           </div>
 
-          {/* Recommendations */}
-          <div className="card p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <Award className="w-4 h-4 text-orange" aria-hidden />
-              <h2 className="text-sm font-bold text-navy">Recommendations</h2>
-            </div>
-            <p className="text-xs text-slate-500 mb-4">
-              Based on your assessment scores, here are suggested focus areas.
-            </p>
-            <ul className="space-y-3">
-              {RECOMMENDATIONS.map((rec, i) => (
-                <li key={i} className="flex items-start gap-3 p-3 rounded-xl bg-orange/5 border border-orange/15">
-                  <span className="flex-shrink-0 text-base leading-none mt-0.5" aria-hidden>{rec.icon}</span>
-                  <p className="text-sm text-slate-600 leading-relaxed">{rec.text}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+          {/* Right column */}
+          <div className="space-y-5">
 
-        {/* Right column */}
-        <div className="space-y-5">
-
-          {/* Learning Streak */}
-          <LearningStreak
-            currentStreak={5}
-            lastSevenDays={[true, true, false, true, true, true, true]}
-          />
-
-          {/* Strengths & Development Areas */}
-          <div className="card p-5">
-            <h2 className="text-sm font-bold text-navy mb-4">Strengths & Development</h2>
-
-            <div className="mb-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 mb-2">
-                Strengths
-              </p>
-              <ul className="space-y-2">
-                {STRENGTHS.map((s, i) => (
-                  <li key={i} className="flex items-start gap-2.5">
-                    <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0 mt-1.5" aria-hidden />
-                    <span className="text-xs text-slate-600 leading-relaxed">{s}</span>
-                  </li>
+            {/* Score breakdown */}
+            <div className="card p-5">
+              <h2 className="text-sm font-bold text-navy mb-4">Score Breakdown</h2>
+              <div className="space-y-3">
+                {[
+                  { label: 'Passed', count: allResults.filter(r => r.passed).length, color: 'bg-green-500' },
+                  { label: 'Failed', count: allResults.filter(r => !r.passed).length, color: 'bg-red-400' },
+                ].map(({ label, count, color }) => (
+                  <div key={label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2.5 h-2.5 rounded-full ${color}`} />
+                      <span className="text-xs text-slate-600">{label}</span>
+                    </div>
+                    <span className="text-sm font-bold text-navy tabular-nums">{count}</span>
+                  </div>
                 ))}
-              </ul>
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-xs text-slate-500">Pass rate</span>
+                  <span className="text-sm font-bold text-navy tabular-nums">
+                    {allResults.length > 0
+                      ? `${Math.round((allResults.filter(r => r.passed).length / allResults.length) * 100)}%`
+                      : '—'}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 mb-2">
-                Development Areas
-              </p>
-              <ul className="space-y-2">
-                {DEVELOPMENT_AREAS.map((d, i) => (
-                  <li key={i} className="flex items-start gap-2.5">
-                    <div className="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0 mt-1.5" aria-hidden />
-                    <span className="text-xs text-slate-600 leading-relaxed">{d}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Team Comparison */}
-          <div className="card p-5">
-            <h2 className="text-sm font-bold text-navy mb-1">Team Comparison</h2>
-            <p className="text-xs text-slate-500 mb-5">How you rank within your team cohort</p>
-
-            <div className="text-center mb-5">
-              <p className="text-3xl font-black text-navy tabular-nums">Top 40%</p>
-              <p className="text-xs text-slate-500 mt-1">of your team this month</p>
-            </div>
-
-            {/* Percentile bar */}
-            <div className="relative mb-3">
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+            {/* Module progress */}
+            <div className="card p-5">
+              <h2 className="text-sm font-bold text-navy mb-4">Module Progress</h2>
+              <div className="text-center py-2">
+                <p className="text-3xl font-black text-navy tabular-nums">{completedModules}</p>
+                <p className="text-xs text-slate-500 mt-1">of {TOTAL_MODULES} modules completed</p>
+              </div>
+              <div className="mt-3 h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-orange/40 to-orange transition-all duration-700"
-                  style={{ width: '60%' }}
-                  role="progressbar"
-                  aria-valuenow={60}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-label="You are in the top 40% of your team"
+                  className="h-full bg-teal rounded-full transition-all"
+                  style={{ width: `${TOTAL_MODULES > 0 ? Math.round((completedModules / TOTAL_MODULES) * 100) : 0}%` }}
                 />
               </div>
-              {/* Marker */}
-              <div
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-orange border-2 border-white shadow-sm"
-                style={{ left: '60%' }}
-                aria-hidden
-              />
             </div>
 
-            <div className="flex justify-between text-[10px] text-slate-400 font-medium mb-4">
-              <span>Top 1%</span>
-              <span>Avg</span>
-              <span>Bottom</span>
-            </div>
-
-            <div className="space-y-2">
-              {[
-                { label: 'Completion rate',   value: '21%', note: '+5% above team avg' },
-                { label: 'Avg assessment',    value: '76%', note: '-4% below team avg' },
-                { label: 'Streak consistency',value: '71%', note: '+8% above team avg' },
-              ].map(({ label, value, note }) => (
-                <div key={label} className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-navy">{label}</p>
-                    <p className="text-[11px] text-slate-400">{note}</p>
-                  </div>
-                  <span className="text-sm font-bold text-navy tabular-nums">{value}</span>
-                </div>
-              ))}
-            </div>
           </div>
-
         </div>
-      </div>
+      )}
     </div>
   )
 }
