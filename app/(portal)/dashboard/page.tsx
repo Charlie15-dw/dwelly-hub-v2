@@ -43,9 +43,9 @@ export default function DashboardPage() {
             </p>
             <div className="flex items-center gap-2 flex-wrap">
               {[
-                { label: 'Learning Profile',   href: '/pre-training', done: true               },
-                { label: 'Training Guide',      href: '/training',     done: true               },
-                { label: 'Video Modules',       href: '/modules',      done: false, active: true },
+                { label: 'Learning Profile',   href: '/pre-training', done: false, active: true },
+                { label: 'Training Guide',      href: '/training',     done: false               },
+                { label: 'Video Modules',       href: '/modules',      done: false               },
                 { label: 'Knowledge Base',      href: '/knowledge',    done: false               },
                 { label: 'Assessments',         href: '/assessments',  done: false               },
                 { label: 'Competency Passport', href: '/passport',     done: false               },
@@ -83,8 +83,8 @@ export default function DashboardPage() {
                 0/{MODULES.length} modules completed
               </p>
             </div>
-            <Link href="/modules" className="btn-primary text-sm whitespace-nowrap flex-shrink-0">
-              Continue Learning
+            <Link href="/pre-training" className="btn-primary text-sm whitespace-nowrap flex-shrink-0">
+              Start Learning
               <ArrowRight className="w-4 h-4" aria-hidden />
             </Link>
           </div>
