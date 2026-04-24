@@ -1,17 +1,45 @@
-import Link from 'next/link'
-import { Eye, ArrowRight, Shield, BookOpen, Award, Brain } from 'lucide-react'
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Eye, EyeOff, ArrowRight, Shield, BookOpen, Award, Brain } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
+  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    const form = e.currentTarget
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value
+    const password = (form.elements.namedItem('password') as HTMLInputElement).value
+
+    const supabase = createClient()
+    const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (authError) {
+      setError('Incorrect email or password. Please try again.')
+      setLoading(false)
+      return
+    }
+
+    router.push('/dashboard')
+    router.refresh()
+  }
+
   return (
     <div className="min-h-screen flex">
       {/* Left panel — branding */}
       <div className="hidden lg:flex lg:w-1/2 flex-col relative overflow-hidden" style={{ backgroundColor: '#E0F7F4' }}>
-        {/* White pops */}
         <div className="absolute top-16 left-8 w-64 h-64 rounded-full bg-white/40" />
         <div className="absolute top-40 left-28 w-96 h-96 rounded-full bg-white/25" />
         <div className="absolute bottom-16 right-8 w-48 h-48 rounded-full bg-white/35" />
-
-        {/* Accent strip */}
         <div className="absolute right-0 inset-y-0 w-1 bg-white/60" />
 
         <div className="relative flex flex-col h-full p-12">
@@ -82,7 +110,13 @@ export default function LoginPage() {
               <p className="text-sm text-slate-500 mt-1">Use your Dwelly work email to continue</p>
             </div>
 
-            <form action="/dashboard" method="get" className="space-y-4" aria-label="Sign in form">
+            <form onSubmit={handleSubmit} className="space-y-4" aria-label="Sign in form">
+              {error && (
+                <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3">
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              )}
+
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-navy mb-1.5">
                   Email address
@@ -93,7 +127,6 @@ export default function LoginPage() {
                   type="email"
                   autoComplete="email"
                   required
-                  defaultValue="sarah.mitchell@dwelly.co.uk"
                   className="input"
                   placeholder="you@dwelly.co.uk"
                 />
@@ -104,50 +137,39 @@ export default function LoginPage() {
                   <label htmlFor="password" className="block text-sm font-medium text-navy">
                     Password
                   </label>
-                  <a href="#" className="text-xs text-teal hover:text-teal-600 font-medium focus:outline-none focus:underline">
-                    Forgot password?
-                  </a>
                 </div>
                 <div className="relative">
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
                     required
-                    defaultValue="password"
                     className="input pr-10"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600
-                               focus:outline-none focus:text-navy"
-                    aria-label="Toggle password visibility"
+                    onClick={() => setShowPassword(v => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none focus:text-navy"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
-                    <Eye className="w-4 h-4" aria-hidden />
+                    {showPassword
+                      ? <EyeOff className="w-4 h-4" aria-hidden />
+                      : <Eye className="w-4 h-4" aria-hidden />
+                    }
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  name="remember"
-                  className="w-4 h-4 rounded border-slate-300 text-orange accent-orange focus:outline-none focus:ring-2 focus:ring-orange/30"
-                />
-                <label htmlFor="remember" className="text-sm text-slate-600">Remember me for 30 days</label>
-              </div>
-
-              <Link
-                href="/dashboard"
-                className="btn-primary w-full justify-between group"
-                role="button"
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full justify-between group disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <span>Sign in</span>
+                <span>{loading ? 'Signing in…' : 'Sign in'}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" aria-hidden />
-              </Link>
+              </button>
             </form>
 
             <div className="mt-6 pt-6 border-t border-slate-100">

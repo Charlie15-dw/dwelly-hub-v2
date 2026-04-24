@@ -1,13 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
   AlertTriangle, BarChart3, BookA,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/client'
 
 const journeyItems = [
   { href: '/pre-training',  label: 'Learning Profile',     icon: Brain,          step: 1 },
@@ -29,6 +30,14 @@ const managerItems = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+
+  async function handleSignOut() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/')
+    router.refresh()
+  }
 
   return (
     <aside className="fixed inset-y-0 left-0 z-40 w-64 flex flex-col bg-gradient-navy select-none">
@@ -148,12 +157,16 @@ export default function Sidebar() {
           <Settings className="w-4 h-4 flex-shrink-0" aria-hidden />
           <span>Settings</span>
         </Link>
-        <Link href="/" className="sidebar-link" style={{ color: '#CC3333' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(220,38,38,0.08)'; (e.currentTarget as HTMLAnchorElement).style.color = '#991111' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = ''; (e.currentTarget as HTMLAnchorElement).style.color = '#CC3333' }}>
+        <button
+          onClick={handleSignOut}
+          className="sidebar-link w-full text-left"
+          style={{ color: '#CC3333' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(220,38,38,0.08)'; (e.currentTarget as HTMLButtonElement).style.color = '#991111' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = ''; (e.currentTarget as HTMLButtonElement).style.color = '#CC3333' }}
+        >
           <LogOut className="w-4 h-4 flex-shrink-0" aria-hidden />
           <span>Sign Out</span>
-        </Link>
+        </button>
       </div>
     </aside>
   )
