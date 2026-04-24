@@ -1,80 +1,139 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import {
-  Users, TrendingUp, AlertTriangle, CheckCircle2,
-  Clock, ChevronRight, Bell, BarChart3, Download,
+  Users, TrendingUp, AlertTriangle, BarChart3,
+  CheckCircle2, Clock,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
-import Badge from '@/components/ui/Badge'
 import StatCard from '@/components/ui/StatCard'
-import AssessmentUnlockPanel from '@/components/ui/AssessmentUnlockPanel'
-import { TEAM_MEMBERS, ROLE_LABELS, PHASES } from '@/lib/data'
-import { cn, formatDate, getRAGLabel } from '@/lib/utils'
+import { MODULES } from '@/lib/data'
+import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 
-const ragCounts = {
-  green: TEAM_MEMBERS.filter(m => m.ragStatus === 'green').length,
-  amber: TEAM_MEMBERS.filter(m => m.ragStatus === 'amber').length,
-  red:   TEAM_MEMBERS.filter(m => m.ragStatus === 'red').length,
-}
+const TOTAL_MODULES = MODULES.filter(m => !m.locked).length
 
-const avgScore = Math.round(
-  TEAM_MEMBERS.reduce((s, m) => s + m.assessmentScore, 0) / TEAM_MEMBERS.length
-)
-const avgProgress = Math.round(
-  TEAM_MEMBERS.reduce((s, m) => s + m.overallProgress, 0) / TEAM_MEMBERS.length
-)
+// RAG status based on progress percentage
+function ragStatus(progress: number): 'green' | 'amber' | 'red' {
+  if (progress >= 60) return 'green'
+  if (progress >= 20) return 'amber'
+  return 'red'
+}
 
 const RAG_DOT: Record<string, string> = {
   red:   'bg-red-500',
   amber: 'bg-amber-400',
   green: 'bg-green-500',
 }
-
 const RAG_ROW: Record<string, string> = {
   red:   'border-red-200 bg-red-50/40',
   amber: 'border-amber-200 bg-amber-50/40',
   green: 'border-teal/20 bg-teal/3',
 }
+const RAG_LABEL: Record<string, string> = {
+  green: 'On Track',
+  amber: 'In Progress',
+  red:   'Needs Attention',
+}
+const RAG_TEXT: Record<string, string> = {
+  green: 'text-green-700',
+  amber: 'text-amber-700',
+  red:   'text-red-700',
+}
 
 export default async function ManagerDashboard() {
-  // Only users with role = 'manager' can access this page
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
-
   if (!user) redirect('/')
 
-  const { data: profile } = await supabase
+  const { data: currentProfile } = await supabase
     .from('user_profiles')
     .select('role')
     .eq('id', user.id)
     .single()
 
-  if (profile?.role !== 'manager') redirect('/dashboard')
+  if (currentProfile?.role !== 'manager') redirect('/dashboard')
+
+  // Fetch all team members
+  const { data: profiles } = await supabase
+    .from('user_profiles')
+    .select('id, full_name, email, role, created_at')
+    .neq('role', 'manager')
+    .order('created_at', { ascending: true })
+
+  const teamMembers = profiles ?? []
+
+  // Fetch module progress for all users
+  const { data: allProgress } = await supabase
+    .from('module_progress')
+    .select('user_id, completed')
+
+  // Fetch assessment results for all users
+  const { data: allResults } = await supabase
+    .from('assessment_results')
+    .select('user_id, score')
+
+  // Build per-user stats
+  const memberStats = teamMembers.map(member => {
+    const progress = (allProgress ?? []).filter(p => p.user_id === member.id)
+    const completedCount = progress.filter(p => p.completed).length
+    const progressPct = TOTAL_MODULES > 0
+      ? Math.round((completedCount / TOTAL_MODULES) * 100)
+      : 0
+
+    const results = (allResults ?? []).filter(r => r.user_id === member.id)
+    const avgScore = results.length > 0
+      ? Math.round(results.reduce((s, r) => s + r.score, 0) / results.length)
+      : null
+
+    const rag = ragStatus(progressPct)
+    const displayName = member.full_name
+      || member.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
+      || 'Unknown'
+    const initials = displayName.split(' ').map((p: string) => p[0]).join('').toUpperCase().slice(0, 2)
+
+    const joinDate = member.created_at
+      ? new Date(member.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      : '—'
+
+    return { ...member, displayName, initials, completedCount, progressPct, avgScore, rag, joinDate }
+  })
+
+  // Summary stats
+  const teamCount = memberStats.length
+  const avgProgress = teamCount > 0
+    ? Math.round(memberStats.reduce((s, m) => s + m.progressPct, 0) / teamCount)
+    : 0
+  const scoredMembers = memberStats.filter(m => m.avgScore !== null)
+  const avgScore = scoredMembers.length > 0
+    ? Math.round(scoredMembers.reduce((s, m) => s + (m.avgScore ?? 0), 0) / scoredMembers.length)
+    : null
+  const ragCounts = {
+    green: memberStats.filter(m => m.rag === 'green').length,
+    amber: memberStats.filter(m => m.rag === 'amber').length,
+    red:   memberStats.filter(m => m.rag === 'red').length,
+  }
+
+  const sorted = [...memberStats].sort((a, b) => {
+    const order = { red: 0, amber: 1, green: 2 }
+    return order[a.rag] - order[b.rag]
+  })
+
   return (
     <div className="space-y-6">
+
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-xl font-bold text-navy">Manager Dashboard</h1>
           <p className="text-sm text-slate-500 mt-0.5">Team progress — 2026–2027 Training Programme</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="btn-outline text-xs flex items-center gap-1.5">
-            <Download className="w-3.5 h-3.5" aria-hidden /> Export Report
-          </button>
-          <button className="btn-primary text-xs flex items-center gap-1.5">
-            <Bell className="w-3.5 h-3.5" aria-hidden /> Send Reminders
-          </button>
-        </div>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          label="Team Members Active"
-          value={TEAM_MEMBERS.length}
-          sub="Current programme cohort"
+          label="Team Members"
+          value={teamCount}
+          sub="Active on the programme"
           icon={<Users className="w-5 h-5" />}
           accent="navy"
         />
@@ -84,11 +143,10 @@ export default async function ManagerDashboard() {
           sub="Across all pathways"
           icon={<TrendingUp className="w-5 h-5" />}
           accent="teal"
-          trend={{ value: '+8% this month', positive: true }}
         />
         <StatCard
           label="Avg Assessment Score"
-          value={`${avgScore}%`}
+          value={avgScore !== null ? `${avgScore}%` : '—'}
           sub="Pass threshold: 80%"
           icon={<BarChart3 className="w-5 h-5" />}
           accent="orange"
@@ -96,10 +154,9 @@ export default async function ManagerDashboard() {
         <StatCard
           label="Needing Attention"
           value={ragCounts.red}
-          sub={`${ragCounts.amber} in progress, ${ragCounts.green} on track`}
+          sub={`${ragCounts.amber} in progress · ${ragCounts.green} on track`}
           icon={<AlertTriangle className="w-5 h-5" />}
           accent="gold"
-          trend={{ value: '1 new this week', positive: false }}
         />
       </div>
 
@@ -114,7 +171,7 @@ export default async function ManagerDashboard() {
             <div className="flex items-center gap-2 mb-1">
               <div className={cn('w-3 h-3 rounded-full', RAG_DOT[status])} aria-hidden />
               <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                {getRAGLabel(status)}
+                {RAG_LABEL[status]}
               </span>
             </div>
             <p className="text-3xl font-black text-navy tabular-nums">{ragCounts[status]}</p>
@@ -127,203 +184,126 @@ export default async function ManagerDashboard() {
       <div className="card overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
           <h2 className="text-sm font-bold text-navy">Team Progress</h2>
-          <span className="text-xs text-slate-400">{TEAM_MEMBERS.length} members</span>
+          <span className="text-xs text-slate-400">{teamCount} {teamCount === 1 ? 'member' : 'members'}</span>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm" role="table">
-            <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                {['Team Member', 'Role', 'Phase', 'Progress', 'Score', 'CPD Hours', 'Status', 'Last Active', ''].map(h => (
-                  <th
-                    key={h}
-                    className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap"
-                    scope="col"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {TEAM_MEMBERS.sort((a, b) => {
-                const order = { red: 0, amber: 1, green: 2 }
-                return order[a.ragStatus] - order[b.ragStatus]
-              }).map(member => (
-                <tr key={member.id} className={cn('transition-colors hover:bg-slate-50/60', RAG_ROW[member.ragStatus])}>
-                  {/* Name */}
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-                        <span className="text-white text-xs font-bold">
-                          {member.name.split(' ').map(n => n[0]).join('')}
+
+        {teamCount === 0 ? (
+          <div className="px-5 py-12 text-center">
+            <Users className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+            <p className="text-sm font-semibold text-slate-500">No team members yet</p>
+            <p className="text-xs text-slate-400 mt-1">Add users in Supabase → Authentication → Users</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm" role="table">
+              <thead>
+                <tr className="border-b border-slate-100 bg-slate-50/80">
+                  {['Team Member', 'Role', 'Modules', 'Progress', 'Avg Score', 'Status', 'Joined'].map(h => (
+                    <th
+                      key={h}
+                      className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap"
+                      scope="col"
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {sorted.map(member => (
+                  <tr key={member.id} className={cn('transition-colors hover:bg-slate-50/60', RAG_ROW[member.rag])}>
+
+                    {/* Name */}
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                          <span className="text-white text-xs font-bold">{member.initials}</span>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-navy">{member.displayName}</p>
+                          <p className="text-[11px] text-slate-400">{member.email ?? '—'}</p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Role */}
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className="text-xs text-slate-600 capitalize">
+                        {member.role?.replace(/-/g, ' ') ?? 'Property Manager'}
+                      </span>
+                    </td>
+
+                    {/* Modules */}
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className="text-sm tabular-nums text-slate-600">
+                        {member.completedCount}<span className="text-slate-400">/{TOTAL_MODULES}</span>
+                      </span>
+                    </td>
+
+                    {/* Progress */}
+                    <td className="px-4 py-3">
+                      <div className="w-24">
+                        <div className="flex justify-between text-[11px] mb-1">
+                          <span className="font-semibold text-navy">{member.progressPct}%</span>
+                        </div>
+                        <ProgressBar
+                          value={member.progressPct}
+                          size="sm"
+                          color={member.progressPct >= 60 ? 'teal' : member.progressPct >= 20 ? 'gold' : 'red'}
+                        />
+                      </div>
+                    </td>
+
+                    {/* Avg score */}
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {member.avgScore !== null ? (
+                        <span className={cn('text-sm font-bold tabular-nums', {
+                          'text-teal':      member.avgScore >= 80,
+                          'text-amber-500': member.avgScore >= 65 && member.avgScore < 80,
+                          'text-red-500':   member.avgScore < 65,
+                        })}>
+                          {member.avgScore}%
+                        </span>
+                      ) : (
+                        <span className="text-xs text-slate-400">No attempts</span>
+                      )}
+                    </td>
+
+                    {/* RAG */}
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center gap-1.5">
+                        <div className={cn('w-2 h-2 rounded-full flex-shrink-0', RAG_DOT[member.rag])} aria-hidden />
+                        <span className={cn('text-xs font-semibold', RAG_TEXT[member.rag])}>
+                          {RAG_LABEL[member.rag]}
                         </span>
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold text-navy">{member.name}</p>
-                        <p className="text-[11px] text-slate-400">{member.email}</p>
-                      </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Role */}
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <span className="text-xs text-slate-600">{ROLE_LABELS[member.role]}</span>
-                  </td>
+                    {/* Joined */}
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className="text-xs text-slate-400">{member.joinDate}</span>
+                    </td>
 
-                  {/* Phase */}
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <span className={cn('text-xs font-semibold px-2 py-0.5 rounded-full capitalize', {
-                      'bg-teal/10 text-teal border border-teal/20':         member.phase === 'foundation',
-                      'bg-orange/10 text-orange border border-orange/20':   member.phase === 'onboarding',
-                      'bg-gold/20 text-yellow-700 border border-gold/30':   member.phase === 'embedding',
-                      'bg-navy/10 text-navy border border-navy/20':         member.phase === 'optimise',
-                    })}>
-                      {member.phase}
-                    </span>
-                  </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
-                  {/* Progress */}
-                  <td className="px-4 py-3">
-                    <div className="w-24">
-                      <div className="flex justify-between text-[11px] mb-1">
-                        <span className="text-slate-500">{member.modulesCompleted}/{member.modulesTotal}</span>
-                        <span className="font-semibold text-navy">{member.overallProgress}%</span>
-                      </div>
-                      <ProgressBar value={member.overallProgress} size="sm" color={
-                        member.overallProgress >= 60 ? 'teal' : member.overallProgress >= 30 ? 'gold' : 'red'
-                      } />
-                    </div>
-                  </td>
-
-                  {/* Score */}
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <span className={cn('text-sm font-bold tabular-nums', {
-                      'text-teal':   member.assessmentScore >= 80,
-                      'text-amber-500': member.assessmentScore >= 65 && member.assessmentScore < 80,
-                      'text-red-500': member.assessmentScore < 65,
-                    })}>
-                      {member.assessmentScore}%
-                    </span>
-                  </td>
-
-                  {/* CPD */}
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <span className="text-sm text-slate-600 tabular-nums">{member.cpdHours}h</span>
-                    <span className="text-slate-300 mx-1">/</span>
-                    <span className="text-xs text-slate-400">{member.cpdTarget}h</span>
-                  </td>
-
-                  {/* RAG */}
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-1.5">
-                      <div className={cn('w-2 h-2 rounded-full flex-shrink-0', RAG_DOT[member.ragStatus])} aria-hidden />
-                      <span className={cn('text-xs font-semibold', {
-                        'text-green-700': member.ragStatus === 'green',
-                        'text-amber-700': member.ragStatus === 'amber',
-                        'text-red-700':   member.ragStatus === 'red',
-                      })}>
-                        {getRAGLabel(member.ragStatus)}
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* Last active */}
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <span className="text-xs text-slate-400">{formatDate(member.lastActive)}</span>
-                  </td>
-
-                  {/* Actions */}
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        className="text-[11px] text-teal hover:text-teal-700 font-medium px-2 py-1 rounded hover:bg-teal/10 transition-colors focus:outline-none focus:ring-2 focus:ring-teal/30"
-                        aria-label={`View ${member.name}'s profile`}
-                      >
-                        View
-                      </button>
-                      {member.ragStatus !== 'green' && (
-                        <button
-                          className="text-[11px] text-orange hover:text-orange-600 font-medium px-2 py-1 rounded hover:bg-orange/10 transition-colors focus:outline-none focus:ring-2 focus:ring-orange/30"
-                          aria-label={`Chase ${member.name}`}
-                        >
-                          Chase
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* Info note */}
+      <div className="rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 flex items-start gap-3">
+        <CheckCircle2 className="w-4 h-4 text-teal mt-0.5 flex-shrink-0" />
+        <div>
+          <p className="text-sm font-semibold text-navy">Live data from Supabase</p>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Progress and scores update in real time as team members complete modules and assessments.
+            To add a new team member, go to Supabase → Authentication → Users → Add User.
+          </p>
         </div>
       </div>
 
-      {/* Assessment unlock requests */}
-      <AssessmentUnlockPanel />
-
-      {/* Pending sign-offs */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="card p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Clock className="w-4 h-4 text-amber-500" aria-hidden />
-            <h2 className="text-sm font-bold text-navy">Pending Manager Sign-Offs</h2>
-          </div>
-          <div className="space-y-3">
-            {TEAM_MEMBERS.filter(m => m.pendingSignOffs.length > 0).map(member => (
-              <div key={member.id} className="flex items-start justify-between gap-3 p-3 rounded-xl border border-amber-200 bg-amber-50/50">
-                <div>
-                  <p className="text-sm font-semibold text-navy">{member.name}</p>
-                  <div className="flex flex-wrap gap-1 mt-1.5">
-                    {member.pendingSignOffs.slice(0, 3).map(signOff => (
-                      <span key={signOff} className="text-[11px] font-medium text-amber-700 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full">
-                        {signOff}
-                      </span>
-                    ))}
-                    {member.pendingSignOffs.length > 3 && (
-                      <span className="text-[11px] text-slate-500">+{member.pendingSignOffs.length - 3} more</span>
-                    )}
-                  </div>
-                </div>
-                <button className="btn-teal text-xs flex-shrink-0">Review</button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Phase distribution */}
-        <div className="card p-5">
-          <h2 className="text-sm font-bold text-navy mb-4">Phase Distribution</h2>
-          <div className="space-y-3">
-            {PHASES.map(phase => {
-              const count = TEAM_MEMBERS.filter(m => m.phase === phase.id).length
-              const pct = Math.round((count / TEAM_MEMBERS.length) * 100)
-              return (
-                <div key={phase.id}>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <div className="flex items-center gap-2">
-                      <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full', {
-                        'bg-teal/10 text-teal':         phase.id === 'foundation',
-                        'bg-orange/10 text-orange':     phase.id === 'onboarding',
-                        'bg-gold/20 text-yellow-700':   phase.id === 'embedding',
-                        'bg-navy/10 text-navy':         phase.id === 'optimise',
-                      })}>
-                        {phase.label}
-                      </span>
-                    </div>
-                    <span className="text-sm font-bold text-navy tabular-nums">{count} <span className="text-slate-400 font-normal text-xs">members</span></span>
-                  </div>
-                  <ProgressBar
-                    value={count}
-                    max={TEAM_MEMBERS.length}
-                    color={phase.id === 'foundation' ? 'teal' : phase.id === 'onboarding' ? 'orange' : phase.id === 'embedding' ? 'gold' : 'navy'}
-                    size="md"
-                  />
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
     </div>
   )
 }
