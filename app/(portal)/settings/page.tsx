@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { User, Bell, BookOpen, Eye, Shield, Settings as SettingsIcon } from 'lucide-react'
-import { CURRENT_USER, ROLE_LABELS } from '@/lib/data'
+import { ROLE_LABELS } from '@/lib/data'
+import { useUser } from '@/components/UserProvider'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -127,6 +128,7 @@ function SectionHeader({
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function SettingsPage() {
+  const { displayName, email, initials, profile } = useUser()
   const [settings, setSettings] = useState<PortalSettings>(DEFAULT_SETTINGS)
   const [loaded, setLoaded] = useState(false)
 
@@ -190,20 +192,9 @@ export default function SettingsPage() {
     }))
   }
 
-  // ── Derived values ────────────────────────────────────────────────────────
-
-  const initials = CURRENT_USER.name
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
-
-  const formattedStartDate = new Date(CURRENT_USER.startDate).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+  const roleLabel = profile?.role
+    ? ROLE_LABELS[profile.role as keyof typeof ROLE_LABELS] ?? profile.role
+    : 'Property Manager'
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -235,21 +226,15 @@ export default function SettingsPage() {
           <div className="flex-1 grid grid-cols-2 gap-4">
             <div>
               <p className="text-xs text-slate-500">Name</p>
-              <p className="text-sm font-medium text-navy mt-0.5">{CURRENT_USER.name}</p>
+              <p className="text-sm font-medium text-navy mt-0.5">{displayName}</p>
             </div>
             <div>
               <p className="text-xs text-slate-500">Role</p>
-              <p className="text-sm font-medium text-navy mt-0.5">
-                {ROLE_LABELS[CURRENT_USER.role]}
-              </p>
+              <p className="text-sm font-medium text-navy mt-0.5">{roleLabel}</p>
             </div>
             <div>
               <p className="text-xs text-slate-500">Email</p>
-              <p className="text-sm font-medium text-navy mt-0.5">{CURRENT_USER.email}</p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-500">Start Date</p>
-              <p className="text-sm font-medium text-navy mt-0.5">{formattedStartDate}</p>
+              <p className="text-sm font-medium text-navy mt-0.5">{email}</p>
             </div>
           </div>
         </div>

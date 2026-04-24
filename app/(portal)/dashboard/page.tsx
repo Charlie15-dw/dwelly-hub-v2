@@ -6,6 +6,7 @@ import {
 import ProgressBar from '@/components/ui/ProgressBar'
 import StatCard from '@/components/ui/StatCard'
 import QuickActions from '@/components/ui/QuickActions'
+import WelcomeGreeting from '@/components/ui/WelcomeGreeting'
 import {
   CURRENT_USER, MODULES, SIGN_OFF_GATES,
   ROLE_LABELS, SECTION_LABELS,
@@ -29,9 +30,7 @@ export default function DashboardPage() {
         <div className="relative">
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
-              <p className="text-sm mb-1" style={{ color: '#3A9E98' }}>Welcome back,</p>
-              <h2 className="text-2xl font-bold text-[#1D1D1F]">{CURRENT_USER.name.split(' ')[0]}</h2>
-              <p className="text-sm mt-1" style={{ color: '#5AADA8' }}>{ROLE_LABELS[CURRENT_USER.role]}</p>
+              <WelcomeGreeting fallbackRole={ROLE_LABELS[CURRENT_USER.role]} />
             </div>
             <div className="flex items-center gap-2 bg-white/70 border border-white rounded-xl px-4 py-2 shadow-sm backdrop-blur-sm">
               <div className="w-2 h-2 rounded-full bg-teal" aria-hidden />
