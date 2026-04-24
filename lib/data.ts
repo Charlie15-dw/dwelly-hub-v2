@@ -95,14 +95,14 @@ export const MODULES: Module[] = [
   // MAINTENANCE
   {
     id: 'mnt-01', title: 'Maintenance 1/2 — Creating a Repair Request', section: 'maintenance', phase: 'onboarding',
-    duration: '25 min', videoLength: '4 min', passmark: 80, completed: true, progress: 100, locked: false, quizCount: 6,
+    duration: '25 min', videoLength: '4 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 6,
     roles: ['property_manager', 'maintenance_coordinator'],
     description: 'Step-by-step guide to logging, categorising and tracking repair requests in Dwelly.',
     tags: ['repairs', 'maintenance', 'system'], spacedRepetitionDue: '2026-04-12', confidenceRating: 5,
   },
   {
     id: 'mnt-02', title: 'Maintenance 2/2 — Actioning the Maintenance Task', section: 'maintenance', phase: 'onboarding',
-    duration: '30 min', videoLength: '4 min', passmark: 80, completed: false, progress: 40, locked: false, quizCount: 10,
+    duration: '30 min', videoLength: '4 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 10,
     roles: ['property_manager', 'maintenance_coordinator'],
     description: 'Quoting, instructing, chasing and reviewing contractor work. Handling disputes.',
     tags: ['contractors', 'quotes', 'disputes'], spacedRepetitionDue: null, confidenceRating: null,
@@ -2905,9 +2905,7 @@ export const RECAP_ROUNDS: RecapRound[] = [
     focus: ['Gas Safety', 'Deposit Protection', 'TDS Schemes'],
     questionModuleIds: ['cmp-02'],
     questionCount: 15,
-    completed: true,
-    score: 73,
-    completedDate: '2026-02-11',
+    completed: false,
   },
   {
     id: 'recap-mar-2026',
@@ -2917,9 +2915,7 @@ export const RECAP_ROUNDS: RecapRound[] = [
     focus: ['Contractor Management', 'Dilapidations', 'End of Tenancy', 'Fair Wear & Tear'],
     questionModuleIds: ['mnt-02', 'mvt-02'],
     questionCount: 15,
-    completed: true,
-    score: 80,
-    completedDate: '2026-03-10',
+    completed: false,
   },
   {
     id: 'recap-apr-2026',

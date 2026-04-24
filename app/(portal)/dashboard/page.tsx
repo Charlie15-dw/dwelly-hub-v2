@@ -1,21 +1,19 @@
 import Link from 'next/link'
 import {
   ArrowRight, BookOpen, Clock, Award,
-  TrendingUp, CheckCircle2, ChevronRight, Play, AlertTriangle,
+  TrendingUp, CheckCircle2, ChevronRight,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import StatCard from '@/components/ui/StatCard'
 import QuickActions from '@/components/ui/QuickActions'
 import WelcomeGreeting from '@/components/ui/WelcomeGreeting'
 import {
-  CURRENT_USER, MODULES, SIGN_OFF_GATES,
-  ROLE_LABELS, SECTION_LABELS,
+  CURRENT_USER, MODULES, SECTION_LABELS,
+  ROLE_LABELS,
 } from '@/lib/data'
 import { cn } from '@/lib/utils'
 
-const inProgressModules = MODULES.filter(m => !m.completed && m.progress > 0 && !m.locked)
-const upcomingModules   = MODULES.filter(m => !m.completed && m.progress === 0 && !m.locked).slice(0, 4)
-const pendingSignOffs   = SIGN_OFF_GATES.filter(g => !g.signedOff).slice(0, 3)
+const upcomingModules = MODULES.filter(m => !m.locked).slice(0, 4)
 
 export default function DashboardPage() {
   return (
@@ -76,13 +74,13 @@ export default function DashboardPage() {
             <div className="flex-1 min-w-48">
               <div className="flex justify-between items-center mb-1.5">
                 <span className="text-xs font-medium text-[#6E6E73]">Overall Progress</span>
-                <span className="text-sm font-bold text-[#1D1D1F]">{CURRENT_USER.overallProgress}%</span>
+                <span className="text-sm font-bold text-[#1D1D1F]">0%</span>
               </div>
               <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#C8EDEA' }}>
-                <div className="h-full bg-orange rounded-full transition-all duration-700" style={{ width: `${CURRENT_USER.overallProgress}%` }} />
+                <div className="h-full bg-orange rounded-full transition-all duration-700" style={{ width: '0%' }} />
               </div>
               <p className="text-xs mt-1 text-[#1D1D1F]/60">
-                {CURRENT_USER.modulesCompleted}/{CURRENT_USER.modulesTotal} modules completed
+                0/{MODULES.length} modules completed
               </p>
             </div>
             <Link href="/modules" className="btn-primary text-sm whitespace-nowrap flex-shrink-0">
@@ -97,31 +95,29 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Modules Completed"
-          value={CURRENT_USER.modulesCompleted}
-          sub={`of ${CURRENT_USER.modulesTotal} total`}
+          value={0}
+          sub={`of ${MODULES.length} total`}
           icon={<BookOpen className="w-5 h-5" />}
           accent="orange"
-          trend={{ value: '2 this week', positive: true }}
         />
         <StatCard
           label="Avg Assessment Score"
-          value={`${CURRENT_USER.assessmentScore}%`}
+          value="—"
           sub="Passing threshold: 80%"
           icon={<TrendingUp className="w-5 h-5" />}
           accent="teal"
-          trend={{ value: '+4% vs last month', positive: true }}
         />
         <StatCard
           label="CPD Hours Logged"
-          value={CURRENT_USER.cpdHours}
-          sub={`Target: ${CURRENT_USER.cpdTarget} hours / year`}
+          value={0}
+          sub="Target: 20 hours / year"
           icon={<Clock className="w-5 h-5" />}
           accent="gold"
         />
         <StatCard
           label="Competencies Signed Off"
-          value={CURRENT_USER.competenciesSignedOff.length}
-          sub={`${CURRENT_USER.pendingSignOffs.length} pending approval`}
+          value={0}
+          sub="0 pending approval"
           icon={<Award className="w-5 h-5" />}
           accent="navy"
         />
@@ -133,46 +129,8 @@ export default function DashboardPage() {
       {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {/* Left — continue + up next */}
+        {/* Left — up next */}
         <div className="lg:col-span-2 space-y-6">
-
-          {/* Continue Learning */}
-          {inProgressModules.length > 0 && (
-            <div className="card p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-navy">Continue Learning</h3>
-                <Link href="/modules" className="text-xs text-teal hover:text-teal-600 font-medium flex items-center gap-1">
-                  View all <ChevronRight className="w-3 h-3" />
-                </Link>
-              </div>
-              <div className="space-y-3">
-                {inProgressModules.map(module => (
-                  <Link
-                    key={module.id}
-                    href={`/modules/${module.id}`}
-                    className="flex items-center gap-4 p-3 rounded-xl border border-slate-100 hover:border-orange/30 hover:bg-orange/3 transition-all group"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-orange/10 flex items-center justify-center flex-shrink-0 group-hover:bg-orange/20 transition-colors">
-                      <Play className="w-4 h-4 text-orange" aria-hidden />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-navy truncate">{module.title}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-slate-500">{SECTION_LABELS[module.section]}</span>
-                        <span className="text-slate-300">·</span>
-                        <span className="text-xs text-slate-500">{module.duration}</span>
-                      </div>
-                      <ProgressBar value={module.progress} className="mt-2" />
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <span className="text-sm font-bold text-orange">{module.progress}%</span>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Progress</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Up Next */}
           {upcomingModules.length > 0 && (
@@ -205,42 +163,8 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Right — sign-offs + competency */}
+        {/* Right — competency */}
         <div className="space-y-5">
-
-          {/* Pending Sign-Offs */}
-          {pendingSignOffs.length > 0 && (
-            <div className="card p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <AlertTriangle className="w-4 h-4 text-amber-500" aria-hidden />
-                <h3 className="text-sm font-bold text-navy">Pending Sign-Offs</h3>
-              </div>
-              <div className="space-y-2.5">
-                {pendingSignOffs.map(gate => (
-                  <div key={gate.id} className="flex items-start gap-2.5 p-2.5 rounded-lg bg-amber-50 border border-amber-200">
-                    <div className={cn(
-                      'w-2 h-2 rounded-full mt-1.5 flex-shrink-0',
-                      gate.risk === 'high' ? 'bg-red-500' : 'bg-amber-400',
-                    )} />
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-navy">{gate.area}</p>
-                      <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
-                        {gate.description.substring(0, 60)}…
-                      </p>
-                      {gate.risk === 'high' && (
-                        <span className="inline-block mt-1 text-[10px] font-semibold text-red-600 bg-red-50 border border-red-200 px-1.5 py-0.5 rounded">
-                          High Risk Area
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Link href="/passport" className="btn-outline w-full mt-3 text-xs">
-                View Competency Passport
-              </Link>
-            </div>
-          )}
 
           {/* Competency summary */}
           <div className="card p-5">
@@ -249,20 +173,16 @@ export default function DashboardPage() {
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
                   <span className="text-slate-500">Signed off</span>
-                  <span className="font-semibold text-navy">{CURRENT_USER.competenciesSignedOff.length}</span>
+                  <span className="font-semibold text-navy">0</span>
                 </div>
-                <ProgressBar
-                  value={CURRENT_USER.competenciesSignedOff.length}
-                  max={CURRENT_USER.competenciesSignedOff.length + CURRENT_USER.pendingSignOffs.length}
-                  color="teal"
-                />
+                <ProgressBar value={0} max={10} color="teal" />
               </div>
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
                   <span className="text-slate-500">CPD Hours</span>
-                  <span className="font-semibold text-navy">{CURRENT_USER.cpdHours} / {CURRENT_USER.cpdTarget}</span>
+                  <span className="font-semibold text-navy">0 / 20</span>
                 </div>
-                <ProgressBar value={CURRENT_USER.cpdHours} max={CURRENT_USER.cpdTarget} color="orange" />
+                <ProgressBar value={0} max={20} color="orange" />
               </div>
             </div>
             <Link href="/passport" className="btn-outline w-full mt-4 text-xs">
