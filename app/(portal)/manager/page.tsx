@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import {
   Users, TrendingUp, AlertTriangle, CheckCircle2,
@@ -9,6 +10,7 @@ import StatCard from '@/components/ui/StatCard'
 import AssessmentUnlockPanel from '@/components/ui/AssessmentUnlockPanel'
 import { TEAM_MEMBERS, ROLE_LABELS, PHASES } from '@/lib/data'
 import { cn, formatDate, getRAGLabel } from '@/lib/utils'
+import { createServerClient } from '@/lib/supabase/server'
 
 const ragCounts = {
   green: TEAM_MEMBERS.filter(m => m.ragStatus === 'green').length,
@@ -35,7 +37,20 @@ const RAG_ROW: Record<string, string> = {
   green: 'border-teal/20 bg-teal/3',
 }
 
-export default function ManagerDashboard() {
+export default async function ManagerDashboard() {
+  // Only users with role = 'manager' can access this page
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) redirect('/')
+
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.role !== 'manager') redirect('/dashboard')
   return (
     <div className="space-y-6">
       {/* Header */}

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
+import { useEffect, useState } from 'react'
 
 const journeyItems = [
   { href: '/pre-training',  label: 'Learning Profile',     icon: Brain,          step: 1 },
@@ -31,6 +32,20 @@ const managerItems = [
 export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const [isManager, setIsManager] = useState(false)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+      setIsManager(data?.role === 'manager')
+    })
+  }, [])
 
   async function handleSignOut() {
     const supabase = createClient()
@@ -132,23 +147,27 @@ export default function Sidebar() {
           )
         })()}
 
-        {/* Management */}
-        <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Management</p>
-        {managerItems.map(({ href, label, icon: Icon }) => {
-          const active = pathname.startsWith(href)
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={cn('sidebar-link', active && 'active')}
-              aria-current={active ? 'page' : undefined}
-            >
-              <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
-              <span className="flex-1">{label}</span>
-              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-            </Link>
-          )
-        })}
+        {/* Management — managers only */}
+        {isManager && (
+          <>
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Management</p>
+            {managerItems.map(({ href, label, icon: Icon }) => {
+              const active = pathname.startsWith(href)
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn('sidebar-link', active && 'active')}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">{label}</span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                </Link>
+              )
+            })}
+          </>
+        )}
       </nav>
 
       {/* Bottom actions */}
