@@ -6,6 +6,7 @@ import {
 import { RECAP_ROUNDS, PORTAL_UPDATES } from '@/lib/data'
 import { KNOWLEDGE_ARTICLES } from '@/lib/training-content'
 import { cn } from '@/lib/utils'
+import { createServerClient } from '@/lib/supabase/server'
 import VideoLibraryTabs from './VideoLibraryTabs'
 
 // ─── Category metadata ────────────────────────────────────────────────────────
@@ -19,11 +20,43 @@ const UPDATE_CATEGORY_META = {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function RecapPage() {
-  const currentRound  = RECAP_ROUNDS.find(r => !r.completed)!
-  const pastRounds    = RECAP_ROUNDS.filter(r => r.completed).reverse()
-  const lastCheckIn   = pastRounds[0]?.completedDate ?? null
-  const streak        = pastRounds.length
+export default async function RecapPage() {
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Fetch this user's completed recap rounds from assessment_results
+  const completedByRound: Record<string, { score: number; completedAt: string }> = {}
+  if (user) {
+    const { data: results } = await supabase
+      .from('assessment_results')
+      .select('assessment_id, score, completed_at')
+      .eq('user_id', user.id)
+      .like('assessment_id', 'recap-%')
+      .order('completed_at', { ascending: true })
+
+    for (const r of results ?? []) {
+      // Keep the most recent result per round
+      if (!completedByRound[r.assessment_id] || r.completed_at > completedByRound[r.assessment_id].completedAt) {
+        completedByRound[r.assessment_id] = { score: r.score, completedAt: r.completed_at }
+      }
+    }
+  }
+
+  const completedIds = new Set(Object.keys(completedByRound))
+
+  // First uncompleted round = current; completed ones shown as past
+  const currentRound = RECAP_ROUNDS.find(r => !completedIds.has(r.id))
+  const pastRounds = RECAP_ROUNDS
+    .filter(r => completedIds.has(r.id))
+    .map(r => ({
+      ...r,
+      completedDate: completedByRound[r.id].completedAt,
+      score: completedByRound[r.id].score,
+    }))
+    .reverse()
+
+  const lastCheckIn = pastRounds[0]?.completedDate ?? null
+  const streak = pastRounds.length
 
   const legalArticles = KNOWLEDGE_ARTICLES.filter(a => a.category === 'legal')
   const opsArticles   = KNOWLEDGE_ARTICLES.filter(a => (['finance', 'standards'] as string[]).includes(a.category))
@@ -95,54 +128,63 @@ export default function RecapPage() {
           This Month&apos;s Check-In
         </p>
 
-        {/* Active round */}
-        <div
-          className="rounded-2xl p-5 mb-5"
-          style={{ background: 'linear-gradient(135deg, #EEF2FF 0%, #F5F3FF 100%)', border: '1px solid rgba(79,70,229,0.2)' }}
-        >
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-2">
-                <span
-                  className="text-xs font-semibold px-2.5 py-1 rounded-full border"
-                  style={{ background: 'rgba(79,70,229,0.1)', color: '#4F46E5', borderColor: 'rgba(79,70,229,0.2)' }}
-                >
-                  {currentRound.label}
-                </span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
-                  Available now
-                </span>
-              </div>
-              <h2 className="text-lg font-bold text-[#1D1D1F] mb-2">{currentRound.theme}</h2>
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                {currentRound.focus.map(f => (
+        {currentRound ? (
+          /* Active round */
+          <div
+            className="rounded-2xl p-5 mb-5"
+            style={{ background: 'linear-gradient(135deg, #EEF2FF 0%, #F5F3FF 100%)', border: '1px solid rgba(79,70,229,0.2)' }}
+          >
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 mb-2">
                   <span
-                    key={f}
-                    className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/90 border border-indigo-100 text-indigo-700"
+                    className="text-xs font-semibold px-2.5 py-1 rounded-full border"
+                    style={{ background: 'rgba(79,70,229,0.1)', color: '#4F46E5', borderColor: 'rgba(79,70,229,0.2)' }}
                   >
-                    {f}
+                    {currentRound.label}
                   </span>
-                ))}
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                    Available now
+                  </span>
+                </div>
+                <h2 className="text-lg font-bold text-[#1D1D1F] mb-2">{currentRound.theme}</h2>
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {currentRound.focus.map(f => (
+                    <span
+                      key={f}
+                      className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/90 border border-indigo-100 text-indigo-700"
+                    >
+                      {f}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex items-center gap-4 text-xs text-[#6E6E73]">
+                  <span>{currentRound.questionCount} questions</span>
+                  <span>·</span>
+                  <span>~20 min</span>
+                  <span>·</span>
+                  <span>No pass mark — knowledge check only</span>
+                </div>
               </div>
-              <div className="flex items-center gap-4 text-xs text-[#6E6E73]">
-                <span>{currentRound.questionCount} questions</span>
-                <span>·</span>
-                <span>~20 min</span>
-                <span>·</span>
-                <span>No pass mark — knowledge check only</span>
-              </div>
-            </div>
 
-            <Link
-              href={`/quiz/${currentRound.id}`}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm text-white flex-shrink-0 transition-opacity hover:opacity-90"
-              style={{ background: '#4F46E5' }}
-            >
-              Start {currentRound.month} Check-In
-              <ArrowRight className="w-4 h-4" aria-hidden />
-            </Link>
+              <Link
+                href={`/quiz/${currentRound.id}`}
+                className="flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm text-white flex-shrink-0 transition-opacity hover:opacity-90"
+                style={{ background: '#4F46E5' }}
+              >
+                Start {currentRound.month} Check-In
+                <ArrowRight className="w-4 h-4" aria-hidden />
+              </Link>
+            </div>
           </div>
-        </div>
+        ) : (
+          /* All rounds complete */
+          <div className="rounded-2xl p-5 mb-5 text-center" style={{ background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
+            <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" aria-hidden />
+            <p className="text-sm font-bold text-emerald-800 mb-1">All check-ins complete!</p>
+            <p className="text-xs text-emerald-600">You&apos;re fully up to date. New rounds are added each month.</p>
+          </div>
+        )}
 
         {/* Past rounds */}
         {pastRounds.length > 0 && (
