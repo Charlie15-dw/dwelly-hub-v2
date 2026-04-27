@@ -7,15 +7,48 @@ import ProgressBar from '@/components/ui/ProgressBar'
 import StatCard from '@/components/ui/StatCard'
 import QuickActions from '@/components/ui/QuickActions'
 import WelcomeGreeting from '@/components/ui/WelcomeGreeting'
-import {
-  CURRENT_USER, MODULES, SECTION_LABELS,
-  ROLE_LABELS,
-} from '@/lib/data'
+import { MODULES, SECTION_LABELS, ROLE_LABELS, CURRENT_USER } from '@/lib/data'
 import { cn } from '@/lib/utils'
+import { createServerClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
-const upcomingModules = MODULES.filter(m => !m.locked).slice(0, 4)
+export default async function DashboardPage() {
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/')
 
-export default function DashboardPage() {
+  // Fetch real progress and scores
+  const [{ data: progressRows }, { data: resultRows }, { data: learningProfile }] = await Promise.all([
+    supabase.from('module_progress').select('module_id, completed').eq('user_id', user.id),
+    supabase.from('assessment_results').select('score, passed').eq('user_id', user.id),
+    supabase.from('learning_profiles').select('completed_at').eq('user_id', user.id).maybeSingle(),
+  ])
+
+  const completedModuleIds = new Set(
+    (progressRows ?? []).filter(r => r.completed).map(r => r.module_id)
+  )
+  const unlockedModules = MODULES.filter(m => !m.locked)
+  const completedCount = unlockedModules.filter(m => completedModuleIds.has(m.id)).length
+  const totalModules = unlockedModules.length
+  const overallPct = totalModules > 0 ? Math.round((completedCount / totalModules) * 100) : 0
+
+  const moduleResults = (resultRows ?? []).filter(r =>
+    !['full-assessment', 'master-assessment'].includes(r.score?.toString() ?? '') // keep all
+  )
+  const avgScore = moduleResults.length > 0
+    ? Math.round(moduleResults.reduce((s, r) => s + r.score, 0) / moduleResults.length)
+    : null
+
+  // Next modules to complete — first 4 unlocked that haven't been completed yet
+  const upNextModules = unlockedModules
+    .filter(m => !completedModuleIds.has(m.id))
+    .slice(0, 4)
+
+  // Journey pill states based on real data
+  const hasLearningProfile = !!learningProfile
+  const hasStartedModules = completedCount > 0
+  const hasAssessmentResult = moduleResults.length > 0
+
   return (
     <div className="space-y-6">
 
@@ -43,12 +76,12 @@ export default function DashboardPage() {
             </p>
             <div className="flex items-center gap-2 flex-wrap">
               {[
-                { label: 'Learning Profile',   href: '/pre-training', done: false, active: true },
-                { label: 'Training Guide',      href: '/training',     done: false               },
-                { label: 'Video Modules',       href: '/modules',      done: false               },
-                { label: 'Knowledge Base',      href: '/knowledge',    done: false               },
-                { label: 'Assessments',         href: '/assessments',  done: false               },
-                { label: 'Competency Passport', href: '/passport',     done: false               },
+                { label: 'Learning Profile',   href: '/pre-training', done: hasLearningProfile,    active: !hasLearningProfile },
+                { label: 'Training Guide',      href: '/training',     done: false,                 active: hasLearningProfile && !hasStartedModules },
+                { label: 'Video Modules',       href: '/modules',      done: completedCount === totalModules && totalModules > 0, active: hasLearningProfile && hasStartedModules && completedCount < totalModules },
+                { label: 'Knowledge Base',      href: '/knowledge',    done: false,                 active: false },
+                { label: 'Assessments',         href: '/assessments',  done: false,                 active: hasAssessmentResult },
+                { label: 'Competency Passport', href: '/passport',     done: false,                 active: false },
               ].map((item, i) => (
                 <div key={item.href} className="flex items-center gap-2">
                   <Link
@@ -56,7 +89,7 @@ export default function DashboardPage() {
                     className={cn(
                       'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all',
                       item.done   && 'bg-white text-teal border-teal/20 shadow-sm hover:shadow',
-                      item.active && 'bg-white text-orange border-orange/25 shadow-sm hover:shadow',
+                      item.active && !item.done && 'bg-white text-orange border-orange/25 shadow-sm hover:shadow',
                       !item.done && !item.active && 'bg-white/40 text-[#5AADA8] border-white/60 hover:bg-white/70',
                     )}
                   >
@@ -74,17 +107,20 @@ export default function DashboardPage() {
             <div className="flex-1 min-w-48">
               <div className="flex justify-between items-center mb-1.5">
                 <span className="text-xs font-medium text-[#6E6E73]">Overall Progress</span>
-                <span className="text-sm font-bold text-[#1D1D1F]">0%</span>
+                <span className="text-sm font-bold text-[#1D1D1F]">{overallPct}%</span>
               </div>
               <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#C8EDEA' }}>
-                <div className="h-full bg-orange rounded-full transition-all duration-700" style={{ width: '0%' }} />
+                <div className="h-full bg-orange rounded-full transition-all duration-700" style={{ width: `${overallPct}%` }} />
               </div>
               <p className="text-xs mt-1 text-[#1D1D1F]/60">
-                0/{MODULES.length} modules completed
+                {completedCount}/{totalModules} modules completed
               </p>
             </div>
-            <Link href="/pre-training" className="btn-primary text-sm whitespace-nowrap flex-shrink-0">
-              Start Learning
+            <Link
+              href={hasLearningProfile ? '/modules' : '/pre-training'}
+              className="btn-primary text-sm whitespace-nowrap flex-shrink-0"
+            >
+              {completedCount > 0 ? 'Continue Learning' : 'Start Learning'}
               <ArrowRight className="w-4 h-4" aria-hidden />
             </Link>
           </div>
@@ -95,14 +131,14 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Modules Completed"
-          value={0}
-          sub={`of ${MODULES.length} total`}
+          value={completedCount}
+          sub={`of ${totalModules} total`}
           icon={<BookOpen className="w-5 h-5" />}
           accent="orange"
         />
         <StatCard
           label="Avg Assessment Score"
-          value="—"
+          value={avgScore !== null ? `${avgScore}%` : '—'}
           sub="Passing threshold: 80%"
           icon={<TrendingUp className="w-5 h-5" />}
           accent="teal"
@@ -133,7 +169,7 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 space-y-6">
 
           {/* Up Next */}
-          {upcomingModules.length > 0 && (
+          {upNextModules.length > 0 && (
             <div className="card p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-bold text-navy">Up Next</h3>
@@ -142,7 +178,7 @@ export default function DashboardPage() {
                 </Link>
               </div>
               <div className="space-y-2">
-                {upcomingModules.map(module => (
+                {upNextModules.map(module => (
                   <Link
                     key={module.id}
                     href={`/modules/${module.id}`}
@@ -161,21 +197,31 @@ export default function DashboardPage() {
               </div>
             </div>
           )}
+
+          {/* All done */}
+          {upNextModules.length === 0 && completedCount > 0 && (
+            <div className="card p-6 text-center">
+              <CheckCircle2 className="w-10 h-10 text-teal mx-auto mb-3" />
+              <p className="text-sm font-bold text-navy mb-1">All modules completed!</p>
+              <p className="text-xs text-slate-500 mb-4">Head to Assessments to test your knowledge.</p>
+              <Link href="/assessments" className="btn-primary text-sm inline-flex">
+                Go to Assessments <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Right — competency */}
         <div className="space-y-5">
-
-          {/* Competency summary */}
           <div className="card p-5">
             <h3 className="text-sm font-bold text-navy mb-4">Competency Summary</h3>
             <div className="space-y-3">
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-slate-500">Signed off</span>
-                  <span className="font-semibold text-navy">0</span>
+                  <span className="text-slate-500">Modules done</span>
+                  <span className="font-semibold text-navy">{completedCount} / {totalModules}</span>
                 </div>
-                <ProgressBar value={0} max={10} color="teal" />
+                <ProgressBar value={completedCount} max={totalModules} color="teal" />
               </div>
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
@@ -189,7 +235,6 @@ export default function DashboardPage() {
               View Full Passport
             </Link>
           </div>
-
         </div>
       </div>
     </div>
