@@ -6,7 +6,7 @@ import {
   Mic, User, Shuffle,
 } from 'lucide-react'
 import { ROLEPLAY_SCENARIOS, getRandomScenario, type RoleplayScenario } from '@/lib/roleplay-scenarios'
-import { matchResponse, SCENARIO_SCRIPTS, type Stage } from '@/lib/roleplay-engine'
+import { SCENARIO_SCRIPTS } from '@/lib/roleplay-engine'
 import { cn } from '@/lib/utils'
 
 interface Message {
@@ -44,9 +44,6 @@ export default function RoleplayChat() {
   const [started, setStarted]             = useState(false)
   const [showTip, setShowTip]             = useState(false)
   const [showScenarios, setShowScenarios] = useState(false)
-  const [stage, setStage]                 = useState<Stage>('opening')
-  const [positiveStreak, setPositiveStreak] = useState(0)
-  const usedMessages = useRef<Set<string>>(new Set())
   const turnCount    = useRef(0)
   const bottomRef    = useRef<HTMLDivElement>(null)
   const inputRef     = useRef<HTMLTextAreaElement>(null)
@@ -60,9 +57,6 @@ export default function RoleplayChat() {
     setMessages([])
     setStarted(true)
     setShowScenarios(false)
-    setStage('opening')
-    setPositiveStreak(0)
-    usedMessages.current = new Set()
     turnCount.current = 0
     setLoading(true)
 
@@ -84,31 +78,21 @@ export default function RoleplayChat() {
     const newMessages: Message[] = [...messages, { role: 'user', content: userMessage }]
     setMessages(newMessages)
     setLoading(true)
-
-    await fakeTypingDelay()
-
-    const script = SCENARIO_SCRIPTS[scenario.id]
-    if (!script) {
-      setMessages(prev => [...prev, { role: 'assistant', content: "I see. Can you tell me more about what's happening?" }])
-      setLoading(false)
-      return
-    }
-
     turnCount.current += 1
-    const { message, newStage } = matchResponse(userMessage, stage, script, positiveStreak, usedMessages.current, turnCount.current)
 
-    // Track positive streak — if stage advanced forward, increment; backward, reset
-    const stageOrder = ['tense', 'opening', 'engaged', 'progressing', 'resolving'] as const
-    const prevIdx = stageOrder.indexOf(stage)
-    const nextIdx = stageOrder.indexOf(newStage)
-    if (nextIdx > prevIdx) {
-      setPositiveStreak(n => n + 1)
-    } else if (nextIdx < prevIdx) {
-      setPositiveStreak(0)
+    try {
+      const res = await fetch('/api/roleplay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: newMessages, scenario }),
+      })
+      const data = await res.json()
+      const reply = data.message ?? "Sorry, I didn't catch that — can you say that again?"
+      setMessages(prev => [...prev, { role: 'assistant', content: reply }])
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, something went wrong. Please try again." }])
     }
 
-    setStage(newStage)
-    setMessages(prev => [...prev, { role: 'assistant', content: message }])
     setLoading(false)
     setTimeout(() => inputRef.current?.focus(), 50)
   }
