@@ -3,9 +3,13 @@ import { Clock, Target, BookOpen, TrendingUp, Award, BarChart3 } from 'lucide-re
 import StatCard from '@/components/ui/StatCard'
 import SkillsRadar from '@/components/ui/SkillsRadar'
 import { createServerClient } from '@/lib/supabase/server'
-import { MODULES } from '@/lib/data'
 
-const TOTAL_MODULES = MODULES.filter(m => !m.locked).length
+const ALL_ASSESSMENT_IDS = [
+  'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
+  'sys-01', 'mvt-02', 'sys-02', 'sup-02',
+  'kno-01', 'kno-02', 'kno-03', 'full-assessment', 'master-assessment',
+]
+const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length // 15
 
 // Map assessment IDs to readable labels and sections
 const ASSESSMENT_META: Record<string, { label: string; section: string }> = {
@@ -45,16 +49,15 @@ export default async function AnalyticsPage() {
     .eq('user_id', user.id)
     .order('completed_at', { ascending: false })
 
-  // Fetch module progress
-  const { data: progress } = await supabase
-    .from('module_progress')
-    .select('module_id, completed')
-    .eq('user_id', user.id)
-
   const allResults = results ?? []
-  const allProgress = progress ?? []
 
-  const completedModules = allProgress.filter(p => p.completed).length
+  // Count unique passed assessments (excluding recap rounds)
+  const passedIds = new Set(
+    allResults
+      .filter(r => r.passed && ALL_ASSESSMENT_IDS.includes(r.assessment_id))
+      .map(r => r.assessment_id)
+  )
+  const completedModules = passedIds.size
   const avgScore = allResults.length > 0
     ? Math.round(allResults.reduce((s, r) => s + r.score, 0) / allResults.length)
     : null
@@ -115,7 +118,7 @@ export default async function AnalyticsPage() {
         />
         <StatCard
           label="Modules Completed"
-          value={`${completedModules} / ${TOTAL_MODULES}`}
+          value={`${completedModules} / ${TOTAL_ASSESSMENTS}`}
           icon={<BookOpen className="w-5 h-5" />}
           accent="gold"
         />
@@ -245,12 +248,12 @@ export default async function AnalyticsPage() {
               <h2 className="text-sm font-bold text-navy mb-4">Module Progress</h2>
               <div className="text-center py-2">
                 <p className="text-3xl font-black text-navy tabular-nums">{completedModules}</p>
-                <p className="text-xs text-slate-500 mt-1">of {TOTAL_MODULES} modules completed</p>
+                <p className="text-xs text-slate-500 mt-1">of {TOTAL_ASSESSMENTS} modules completed</p>
               </div>
               <div className="mt-3 h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-teal rounded-full transition-all"
-                  style={{ width: `${TOTAL_MODULES > 0 ? Math.round((completedModules / TOTAL_MODULES) * 100) : 0}%` }}
+                  style={{ width: `${TOTAL_ASSESSMENTS > 0 ? Math.round((completedModules / TOTAL_ASSESSMENTS) * 100) : 0}%` }}
                 />
               </div>
             </div>
