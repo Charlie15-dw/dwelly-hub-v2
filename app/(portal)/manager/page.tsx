@@ -1,11 +1,12 @@
 import { redirect } from 'next/navigation'
 import {
   Users, TrendingUp, AlertTriangle, BarChart3,
-  CheckCircle2, Brain,
+  CheckCircle2, Brain, RefreshCw,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import StatCard from '@/components/ui/StatCard'
 import TeamAssignmentPanel from '@/components/ui/TeamAssignmentPanel'
+import ReassignButton from '@/components/ui/ReassignButton'
 import { MODULES } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
@@ -85,7 +86,7 @@ export default async function ManagerDashboard() {
   // Fetch assessment results for all users
   const { data: allResults } = await supabase
     .from('assessment_results')
-    .select('user_id, score')
+    .select('user_id, assessment_id, score, passed')
 
   // Fetch learning profiles for team members
   const teamIds = (profiles ?? []).map(p => p.id)
@@ -109,6 +110,16 @@ export default async function ManagerDashboard() {
       ? Math.round(results.reduce((s, r) => s + r.score, 0) / results.length)
       : null
 
+    // Modules failed (score < 80, not a full/master assessment) — deduplicated to last attempt per module
+    const moduleResults = results.filter(r =>
+      r.assessment_id &&
+      !['full-assessment', 'master-assessment'].includes(r.assessment_id) &&
+      !r.assessment_id.startsWith('recap-')
+    )
+    const latestByModule = new Map<string, typeof moduleResults[0]>()
+    for (const r of moduleResults) latestByModule.set(r.assessment_id, r)
+    const failedModules = [...latestByModule.values()].filter(r => !r.passed)
+
     const rag = ragStatus(progressPct)
     const displayName = member.full_name
       || member.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
@@ -119,7 +130,7 @@ export default async function ManagerDashboard() {
       ? new Date(member.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
       : '—'
 
-    return { ...member, displayName, initials, completedCount, progressPct, avgScore, rag, joinDate }
+    return { ...member, displayName, initials, completedCount, progressPct, avgScore, rag, joinDate, failedModules }
   })
 
   // Summary stats
@@ -316,6 +327,51 @@ export default async function ManagerDashboard() {
           </div>
         )}
       </div>
+
+      {/* Reassignment panel — only show when there are failed modules */}
+      {sorted.some(m => m.failedModules.length > 0) && (
+        <div className="card overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+            <RefreshCw className="w-4 h-4 text-amber-500" aria-hidden />
+            <h2 className="text-sm font-bold text-navy">Reassignment Actions</h2>
+            <span className="ml-auto text-xs text-slate-400">Modules scored below 80% — grant a retake</span>
+          </div>
+          <div className="divide-y divide-slate-50">
+            {sorted.filter(m => m.failedModules.length > 0).map(member => (
+              <div key={member.id} className="px-5 py-4">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-[11px] font-bold">{member.initials}</span>
+                  </div>
+                  <p className="text-sm font-semibold text-navy">{member.displayName}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {member.failedModules.map(f => {
+                    const mod = MODULES.find(m => m.id === f.assessment_id)
+                    const label = mod?.title ?? f.assessment_id
+                    return (
+                      <div
+                        key={f.assessment_id}
+                        className="flex items-center gap-2.5 rounded-xl border border-red-100 bg-red-50/50 px-3 py-2"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-navy truncate max-w-[180px]">{label}</p>
+                          <p className="text-[11px] text-red-500">Score: {f.score}% · Failed</p>
+                        </div>
+                        <ReassignButton
+                          userId={member.id}
+                          moduleId={f.assessment_id}
+                          moduleName={label}
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Team assignment */}
       <TeamAssignmentPanel

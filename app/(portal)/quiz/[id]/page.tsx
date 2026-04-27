@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import { QUIZ_QUESTIONS, MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
-import { isLocked, getLastAttempt, saveAttempt, type AttemptRecord } from '@/lib/assessmentStorage'
+import { isLocked, getLastAttempt, saveAttempt, unlockAssessment, type AttemptRecord } from '@/lib/assessmentStorage'
 import { createClient } from '@/lib/supabase/client'
 
 // Shuffle helper — randomises question order for recap quizzes
@@ -74,13 +74,39 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   const [lockedByStorage, setLockedByStorage] = useState(false)
   const [lastAttempt, setLastAttempt]  = useState<AttemptRecord | null>(null)
 
-  // Check lock status on mount (skip recap quizzes — they are never locked)
+  // Check lock status on mount — also checks Supabase for manager-triggered resets
   useEffect(() => {
     if (isRecapQuiz) return
-    if (isLocked(moduleId)) {
-      setLockedByStorage(true)
-      setLastAttempt(getLastAttempt(moduleId))
+    async function checkLockAndReset() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        // Check for a pending reset granted by the manager
+        const { data: reset } = await supabase
+          .from('module_resets')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('module_id', moduleId)
+          .is('consumed_at', null)
+          .maybeSingle()
+
+        if (reset) {
+          // Consume the reset and unlock localStorage
+          await supabase
+            .from('module_resets')
+            .update({ consumed_at: new Date().toISOString() })
+            .eq('id', reset.id)
+          unlockAssessment(moduleId)
+          return // allow the quiz to start fresh
+        }
+      }
+      // No reset — fall back to normal localStorage lock check
+      if (isLocked(moduleId)) {
+        setLockedByStorage(true)
+        setLastAttempt(getLastAttempt(moduleId))
+      }
     }
+    checkLockAndReset()
   }, [moduleId, isRecapQuiz])
 
   // Save attempt to localStorage AND Supabase when the results screen appears
