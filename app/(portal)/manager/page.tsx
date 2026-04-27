@@ -118,7 +118,7 @@ export default async function ManagerDashboard() {
     )
     const latestByModule = new Map<string, typeof moduleResults[0]>()
     for (const r of moduleResults) latestByModule.set(r.assessment_id, r)
-    const failedModules = [...latestByModule.values()].filter(r => !r.passed)
+    const failedModules = Array.from(latestByModule.values()).filter(r => !r.passed)
 
     const rag = ragStatus(progressPct)
     const displayName = member.full_name
