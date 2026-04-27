@@ -109,6 +109,25 @@ export default function QuizPage({ params }: { params: { id: string } }) {
     checkLockAndReset()
   }, [moduleId, isRecapQuiz])
 
+  // Save recap result to Supabase when results appear
+  useEffect(() => {
+    if (!showResults || !isRecapQuiz) return
+    async function saveRecapToSupabase() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      await supabase.from('assessment_results').insert({
+        user_id: user.id,
+        assessment_id: moduleId,
+        score,
+        passed: true, // recap has no pass/fail
+        completed_at: new Date().toISOString(),
+      })
+    }
+    saveRecapToSupabase()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showResults])
+
   // Save attempt to localStorage AND Supabase when the results screen appears
   useEffect(() => {
     if (!showResults || isRecapQuiz) return

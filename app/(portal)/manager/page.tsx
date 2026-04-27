@@ -1,14 +1,14 @@
 import { redirect } from 'next/navigation'
 import {
   Users, TrendingUp, AlertTriangle, BarChart3,
-  CheckCircle2, Brain, RefreshCw,
+  CheckCircle2, Brain, RefreshCw, CalendarCheck,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import StatCard from '@/components/ui/StatCard'
 import TeamAssignmentPanel from '@/components/ui/TeamAssignmentPanel'
 import ReassignButton from '@/components/ui/ReassignButton'
 import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
-import { MODULES } from '@/lib/data'
+import { MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 
@@ -87,7 +87,7 @@ export default async function ManagerDashboard() {
   // Fetch assessment results for all users
   const { data: allResults } = await supabase
     .from('assessment_results')
-    .select('user_id, assessment_id, score, passed')
+    .select('user_id, assessment_id, score, passed, completed_at')
 
   // Fetch learning profiles for team members
   const teamIds = (profiles ?? []).map(p => p.id)
@@ -453,6 +453,69 @@ export default async function ManagerDashboard() {
                 </div>
               )
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Recap & Refresh tracker */}
+      {teamCount > 0 && (
+        <div className="card overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+            <CalendarCheck className="w-4 h-4 text-indigo-500" aria-hidden />
+            <h2 className="text-sm font-bold text-navy">Recap &amp; Refresh</h2>
+            <span className="ml-auto text-xs text-slate-400">Monthly knowledge checks</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm" role="table">
+              <thead>
+                <tr className="border-b border-slate-100 bg-slate-50/80">
+                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">
+                    Team Member
+                  </th>
+                  {RECAP_ROUNDS.map(round => (
+                    <th key={round.id} className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">
+                      {round.month}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {sorted.map(member => {
+                  const memberResults = (allResults ?? []).filter(r => r.user_id === member.id)
+                  return (
+                    <tr key={member.id} className="hover:bg-slate-50/60 transition-colors">
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                            <span className="text-white text-[11px] font-bold">{member.initials}</span>
+                          </div>
+                          <p className="text-sm font-medium text-navy">{member.displayName}</p>
+                        </div>
+                      </td>
+                      {RECAP_ROUNDS.map(round => {
+                        const attempt = memberResults
+                          .filter(r => r.assessment_id === round.id)
+                          .sort((a, b) => new Date(b.completed_at ?? 0).getTime() - new Date(a.completed_at ?? 0).getTime())[0]
+                        return (
+                          <td key={round.id} className="px-4 py-3 whitespace-nowrap">
+                            {attempt ? (
+                              <div>
+                                <span className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-full px-2.5 py-0.5">
+                                  <CheckCircle2 className="w-3 h-3" aria-hidden />
+                                  {attempt.score}%
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-slate-300">Not completed</span>
+                            )}
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
