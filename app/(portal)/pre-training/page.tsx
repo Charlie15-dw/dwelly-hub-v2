@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/client'
 import {
   ArrowRight, ArrowLeft, CheckCircle2, Brain,
   BookOpen, Zap, MessageSquare, Target, Shield,
@@ -257,6 +258,27 @@ export default function PreTrainingPage() {
   }
 
   const profile = step === 'result' ? generateProfile(answers) : null
+
+  // Save to Supabase when results are shown
+  useEffect(() => {
+    if (step !== 'result' || !profile) return
+    async function save() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      await supabase.from('learning_profiles').upsert({
+        user_id: user.id,
+        answers,
+        style_label: profile!.styleLabel,
+        style_icon: profile!.styleIcon,
+        confidence_label: profile!.confidenceLabel,
+        confidence_pct: profile!.confidencePct,
+        manager_note: profile!.managerNote,
+        completed_at: new Date().toISOString(),
+      }, { onConflict: 'user_id' })
+    }
+    save()
+  }, [step]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Intro ──
   if (step === 'intro') {

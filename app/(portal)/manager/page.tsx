@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import {
   Users, TrendingUp, AlertTriangle, BarChart3,
-  CheckCircle2,
+  CheckCircle2, Brain,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import StatCard from '@/components/ui/StatCard'
@@ -86,6 +86,15 @@ export default async function ManagerDashboard() {
   const { data: allResults } = await supabase
     .from('assessment_results')
     .select('user_id, score')
+
+  // Fetch learning profiles for team members
+  const teamIds = (profiles ?? []).map(p => p.id)
+  const { data: learningProfiles } = teamIds.length > 0
+    ? await supabase
+        .from('learning_profiles')
+        .select('user_id, style_label, style_icon, confidence_label, confidence_pct, manager_note, completed_at')
+        .in('user_id', teamIds)
+    : { data: [] }
 
   // Build per-user stats
   const memberStats = teamMembers.map(member => {
@@ -319,6 +328,69 @@ export default async function ManagerDashboard() {
         }))}
         managerId={user.id}
       />
+
+      {/* Team Learning Profiles */}
+      {teamCount > 0 && (
+        <div className="card overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+            <Brain className="w-4 h-4 text-[#0071E3]" aria-hidden />
+            <h2 className="text-sm font-bold text-navy">Team Learning Profiles</h2>
+          </div>
+          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {sorted.map(member => {
+              const lp = (learningProfiles ?? []).find(p => p.user_id === member.id)
+              return (
+                <div key={member.id} className="rounded-xl border border-slate-100 bg-slate-50/50 p-4">
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                      <span className="text-white text-xs font-bold">{member.initials}</span>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-navy truncate">{member.displayName}</p>
+                    </div>
+                  </div>
+                  {lp ? (
+                    <div className="space-y-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg leading-none">{lp.style_icon}</span>
+                        <div>
+                          <p className="text-xs font-semibold text-navy">{lp.style_label}</p>
+                          <p className="text-[11px] text-slate-400">Learning style</p>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-[11px] text-slate-500">Starting confidence</p>
+                          <p className="text-[11px] font-semibold text-navy">{lp.confidence_label}</p>
+                        </div>
+                        <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-[#0071E3] rounded-full"
+                            style={{ width: `${lp.confidence_pct}%` }}
+                          />
+                        </div>
+                      </div>
+                      {lp.manager_note && (
+                        <div className="rounded-lg bg-white border border-slate-100 px-3 py-2">
+                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">Manager note</p>
+                          <p className="text-xs text-slate-600 leading-relaxed">{lp.manager_note}</p>
+                        </div>
+                      )}
+                      <p className="text-[10px] text-slate-300">
+                        Completed {lp.completed_at ? new Date(lp.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-center py-3">
+                      <p className="text-xs text-slate-400">Learning profile not yet completed</p>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Info note */}
       <div className="rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 flex items-start gap-3">
