@@ -49,7 +49,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
     }
     if (isFullAssessment) {
       return VIDEO_MODULE_IDS.flatMap(mid =>
-        QUIZ_QUESTIONS.filter(q => q.moduleId === mid && q.tier !== 'master').slice(0, PER_SECTION)
+        QUIZ_QUESTIONS.filter(q => q.moduleId === mid && !q.tier).slice(0, PER_SECTION)
       )
     }
     if (isRecapQuiz) {
@@ -60,7 +60,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       )
       return shuffle(sampled).slice(0, recapRound.questionCount)
     }
-    return QUIZ_QUESTIONS.filter(q => q.moduleId === moduleId && q.tier !== 'master')
+    return QUIZ_QUESTIONS.filter(q => q.moduleId === moduleId && !q.tier)
   })
 
   const backHref  = isMasterAssessment || isFullAssessment ? '/assessments' : isRecapQuiz ? '/recap' : `/modules/${moduleId}`
