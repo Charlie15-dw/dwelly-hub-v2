@@ -7,6 +7,7 @@ import ProgressBar from '@/components/ui/ProgressBar'
 import StatCard from '@/components/ui/StatCard'
 import TeamAssignmentPanel from '@/components/ui/TeamAssignmentPanel'
 import ReassignButton from '@/components/ui/ReassignButton'
+import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
 import { MODULES } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
@@ -352,16 +353,24 @@ export default async function ManagerDashboard() {
                     return (
                       <div
                         key={f.assessment_id}
-                        className="flex items-center gap-2.5 rounded-xl border border-red-100 bg-red-50/50 px-3 py-2"
+                        className="rounded-xl border border-red-100 bg-red-50/50 px-3 py-3 w-full"
                       >
-                        <div className="min-w-0">
-                          <p className="text-xs font-semibold text-navy truncate max-w-[180px]">{label}</p>
-                          <p className="text-[11px] text-red-500">Score: {f.score}% · Failed</p>
+                        <div className="flex items-center gap-2.5">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-semibold text-navy truncate max-w-[200px]">{label}</p>
+                            <p className="text-[11px] text-red-500">Score: {f.score}% · Failed</p>
+                          </div>
+                          <ReassignButton
+                            userId={member.id}
+                            moduleId={f.assessment_id}
+                            moduleName={label}
+                          />
                         </div>
-                        <ReassignButton
+                        <WrongAnswersPanel
                           userId={member.id}
                           moduleId={f.assessment_id}
                           moduleName={label}
+                          score={f.score}
                         />
                       </div>
                     )

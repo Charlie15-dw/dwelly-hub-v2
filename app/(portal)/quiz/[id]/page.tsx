@@ -120,12 +120,24 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
+      // Build wrong answers payload for manager review
+      const wrongAnswers = demoQuestions
+        .map((q, i) => ({ q, userAns: answers[i] }))
+        .filter(({ q, userAns }) => userAns !== q.correct)
+        .map(({ q, userAns }) => ({
+          question: q.question,
+          yourAnswer: userAns !== null ? q.options[userAns] : 'No answer',
+          correctAnswer: q.options[q.correct],
+          rationale: q.rationale,
+        }))
+
       // Save assessment result
       await supabase.from('assessment_results').insert({
         user_id: user.id,
         assessment_id: moduleId,
         score,
         passed,
+        answers: wrongAnswers,
         completed_at: new Date().toISOString(),
       })
 
