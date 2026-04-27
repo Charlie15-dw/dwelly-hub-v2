@@ -128,8 +128,8 @@ CRITICAL RULES — follow these exactly:
 11. Property details if you need them: the address is 14 Birchwood Avenue, the landlord is Mr. Patel, rent is £1,200 per month.`
 
     const response = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 250,
+      model: 'claude-opus-4-5',
+      max_tokens: 300,
       system: systemPrompt,
       messages,
     })
