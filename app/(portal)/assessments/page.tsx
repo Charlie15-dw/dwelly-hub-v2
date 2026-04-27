@@ -6,11 +6,16 @@ import { Trophy, ChevronRight, ClipboardCheck, BookOpen, Play, Library, ArrowRig
 import { isLocked } from '@/lib/assessmentStorage'
 
 const VIDEO_MODULE_ASSESSMENTS = [
-  { label: 'Maintenance',   icon: '🔧', id: 'mnt-02', questions: 10 },
-  { label: 'Compliance',    icon: '⚖️', id: 'cmp-02', questions: 26 },
-  { label: 'Move-Outs',     icon: '📦', id: 'mvt-02', questions: 8  },
-  { label: 'Inspections',   icon: '🔍', id: 'ins-02', questions: 6  },
-  { label: 'Support',       icon: '🤝', id: 'sup-02', questions: 6  },
+  { label: 'Maintenance 1/2 — Creating a Repair Request',    icon: '🔧', id: 'mnt-01', questions: 6  },
+  { label: 'Maintenance 2/2 — Actioning the Maintenance Task', icon: '🔧', id: 'mnt-02', questions: 10 },
+  { label: 'Compliance 1/2 — Creating a Compliance Task',    icon: '⚖️', id: 'cmp-01', questions: 6  },
+  { label: 'Compliance 2/2 — Actioning the Compliance Task', icon: '⚖️', id: 'cmp-02', questions: 15 },
+  { label: 'Inspections 1/2 — Creating an Inspection Task',  icon: '🔍', id: 'mnt-03', questions: 5  },
+  { label: 'Inspections 2/2 — Completing the Inspection',    icon: '🔍', id: 'ins-02', questions: 6  },
+  { label: 'Move-Outs 1/2 — Initiating the Move-Out Process', icon: '📦', id: 'sys-01', questions: 5 },
+  { label: 'Move-Outs 2/2 — Completing the Move-Out',        icon: '📦', id: 'mvt-02', questions: 8  },
+  { label: 'Support 1/2 — Raising a Support Task',           icon: '🤝', id: 'sys-02', questions: 5  },
+  { label: 'Support 2/2 — Actioning the Support Task',       icon: '🤝', id: 'sup-02', questions: 6  },
 ] as const
 
 const KNOWLEDGE_ASSESSMENTS = [
@@ -40,7 +45,7 @@ export default function AssessmentsPage() {
       'full-assessment',
       ...VIDEO_MODULE_ASSESSMENTS.map(a => a.id),
       ...KNOWLEDGE_ASSESSMENTS.map(a => a.id),
-    ]
+    ] as string[]
     setLockedIds(new Set(allIds.filter(id => isLocked(id))))
   }, [])
 
