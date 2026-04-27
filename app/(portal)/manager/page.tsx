@@ -12,7 +12,18 @@ import { MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 
-const TOTAL_MODULES = MODULES.filter(m => !m.locked).length
+// All assessable items — matches the assessments page exactly
+const ALL_ASSESSMENT_IDS = [
+  'mnt-01', 'mnt-02',
+  'cmp-01', 'cmp-02',
+  'mnt-03', 'ins-02',
+  'sys-01', 'mvt-02',
+  'sys-02', 'sup-02',
+  'kno-01', 'kno-02', 'kno-03',
+  'full-assessment',
+  'master-assessment',
+]
+const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length // 15
 
 // RAG status based on progress percentage
 function ragStatus(progress: number): 'green' | 'amber' | 'red' {
@@ -79,11 +90,6 @@ export default async function ManagerDashboard() {
     manager_id: u.manager_id ?? null,
   }))
 
-  // Fetch module progress for all users
-  const { data: allProgress } = await supabase
-    .from('module_progress')
-    .select('user_id, completed')
-
   // Fetch assessment results for all users
   const { data: allResults } = await supabase
     .from('assessment_results')
@@ -100,11 +106,19 @@ export default async function ManagerDashboard() {
 
   // Build per-user stats
   const memberStats = teamMembers.map(member => {
-    const progress = (allProgress ?? []).filter(p => p.user_id === member.id)
-    const completedCount = progress.filter(p => p.completed).length
-    const progressPct = TOTAL_MODULES > 0
-      ? Math.round((completedCount / TOTAL_MODULES) * 100)
-      : 0
+    const memberResults = (allResults ?? []).filter(r => r.user_id === member.id)
+    // Count unique assessments passed (latest attempt per ID)
+    const latestPassed = new Map<string, boolean>()
+    for (const r of memberResults) {
+      if (ALL_ASSESSMENT_IDS.includes(r.assessment_id)) {
+        // Only overwrite if not already passed — a pass locks it in
+        if (!latestPassed.get(r.assessment_id)) {
+          latestPassed.set(r.assessment_id, r.passed)
+        }
+      }
+    }
+    const completedCount = Array.from(latestPassed.values()).filter(Boolean).length
+    const progressPct = Math.round((completedCount / TOTAL_ASSESSMENTS) * 100)
 
     const results = (allResults ?? []).filter(r => r.user_id === member.id)
     const avgScore = results.length > 0
@@ -170,7 +184,7 @@ export default async function ManagerDashboard() {
         <StatCard
           label="Team Members"
           value={teamCount}
-          sub="Active on the programme"
+          sub={`${TOTAL_ASSESSMENTS} assessments in programme`}
           icon={<Users className="w-5 h-5" />}
           accent="navy"
         />
@@ -273,7 +287,7 @@ export default async function ManagerDashboard() {
                     {/* Modules */}
                     <td className="px-4 py-3 whitespace-nowrap">
                       <span className="text-sm tabular-nums text-slate-600">
-                        {member.completedCount}<span className="text-slate-400">/{TOTAL_MODULES}</span>
+                        {member.completedCount}<span className="text-slate-400">/{TOTAL_ASSESSMENTS}</span>
                       </span>
                     </td>
 
