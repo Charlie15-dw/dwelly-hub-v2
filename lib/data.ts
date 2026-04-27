@@ -109,14 +109,14 @@ export const MODULES: Module[] = [
   },
   {
     id: 'mnt-03', title: 'Inspections 1/2 — Creating an Inspection Task', section: 'inspections', phase: 'embedding',
-    duration: '35 min', videoLength: '6 min', passmark: 80, completed: false, progress: 0, locked: true, quizCount: 5,
+    duration: '35 min', videoLength: '6 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 5,
     roles: ['property_manager'],
     description: 'What to look for, how to evidence it, photo standards and report writing.',
     tags: ['inspections', 'evidence', 'reporting'], spacedRepetitionDue: null, confidenceRating: null,
   },
   {
     id: 'ins-02', title: 'Inspections 2/2 — Completing the Inspection', section: 'inspections', phase: 'embedding',
-    duration: '30 min', videoLength: '5 min', passmark: 80, completed: false, progress: 0, locked: true, quizCount: 6,
+    duration: '30 min', videoLength: '5 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 6,
     roles: ['property_manager'],
     description: 'How to complete the inspection within Dwelly — uploading the report, recording findings, and raising follow-up jobs.',
     tags: ['inspections', 'reporting', 'evidence'], spacedRepetitionDue: null, confidenceRating: null,
@@ -154,14 +154,14 @@ export const MODULES: Module[] = [
   },
   {
     id: 'sys-02', title: 'Support 1/2 — Raising a Support Task', section: 'support', phase: 'embedding',
-    duration: '35 min', videoLength: '5 min', passmark: 80, completed: false, progress: 0, locked: true, quizCount: 5,
+    duration: '35 min', videoLength: '5 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 5,
     roles: ['property_manager', 'lettings_negotiator'],
     description: 'The full renewal process from landlord conversation to agreement. Market positioning.',
     tags: ['renewals', 'rent-reviews', 'landlords'], spacedRepetitionDue: null, confidenceRating: null,
   },
   {
     id: 'sup-02', title: 'Support 2/2 — Actioning the Support Task', section: 'support', phase: 'embedding',
-    duration: '25 min', videoLength: '4 min', passmark: 80, completed: false, progress: 0, locked: true, quizCount: 6,
+    duration: '25 min', videoLength: '4 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 6,
     roles: ['property_manager', 'lettings_negotiator'],
     description: 'How to action renewal and support tasks within Dwelly — processing the renewal, updating rent, and confirming tenancy terms.',
     tags: ['renewals', 'rent-reviews', 'landlords'], spacedRepetitionDue: null, confidenceRating: null,
@@ -170,21 +170,21 @@ export const MODULES: Module[] = [
   // KNOWLEDGE
   {
     id: 'kno-01', title: 'Difficult Conversations', section: 'knowledge', phase: 'embedding',
-    duration: '40 min', videoLength: '6 min', passmark: 80, completed: false, progress: 0, locked: true, quizCount: 5,
+    duration: '40 min', videoLength: '6 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 5,
     roles: ['property_manager', 'lettings_negotiator'],
     description: 'Handling rent arrears conversations, complaint calls, and confrontational tenants.',
     tags: ['communication', 'arrears', 'conflict'], spacedRepetitionDue: null, confidenceRating: null,
   },
   {
     id: 'kno-02', title: 'Handling Disrepair Claims', section: 'knowledge', phase: 'embedding',
-    duration: '45 min', videoLength: '7 min', passmark: 80, completed: false, progress: 0, locked: true, quizCount: 7,
+    duration: '45 min', videoLength: '7 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 7,
     roles: ['property_manager'],
     description: 'Legal obligations, timescales, evidence requirements and escalation to specialists.',
     tags: ['disrepair', 'legal', 'evidence'], spacedRepetitionDue: null, confidenceRating: null,
   },
   {
     id: 'kno-03', title: 'Understanding a P&L', section: 'knowledge', phase: 'embedding',
-    duration: '30 min', videoLength: '5 min', passmark: 75, completed: false, progress: 0, locked: true, quizCount: 5,
+    duration: '30 min', videoLength: '5 min', passmark: 75, completed: false, progress: 0, locked: false, quizCount: 5,
     roles: ['property_manager'],
     description: 'Basic financial literacy — service charges, deductions, and explaining costs to landlords.',
     tags: ['finance', 'P&L', 'landlords'], spacedRepetitionDue: null, confidenceRating: null,
