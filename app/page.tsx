@@ -81,7 +81,7 @@ export default function LoginPage() {
             {[
               { icon: BookOpen, text: 'Role-specific video modules & written guides' },
               { icon: Brain,    text: 'Spaced repetition to lock in knowledge' },
-              { icon: Award,    text: 'Competency passport & CPD logging' },
+              { icon: Award,    text: 'Competency passport & sign-off gates' },
               { icon: Shield,   text: 'Compliance sign-off gates' },
             ].map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-center gap-3">

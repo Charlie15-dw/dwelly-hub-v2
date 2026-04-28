@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import {
-  ArrowRight, BookOpen, Clock, Award,
+  ArrowRight, BookOpen, Award,
   TrendingUp, CheckCircle2, ChevronRight,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
@@ -153,13 +153,6 @@ export default async function DashboardPage() {
           accent="teal"
         />
         <StatCard
-          label="CPD Hours Logged"
-          value={0}
-          sub="Target: 20 hours / year"
-          icon={<Clock className="w-5 h-5" />}
-          accent="gold"
-        />
-        <StatCard
           label="Competencies Signed Off"
           value={0}
           sub="0 pending approval"
@@ -231,13 +224,6 @@ export default async function DashboardPage() {
                   <span className="font-semibold text-navy">{completedCount} / {totalModules}</span>
                 </div>
                 <ProgressBar value={completedCount} max={totalModules} color="teal" />
-              </div>
-              <div>
-                <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-slate-500">CPD Hours</span>
-                  <span className="font-semibold text-navy">0 / 20</span>
-                </div>
-                <ProgressBar value={0} max={20} color="orange" />
               </div>
             </div>
             <Link href="/passport" className="btn-outline w-full mt-4 text-xs">

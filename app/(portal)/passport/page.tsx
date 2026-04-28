@@ -1,32 +1,18 @@
 import Link from 'next/link'
 import {
   Award, CheckCircle2, Clock, Download, AlertTriangle,
-  TrendingUp, BookOpen, Shield, Plus, ChevronRight, Trophy,
+  TrendingUp, BookOpen, Shield, ChevronRight, Trophy,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Badge from '@/components/ui/Badge'
 import AchievementBadge from '@/components/ui/AchievementBadge'
 import { ACHIEVEMENTS } from '@/lib/achievements-data'
 import {
-  CURRENT_USER, CPD_ENTRIES, SIGN_OFF_GATES, MODULES,
+  CURRENT_USER, SIGN_OFF_GATES, MODULES,
   ROLE_LABELS,
 } from '@/lib/data'
 import { formatDate, cn } from '@/lib/utils'
 
-const cpdByType = {
-  formal:     CPD_ENTRIES.filter(e => e.type === 'formal'),
-  technical:  CPD_ENTRIES.filter(e => e.type === 'technical'),
-  reflective: CPD_ENTRIES.filter(e => e.type === 'reflective'),
-}
-
-const totalCPD = CPD_ENTRIES.reduce((sum, e) => sum + e.hours, 0)
-
-const TYPE_LABELS = { formal: 'Formal Learning', technical: 'Technical Update', reflective: 'Reflective Practice' }
-const TYPE_COLORS: Record<string, string> = {
-  formal:     'bg-teal/10 text-teal border-teal/20',
-  technical:  'bg-navy/10 text-navy border-navy/20',
-  reflective: 'bg-gold/20 text-yellow-700 border-gold/30',
-}
 
 export default function PassportPage() {
   return (
@@ -60,7 +46,6 @@ export default function PassportPage() {
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
             { label: 'Modules Completed',   value: CURRENT_USER.modulesCompleted, sub: `of ${CURRENT_USER.modulesTotal}` },
-            { label: 'CPD Hours Logged',     value: totalCPD.toFixed(1),           sub: `/ ${CURRENT_USER.cpdTarget} target` },
             { label: 'Competencies Signed',  value: CURRENT_USER.competenciesSignedOff.length, sub: `${CURRENT_USER.pendingSignOffs.length} pending` },
             { label: 'Avg Assessment Score', value: `${CURRENT_USER.assessmentScore}%`, sub: 'Pass threshold: 80%' },
           ].map(({ label, value, sub }) => (
@@ -150,77 +135,6 @@ export default function PassportPage() {
             </div>
           </div>
 
-          {/* CPD Log */}
-          <div className="card p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-sm font-bold text-navy">CPD Log</h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  {totalCPD.toFixed(1)} / {CURRENT_USER.cpdTarget} hours completed · Target: 20 hrs/year
-                </p>
-              </div>
-              <button className="btn-outline text-xs flex items-center gap-1.5">
-                <Plus className="w-3.5 h-3.5" aria-hidden /> Log CPD
-              </button>
-            </div>
-
-            {/* CPD breakdown */}
-            <div className="grid grid-cols-3 gap-3 mb-5">
-              {(['formal', 'technical', 'reflective'] as const).map(type => {
-                const hours = cpdByType[type].reduce((s, e) => s + e.hours, 0)
-                return (
-                  <div key={type} className={cn('rounded-xl p-3 border', TYPE_COLORS[type])}>
-                    <p className="text-lg font-bold tabular-nums">{hours.toFixed(1)}h</p>
-                    <p className="text-[11px] mt-0.5">{TYPE_LABELS[type]}</p>
-                  </div>
-                )
-              })}
-            </div>
-
-            {/* Annual progress */}
-            <div className="mb-5 p-3 bg-slate-50 rounded-xl border border-slate-100">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-medium text-slate-600">Annual CPD Target</span>
-                <span className="text-xs font-bold text-navy tabular-nums">{totalCPD.toFixed(1)} / {CURRENT_USER.cpdTarget}h</span>
-              </div>
-              <ProgressBar value={totalCPD} max={CURRENT_USER.cpdTarget} color="teal" size="lg" />
-            </div>
-
-            {/* Log entries */}
-            <div className="space-y-2">
-              {CPD_ENTRIES.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map(entry => (
-                <div
-                  key={entry.id}
-                  className="flex items-center justify-between gap-3 p-3 rounded-lg border border-slate-100 hover:border-slate-200 transition-colors"
-                >
-                  <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <div className={cn('w-2 h-2 rounded-full mt-1.5 flex-shrink-0', {
-                      'bg-teal':   entry.type === 'formal',
-                      'bg-navy':   entry.type === 'technical',
-                      'bg-gold':   entry.type === 'reflective',
-                    })} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-navy truncate">{entry.title}</p>
-                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                        <span className={cn('text-[10px] font-medium px-1.5 py-0.5 rounded border', TYPE_COLORS[entry.type])}>
-                          {TYPE_LABELS[entry.type]}
-                        </span>
-                        <span className="text-[11px] text-slate-400">{entry.source}</span>
-                        <span className="text-[11px] text-slate-400">{formatDate(entry.date)}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <p className="text-sm font-bold text-navy tabular-nums">{entry.hours}h</p>
-                    {entry.verified
-                      ? <p className="text-[10px] text-teal font-medium">Verified</p>
-                      : <p className="text-[10px] text-amber-500 font-medium">Pending</p>
-                    }
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Right col */}

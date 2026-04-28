@@ -42,8 +42,6 @@ export interface TeamMember {
   modulesCompleted: number
   modulesTotal: number
   assessmentScore: number
-  cpdHours: number
-  cpdTarget: number
   lastActive: string
   competenciesSignedOff: string[]
   pendingSignOffs: string[]
@@ -59,15 +57,6 @@ export interface QuizQuestion {
   tier?: 'master' | 'recap'  // 'master' = master assessment only, 'recap' = recap quiz only
 }
 
-export interface CPDEntry {
-  id: string
-  date: string
-  title: string
-  type: 'formal' | 'technical' | 'reflective'
-  hours: number
-  source: string
-  verified: boolean
-}
 
 export interface SignOffGate {
   id: string
@@ -204,7 +193,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'tm-01', name: 'Sarah Mitchell', role: 'property_manager', email: 'sarah.mitchell@dwelly.co.uk',
     startDate: '2026-01-06', phase: 'onboarding', overallProgress: 68, ragStatus: 'green',
-    modulesCompleted: 8, modulesTotal: 13, assessmentScore: 87, cpdHours: 12, cpdTarget: 20,
+    modulesCompleted: 8, modulesTotal: 13, assessmentScore: 87,
     lastActive: '2026-04-07',
     competenciesSignedOff: ['Portal Induction', 'Repair Logging', 'Gas Safety'],
     pendingSignOffs: ['Deposit Protection'],
@@ -212,7 +201,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'tm-02', name: 'James Okafor', role: 'property_manager', email: 'james.okafor@dwelly.co.uk',
     startDate: '2026-01-06', phase: 'foundation', overallProgress: 32, ragStatus: 'amber',
-    modulesCompleted: 4, modulesTotal: 13, assessmentScore: 72, cpdHours: 5, cpdTarget: 20,
+    modulesCompleted: 4, modulesTotal: 13, assessmentScore: 72,
     lastActive: '2026-04-03',
     competenciesSignedOff: ['Portal Induction'],
     pendingSignOffs: ['Repair Logging', 'Gas Safety', 'Deposit Protection'],
@@ -220,7 +209,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'tm-03', name: 'Priya Sharma', role: 'lettings_negotiator', email: 'priya.sharma@dwelly.co.uk',
     startDate: '2026-02-03', phase: 'onboarding', overallProgress: 55, ragStatus: 'green',
-    modulesCompleted: 6, modulesTotal: 10, assessmentScore: 91, cpdHours: 8, cpdTarget: 20,
+    modulesCompleted: 6, modulesTotal: 10, assessmentScore: 91,
     lastActive: '2026-04-08',
     competenciesSignedOff: ['Portal Induction', 'Compliance Checklist'],
     pendingSignOffs: ['Deposit Protection'],
@@ -228,7 +217,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'tm-04', name: 'Tom Blackwell', role: 'maintenance_coordinator', email: 'tom.blackwell@dwelly.co.uk',
     startDate: '2026-01-20', phase: 'foundation', overallProgress: 18, ragStatus: 'red',
-    modulesCompleted: 2, modulesTotal: 7, assessmentScore: 58, cpdHours: 2, cpdTarget: 20,
+    modulesCompleted: 2, modulesTotal: 7, assessmentScore: 58,
     lastActive: '2026-03-25',
     competenciesSignedOff: ['Portal Induction'],
     pendingSignOffs: ['Repair Logging', 'Contractor Management'],
@@ -236,7 +225,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'tm-05', name: 'Amara Nwosu', role: 'property_manager', email: 'amara.nwosu@dwelly.co.uk',
     startDate: '2026-03-03', phase: 'foundation', overallProgress: 22, ragStatus: 'amber',
-    modulesCompleted: 3, modulesTotal: 13, assessmentScore: 79, cpdHours: 3, cpdTarget: 20,
+    modulesCompleted: 3, modulesTotal: 13, assessmentScore: 79,
     lastActive: '2026-04-06',
     competenciesSignedOff: ['Portal Induction'],
     pendingSignOffs: ['Compliance Checklist', 'Repair Logging'],
@@ -244,7 +233,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'tm-06', name: 'Daniel Hughes', role: 'lettings_negotiator', email: 'daniel.hughes@dwelly.co.uk',
     startDate: '2026-03-03', phase: 'foundation', overallProgress: 45, ragStatus: 'green',
-    modulesCompleted: 5, modulesTotal: 10, assessmentScore: 84, cpdHours: 6, cpdTarget: 20,
+    modulesCompleted: 5, modulesTotal: 10, assessmentScore: 84,
     lastActive: '2026-04-08',
     competenciesSignedOff: ['Portal Induction', 'Compliance Checklist'],
     pendingSignOffs: ['Deposit Protection'],
@@ -2827,16 +2816,6 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
 ]
 
-// ─── CPD Entries ───────────────────────────────────────────────────────────────
-
-export const CPD_ENTRIES: CPDEntry[] = [
-  { id: 'cpd-01', date: '2026-01-15', title: 'Welcome to Dwelly Portal', type: 'formal', hours: 0.5, source: 'Dwelly Portal', verified: true },
-  { id: 'cpd-02', date: '2026-01-22', title: 'Dwelly System Navigation & General Overview', type: 'formal', hours: 1.0, source: 'Dwelly Portal', verified: true },
-  { id: 'cpd-03', date: '2026-02-05', title: 'Repair Logging Module', type: 'formal', hours: 0.5, source: 'Dwelly Portal', verified: true },
-  { id: 'cpd-04', date: '2026-02-18', title: 'ARLA Propertymark: Lettings Law Update', type: 'technical', hours: 3.0, source: 'ARLA Propertymark', verified: true },
-  { id: 'cpd-05', date: '2026-03-10', title: 'Difficult Tenant Conversation (Reflective Log)', type: 'reflective', hours: 0.5, source: 'Self-reported', verified: false },
-  { id: 'cpd-06', date: '2026-03-25', title: 'Pre-Onboarding Compliance Checklist', type: 'formal', hours: 1.0, source: 'Dwelly Portal', verified: true },
-]
 
 // ─── Sign-Off Gates ────────────────────────────────────────────────────────────
 

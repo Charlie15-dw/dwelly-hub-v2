@@ -11,7 +11,7 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
   '/modules':      { title: 'Video Modules',        subtitle: 'Browse and continue your learning pathway' },
   '/knowledge':    { title: 'Knowledge Base',       subtitle: 'In-depth property and management knowledge articles' },
   '/assessments':  { title: 'Assessments',          subtitle: 'Test your knowledge across training, modules, and the knowledge base' },
-  '/passport':     { title: 'Competency Passport',  subtitle: 'Your verified skills and CPD record' },
+  '/passport':     { title: 'Competency Passport',  subtitle: 'Your verified skills and competency sign-off record' },
   '/glossary':     { title: 'Glossary',             subtitle: 'A-Z of property management terminology' },
   '/emergency':    { title: 'Emergency Procedures', subtitle: 'Quick-reference guides for property emergencies' },
   '/recap':        { title: 'Recap & Refresh',      subtitle: 'Monthly check-ins and refresher content for experienced PMs' },
