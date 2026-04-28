@@ -25,11 +25,46 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
+
+  // Gzip/Brotli compression for all responses
+  compress: true,
+
   async headers() {
     return [
+      // ── Security headers on every route ──────────────────────────────────
       {
         source: '/(.*)',
         headers: securityHeaders,
+      },
+
+      // ── Static assets: cache 1 year at edge (safe — Next.js content-hashes these) ──
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+
+      // ── Next.js image optimisation output: cache 24h, revalidate in background ──
+      {
+        source: '/_next/image(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },
+        ],
+      },
+
+      // ── Favicon & public static files: cache 24h ─────────────────────────
+      {
+        source: '/favicon.ico',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+        ],
+      },
+      {
+        source: '/:file(robots.txt|sitemap.xml|manifest.json)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+        ],
       },
     ]
   },
