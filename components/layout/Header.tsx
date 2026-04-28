@@ -1,7 +1,8 @@
 'use client'
 
-import { Bell, Search, ChevronRight } from 'lucide-react'
+import { Bell } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import SearchBar from '@/components/ui/SearchBar'
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
   '/dashboard':    { title: 'Dashboard',            subtitle: 'Your learning overview' },
@@ -34,15 +35,7 @@ export default function Header() {
 
       <div className="flex items-center gap-3">
         {/* Search */}
-        <div className="hidden md:flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 w-52">
-          <Search className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" aria-hidden />
-          <input
-            type="search"
-            placeholder="Search modules…"
-            className="bg-transparent text-sm text-slate-600 placeholder:text-slate-400 outline-none w-full"
-            aria-label="Search training modules"
-          />
-        </div>
+        <SearchBar />
 
         {/* Notifications */}
         <button
