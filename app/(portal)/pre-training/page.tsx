@@ -45,7 +45,7 @@ const QUESTIONS = [
   },
   {
     id: 4,
-    question: 'How confident do you feel in this topic area right now?',
+    question: 'How confident do you feel in the property management sector right now?',
     options: [
       { value: 'A', label: 'Not confident at all — completely new to me' },
       { value: 'B', label: 'I have some awareness but limited experience' },
