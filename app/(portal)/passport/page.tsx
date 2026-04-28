@@ -1,20 +1,48 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import {
   Award, CheckCircle2, Clock, Download, AlertTriangle,
-  TrendingUp, BookOpen, Shield, ChevronRight, Trophy,
+  Shield, ChevronRight, Trophy,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Badge from '@/components/ui/Badge'
 import AchievementBadge from '@/components/ui/AchievementBadge'
 import { ACHIEVEMENTS } from '@/lib/achievements-data'
-import {
-  CURRENT_USER, SIGN_OFF_GATES, MODULES,
-  ROLE_LABELS,
-} from '@/lib/data'
+import { SIGN_OFF_GATES, MODULES, ROLE_LABELS } from '@/lib/data'
+import { createServerClient } from '@/lib/supabase/server'
 import { formatDate, cn } from '@/lib/utils'
 
+const ALL_ASSESSMENT_IDS = [
+  'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
+  'sys-01', 'mvt-02', 'sys-02', 'sup-02',
+  'kno-01', 'kno-02', 'kno-03', 'full-assessment', 'master-assessment',
+]
+const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length // 15
 
-export default function PassportPage() {
+export default async function PassportPage() {
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/')
+
+  const [{ data: profile }, { data: resultRows }] = await Promise.all([
+    supabase.from('user_profiles').select('full_name, role, created_at').eq('id', user.id).maybeSingle(),
+    supabase.from('assessment_results').select('assessment_id, score, passed').eq('user_id', user.id),
+  ])
+
+  const name = profile?.full_name ?? user.email ?? 'You'
+  const role = (profile?.role as keyof typeof ROLE_LABELS) ?? 'property_manager'
+  const startDate = profile?.created_at ?? user.created_at
+
+  const passedIds = new Set(
+    (resultRows ?? [])
+      .filter(r => r.passed && ALL_ASSESSMENT_IDS.includes(r.assessment_id))
+      .map(r => r.assessment_id)
+  )
+  const completedCount = passedIds.size
+  const avgScore = (resultRows ?? []).length > 0
+    ? Math.round((resultRows ?? []).reduce((s, r) => s + r.score, 0) / (resultRows ?? []).length)
+    : null
+
   return (
     <div className="space-y-6">
       {/* Passport hero */}
@@ -29,9 +57,9 @@ export default function PassportPage() {
             </div>
             <div>
               <p className="text-xs uppercase tracking-wide font-semibold mb-0.5" style={{ color: '#5AADA8' }}>Competency Passport</p>
-              <h1 className="text-xl font-bold text-[#1D1D1F]">{CURRENT_USER.name}</h1>
-              <p className="text-sm mt-0.5" style={{ color: '#5AADA8' }}>{ROLE_LABELS[CURRENT_USER.role]}</p>
-              <p className="text-xs mt-0.5" style={{ color: '#8ECFCC' }}>Programme start: {formatDate(CURRENT_USER.startDate)}</p>
+              <h1 className="text-xl font-bold text-[#1D1D1F]">{name}</h1>
+              <p className="text-sm mt-0.5" style={{ color: '#5AADA8' }}>{ROLE_LABELS[role] ?? 'Property Manager'}</p>
+              <p className="text-xs mt-0.5" style={{ color: '#8ECFCC' }}>Programme start: {formatDate(startDate)}</p>
             </div>
           </div>
           <div className="flex flex-col items-end gap-2">
@@ -43,11 +71,11 @@ export default function PassportPage() {
         </div>
 
         {/* Stats strip */}
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4">
           {[
-            { label: 'Modules Completed',   value: CURRENT_USER.modulesCompleted, sub: `of ${CURRENT_USER.modulesTotal}` },
-            { label: 'Competencies Signed',  value: CURRENT_USER.competenciesSignedOff.length, sub: `${CURRENT_USER.pendingSignOffs.length} pending` },
-            { label: 'Avg Assessment Score', value: `${CURRENT_USER.assessmentScore}%`, sub: 'Pass threshold: 80%' },
+            { label: 'Assessments Passed',   value: completedCount,                              sub: `of ${TOTAL_ASSESSMENTS} total` },
+            { label: 'Competencies Signed',   value: SIGN_OFF_GATES.filter(g => g.signedOff).length, sub: `${SIGN_OFF_GATES.filter(g => !g.signedOff).length} pending` },
+            { label: 'Avg Assessment Score',  value: avgScore !== null ? `${avgScore}%` : '—',   sub: 'Pass threshold: 80%' },
           ].map(({ label, value, sub }) => (
             <div key={label} className="rounded-xl p-4 shadow-sm" style={{ backgroundColor: 'rgba(255,255,255,0.65)', border: '1px solid rgba(255,255,255,0.85)' }}>
               <p className="text-xl font-black text-[#1D1D1F] tabular-nums">{value}</p>
@@ -135,67 +163,38 @@ export default function PassportPage() {
             </div>
           </div>
 
+          {/* Assessment progress */}
+          <div className="card p-5">
+            <h2 className="text-sm font-bold text-navy mb-4">Assessment Progress</h2>
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span className="text-slate-500">Assessments passed</span>
+                  <span className="font-semibold text-navy">{completedCount} / {TOTAL_ASSESSMENTS}</span>
+                </div>
+                <ProgressBar value={completedCount} max={TOTAL_ASSESSMENTS} color="teal" size="lg" />
+              </div>
+            </div>
+            {completedCount === 0 && (
+              <p className="text-xs text-slate-400 mt-3">Complete assessments to track your progress here.</p>
+            )}
+          </div>
         </div>
 
         {/* Right col */}
         <div className="space-y-5">
-          {/* Competencies achieved */}
-          <div className="card p-5">
-            <h3 className="text-sm font-bold text-navy mb-3 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-teal" /> Competencies Achieved
-            </h3>
-            <div className="space-y-2">
-              {CURRENT_USER.competenciesSignedOff.map(comp => (
-                <div key={comp} className="flex items-center gap-2.5 p-2.5 rounded-lg bg-teal/5 border border-teal/20">
-                  <CheckCircle2 className="w-4 h-4 text-teal flex-shrink-0" aria-hidden />
-                  <span className="text-xs font-medium text-navy">{comp}</span>
-                </div>
-              ))}
-            </div>
-
-            {CURRENT_USER.pendingSignOffs.length > 0 && (
-              <>
-                <div className="my-3 border-t border-slate-100" />
-                <p className="text-xs font-semibold text-slate-500 mb-2">Pending</p>
-                <div className="space-y-2">
-                  {CURRENT_USER.pendingSignOffs.map(comp => (
-                    <div key={comp} className="flex items-center gap-2.5 p-2.5 rounded-lg bg-amber-50 border border-amber-200">
-                      <Clock className="w-4 h-4 text-amber-500 flex-shrink-0" aria-hidden />
-                      <span className="text-xs font-medium text-navy">{comp}</span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
 
           {/* T&C Supervision */}
           <div className="card p-5">
             <h3 className="text-sm font-bold text-navy mb-1">T&amp;C Supervision</h3>
             <p className="text-xs text-slate-500 mb-3">90-day supervised period tracker</p>
-            <div className="relative">
-              <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                <span>Day 1</span>
-                <span>Day 90</span>
-              </div>
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden mb-2">
-                <div
-                  className="h-full bg-gradient-to-r from-teal to-orange rounded-full"
-                  style={{ width: '65%' }}
-                  role="progressbar"
-                  aria-valuenow={65}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-label="T&C supervision progress: 65 of 90 days"
-                />
-              </div>
-              <p className="text-xs text-slate-600 font-medium">Day 58 of 90</p>
-              <p className="text-xs text-slate-400 mt-0.5">32 days remaining before solo sign-off eligibility</p>
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
+              <p className="text-xs text-slate-500">Your manager will update your supervision status here.</p>
             </div>
             <div className="mt-4 space-y-2">
               {[
-                { label: 'Week 1 Observation', done: true },
-                { label: 'Month 1 Review',     done: true },
+                { label: 'Week 1 Observation', done: false },
+                { label: 'Month 1 Review',     done: false },
                 { label: 'Month 2 Review',     done: false },
                 { label: 'Month 3 Sign-Off',   done: false },
               ].map(({ label, done }) => (
@@ -240,12 +239,12 @@ export default function PassportPage() {
             <h3 className="text-sm font-bold text-navy">Achievement Badges</h3>
           </div>
           <span className="text-xs text-slate-500">
-            {ACHIEVEMENTS.filter(a => a.earned).length} of {ACHIEVEMENTS.length} earned
+            0 of {ACHIEVEMENTS.length} earned
           </span>
         </div>
         <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-5 gap-3">
-          {[...ACHIEVEMENTS.filter(a => a.earned), ...ACHIEVEMENTS.filter(a => !a.earned)].map(a => (
-            <AchievementBadge key={a.id} achievement={a} />
+          {ACHIEVEMENTS.map(a => (
+            <AchievementBadge key={a.id} achievement={{ ...a, earned: false }} />
           ))}
         </div>
       </div>
