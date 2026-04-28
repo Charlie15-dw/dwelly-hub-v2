@@ -225,6 +225,31 @@ export default function PreTrainingPage() {
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [selected, setSelected] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [alreadyCompleted, setAlreadyCompleted] = useState(false)
+
+  // On mount — check if this user has already completed the learning profile
+  useEffect(() => {
+    async function checkExisting() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setLoading(false); return }
+
+      const { data } = await supabase
+        .from('learning_profiles')
+        .select('answers, completed_at')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (data?.answers) {
+        setAnswers(data.answers as Record<number, string>)
+        setAlreadyCompleted(true)
+        setStep('result')
+      }
+      setLoading(false)
+    }
+    checkExisting()
+  }, [])
 
   const question = QUESTIONS[current]
   const totalQ = QUESTIONS.length
@@ -259,9 +284,9 @@ export default function PreTrainingPage() {
 
   const profile = step === 'result' ? generateProfile(answers) : null
 
-  // Save to Supabase when results are shown
+  // Save to Supabase when results are shown (only on first completion)
   useEffect(() => {
-    if (step !== 'result' || !profile) return
+    if (step !== 'result' || !profile || alreadyCompleted) return
     async function save() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
@@ -279,6 +304,17 @@ export default function PreTrainingPage() {
     }
     save()
   }, [step]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Loading state while checking Supabase
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="card p-12 text-center">
+          <div className="w-10 h-10 border-2 border-[#0071E3]/30 border-t-[#0071E3] rounded-full animate-spin mx-auto" />
+        </div>
+      </div>
+    )
+  }
 
   // ── Intro ──
   if (step === 'intro') {
@@ -577,16 +613,19 @@ export default function PreTrainingPage() {
       {/* CTA */}
       <div className="card p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-bold text-[#1D1D1F]">Ready to start your modules</p>
-          <p className="text-xs text-[#6E6E73] mt-0.5">Your learning profile has been saved. Head to Video Modules to begin.</p>
+          <p className="text-sm font-bold text-[#1D1D1F]">
+            {alreadyCompleted ? 'Your learning profile is on record' : 'Ready to start your modules'}
+          </p>
+          <p className="text-xs text-[#6E6E73] mt-0.5">
+            {alreadyCompleted
+              ? 'This profile has been saved and is visible to your manager. Continue your learning journey below.'
+              : 'Your learning profile has been saved and is visible to your manager. Head to Video Modules to begin.'}
+          </p>
         </div>
         <div className="flex items-center gap-2.5 flex-shrink-0">
-          <button
-            onClick={() => { setStep('intro'); setCurrent(0); setAnswers({}); setSelected(null) }}
-            className="btn-secondary text-sm"
-          >
-            Retake
-          </button>
+          <Link href="/dashboard" className="btn-secondary text-sm">
+            Dashboard
+          </Link>
           <Link href="/modules" className="btn-primary flex items-center gap-2 text-sm">
             Go to Modules
             <ArrowRight className="w-4 h-4" aria-hidden />

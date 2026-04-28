@@ -215,13 +215,6 @@ function ModuleCard({ module, section }: { module: typeof MODULES[0]; section: s
         </div>
       )}
 
-      {/* Spaced rep due */}
-      {module.spacedRepetitionDue && (
-        <div className="mb-3 flex items-center gap-1.5 text-[11px] font-medium text-yellow-700 bg-gold/10 border border-gold/20 rounded-lg px-2.5 py-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0" />
-          Spaced repetition due
-        </div>
-      )}
 
       {/* CTA */}
       <div className="flex items-center justify-between mt-auto pt-1">
