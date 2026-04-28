@@ -192,11 +192,11 @@ export const MODULES: Module[] = [
 export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'tm-01', name: 'Sarah Mitchell', role: 'property_manager', email: 'sarah.mitchell@dwelly.co.uk',
-    startDate: '2026-01-06', phase: 'onboarding', overallProgress: 68, ragStatus: 'green',
-    modulesCompleted: 8, modulesTotal: 13, assessmentScore: 87,
+    startDate: '2026-01-06', phase: 'onboarding', overallProgress: 0, ragStatus: 'green',
+    modulesCompleted: 0, modulesTotal: 15, assessmentScore: 0,
     lastActive: '2026-04-07',
-    competenciesSignedOff: ['Portal Induction', 'Repair Logging', 'Gas Safety'],
-    pendingSignOffs: ['Deposit Protection'],
+    competenciesSignedOff: [],
+    pendingSignOffs: [],
   },
   {
     id: 'tm-02', name: 'James Okafor', role: 'property_manager', email: 'james.okafor@dwelly.co.uk',
