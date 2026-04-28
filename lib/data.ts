@@ -2656,12 +2656,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'How is a compliance job created in Dwelly for an upcoming gas safety renewal?',
     options: [
       'The PM must manually create a new compliance job 30 days before each certificate expiry date',
-      'Dwelly automatically creates a compliance job when the certificate approaches its expiry date based on the renewal reminder settings, giving the PM lead time to arrange the check',
+      'Dwelly automatically creates a compliance job 30 days before the certificate expiry date, giving the PM lead time to arrange the check',
       'The landlord creates the compliance job through their portal when they receive a reminder email from the gas safety scheme',
       'Compliance jobs are only created when the local authority issues an enforcement notice for an expired certificate',
     ],
     correct: 1,
-    rationale: 'Dwelly automatically generates compliance jobs ahead of certificate expiry dates based on the system\'s reminder settings (currently 90 days before expiry). This gives the PM sufficient lead time to contact the landlord, instruct a contractor, and complete the renewal before the existing certificate expires.',
+    rationale: 'Dwelly automatically generates compliance jobs 30 days before the certificate expiry date. This gives the PM sufficient lead time to contact the landlord, instruct a contractor, and complete the renewal before the existing certificate expires.',
   },
   {
     id: 'q-cmp-01-n4', moduleId: 'cmp-01',
