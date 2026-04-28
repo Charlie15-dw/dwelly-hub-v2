@@ -7,47 +7,56 @@ import ProgressBar from '@/components/ui/ProgressBar'
 import StatCard from '@/components/ui/StatCard'
 import QuickActions from '@/components/ui/QuickActions'
 import WelcomeGreeting from '@/components/ui/WelcomeGreeting'
-import { MODULES, SECTION_LABELS, ROLE_LABELS, CURRENT_USER } from '@/lib/data'
+import { MODULES, ROLE_LABELS, CURRENT_USER } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+
+const ALL_ASSESSMENT_IDS = [
+  'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
+  'sys-01', 'mvt-02', 'sys-02', 'sup-02',
+  'kno-01', 'kno-02', 'kno-03', 'full-assessment', 'master-assessment',
+]
+const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length // 15
 
 export default async function DashboardPage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
 
-  // Fetch real progress and scores
-  const [{ data: progressRows }, { data: resultRows }, { data: learningProfile }] = await Promise.all([
+  // Fetch assessment results, module progress (for Up Next), and learning profile
+  const [{ data: resultRows }, { data: progressRows }, { data: learningProfile }] = await Promise.all([
+    supabase.from('assessment_results').select('assessment_id, score, passed').eq('user_id', user.id),
     supabase.from('module_progress').select('module_id, completed').eq('user_id', user.id),
-    supabase.from('assessment_results').select('score, passed').eq('user_id', user.id),
     supabase.from('learning_profiles').select('completed_at').eq('user_id', user.id).maybeSingle(),
   ])
 
+  // Count unique passed assessments from the canonical 15
+  const passedIds = new Set(
+    (resultRows ?? [])
+      .filter(r => r.passed && ALL_ASSESSMENT_IDS.includes(r.assessment_id))
+      .map(r => r.assessment_id)
+  )
+  const completedCount = passedIds.size
+  const totalModules = TOTAL_ASSESSMENTS
+  const overallPct = Math.round((completedCount / totalModules) * 100)
+
+  const avgScore = (resultRows ?? []).length > 0
+    ? Math.round((resultRows ?? []).reduce((s, r) => s + r.score, 0) / (resultRows ?? []).length)
+    : null
+
+  // Up Next — video modules not yet completed in module_progress
   const completedModuleIds = new Set(
     (progressRows ?? []).filter(r => r.completed).map(r => r.module_id)
   )
-  const unlockedModules = MODULES.filter(m => !m.locked)
-  const completedCount = unlockedModules.filter(m => completedModuleIds.has(m.id)).length
-  const totalModules = unlockedModules.length
-  const overallPct = totalModules > 0 ? Math.round((completedCount / totalModules) * 100) : 0
-
-  const moduleResults = (resultRows ?? []).filter(r =>
-    !['full-assessment', 'master-assessment'].includes(r.score?.toString() ?? '') // keep all
-  )
-  const avgScore = moduleResults.length > 0
-    ? Math.round(moduleResults.reduce((s, r) => s + r.score, 0) / moduleResults.length)
-    : null
-
-  // Next modules to complete — first 4 unlocked that haven't been completed yet
-  const upNextModules = unlockedModules
+  const upNextModules = MODULES
     .filter(m => !completedModuleIds.has(m.id))
     .slice(0, 4)
 
   // Journey pill states based on real data
   const hasLearningProfile = !!learningProfile
   const hasStartedModules = completedCount > 0
-  const hasAssessmentResult = moduleResults.length > 0
+  const hasAssessmentResult = (resultRows ?? []).length > 0
 
   return (
     <div className="space-y-6">
@@ -78,7 +87,7 @@ export default async function DashboardPage() {
               {[
                 { label: 'Learning Profile',   href: '/pre-training', done: hasLearningProfile,    active: !hasLearningProfile },
                 { label: 'Training Guide',      href: '/training',     done: false,                 active: hasLearningProfile && !hasStartedModules },
-                { label: 'Video Modules',       href: '/modules',      done: completedCount === totalModules && totalModules > 0, active: hasLearningProfile && hasStartedModules && completedCount < totalModules },
+                { label: 'Video Modules',       href: '/modules',      done: upNextModules.length === 0 && completedModuleIds.size > 0, active: hasLearningProfile && hasStartedModules && upNextModules.length > 0 },
                 { label: 'Knowledge Base',      href: '/knowledge',    done: false,                 active: false },
                 { label: 'Assessments',         href: '/assessments',  done: false,                 active: hasAssessmentResult },
                 { label: 'Competency Passport', href: '/passport',     done: false,                 active: false },
@@ -113,7 +122,7 @@ export default async function DashboardPage() {
                 <div className="h-full bg-orange rounded-full transition-all duration-700" style={{ width: `${overallPct}%` }} />
               </div>
               <p className="text-xs mt-1 text-[#1D1D1F]/60">
-                {completedCount}/{totalModules} modules completed
+                {completedCount}/{totalModules} assessments completed
               </p>
             </div>
             <Link
@@ -132,7 +141,7 @@ export default async function DashboardPage() {
         <StatCard
           label="Modules Completed"
           value={completedCount}
-          sub={`of ${totalModules} total`}
+          sub={`of ${totalModules} assessments`}
           icon={<BookOpen className="w-5 h-5" />}
           accent="orange"
         />
@@ -218,7 +227,7 @@ export default async function DashboardPage() {
             <div className="space-y-3">
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-slate-500">Modules done</span>
+                  <span className="text-slate-500">Assessments done</span>
                   <span className="font-semibold text-navy">{completedCount} / {totalModules}</span>
                 </div>
                 <ProgressBar value={completedCount} max={totalModules} color="teal" />
