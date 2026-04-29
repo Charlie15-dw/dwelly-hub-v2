@@ -165,7 +165,7 @@ export default async function DashboardPage() {
           {upNextModules.length > 0 && (
             <div className="card p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-navy">Up Next</h3>
+                <h3 className="text-sm font-bold text-navy">Modules Up Next</h3>
                 <Link href="/modules" className="text-xs text-teal hover:text-teal-600 font-medium flex items-center gap-1">
                   View all <ChevronRight className="w-3 h-3" />
                 </Link>
