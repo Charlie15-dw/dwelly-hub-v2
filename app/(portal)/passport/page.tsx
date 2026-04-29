@@ -4,7 +4,6 @@ import {
   Award, CheckCircle2, Clock, Download, AlertTriangle,
   Shield, ChevronRight, Trophy,
 } from 'lucide-react'
-import ProgressBar from '@/components/ui/ProgressBar'
 import Badge from '@/components/ui/Badge'
 import AchievementBadge from '@/components/ui/AchievementBadge'
 import { ACHIEVEMENTS } from '@/lib/achievements-data'
@@ -163,22 +162,6 @@ export default async function PassportPage() {
             </div>
           </div>
 
-          {/* Assessment progress */}
-          <div className="card p-5">
-            <h2 className="text-sm font-bold text-navy mb-4">Assessment Progress</h2>
-            <div className="space-y-3">
-              <div>
-                <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-slate-500">Assessments passed</span>
-                  <span className="font-semibold text-navy">{completedCount} / {TOTAL_ASSESSMENTS}</span>
-                </div>
-                <ProgressBar value={completedCount} max={TOTAL_ASSESSMENTS} color="teal" size="lg" />
-              </div>
-            </div>
-            {completedCount === 0 && (
-              <p className="text-xs text-slate-400 mt-3">Complete assessments to track your progress here.</p>
-            )}
-          </div>
         </div>
 
         {/* Right col */}
