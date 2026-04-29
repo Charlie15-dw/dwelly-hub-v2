@@ -1,10 +1,9 @@
 import { redirect } from 'next/navigation'
 import {
-  Users, TrendingUp, AlertTriangle, BarChart3,
+  Users,
   CheckCircle2, Brain, RefreshCw, CalendarCheck,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
-import StatCard from '@/components/ui/StatCard'
 import TeamAssignmentPanel from '@/components/ui/TeamAssignmentPanel'
 import ReassignButton from '@/components/ui/ReassignButton'
 import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
@@ -179,38 +178,6 @@ export default async function ManagerDashboard() {
         </div>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Team Members"
-          value={teamCount}
-          sub={`${TOTAL_ASSESSMENTS} assessments in programme`}
-          icon={<Users className="w-5 h-5" />}
-          accent="navy"
-        />
-        <StatCard
-          label="Avg Progress"
-          value={`${avgProgress}%`}
-          sub="Across all pathways"
-          icon={<TrendingUp className="w-5 h-5" />}
-          accent="teal"
-        />
-        <StatCard
-          label="Avg Assessment Score"
-          value={avgScore !== null ? `${avgScore}%` : '—'}
-          sub="Pass threshold: 80%"
-          icon={<BarChart3 className="w-5 h-5" />}
-          accent="orange"
-        />
-        <StatCard
-          label="Needing Attention"
-          value={ragCounts.red}
-          sub={`${ragCounts.amber} in progress · ${ragCounts.green} on track`}
-          icon={<AlertTriangle className="w-5 h-5" />}
-          accent="gold"
-        />
-      </div>
-
       {/* RAG summary */}
       <div className="grid grid-cols-3 gap-4">
         {(['green', 'amber', 'red'] as const).map(status => (
@@ -233,26 +200,28 @@ export default async function ManagerDashboard() {
 
       {/* Team table */}
       <div className="card overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-          <h2 className="text-sm font-bold text-navy">Team Progress</h2>
-          <span className="text-xs text-slate-400">{teamCount} {teamCount === 1 ? 'member' : 'members'}</span>
+        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h2 className="text-base font-bold text-navy">Team Progress</h2>
+            <p className="text-xs text-slate-400 mt-0.5">{teamCount} {teamCount === 1 ? 'member' : 'members'} · {TOTAL_ASSESSMENTS} assessments in programme</p>
+          </div>
         </div>
 
         {teamCount === 0 ? (
-          <div className="px-5 py-12 text-center">
-            <Users className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+          <div className="px-6 py-16 text-center">
+            <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
             <p className="text-sm font-semibold text-slate-500">No team members yet</p>
             <p className="text-xs text-slate-400 mt-1">Add users in Supabase → Authentication → Users</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm" role="table">
+            <table className="w-full" role="table">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/80">
-                  {['Team Member', 'Role', 'Modules', 'Progress', 'Avg Score', 'Status', 'Joined'].map(h => (
+                  {['Team Member', 'Role', 'Assessments', 'Progress', 'Avg Score', 'Status', 'Joined'].map(h => (
                     <th
                       key={h}
-                      className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap"
+                      className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap"
                       scope="col"
                     >
                       {h}
@@ -260,42 +229,42 @@ export default async function ManagerDashboard() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y divide-slate-100">
                 {sorted.map(member => (
                   <tr key={member.id} className={cn('transition-colors hover:bg-slate-50/60', RAG_ROW[member.rag])}>
 
                     {/* Name */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-xs font-bold">{member.initials}</span>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                          <span className="text-white text-sm font-bold">{member.initials}</span>
                         </div>
                         <div>
                           <p className="text-sm font-semibold text-navy">{member.displayName}</p>
-                          <p className="text-[11px] text-slate-400">{member.email ?? '—'}</p>
+                          <p className="text-xs text-slate-400 mt-0.5">{member.email ?? '—'}</p>
                         </div>
                       </div>
                     </td>
 
                     {/* Role */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="text-xs text-slate-600 capitalize">
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <span className="text-sm text-slate-600 capitalize">
                         {member.role?.replace(/-/g, ' ') ?? 'Property Manager'}
                       </span>
                     </td>
 
-                    {/* Modules */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="text-sm tabular-nums text-slate-600">
-                        {member.completedCount}<span className="text-slate-400">/{TOTAL_ASSESSMENTS}</span>
+                    {/* Assessments */}
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <span className="text-base font-bold tabular-nums text-navy">
+                        {member.completedCount}<span className="text-slate-300 font-normal text-sm">/{TOTAL_ASSESSMENTS}</span>
                       </span>
                     </td>
 
                     {/* Progress */}
-                    <td className="px-4 py-3">
-                      <div className="w-24">
-                        <div className="flex justify-between text-[11px] mb-1">
-                          <span className="font-semibold text-navy">{member.progressPct}%</span>
+                    <td className="px-5 py-4">
+                      <div className="w-32">
+                        <div className="flex justify-between text-xs mb-1.5">
+                          <span className="font-bold text-navy">{member.progressPct}%</span>
                         </div>
                         <ProgressBar
                           value={member.progressPct}
@@ -306,9 +275,9 @@ export default async function ManagerDashboard() {
                     </td>
 
                     {/* Avg score */}
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       {member.avgScore !== null ? (
-                        <span className={cn('text-sm font-bold tabular-nums', {
+                        <span className={cn('text-base font-bold tabular-nums', {
                           'text-teal':      member.avgScore >= 80,
                           'text-amber-500': member.avgScore >= 65 && member.avgScore < 80,
                           'text-red-500':   member.avgScore < 65,
@@ -316,23 +285,23 @@ export default async function ManagerDashboard() {
                           {member.avgScore}%
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-400">No attempts</span>
+                        <span className="text-sm text-slate-400">No attempts</span>
                       )}
                     </td>
 
                     {/* RAG */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex items-center gap-1.5">
-                        <div className={cn('w-2 h-2 rounded-full flex-shrink-0', RAG_DOT[member.rag])} aria-hidden />
-                        <span className={cn('text-xs font-semibold', RAG_TEXT[member.rag])}>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <div className={cn('w-2.5 h-2.5 rounded-full flex-shrink-0', RAG_DOT[member.rag])} aria-hidden />
+                        <span className={cn('text-sm font-semibold', RAG_TEXT[member.rag])}>
                           {RAG_LABEL[member.rag]}
                         </span>
                       </div>
                     </td>
 
                     {/* Joined */}
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="text-xs text-slate-400">{member.joinDate}</span>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <span className="text-sm text-slate-400">{member.joinDate}</span>
                     </td>
 
                   </tr>
