@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Trophy, ChevronRight, ClipboardCheck, BookOpen, Play, Library, ArrowRight, Lock } from 'lucide-react'
 import { isLocked } from '@/lib/assessmentStorage'
+import { createClient } from '@/lib/supabase/client'
 
 const VIDEO_MODULE_ASSESSMENTS = [
   { label: 'Maintenance 1/2 — Creating a Repair Request',    icon: '🔧', id: 'mnt-01', questions: 6  },
@@ -40,13 +41,27 @@ export default function AssessmentsPage() {
   const [lockedIds, setLockedIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    const allIds = [
-      'master-assessment',
-      'full-assessment',
-      ...VIDEO_MODULE_ASSESSMENTS.map(a => a.id),
-      ...KNOWLEDGE_ASSESSMENTS.map(a => a.id),
-    ] as string[]
-    setLockedIds(new Set(allIds.filter(id => isLocked(id))))
+    async function init() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('role')
+          .eq('id', user.id)
+          .maybeSingle()
+        // Managers are never locked out of any assessment
+        if (profile?.role === 'manager') return
+      }
+      const allIds = [
+        'master-assessment',
+        'full-assessment',
+        ...VIDEO_MODULE_ASSESSMENTS.map(a => a.id),
+        ...KNOWLEDGE_ASSESSMENTS.map(a => a.id),
+      ] as string[]
+      setLockedIds(new Set(allIds.filter(id => isLocked(id))))
+    }
+    init()
   }, [])
 
   const AssessmentRow = ({ icon, label, id, questions, sublabel }: {
