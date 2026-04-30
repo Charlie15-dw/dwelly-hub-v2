@@ -158,19 +158,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel(
-      { model: 'gemini-1.5-flash' },
-      { apiVersion: 'v1' }
-    )
-
-    // Prepend system prompt as first exchange so v1 API accepts it
-    const systemTurn = [
-      { role: 'user' as const, parts: [{ text: getSystemPrompt() }] },
-      { role: 'model' as const, parts: [{ text: 'Understood. I am Dobby, the Dwelly portal assistant. I will only answer from the portal knowledge provided.' }] },
-    ]
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
 
     const history = [
-      ...systemTurn,
+      { role: 'user' as const, parts: [{ text: getSystemPrompt() }] },
+      { role: 'model' as const, parts: [{ text: 'Understood. I am Dobby, the Dwelly portal assistant. I will only answer from the portal knowledge provided.' }] },
       ...messages.slice(0, -1).map(m => ({
         role: m.role === 'assistant' ? 'model' as const : 'user' as const,
         parts: [{ text: m.content }],
@@ -178,7 +170,6 @@ export async function POST(req: NextRequest) {
     ]
 
     const lastMessage = messages[messages.length - 1].content
-
     const chat = model.startChat({ history })
     const result = await chat.sendMessage(lastMessage)
     const text = result.response.text()
