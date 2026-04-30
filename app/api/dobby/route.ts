@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
+import Groq from 'groq-sdk'
 import { NextRequest, NextResponse } from 'next/server'
 import { TRAINING_PAGES, KNOWLEDGE_ARTICLES, ContentBlock } from '@/lib/training-content'
 import { GLOSSARY_TERMS } from '@/lib/glossary-data'
@@ -149,9 +149,9 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey || apiKey === 'your-api-key-here') {
-    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+  const apiKey = process.env.GROQ_API_KEY
+  if (!apiKey) {
+    return NextResponse.json({ error: 'Server configuration error — GROQ_API_KEY missing' }, { status: 500 })
   }
 
   let body: unknown
@@ -168,17 +168,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'No valid messages provided' }, { status: 400 })
   }
 
-  const client = new Anthropic({ apiKey })
+  const client = new Groq({ apiKey })
 
   try {
-    const response = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
+    const response = await client.chat.completions.create({
+      model: 'llama-3.1-8b-instant',
       max_tokens: 400,
-      system: getSystemPrompt(),
-      messages,
+      messages: [
+        { role: 'system', content: getSystemPrompt() },
+        ...messages,
+      ],
     })
 
-    const text = response.content[0].type === 'text' ? response.content[0].text : ''
+    const text = response.choices[0]?.message?.content ?? ''
     return NextResponse.json({ message: text })
   } catch (err: unknown) {
     console.error('Dobby API error:', err)
