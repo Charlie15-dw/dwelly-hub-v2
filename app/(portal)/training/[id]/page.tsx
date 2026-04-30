@@ -57,15 +57,17 @@ export default function TrainingSectionPage({ params }: { params: { id: string }
                 <span className="flex items-center gap-1.5 text-xs text-[#AEAEB2]">
                   <Clock className="w-3.5 h-3.5" aria-hidden /> {page.readTime}
                 </span>
-                <a
-                  href={page.notionUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs text-[#0071E3] hover:underline font-medium"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" aria-hidden />
-                  Open in Notion
-                </a>
+                {page.notionUrl && (
+                  <a
+                    href={page.notionUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs text-[#0071E3] hover:underline font-medium"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" aria-hidden />
+                    Open in Notion
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -197,15 +199,17 @@ export default function TrainingSectionPage({ params }: { params: { id: string }
             The full written guide for this section is being imported from Notion.
             In the meantime, you can read it directly on the Notion page.
           </p>
-          <a
-            href={page.notionUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary inline-flex"
-          >
-            Read on Notion
-            <ExternalLink className="w-4 h-4" aria-hidden />
-          </a>
+          {page.notionUrl && (
+            <a
+              href={page.notionUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary inline-flex"
+            >
+              Read on Notion
+              <ExternalLink className="w-4 h-4" aria-hidden />
+            </a>
+          )}
         </div>
       )}
 
