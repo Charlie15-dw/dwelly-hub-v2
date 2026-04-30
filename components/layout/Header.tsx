@@ -18,6 +18,7 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
   '/analytics':    { title: 'My Analytics',         subtitle: 'Your learning performance and development insights' },
   '/settings':     { title: 'Settings',             subtitle: 'Profile, preferences, and accessibility' },
   '/manager':      { title: 'Manager Dashboard',    subtitle: 'Team progress and performance overview' },
+  '/dobby':        { title: 'Ask Dobby',            subtitle: 'Your portal assistant — questions answered from Dwelly\'s training content' },
 }
 
 export default function Header() {

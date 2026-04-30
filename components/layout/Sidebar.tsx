@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
-  AlertTriangle, BarChart3, BookA,
+  AlertTriangle, BarChart3, BookA, MessageCircle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -129,6 +129,16 @@ export default function Sidebar() {
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
                 Monthly
               </span>
+              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+            </Link>
+          )
+        })()}
+        {(() => {
+          const active = pathname.startsWith('/dobby')
+          return (
+            <Link href="/dobby" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+              <MessageCircle className="w-4 h-4 flex-shrink-0" aria-hidden />
+              <span className="flex-1">Ask Dobby</span>
               {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
             </Link>
           )
