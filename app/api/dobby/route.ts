@@ -158,16 +158,12 @@ export async function POST(req: NextRequest) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash', systemInstruction: getSystemPrompt() })
 
-    const history = [
-      { role: 'user' as const, parts: [{ text: getSystemPrompt() }] },
-      { role: 'model' as const, parts: [{ text: 'Understood. I am Dobby, the Dwelly portal assistant. I will only answer from the portal knowledge provided.' }] },
-      ...messages.slice(0, -1).map(m => ({
-        role: m.role === 'assistant' ? 'model' as const : 'user' as const,
-        parts: [{ text: m.content }],
-      })),
-    ]
+    const history = messages.slice(0, -1).map(m => ({
+      role: m.role === 'assistant' ? 'model' as const : 'user' as const,
+      parts: [{ text: m.content }],
+    }))
 
     const lastMessage = messages[messages.length - 1].content
     const chat = model.startChat({ history })
