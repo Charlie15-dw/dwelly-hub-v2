@@ -158,10 +158,10 @@ export async function POST(req: NextRequest) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash-8b',
-      systemInstruction: getSystemPrompt(),
-    })
+    const model = genAI.getGenerativeModel(
+      { model: 'gemini-1.5-flash', systemInstruction: getSystemPrompt() },
+      { apiVersion: 'v1' }
+    )
 
     // Convert messages to Gemini format
     const history = messages.slice(0, -1).map(m => ({
