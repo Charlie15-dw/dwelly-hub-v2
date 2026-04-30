@@ -231,19 +231,19 @@ export default async function ManagerDashboard() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {sorted.map(member => (
-                  <tr key={member.id} className={cn('transition-colors hover:bg-slate-50/60', RAG_ROW[member.rag])}>
+                  <tr key={member.id} className={cn('transition-colors hover:bg-slate-50/60 cursor-pointer', RAG_ROW[member.rag])}>
 
                     {/* Name */}
                     <td className="px-5 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
+                      <Link href={`/manager/member/${member.id}`} className="flex items-center gap-3 group/name">
                         <div className="w-9 h-9 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
                           <span className="text-white text-sm font-bold">{member.initials}</span>
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-navy">{member.displayName}</p>
+                          <p className="text-sm font-semibold text-navy group-hover/name:text-teal transition-colors">{member.displayName}</p>
                           <p className="text-xs text-slate-400 mt-0.5">{member.email ?? '—'}</p>
                         </div>
-                      </div>
+                      </Link>
                     </td>
 
                     {/* Role */}

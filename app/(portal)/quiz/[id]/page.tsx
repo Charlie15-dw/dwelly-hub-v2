@@ -139,16 +139,17 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      // Build wrong answers payload for manager review
-      const wrongAnswers = demoQuestions
-        .map((q, i) => ({ q, userAns: answers[i] }))
-        .filter(({ q, userAns }) => userAns !== q.correct)
-        .map(({ q, userAns }) => ({
+      // Build full answers payload for manager review
+      const allAnswers = demoQuestions.map((q, i) => {
+        const userAns = answers[i]
+        return {
           question: q.question,
           yourAnswer: userAns !== null ? q.options[userAns] : 'No answer',
           correctAnswer: q.options[q.correct],
+          isCorrect: userAns === q.correct,
           rationale: q.rationale,
-        }))
+        }
+      })
 
       // Save assessment result
       await supabase.from('assessment_results').insert({
@@ -156,7 +157,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
         assessment_id: moduleId,
         score,
         passed,
-        answers: wrongAnswers,
+        answers: allAnswers,
         completed_at: new Date().toISOString(),
       })
 
