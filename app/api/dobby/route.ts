@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
 import { NextRequest, NextResponse } from 'next/server'
 import { TRAINING_PAGES, KNOWLEDGE_ARTICLES, ContentBlock } from '@/lib/training-content'
 import { GLOSSARY_TERMS } from '@/lib/glossary-data'
@@ -99,8 +98,8 @@ function buildSystemPrompt(): string {
   return `You are Dobby, an internal assistant for the Dwelly Training Portal. You help property managers at Dwelly and its partner agencies with questions about their work.
 
 RULES - follow without exception:
-1. Only use the portal knowledge provided below. Do not use outside knowledge or make assumptions about anything not clearly stated.
-2. If the answer is not clearly in the knowledge below, say exactly this: "I could not find this in the portal. Please raise this with Charlie Lockwood and we'll get that added to my knowledge base."
+1. Only use the portal knowledge provided below. Do not use outside knowledge or make assumptions.
+2. If the answer is not clearly in the knowledge below, say exactly: "I could not find this in the portal. Please raise this with Charlie Lockwood and we'll get that added to my knowledge base."
 3. Write in plain sentences only. No bold, no bullet points, no numbered lists, no headers, no markdown formatting of any kind.
 4. Keep answers short and clear. Write for someone working in UK residential lettings who is not technical.
 5. Do not suggest seeking legal advice unless the portal documents themselves say to do so.
@@ -118,11 +117,8 @@ ${glossaryContent}`
 }
 
 let cachedSystemPrompt: string | null = null
-
 function getSystemPrompt(): string {
-  if (!cachedSystemPrompt) {
-    cachedSystemPrompt = buildSystemPrompt()
-  }
+  if (!cachedSystemPrompt) cachedSystemPrompt = buildSystemPrompt()
   return cachedSystemPrompt
 }
 
@@ -157,20 +153,41 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash', systemInstruction: getSystemPrompt() })
-
-    const history = messages.slice(0, -1).map(m => ({
-      role: m.role === 'assistant' ? 'model' as const : 'user' as const,
+    // Build conversation contents for Gemini REST API
+    const contents = messages.map(m => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: m.content }],
     }))
 
-    const lastMessage = messages[messages.length - 1].content
-    const chat = model.startChat({ history })
-    const result = await chat.sendMessage(lastMessage)
-    const text = result.response.text()
+    const payload = {
+      system_instruction: {
+        parts: [{ text: getSystemPrompt() }],
+      },
+      contents,
+      generationConfig: {
+        maxOutputTokens: 400,
+        temperature: 0.2,
+      },
+    }
 
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      const errMsg = data?.error?.message ?? `Gemini error ${res.status}`
+      return NextResponse.json({ error: errMsg }, { status: 500 })
+    }
+
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
     return NextResponse.json({ message: text })
+
   } catch (err: unknown) {
     console.error('Dobby API error:', err)
     const message = err instanceof Error ? err.message : String(err)
