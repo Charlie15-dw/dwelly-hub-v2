@@ -49,13 +49,14 @@ export default function DobbyPage() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        throw new Error(data.error ?? `Error ${res.status}`)
+        throw new Error(data.error ?? `Server error ${res.status}`)
       }
 
       const data = await res.json()
       setMessages([...newMessages, { role: 'assistant', content: data.message }])
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      const msg = err instanceof Error ? err.message : 'Something went wrong. Please try again.'
+      setError(msg)
     } finally {
       setLoading(false)
     }

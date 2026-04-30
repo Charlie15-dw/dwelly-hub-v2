@@ -180,8 +180,9 @@ export async function POST(req: NextRequest) {
 
     const text = response.content[0].type === 'text' ? response.content[0].text : ''
     return NextResponse.json({ message: text })
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('Dobby API error:', err)
-    return NextResponse.json({ error: 'Failed to get response' }, { status: 500 })
+    const message = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

@@ -19,7 +19,11 @@
       "Bash(ls /Users/charlielockwood/.claude/projects/-Users-charlielockwood-Portal-build/*.jsonl)",
       "Bash(python3 -c ':*)",
       "mcp__Claude_Preview__preview_start",
-      "Bash(xargs kill:*)"
+      "Bash(xargs kill:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJplaceholder npm run build)",
+      "Bash(node -e \" const fs = require\\('fs'\\); const content = fs.readFileSync\\('lib/data.ts', 'utf8'\\); const matches = [...content.matchAll\\(/moduleId: '\\([^']+\\)'[^}]*tier: '\\(recap|master\\)'/g\\)]; const allModules = [...content.matchAll\\(/id: '\\(q-[^']+\\)', moduleId: '\\([^']+\\)'/g\\)]; const tiered = new Set\\(matches.map\\(m => m[0]\\)\\); // Count by module and tier const counts = {}; for \\(const m of allModules\\) { const id = m[1]; const mod = m[2]; // find tier for this question const tierMatch = content.match\\(new RegExp\\(\\\\\"id: '\\\\\" + id + \\\\\"'[^}]*?tier: '\\([^']+\\)'\\\\\"\\)\\); const tier = tierMatch ? tierMatch[1] : 'standard'; if \\(!counts[mod]\\) counts[mod] = {}; counts[mod][tier] = \\(counts[mod][tier] || 0\\) + 1; } console.log\\(JSON.stringify\\(counts, null, 2\\)\\); \")"
     ]
   }
 }
