@@ -1,6 +1,6 @@
 'use client'
 
-import { Bell } from 'lucide-react'
+
 import { usePathname } from 'next/navigation'
 import SearchBar from '@/components/ui/SearchBar'
 
@@ -37,16 +37,6 @@ export default function Header() {
       <div className="flex items-center gap-3">
         {/* Search */}
         <SearchBar />
-
-        {/* Notifications */}
-        <button
-          className="relative w-9 h-9 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center
-                     hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-navy/20"
-          aria-label="View notifications (2 unread)"
-        >
-          <Bell className="w-4 h-4 text-slate-500" aria-hidden />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-orange rounded-full" aria-hidden />
-        </button>
 
         {/* Date */}
         <div className="hidden lg:block text-right">
