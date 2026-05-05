@@ -184,9 +184,10 @@ export default function LoginPage() {
 
           <p className="text-center text-xs text-slate-400 mt-4">
             Problems signing in? Contact{' '}
-            <a href="mailto:support@dwelly.co.uk" className="text-teal hover:underline">
-              support@dwelly.co.uk
+            <a href="mailto:charlie@dwelly.group" className="text-teal hover:underline">
+              charlie@dwelly.group
             </a>
+            {' '}or Charlie Lockwood on Slack
           </p>
         </div>
       </div>
