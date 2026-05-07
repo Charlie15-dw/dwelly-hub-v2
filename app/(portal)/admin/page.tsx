@@ -165,15 +165,15 @@ export default async function AdminPage() {
           {managerSummaries.map(mgr => (
             <div key={mgr.id} className="card overflow-hidden">
 
-              {/* Manager header */}
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4 flex-wrap">
+              {/* Manager header — clickable to view their scores */}
+              <Link href={`/admin/member/${mgr.id}`} className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4 flex-wrap hover:bg-slate-50/60 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
                     <span className="text-white text-sm font-bold">{mgr.initials}</span>
                   </div>
                   <div>
                     <p className="text-sm font-bold text-navy">{mgr.displayName}</p>
-                    <p className="text-xs text-slate-400">{mgr.email} · {mgr.teamCount} {mgr.teamCount === 1 ? 'member' : 'members'}</p>
+                    <p className="text-xs text-slate-400">{mgr.email} · {mgr.teamCount} {mgr.teamCount === 1 ? 'member' : 'members'} · <span className="text-teal">View scores →</span></p>
                   </div>
                 </div>
                 <div className="flex items-center gap-6 flex-shrink-0">
@@ -200,7 +200,7 @@ export default async function AdminPage() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Team rows */}
               {mgr.teamCount === 0 ? (
@@ -276,23 +276,73 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      {/* Full all-learners table */}
+      {/* Full all-users table — includes managers */}
       <div className="card overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
           <Users className="w-4 h-4 text-slate-400" aria-hidden />
-          <h2 className="text-sm font-bold text-navy">All Learners</h2>
-          <span className="ml-auto text-xs text-slate-400">{allLearnerStats.length} total · sorted by status</span>
+          <h2 className="text-sm font-bold text-navy">All Users</h2>
+          <span className="ml-auto text-xs text-slate-400">{allLearnerStats.length + managers.length} total · sorted by status</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full" role="table">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/80">
-                {['Learner', 'Manager', 'Assessments', 'Progress', 'Avg Score', 'Status'].map(h => (
+                {['User', 'Role / Manager', 'Assessments', 'Progress', 'Avg Score', 'Status'].map(h => (
                   <th key={h} className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
+              {/* Managers first */}
+              {managerSummaries.map(mgr => (
+                <tr key={mgr.id} className="transition-colors hover:bg-slate-50/60 bg-indigo-50/30 border-indigo-100">
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    <Link href={`/admin/member/${mgr.id}`} className="flex items-center gap-3 group/name">
+                      <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-xs font-bold">{mgr.initials}</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-navy group-hover/name:text-teal transition-colors">{mgr.displayName}</p>
+                        <p className="text-xs text-slate-400">{mgr.email}</p>
+                      </div>
+                    </Link>
+                  </td>
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    <span className="text-xs font-semibold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2 py-0.5 rounded-full">Manager</span>
+                  </td>
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    <span className="text-base font-bold tabular-nums text-navy">
+                      {getMemberStats(mgr).completedCount}<span className="text-slate-300 font-normal text-sm">/{TOTAL_ASSESSMENTS}</span>
+                    </span>
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="w-28">
+                      <div className="flex justify-between text-xs mb-1.5">
+                        <span className="font-bold text-navy">{getMemberStats(mgr).progressPct}%</span>
+                      </div>
+                      <ProgressBar value={getMemberStats(mgr).progressPct} size="sm" color={getMemberStats(mgr).progressPct >= 60 ? 'teal' : getMemberStats(mgr).progressPct >= 20 ? 'gold' : 'red'} />
+                    </div>
+                  </td>
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    {getMemberStats(mgr).avgScore !== null ? (
+                      <span className={cn('text-base font-bold tabular-nums', {
+                        'text-teal': (getMemberStats(mgr).avgScore ?? 0) >= 80,
+                        'text-amber-500': (getMemberStats(mgr).avgScore ?? 0) >= 65 && (getMemberStats(mgr).avgScore ?? 0) < 80,
+                        'text-red-500': (getMemberStats(mgr).avgScore ?? 0) < 65,
+                      })}>{getMemberStats(mgr).avgScore}%</span>
+                    ) : (
+                      <span className="text-sm text-slate-400">No attempts</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <div className={cn('w-2.5 h-2.5 rounded-full flex-shrink-0', RAG_DOT[getMemberStats(mgr).rag])} />
+                      <span className={cn('text-sm font-semibold', RAG_TEXT[getMemberStats(mgr).rag])}>{RAG_LABEL[getMemberStats(mgr).rag]}</span>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {/* Learners */}
               {allLearnerStats.map(member => {
                 const mgr = managers.find(m => m.id === member.manager_id)
                 const mgrName = mgr ? displayName(mgr) : '—'

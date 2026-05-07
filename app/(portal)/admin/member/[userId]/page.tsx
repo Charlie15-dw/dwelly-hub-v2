@@ -1,8 +1,10 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, CheckCircle2, XCircle } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, XCircle, RefreshCw } from 'lucide-react'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
+import ReassignButton from '@/components/ui/ReassignButton'
+import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
 
 const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
@@ -255,6 +257,55 @@ export default async function AdminMemberDetailPage({
           )
         })}
       </div>
+
+      {/* Reassignment panel — failed assessments */}
+      {(() => {
+        const failedModules = ALL_ASSESSMENT_IDS
+          .filter(id => byAssessment.has(id))
+          .map(id => {
+            const attempts = byAssessment.get(id)!
+            const latest = attempts[0]
+            return { assessmentId: id, score: latest.score, passed: latest.passed }
+          })
+          .filter(r => !r.passed)
+
+        if (failedModules.length === 0) return null
+        return (
+          <div className="card overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-amber-500" aria-hidden />
+              <h2 className="text-sm font-bold text-navy">Reassignment Actions</h2>
+              <span className="ml-auto text-xs text-slate-400">Grant a retake for failed assessments</span>
+            </div>
+            <div className="p-5 flex flex-wrap gap-3">
+              {failedModules.map(f => (
+                <div key={f.assessmentId} className="rounded-xl border border-red-100 bg-red-50/50 px-4 py-3 flex items-center gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-navy truncate max-w-[200px]">{ASSESSMENT_LABELS[f.assessmentId] ?? f.assessmentId}</p>
+                    <p className="text-[11px] text-red-500">Score: {f.score}% · Failed</p>
+                  </div>
+                  <ReassignButton
+                    userId={params.userId}
+                    moduleId={f.assessmentId}
+                    moduleName={ASSESSMENT_LABELS[f.assessmentId] ?? f.assessmentId}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="px-5 pb-4">
+              {failedModules.map(f => (
+                <WrongAnswersPanel
+                  key={f.assessmentId}
+                  userId={params.userId}
+                  moduleId={f.assessmentId}
+                  moduleName={ASSESSMENT_LABELS[f.assessmentId] ?? f.assessmentId}
+                  score={f.score}
+                />
+              ))}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Not yet attempted */}
       {(() => {

@@ -9,23 +9,27 @@ export async function POST(req: NextRequest) {
   const { userId, moduleId } = await req.json()
   if (!userId || !moduleId) return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
 
-  // Verify requester is a manager
+  // Verify requester is a manager or admin
   const { data: profile } = await supabase
     .from('user_profiles')
     .select('role')
     .eq('id', user.id)
     .single()
 
-  if (profile?.role !== 'manager') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const isManager = profile?.role === 'manager'
+  const isAdmin   = profile?.role === 'admin'
 
-  // Verify target user is on this manager's team
-  const { data: targetProfile } = await supabase
-    .from('user_profiles')
-    .select('manager_id')
-    .eq('id', userId)
-    .single()
+  if (!isManager && !isAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  if (targetProfile?.manager_id !== user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  // Managers can only retake-grant their own team; admins can grant anyone
+  if (isManager) {
+    const { data: targetProfile } = await supabase
+      .from('user_profiles')
+      .select('manager_id')
+      .eq('id', userId)
+      .single()
+    if (targetProfile?.manager_id !== user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
 
   // Insert reset record (quiz page will detect and consume this on next load)
   const { error } = await supabase
