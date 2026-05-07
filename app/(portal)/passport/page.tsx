@@ -1,11 +1,12 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
-  Award, CheckCircle2, Clock, Download, AlertTriangle,
+  Award, CheckCircle2, Clock, AlertTriangle,
   Shield, ChevronRight, Trophy,
 } from 'lucide-react'
 import Badge from '@/components/ui/Badge'
 import AchievementBadge from '@/components/ui/AchievementBadge'
+import ExportPassportButton from '@/components/ui/ExportPassportButton'
 import { ACHIEVEMENTS } from '@/lib/achievements-data'
 import { SIGN_OFF_GATES, MODULES, ROLE_LABELS } from '@/lib/data'
 import { createServerClient } from '@/lib/supabase/server'
@@ -62,9 +63,7 @@ export default async function PassportPage() {
             </div>
           </div>
           <div className="flex flex-col items-end gap-2">
-            <button className="btn-outline flex items-center gap-1.5 text-xs">
-              <Download className="w-3.5 h-3.5" aria-hidden /> Export Passport PDF
-            </button>
+            <ExportPassportButton />
             <p className="text-xs" style={{ color: '#8ECFCC' }}>Date-stamped & auditable</p>
           </div>
         </div>
