@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import { QUIZ_QUESTIONS, MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
-import { isLocked, getLastAttempt, saveAttempt, unlockAssessment, type AttemptRecord } from '@/lib/assessmentStorage'
+import { isLocked, getLastAttempt, saveAttempt, unlockAssessment, getInProgress, saveInProgress, clearInProgress, type AttemptRecord } from '@/lib/assessmentStorage'
 import { createClient } from '@/lib/supabase/client'
 
 // Shuffle helper — randomises question order for recap quizzes
@@ -73,8 +73,10 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   const [showResults, setShowResults]  = useState(false)
   const [lockedByStorage, setLockedByStorage] = useState(false)
   const [lastAttempt, setLastAttempt]  = useState<AttemptRecord | null>(null)
+  const [quizStarted, setQuizStarted]  = useState(false) // true once first answer submitted
 
   // Check lock status on mount — also checks Supabase for manager-triggered resets
+  // and restores any in-progress session
   useEffect(() => {
     if (isRecapQuiz) return
     async function checkLockAndReset() {
@@ -97,13 +99,30 @@ export default function QuizPage({ params }: { params: { id: string } }) {
             .update({ consumed_at: new Date().toISOString() })
             .eq('id', reset.id)
           unlockAssessment(moduleId)
+          clearInProgress(moduleId)
           return // allow the quiz to start fresh
         }
       }
-      // No reset — fall back to normal localStorage lock check
+      // No reset — check if fully locked first
       if (isLocked(moduleId)) {
         setLockedByStorage(true)
         setLastAttempt(getLastAttempt(moduleId))
+        return
+      }
+      // Restore any in-progress session (user navigated away mid-quiz)
+      const session = getInProgress(moduleId)
+      if (session && session.submittedUpTo >= 0) {
+        const restoredAnswers = [...session.answers]
+        // Pad or trim to match current question count
+        while (restoredAnswers.length < demoQuestions.length) restoredAnswers.push(null)
+        setAnswers(restoredAnswers)
+        const resumeQ = session.submittedUpTo + 1
+        setCurrentQ(Math.min(resumeQ, demoQuestions.length - 1))
+        // If they had answered the last question but not seen results, show results
+        if (session.submittedUpTo >= demoQuestions.length - 1) {
+          setShowResults(true)
+        }
+        setQuizStarted(true)
       }
     }
     checkLockAndReset()
@@ -131,6 +150,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   // Save attempt to localStorage AND Supabase when the results screen appears
   useEffect(() => {
     if (!showResults || isRecapQuiz) return
+    clearInProgress(moduleId)
     saveAttempt({ moduleId, completedAt: new Date().toISOString(), score, passed })
 
     // Also persist to Supabase so managers and analytics can see real data
@@ -262,6 +282,16 @@ export default function QuizPage({ params }: { params: { id: string } }) {
     newAnswers[currentQ] = selected
     setAnswers(newAnswers)
     setSubmitted(true)
+    setQuizStarted(true)
+    // Persist in-progress state so navigating away doesn't allow a restart
+    if (!isRecapQuiz) {
+      saveInProgress({
+        moduleId,
+        startedAt: new Date().toISOString(),
+        answers: newAnswers,
+        submittedUpTo: currentQ,
+      })
+    }
   }
 
   function handleNext() {
@@ -501,10 +531,12 @@ export default function QuizPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="max-w-2xl mx-auto space-y-5">
-      {/* Back */}
-      <Link href={backHref} className="text-sm text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> {backLabel}
-      </Link>
+      {/* Back — hidden once quiz is underway to prevent answer resets */}
+      {!quizStarted && (
+        <Link href={backHref} className="text-sm text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
+          <ArrowLeft className="w-4 h-4" /> {backLabel}
+        </Link>
+      )}
 
       {/* Header */}
       <div className="card p-5">
