@@ -1,7 +1,7 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, CheckCircle2, XCircle } from 'lucide-react'
-import { createServerClient } from '@/lib/supabase/server'
+import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 
 const ALL_ASSESSMENT_IDS = [
@@ -49,8 +49,10 @@ export default async function AdminMemberDetailPage({
     .from('user_profiles').select('role').eq('id', user.id).single()
   if (currentProfile?.role !== 'admin') redirect('/dashboard')
 
-  // Admins can view any user — no manager_id restriction
-  const { data: memberProfile } = await supabase
+  // Use service client to bypass RLS
+  const service = createServiceClient()
+
+  const { data: memberProfile } = await service
     .from('user_profiles')
     .select('id, full_name, email, role, created_at, manager_id')
     .eq('id', params.userId)
@@ -58,9 +60,8 @@ export default async function AdminMemberDetailPage({
 
   if (!memberProfile) notFound()
 
-  // Fetch their manager's name
   const { data: managerProfile } = memberProfile.manager_id
-    ? await supabase
+    ? await service
         .from('user_profiles')
         .select('full_name, email')
         .eq('id', memberProfile.manager_id)
@@ -71,7 +72,7 @@ export default async function AdminMemberDetailPage({
     || managerProfile?.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
     || 'Unassigned'
 
-  const { data: results } = await supabase
+  const { data: results } = await service
     .from('assessment_results')
     .select('assessment_id, score, passed, answers, completed_at')
     .eq('user_id', params.userId)

@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Users, Building2 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
-import { createServerClient } from '@/lib/supabase/server'
+import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 
 const ALL_ASSESSMENT_IDS = [
@@ -51,13 +51,16 @@ export default async function AdminPage() {
 
   if (currentProfile?.role !== 'admin') redirect('/dashboard')
 
+  // Use service client to bypass RLS and read all users/results
+  const service = createServiceClient()
+
   const [{ data: allProfiles }, { data: allResults }] = await Promise.all([
-    supabase
+    service
       .from('user_profiles')
       .select('id, full_name, email, role, created_at, manager_id')
       .neq('role', 'admin')
       .order('created_at', { ascending: true }),
-    supabase
+    service
       .from('assessment_results')
       .select('user_id, assessment_id, score, passed'),
   ])
