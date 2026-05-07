@@ -222,12 +222,12 @@ export default async function PassportPage() {
             <h3 className="text-sm font-bold text-navy">Achievement Badges</h3>
           </div>
           <span className="text-xs text-slate-500">
-            0 of {ACHIEVEMENTS.length} earned
+            {ACHIEVEMENTS.filter(a => a.earned).length} of {ACHIEVEMENTS.length} earned
           </span>
         </div>
         <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-5 gap-3">
           {ACHIEVEMENTS.map(a => (
-            <AchievementBadge key={a.id} achievement={{ ...a, earned: false }} />
+            <AchievementBadge key={a.id} achievement={a} />
           ))}
         </div>
       </div>
