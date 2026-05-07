@@ -50,8 +50,8 @@ export default function AssessmentsPage() {
           .select('role')
           .eq('id', user.id)
           .maybeSingle()
-        // Managers (or users with no profile row) are never locked out
-        if (!profile || profile.role === 'manager') return
+        // Managers, admins, or users with no profile row are never locked out
+        if (!profile || profile.role === 'manager' || profile.role === 'admin') return
       }
       const allIds = [
         'master-assessment',

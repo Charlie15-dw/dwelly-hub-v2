@@ -1,0 +1,354 @@
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { Users, Building2 } from 'lucide-react'
+import ProgressBar from '@/components/ui/ProgressBar'
+import { createServerClient } from '@/lib/supabase/server'
+import { cn } from '@/lib/utils'
+
+const ALL_ASSESSMENT_IDS = [
+  'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
+  'sys-01', 'mvt-02', 'sys-02', 'sup-02',
+  'kno-01', 'kno-02', 'kno-03', 'full-assessment', 'master-assessment',
+]
+const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length
+
+function ragStatus(progress: number): 'green' | 'amber' | 'red' {
+  if (progress >= 60) return 'green'
+  if (progress >= 20) return 'amber'
+  return 'red'
+}
+
+const RAG_DOT: Record<string, string> = {
+  red: 'bg-red-500', amber: 'bg-amber-400', green: 'bg-green-500',
+}
+const RAG_ROW: Record<string, string> = {
+  red: 'border-red-200 bg-red-50/40', amber: 'border-amber-200 bg-amber-50/40', green: 'border-teal/20 bg-teal/3',
+}
+const RAG_LABEL: Record<string, string> = {
+  green: 'On Track', amber: 'In Progress', red: 'Needs Attention',
+}
+const RAG_TEXT: Record<string, string> = {
+  green: 'text-green-700', amber: 'text-amber-700', red: 'text-red-700',
+}
+
+function displayName(profile: { full_name?: string | null; email?: string | null }) {
+  return profile.full_name
+    || profile.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
+    || 'Unknown'
+}
+
+function initials(name: string) {
+  return name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2)
+}
+
+export default async function AdminPage() {
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/')
+
+  const { data: currentProfile } = await supabase
+    .from('user_profiles').select('role').eq('id', user.id).single()
+
+  if (currentProfile?.role !== 'admin') redirect('/dashboard')
+
+  const [{ data: allProfiles }, { data: allResults }] = await Promise.all([
+    supabase
+      .from('user_profiles')
+      .select('id, full_name, email, role, created_at, manager_id')
+      .neq('role', 'admin')
+      .order('created_at', { ascending: true }),
+    supabase
+      .from('assessment_results')
+      .select('user_id, assessment_id, score, passed'),
+  ])
+
+  const profiles = allProfiles ?? []
+  const results = allResults ?? []
+
+  const managers = profiles.filter(p => p.role === 'manager')
+  const learners = profiles.filter(p => p.role !== 'manager')
+
+  function getMemberStats(member: typeof profiles[0]) {
+    const memberResults = results.filter(r => r.user_id === member.id)
+    const latestPassed = new Map<string, boolean>()
+    for (const r of memberResults) {
+      if (ALL_ASSESSMENT_IDS.includes(r.assessment_id)) {
+        if (!latestPassed.get(r.assessment_id)) latestPassed.set(r.assessment_id, r.passed)
+      }
+    }
+    const completedCount = Array.from(latestPassed.values()).filter(Boolean).length
+    const progressPct = Math.round((completedCount / TOTAL_ASSESSMENTS) * 100)
+    const avgScore = memberResults.length > 0
+      ? Math.round(memberResults.reduce((s, r) => s + r.score, 0) / memberResults.length)
+      : null
+    const rag = ragStatus(progressPct)
+    const name = displayName(member)
+    return { ...member, displayName: name, initials: initials(name), completedCount, progressPct, avgScore, rag }
+  }
+
+  // Manager team summaries
+  const managerSummaries = managers.map(mgr => {
+    const team = learners.filter(p => p.manager_id === mgr.id).map(getMemberStats)
+    const avgProgress = team.length > 0
+      ? Math.round(team.reduce((s, m) => s + m.progressPct, 0) / team.length)
+      : 0
+    const scored = team.filter(m => m.avgScore !== null)
+    const avgScore = scored.length > 0
+      ? Math.round(scored.reduce((s, m) => s + (m.avgScore ?? 0), 0) / scored.length)
+      : null
+    const ragCounts = {
+      green: team.filter(m => m.rag === 'green').length,
+      amber: team.filter(m => m.rag === 'amber').length,
+      red: team.filter(m => m.rag === 'red').length,
+    }
+    const name = displayName(mgr)
+    return {
+      ...mgr, displayName: name, initials: initials(name),
+      team: [...team].sort((a, b) => { const o = { red: 0, amber: 1, green: 2 }; return o[a.rag] - o[b.rag] }),
+      teamCount: team.length, avgProgress, avgScore, ragCounts,
+    }
+  })
+
+  const unassigned = learners.filter(p => !p.manager_id).map(getMemberStats)
+
+  const allLearnerStats = learners.map(getMemberStats).sort((a, b) => {
+    const o = { red: 0, amber: 1, green: 2 }
+    return o[a.rag] - o[b.rag]
+  })
+
+  const orgAvgProgress = allLearnerStats.length > 0
+    ? Math.round(allLearnerStats.reduce((s, m) => s + m.progressPct, 0) / allLearnerStats.length)
+    : 0
+  const orgRag = {
+    green: allLearnerStats.filter(m => m.rag === 'green').length,
+    amber: allLearnerStats.filter(m => m.rag === 'amber').length,
+    red: allLearnerStats.filter(m => m.rag === 'red').length,
+  }
+
+  return (
+    <div className="space-y-6">
+
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-navy flex items-center justify-center flex-shrink-0">
+          <Building2 className="w-5 h-5 text-white" aria-hidden />
+        </div>
+        <div>
+          <h1 className="text-xl font-bold text-navy">Organisation Overview</h1>
+          <p className="text-sm text-slate-500 mt-0.5">All teams · 2026–2027 Training Programme</p>
+        </div>
+      </div>
+
+      {/* Org-wide stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {[
+          { label: 'Total Learners',    value: allLearnerStats.length, sub: `across ${managers.length} manager${managers.length !== 1 ? 's' : ''}` },
+          { label: 'Org Avg Progress',  value: `${orgAvgProgress}%`,   sub: 'across all learners' },
+          { label: 'On Track',          value: orgRag.green,            sub: 'learners at 60%+', accent: 'text-green-600' },
+          { label: 'Needs Attention',   value: orgRag.red,              sub: 'learners below 20%', accent: 'text-red-600' },
+        ].map(({ label, value, sub, accent }) => (
+          <div key={label} className="card p-5">
+            <p className={cn('text-3xl font-black tabular-nums', accent ?? 'text-navy')}>{value}</p>
+            <p className="text-xs font-semibold text-slate-600 mt-0.5">{label}</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">{sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Teams by manager */}
+      <div>
+        <h2 className="text-sm font-bold text-navy mb-3">Teams by Manager</h2>
+        <div className="space-y-4">
+          {managerSummaries.map(mgr => (
+            <div key={mgr.id} className="card overflow-hidden">
+
+              {/* Manager header */}
+              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-sm font-bold">{mgr.initials}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-navy">{mgr.displayName}</p>
+                    <p className="text-xs text-slate-400">{mgr.email} · {mgr.teamCount} {mgr.teamCount === 1 ? 'member' : 'members'}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6 flex-shrink-0">
+                  <div className="text-center">
+                    <p className="text-lg font-black text-navy tabular-nums">{mgr.avgProgress}%</p>
+                    <p className="text-[11px] text-slate-400">Team avg</p>
+                  </div>
+                  {mgr.avgScore !== null && (
+                    <div className="text-center">
+                      <p className={cn('text-lg font-black tabular-nums', {
+                        'text-teal': mgr.avgScore >= 80,
+                        'text-amber-500': mgr.avgScore >= 65 && mgr.avgScore < 80,
+                        'text-red-500': mgr.avgScore < 65,
+                      })}>{mgr.avgScore}%</p>
+                      <p className="text-[11px] text-slate-400">Avg score</p>
+                    </div>
+                  )}
+                  <div className="flex gap-3">
+                    {(['green', 'amber', 'red'] as const).map(r => (
+                      <div key={r} className="flex items-center gap-1.5">
+                        <div className={cn('w-2 h-2 rounded-full', RAG_DOT[r])} />
+                        <span className="text-sm font-semibold text-slate-500">{mgr.ragCounts[r]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Team rows */}
+              {mgr.teamCount === 0 ? (
+                <div className="px-5 py-4">
+                  <p className="text-xs text-slate-400">No team members assigned yet.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-50">
+                  {mgr.team.map(member => (
+                    <Link
+                      key={member.id}
+                      href={`/admin/member/${member.id}`}
+                      className={cn('flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/80 transition-colors', RAG_ROW[member.rag])}
+                    >
+                      <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-xs font-bold">{member.initials}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-navy">{member.displayName}</p>
+                        <p className="text-xs text-slate-400 truncate">{member.email}</p>
+                      </div>
+                      <div className="flex items-center gap-6 flex-shrink-0">
+                        <div className="w-28">
+                          <div className="flex justify-between text-xs mb-1.5">
+                            <span className="font-bold text-navy">{member.progressPct}%</span>
+                            <span className="text-slate-400">{member.completedCount}/{TOTAL_ASSESSMENTS}</span>
+                          </div>
+                          <ProgressBar
+                            value={member.progressPct}
+                            size="sm"
+                            color={member.progressPct >= 60 ? 'teal' : member.progressPct >= 20 ? 'gold' : 'red'}
+                          />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className={cn('w-2 h-2 rounded-full flex-shrink-0', RAG_DOT[member.rag])} />
+                          <span className={cn('text-xs font-semibold', RAG_TEXT[member.rag])}>{RAG_LABEL[member.rag]}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* Unassigned */}
+          {unassigned.length > 0 && (
+            <div className="card overflow-hidden">
+              <div className="px-5 py-4 border-b border-slate-100">
+                <p className="text-sm font-bold text-navy">Unassigned Learners</p>
+                <p className="text-xs text-slate-400 mt-0.5">{unassigned.length} {unassigned.length === 1 ? 'user' : 'users'} not yet assigned to a manager</p>
+              </div>
+              <div className="divide-y divide-slate-50">
+                {unassigned.map(member => (
+                  <Link
+                    key={member.id}
+                    href={`/admin/member/${member.id}`}
+                    className="flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/80 transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-slate-300 flex items-center justify-center flex-shrink-0">
+                      <span className="text-white text-xs font-bold">{member.initials}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-navy">{member.displayName}</p>
+                      <p className="text-xs text-slate-400">{member.email}</p>
+                    </div>
+                    <span className="text-xs text-slate-400">No manager assigned</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Full all-learners table */}
+      <div className="card overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+          <Users className="w-4 h-4 text-slate-400" aria-hidden />
+          <h2 className="text-sm font-bold text-navy">All Learners</h2>
+          <span className="ml-auto text-xs text-slate-400">{allLearnerStats.length} total · sorted by status</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full" role="table">
+            <thead>
+              <tr className="border-b border-slate-100 bg-slate-50/80">
+                {['Learner', 'Manager', 'Assessments', 'Progress', 'Avg Score', 'Status'].map(h => (
+                  <th key={h} className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {allLearnerStats.map(member => {
+                const mgr = managers.find(m => m.id === member.manager_id)
+                const mgrName = mgr ? displayName(mgr) : '—'
+                return (
+                  <tr key={member.id} className={cn('transition-colors hover:bg-slate-50/60', RAG_ROW[member.rag])}>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <Link href={`/admin/member/${member.id}`} className="flex items-center gap-3 group/name">
+                        <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                          <span className="text-white text-xs font-bold">{member.initials}</span>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-navy group-hover/name:text-teal transition-colors">{member.displayName}</p>
+                          <p className="text-xs text-slate-400">{member.email}</p>
+                        </div>
+                      </Link>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap text-sm text-slate-600">{mgrName}</td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <span className="text-base font-bold tabular-nums text-navy">
+                        {member.completedCount}<span className="text-slate-300 font-normal text-sm">/{TOTAL_ASSESSMENTS}</span>
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="w-28">
+                        <div className="flex justify-between text-xs mb-1.5">
+                          <span className="font-bold text-navy">{member.progressPct}%</span>
+                        </div>
+                        <ProgressBar
+                          value={member.progressPct}
+                          size="sm"
+                          color={member.progressPct >= 60 ? 'teal' : member.progressPct >= 20 ? 'gold' : 'red'}
+                        />
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      {member.avgScore !== null ? (
+                        <span className={cn('text-base font-bold tabular-nums', {
+                          'text-teal': member.avgScore >= 80,
+                          'text-amber-500': member.avgScore >= 65 && member.avgScore < 80,
+                          'text-red-500': member.avgScore < 65,
+                        })}>{member.avgScore}%</span>
+                      ) : (
+                        <span className="text-sm text-slate-400">No attempts</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <div className={cn('w-2.5 h-2.5 rounded-full flex-shrink-0', RAG_DOT[member.rag])} />
+                        <span className={cn('text-sm font-semibold', RAG_TEXT[member.rag])}>{RAG_LABEL[member.rag]}</span>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  )
+}

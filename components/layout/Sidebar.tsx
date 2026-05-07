@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
-  AlertTriangle, BarChart3, BookA, MessageCircle,
+  AlertTriangle, BarChart3, BookA, MessageCircle, Building2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -33,6 +33,7 @@ export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const [isManager, setIsManager] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
@@ -44,6 +45,7 @@ export default function Sidebar() {
         .eq('id', user.id)
         .single()
       setIsManager(data?.role === 'manager')
+      setIsAdmin(data?.role === 'admin')
     })
   }, [])
 
@@ -157,11 +159,21 @@ export default function Sidebar() {
           )
         })()}
 
-        {/* Management — managers only */}
-        {isManager && (
+        {/* Management — managers and admins */}
+        {(isManager || isAdmin) && (
           <>
             <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Management</p>
-            {managerItems.map(({ href, label, icon: Icon }) => {
+            {isAdmin && (() => {
+              const active = pathname.startsWith('/admin')
+              return (
+                <Link href="/admin" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                  <Building2 className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Admin Overview</span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                </Link>
+              )
+            })()}
+            {isManager && managerItems.map(({ href, label, icon: Icon }) => {
               const active = pathname.startsWith(href)
               return (
                 <Link
