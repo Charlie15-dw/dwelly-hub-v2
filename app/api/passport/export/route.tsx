@@ -61,11 +61,6 @@ const s = StyleSheet.create({
   assessmentLabel: { flex: 1, fontSize: 8 },
   assessmentScore: { fontSize: 9, fontFamily: 'Helvetica-Bold', width: 36, textAlign: 'right' },
   assessmentBadge: { fontSize: 7, fontFamily: 'Helvetica-Bold', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 3, marginLeft: 6 },
-  // Sign-off gates
-  gateRow:      { flexDirection: 'row', alignItems: 'center', paddingVertical: 6, paddingHorizontal: 8, borderRadius: 5, marginBottom: 3 },
-  gateName:     { flex: 1, fontSize: 8, fontFamily: 'Helvetica-Bold' },
-  gateDesc:     { flex: 2, fontSize: 7, color: MID },
-  gateStatus:   { fontSize: 7, fontFamily: 'Helvetica-Bold', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 3, marginLeft: 6 },
   // Progress bar
   progressBg:   { height: 5, backgroundColor: '#E8E8ED', borderRadius: 3, marginTop: 4 },
   progressFill: { height: 5, borderRadius: 3 },
@@ -113,11 +108,6 @@ function PassportDocument({
   }
 
   const progressPct = Math.round((completedCount / ALL_ASSESSMENT_IDS.length) * 100)
-  const passedIds = new Set(results.filter(r => r.passed).map(r => r.assessment_id))
-  const signOffGates = [
-    { area: 'Gas Safety',         risk: 'High', description: 'Gas safety obligations & solo property management', signedOff: false },
-    { area: 'Deposit Protection',  risk: 'High', description: 'Deposit processing through approved scheme',        signedOff: false },
-  ]
 
   const roleLabel = role === 'manager' ? 'Manager'
     : role === 'admin' ? 'Admin'
@@ -153,7 +143,6 @@ function PassportDocument({
             { value: `${completedCount}/${ALL_ASSESSMENT_IDS.length}`, label: 'Assessments Passed', sub: `of ${ALL_ASSESSMENT_IDS.length} total` },
             { value: `${progressPct}%`,  label: 'Programme Progress',  sub: 'based on assessments passed' },
             { value: avgScore !== null ? `${avgScore}%` : '—', label: 'Average Score', sub: 'pass threshold: 80%' },
-            { value: '0/2', label: 'Sign-Off Gates', sub: '2 pending manager approval' },
           ].map(({ value, label, sub }) => (
             <View key={label} style={s.statBox}>
               <Text style={s.statValue}>{value}</Text>
@@ -202,25 +191,6 @@ function PassportDocument({
             </View>
           )
         })}
-
-        {/* Competency Sign-Off Gates */}
-        <Text style={s.sectionTitle}>Competency Sign-Off Gates</Text>
-        <View style={s.divider} />
-        {signOffGates.map(g => (
-          <View key={g.area} style={[s.gateRow, { backgroundColor: g.signedOff ? '#F0FDF4' : '#FEF2F2' }]}>
-            <Text style={s.gateName}>{g.area}</Text>
-            <Text style={s.gateDesc}>{g.description}</Text>
-            <Text style={[s.gateStatus, {
-              color: g.signedOff ? GREEN : RED,
-              backgroundColor: g.signedOff ? '#DCFCE7' : '#FEE2E2',
-            }]}>
-              {g.signedOff ? 'Signed Off' : 'Pending'}
-            </Text>
-            <Text style={[s.gateStatus, { color: '#D97706', backgroundColor: '#FEF3C7', marginLeft: 4 }]}>
-              {g.risk} Risk
-            </Text>
-          </View>
-        ))}
 
         {/* T&C Supervision */}
         <Text style={s.sectionTitle}>T&C Supervision — 90-Day Supervised Period</Text>

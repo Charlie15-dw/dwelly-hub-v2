@@ -1,14 +1,13 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
-  Award, CheckCircle2, Clock, AlertTriangle,
-  Shield, ChevronRight, Trophy,
+  Award, CheckCircle2, Clock,
+  Shield, Trophy,
 } from 'lucide-react'
-import Badge from '@/components/ui/Badge'
 import AchievementBadge from '@/components/ui/AchievementBadge'
 import ExportPassportButton from '@/components/ui/ExportPassportButton'
 import { ACHIEVEMENTS } from '@/lib/achievements-data'
-import { SIGN_OFF_GATES, MODULES, ROLE_LABELS } from '@/lib/data'
+import { ROLE_LABELS } from '@/lib/data'
 import { createServerClient } from '@/lib/supabase/server'
 import { formatDate, cn } from '@/lib/utils'
 
@@ -69,11 +68,10 @@ export default async function PassportPage() {
         </div>
 
         {/* Stats strip */}
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 gap-4">
           {[
-            { label: 'Assessments Passed',   value: completedCount,                              sub: `of ${TOTAL_ASSESSMENTS} total` },
-            { label: 'Competencies Signed',   value: SIGN_OFF_GATES.filter(g => g.signedOff).length, sub: `${SIGN_OFF_GATES.filter(g => !g.signedOff).length} pending` },
-            { label: 'Avg Assessment Score',  value: avgScore !== null ? `${avgScore}%` : '—',   sub: 'Pass threshold: 80%' },
+            { label: 'Assessments Passed',  value: completedCount,                            sub: `of ${TOTAL_ASSESSMENTS} total` },
+            { label: 'Avg Assessment Score', value: avgScore !== null ? `${avgScore}%` : '—', sub: 'Pass threshold: 80%' },
           ].map(({ label, value, sub }) => (
             <div key={label} className="rounded-xl p-4 shadow-sm" style={{ backgroundColor: 'rgba(255,255,255,0.65)', border: '1px solid rgba(255,255,255,0.85)' }}>
               <p className="text-xl font-black text-[#1D1D1F] tabular-nums">{value}</p>
@@ -85,86 +83,8 @@ export default async function PassportPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left col */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Competency sign-off gates */}
-          <div className="card p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-sm font-bold text-navy">Competency Sign-Off Gates</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Manager approval required for high-risk areas</p>
-              </div>
-              <Badge variant="navy">{SIGN_OFF_GATES.filter(g => g.signedOff).length}/{SIGN_OFF_GATES.length} Complete</Badge>
-            </div>
-            <div className="space-y-3">
-              {SIGN_OFF_GATES.map(gate => (
-                <div
-                  key={gate.id}
-                  className={cn(
-                    'rounded-xl p-4 border',
-                    gate.signedOff
-                      ? 'border-teal/30 bg-teal/3'
-                      : gate.risk === 'high'
-                        ? 'border-red-200 bg-red-50/50'
-                        : 'border-amber-200 bg-amber-50/50',
-                  )}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 flex-1 min-w-0">
-                      <div className={cn(
-                        'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5',
-                        gate.signedOff ? 'bg-teal/15' : gate.risk === 'high' ? 'bg-red-100' : 'bg-amber-100',
-                      )}>
-                        {gate.signedOff
-                          ? <CheckCircle2 className="w-4 h-4 text-teal" />
-                          : <AlertTriangle className={cn('w-4 h-4', gate.risk === 'high' ? 'text-red-500' : 'text-amber-500')} />
-                        }
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="text-sm font-bold text-navy">{gate.area}</p>
-                          {gate.risk === 'high' && !gate.signedOff && (
-                            <span className="text-[10px] font-semibold text-red-600 bg-red-100 border border-red-200 px-1.5 py-0.5 rounded">
-                              High Risk
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{gate.description}</p>
-                        {gate.signedOff && gate.signedOffBy && (
-                          <p className="text-xs text-teal mt-1.5 font-medium">
-                            ✓ Signed off by {gate.signedOffBy} · {gate.signedOffDate && formatDate(gate.signedOffDate)}
-                          </p>
-                        )}
-                        {!gate.signedOff && (
-                          <div className="mt-2">
-                            <p className="text-[11px] text-slate-500 mb-1">Required modules:</p>
-                            <div className="flex flex-wrap gap-1">
-                              {gate.requiredModules.map(modId => {
-                                const mod = MODULES.find(m => m.id === modId)
-                                return mod ? (
-                                  <Link key={modId} href={`/modules/${modId}`} className="text-[10px] text-teal bg-teal/10 border border-teal/20 px-2 py-0.5 rounded-full hover:bg-teal/20 transition-colors">
-                                    {mod.title}
-                                  </Link>
-                                ) : null
-                              })}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    {!gate.signedOff && (
-                      <button className="btn-outline text-xs flex-shrink-0">Request Sign-Off</button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
-
-        {/* Right col */}
-        <div className="space-y-5">
+        {/* Right col — now full width on its own row via sidebar */}
+        <div className="lg:col-span-1 space-y-5">
 
           {/* T&C Supervision */}
           <div className="card p-5">
