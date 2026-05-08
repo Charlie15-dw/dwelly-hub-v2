@@ -1,12 +1,14 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import {
   BookOpen, Lock, CheckCircle2, Play, Clock,
   ClipboardCheck, Filter, ChevronRight, Brain, ArrowRight,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Badge from '@/components/ui/Badge'
-import { MODULES, SECTION_LABELS, ROLE_LABELS, CURRENT_USER } from '@/lib/data'
+import { MODULES, SECTION_LABELS, ROLE_LABELS, CURRENT_USER, type Module } from '@/lib/data'
 import { cn } from '@/lib/utils'
+import { createServerClient } from '@/lib/supabase/server'
 
 const sections = [
   'maintenance',
@@ -32,9 +34,30 @@ const SECTION_BADGE_VARIANT: Record<string, 'teal'|'orange'|'red'|'navy'|'gold'>
   'support':             'teal',
 }
 
-export default function ModulesPage() {
-  const completedCount = MODULES.filter(m => m.completed).length
-  const totalCount = MODULES.length
+export default async function ModulesPage() {
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/')
+
+  const { data: progressRows } = await supabase
+    .from('module_progress')
+    .select('module_id, progress, completed')
+    .eq('user_id', user.id)
+
+  // Build a map of module_id -> { progress, completed } from Supabase
+  const progressMap = new Map(
+    (progressRows ?? []).map(r => [r.module_id, { progress: r.progress ?? 0, completed: r.completed ?? false }])
+  )
+
+  // Merge real completion data into static MODULES
+  const modules = MODULES.map(m => ({
+    ...m,
+    completed: progressMap.get(m.id)?.completed ?? false,
+    progress:  progressMap.get(m.id)?.progress  ?? 0,
+  }))
+
+  const completedCount = modules.filter(m => m.completed).length
+  const totalCount = modules.length
 
   return (
     <div className="space-y-6">
@@ -70,13 +93,13 @@ export default function ModulesPage() {
         </div>
         <div className="card p-4">
           <p className="text-2xl font-black text-orange tabular-nums">
-            {MODULES.filter(m => m.progress > 0 && !m.completed).length}
+            {modules.filter(m => m.progress > 0 && !m.completed).length}
           </p>
           <p className="text-xs text-slate-500 mt-0.5">In Progress</p>
         </div>
         <div className="card p-4">
           <p className="text-2xl font-black text-slate-400 tabular-nums">
-            {MODULES.filter(m => m.locked).length}
+            {modules.filter(m => m.locked).length}
           </p>
           <p className="text-xs text-slate-500 mt-0.5">Locked</p>
         </div>
@@ -92,7 +115,7 @@ export default function ModulesPage() {
           <p className="text-xs mb-0.5" style={{ color: '#5AADA8' }}>Your Pathway</p>
           <p className="font-bold text-[#1D1D1F]">{ROLE_LABELS[CURRENT_USER.role]}</p>
           <p className="text-xs mt-0.5 text-[#1D1D1F]/60">
-            Showing {MODULES.filter(m => m.roles.includes(CURRENT_USER.role)).length} relevant modules
+            Showing {modules.filter(m => m.roles.includes(CURRENT_USER.role)).length} relevant modules
           </p>
         </div>
         <div className="flex items-center gap-2 bg-white/70 border border-white rounded-lg px-3 py-2">
@@ -105,7 +128,7 @@ export default function ModulesPage() {
       <div className="space-y-8">
         {sections.map(section => {
           const meta = SECTION_META[section]
-          const sectionModules = MODULES.filter(m => m.section === section)
+          const sectionModules = modules.filter(m => m.section === section)
           if (sectionModules.length === 0) return null
           const sectionCompleted = sectionModules.filter(m => m.completed).length
 
@@ -160,7 +183,7 @@ export default function ModulesPage() {
   )
 }
 
-function ModuleCard({ module, section }: { module: typeof MODULES[0]; section: string }) {
+function ModuleCard({ module, section }: { module: Module & { completed: boolean; progress: number }; section: string }) {
   const meta = SECTION_META[section as keyof typeof SECTION_META]
   const badgeVariant = SECTION_BADGE_VARIANT[section]
 
