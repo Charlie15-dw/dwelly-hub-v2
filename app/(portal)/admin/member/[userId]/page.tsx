@@ -74,11 +74,18 @@ export default async function AdminMemberDetailPage({
     || managerProfile?.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
     || 'Unassigned'
 
-  const { data: results } = await service
-    .from('assessment_results')
-    .select('assessment_id, score, passed, answers, completed_at')
-    .eq('user_id', params.userId)
-    .order('completed_at', { ascending: false })
+  const [{ data: results }, { data: learningProfile }] = await Promise.all([
+    service
+      .from('assessment_results')
+      .select('assessment_id, score, passed, answers, completed_at')
+      .eq('user_id', params.userId)
+      .order('completed_at', { ascending: false }),
+    service
+      .from('learning_profiles')
+      .select('style_label, style_icon, confidence_label, confidence_pct, answers, completed_at, manager_note')
+      .eq('user_id', params.userId)
+      .maybeSingle(),
+  ])
 
   const allResults = results ?? []
 
@@ -147,6 +154,97 @@ export default async function AdminMemberDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Learning Profile */}
+      {learningProfile ? (
+        <div className="card overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+            <span className="text-lg leading-none">{learningProfile.style_icon}</span>
+            <div>
+              <h2 className="text-sm font-bold text-navy">Learning Profile</h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Completed {learningProfile.completed_at
+                  ? new Date(learningProfile.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                  : '—'}
+              </p>
+            </div>
+          </div>
+          <div className="p-5 space-y-5">
+            {/* Style + Confidence */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="rounded-xl bg-slate-50 border border-slate-100 p-4">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-1">Learning Style</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl leading-none">{learningProfile.style_icon}</span>
+                  <p className="text-sm font-bold text-navy">{learningProfile.style_label}</p>
+                </div>
+              </div>
+              <div className="rounded-xl bg-slate-50 border border-slate-100 p-4">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-1">Starting Confidence</p>
+                <p className="text-sm font-bold text-navy mb-2">{learningProfile.confidence_label}</p>
+                <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-teal rounded-full"
+                    style={{ width: `${learningProfile.confidence_pct}%` }}
+                  />
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1">{learningProfile.confidence_pct}%</p>
+              </div>
+            </div>
+
+            {/* Question answers */}
+            {learningProfile.answers && typeof learningProfile.answers === 'object' && (
+              <div>
+                <p className="text-xs font-semibold text-navy mb-3">Quiz Responses</p>
+                <div className="space-y-2">
+                  {([
+                    { id: 1, question: 'How do you prefer to take in new information?', options: { A: 'Reading written guides or documentation', B: 'Watching demonstrations or videos', C: 'Hands-on practice and trying things myself', D: 'Listening and discussing with others' } },
+                    { id: 2, question: 'When learning something new, what helps you most?', options: { A: 'A clear structure with step-by-step instructions', B: 'Understanding the "why" behind what I\'m doing', C: 'Seeing real examples and case studies', D: 'Being able to ask questions as I go' } },
+                    { id: 3, question: 'How do you prefer to be assessed on new knowledge?', options: { A: 'Written quiz or test', B: 'Practical scenario or role play', C: 'Verbal discussion with a manager or trainer', D: 'Observed doing the task in a real situation' } },
+                    { id: 4, question: 'How confident do you feel in the property management sector right now?', options: { A: 'Not confident at all — completely new to me', B: 'I have some awareness but limited experience', C: 'Fairly confident — I\'ve done similar things before', D: 'Very confident — I just need a refresher' } },
+                    { id: 5, question: 'What tends to get in the way of your learning?', options: { A: 'Information overload — too much at once', B: 'Not enough time to practise what I\'ve learned', C: 'Unclear expectations of what I need to know', D: 'Lack of follow-up or support after training' } },
+                    { id: 6, question: 'How do you best retain information after training?', options: { A: 'Re-reading my notes shortly after', B: 'Putting it into practice straight away', C: 'Talking it through with a colleague', D: 'Quick follow-up quizzes or reminders' } },
+                    { id: 7, question: 'What motivates you most in a training session?', options: { A: 'Knowing exactly how it links to my day-to-day role', B: 'Interactive elements rather than just being talked at', C: 'Learning from others\' experiences and mistakes', D: 'Clear goals and outcomes from the start' } },
+                    { id: 8, question: 'How do you prefer to receive feedback during training?', options: { A: 'Written feedback I can refer back to', B: 'Immediate verbal feedback in the moment', C: 'A debrief conversation at the end', D: 'A mix of all of the above' } },
+                  ] as const).map(({ id, question, options }) => {
+                    const saved = learningProfile.answers as Record<string, string>
+                    const letterAnswer = saved[id] ?? saved[String(id)]
+                    if (!letterAnswer) return null
+                    const fullAnswer = options[letterAnswer as keyof typeof options] ?? letterAnswer
+                    return (
+                      <div key={id} className="flex items-start gap-3 rounded-lg bg-slate-50 border border-slate-100 px-3 py-2.5">
+                        <span className="text-[10px] font-bold text-slate-400 mt-0.5 flex-shrink-0 w-4">Q{id}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-slate-500 leading-snug">{question}</p>
+                          <p className="text-xs font-semibold text-navy mt-0.5">{fullAnswer}</p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Manager note */}
+            {learningProfile.manager_note && (
+              <div className="rounded-xl bg-white border border-slate-100 px-4 py-3">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-1">Manager Note</p>
+                <p className="text-xs text-slate-600 leading-relaxed">{learningProfile.manager_note}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="card p-5 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-base">🧠</span>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-slate-500">Learning profile not completed</p>
+            <p className="text-xs text-slate-400 mt-0.5">{displayName} has not yet completed the learning profile quiz.</p>
+          </div>
+        </div>
+      )}
 
       {allResults.length === 0 && (
         <div className="card p-10 text-center">
