@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
   ArrowLeft, Play, Clock, ClipboardCheck, CheckCircle2,
-  Download, Star, BookOpen, AlertTriangle, ChevronRight,
+  Star, BookOpen, AlertTriangle, ChevronRight,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Badge from '@/components/ui/Badge'
@@ -270,24 +270,6 @@ export default function ModulePage({ params }: { params: { id: string } }) {
               ))}
             </div>
             <p className="text-[11px] text-slate-400 mt-2 text-center">1 = Not confident · 5 = Very confident</p>
-          </div>
-
-          {/* Resources */}
-          <div className="card p-5">
-            <h3 className="text-sm font-bold text-navy mb-3">Resources</h3>
-            <div className="space-y-2">
-              {['Module Reference Guide', 'Quick Reference Card', 'Legislation Summary'].map(res => (
-                <button
-                  key={res}
-                  className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-100
-                             hover:border-teal/30 hover:bg-teal/3 transition-colors text-left"
-                  aria-label={`Download ${res}`}
-                >
-                  <Download className="w-3.5 h-3.5 text-teal flex-shrink-0" aria-hidden />
-                  <span className="text-xs text-slate-600">{res}</span>
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Next/prev navigation */}
