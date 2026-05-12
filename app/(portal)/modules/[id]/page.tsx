@@ -1,13 +1,14 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import {
   ArrowLeft, Play, Clock, ClipboardCheck, CheckCircle2,
   Star, BookOpen, AlertTriangle, ChevronRight,
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
-import Badge from '@/components/ui/Badge'
+import ConfidenceRating from '@/components/ui/ConfidenceRating'
 import { MODULES, SECTION_LABELS, QUIZ_QUESTIONS } from '@/lib/data'
 import { cn } from '@/lib/utils'
+import { createServerClient } from '@/lib/supabase/server'
 
 const SECTION_COLORS: Record<string, string> = {
   onboarding:  'text-teal bg-teal/10 border-teal/20',
@@ -70,9 +71,22 @@ function getModuleContent(id: string): { overview: string; steps: string[]; watc
   }
 }
 
-export default function ModulePage({ params }: { params: { id: string } }) {
+export default async function ModulePage({ params }: { params: { id: string } }) {
   const module = MODULES.find(m => m.id === params.id)
   if (!module) notFound()
+
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/')
+
+  const { data: progressRow } = await supabase
+    .from('module_progress')
+    .select('confidence_rating')
+    .eq('user_id', user.id)
+    .eq('module_id', params.id)
+    .maybeSingle()
+
+  const confidenceRating: number | null = progressRow?.confidence_rating ?? null
 
   const content = getModuleContent(params.id)
   const moduleQuestions = QUIZ_QUESTIONS.filter(q => q.moduleId === params.id)
@@ -250,27 +264,7 @@ export default function ModulePage({ params }: { params: { id: string } }) {
         {/* Sidebar */}
         <div className="space-y-4">
           {/* Confidence rating */}
-          <div className="card p-5">
-            <h3 className="text-sm font-bold text-navy mb-3">Rate Your Confidence</h3>
-            <p className="text-xs text-slate-500 mb-3">After completing this module, how confident do you feel?</p>
-            <div className="flex items-center gap-2">
-              {[1, 2, 3, 4, 5].map(n => (
-                <button
-                  key={n}
-                  className={cn(
-                    'flex-1 h-8 rounded-lg border text-xs font-semibold transition-all',
-                    n === (module.confidenceRating ?? 0)
-                      ? 'bg-orange text-white border-orange'
-                      : 'bg-white text-slate-500 border-slate-200 hover:border-orange/40 hover:text-orange',
-                  )}
-                  aria-label={`Rate confidence ${n} out of 5`}
-                >
-                  {n}
-                </button>
-              ))}
-            </div>
-            <p className="text-[11px] text-slate-400 mt-2 text-center">1 = Not confident · 5 = Very confident</p>
-          </div>
+          <ConfidenceRating moduleId={params.id} initialRating={confidenceRating} />
 
           {/* Next/prev navigation */}
           <div className="card p-5 space-y-3">
