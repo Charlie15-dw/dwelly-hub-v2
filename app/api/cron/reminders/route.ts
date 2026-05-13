@@ -4,7 +4,7 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { buildReminderEmail, ReminderType } from '@/lib/email/reminderTemplate'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM_EMAIL = 'training@dwelly.group'
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
 const TOTAL_ASSESSMENTS = 14
 
 // Days of inactivity before sending a reminder
