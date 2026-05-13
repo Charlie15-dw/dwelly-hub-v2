@@ -18,7 +18,7 @@ async function sendEmail(to: string, toName: string, subject: string, html: stri
     },
     body: JSON.stringify({
       sender: { name: FROM_NAME, email: FROM_EMAIL },
-      to: [{ email: to, name: toName }],
+      to: [{ email: to, name: toName || to }],
       subject,
       htmlContent: html,
     }),
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
         daysSinceActivity,
       })
 
-      await sendEmail(email, profile.full_name ?? '', subject, html)
+      await sendEmail(email, profile.full_name || email, subject, html)
       sent.push(email)
     }
 
