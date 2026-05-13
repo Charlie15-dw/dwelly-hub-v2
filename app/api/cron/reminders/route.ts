@@ -1,19 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Resend } from 'resend'
 import { createServiceClient } from '@/lib/supabase/server'
 import { buildReminderEmail, ReminderType } from '@/lib/email/reminderTemplate'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
+const FROM_EMAIL = process.env.BREVO_FROM_EMAIL ?? 'charlie@dwelly.group'
+const FROM_NAME = 'Dwelly Training'
 const TOTAL_ASSESSMENTS = 14
-
-// Days of inactivity before sending a reminder
 const INACTIVE_DAYS_THRESHOLD = 5
-// Days since sign-up before sending a "not started" reminder
 const NOT_STARTED_DAYS_THRESHOLD = 3
 
+async function sendEmail(to: string, toName: string, subject: string, html: string) {
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'content-type': 'application/json',
+      'api-key': process.env.BREVO_API_KEY!,
+    },
+    body: JSON.stringify({
+      sender: { name: FROM_NAME, email: FROM_EMAIL },
+      to: [{ email: to, name: toName }],
+      subject,
+      htmlContent: html,
+    }),
+  })
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Brevo error ${res.status}: ${err}`)
+  }
+}
+
 export async function GET(request: NextRequest) {
-  // Verify the request is from Vercel Cron (or an authorised manual trigger)
   const authHeader = request.headers.get('authorization')
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -23,7 +39,6 @@ export async function GET(request: NextRequest) {
   const now = new Date()
 
   try {
-    // 1. Fetch all learners (property-manager role only — not managers/admins)
     const { data: profiles, error: profilesError } = await supabase
       .from('user_profiles')
       .select('id, full_name, role, created_at')
@@ -36,24 +51,20 @@ export async function GET(request: NextRequest) {
 
     const userIds = profiles.map(p => p.id)
 
-    // 2. Fetch assessment results for all learners
     const { data: results } = await supabase
       .from('assessment_results')
-      .select('user_id, assessment_id, passed, completed_at')
+      .select('user_id, passed')
       .in('user_id', userIds)
       .eq('passed', true)
 
-    // 3. Fetch last module activity for all learners
     const { data: progress } = await supabase
       .from('module_progress')
       .select('user_id, last_watched_at')
       .in('user_id', userIds)
 
-    // 4. Fetch emails from Supabase auth admin
     const { data: { users: authUsers } } = await supabase.auth.admin.listUsers({ perPage: 1000 })
     const emailMap = new Map(authUsers.map(u => [u.id, u.email ?? '']))
 
-    // Build per-user summary maps
     const passedByUser = new Map<string, number>()
     for (const r of results ?? []) {
       passedByUser.set(r.user_id, (passedByUser.get(r.user_id) ?? 0) + 1)
@@ -81,20 +92,17 @@ export async function GET(request: NextRequest) {
         ? Math.floor((now.getTime() - lastActivity.getTime()) / 86_400_000)
         : null
 
-      // Skip users who have completed everything
       if (assessmentsPassed >= TOTAL_ASSESSMENTS) { skipped.push(email); continue }
 
       let type: ReminderType | null = null
 
       if (assessmentsPassed === 0 && daysSinceSignUp >= NOT_STARTED_DAYS_THRESHOLD) {
-        // Never started — registered at least 3 days ago
         type = 'not_started'
       } else if (
         assessmentsPassed > 0 &&
         assessmentsPassed < TOTAL_ASSESSMENTS &&
         (daysSinceActivity === null || daysSinceActivity >= INACTIVE_DAYS_THRESHOLD)
       ) {
-        // Started but stalled
         type = assessmentsPassed >= Math.floor(TOTAL_ASSESSMENTS * 0.7)
           ? 'nearly_there'
           : 'in_progress'
@@ -111,13 +119,7 @@ export async function GET(request: NextRequest) {
         daysSinceActivity,
       })
 
-      await resend.emails.send({
-        from: FROM_EMAIL,
-        to: email,
-        subject,
-        html,
-      })
-
+      await sendEmail(email, profile.full_name ?? '', subject, html)
       sent.push(email)
     }
 
