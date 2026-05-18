@@ -79,9 +79,12 @@ export default function AssignManagerPanel({
       </div>
 
       <p className="text-[11px] text-slate-400 mt-2">
-        {selectedManagerId
-          ? `This user will appear in ${displayName(managers.find(m => m.id === selectedManagerId)!)} 's team.`
-          : 'This user is currently unassigned and will not appear in any team.'}
+        {(() => {
+          const mgr = managers.find(m => m.id === selectedManagerId)
+          return mgr
+            ? `This user will appear in ${displayName(mgr)}'s team.`
+            : 'This user is currently unassigned and will not appear in any team.'
+        })()}
       </p>
     </div>
   )
