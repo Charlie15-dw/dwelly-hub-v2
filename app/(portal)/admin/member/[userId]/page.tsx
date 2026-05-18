@@ -5,6 +5,7 @@ import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 import ReassignButton from '@/components/ui/ReassignButton'
 import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
+import AssignManagerPanel from '@/components/ui/AssignManagerPanel'
 
 const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
@@ -74,7 +75,7 @@ export default async function AdminMemberDetailPage({
     || managerProfile?.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
     || 'Unassigned'
 
-  const [{ data: results }, { data: learningProfile }] = await Promise.all([
+  const [{ data: results }, { data: learningProfile }, { data: allManagers }] = await Promise.all([
     service
       .from('assessment_results')
       .select('assessment_id, score, passed, answers, completed_at')
@@ -85,6 +86,10 @@ export default async function AdminMemberDetailPage({
       .select('style_label, style_icon, confidence_label, confidence_pct, answers, completed_at, manager_note')
       .eq('user_id', params.userId)
       .maybeSingle(),
+    service
+      .from('user_profiles')
+      .select('id, full_name, email')
+      .eq('role', 'manager'),
   ])
 
   const allResults = results ?? []
@@ -154,6 +159,15 @@ export default async function AdminMemberDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Assign to Manager — admin only, property-managers only */}
+      {memberProfile.role === 'property-manager' && (
+        <AssignManagerPanel
+          userId={params.userId}
+          currentManagerId={memberProfile.manager_id ?? null}
+          managers={allManagers ?? []}
+        />
+      )}
 
       {/* Learning Profile */}
       {learningProfile ? (
