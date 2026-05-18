@@ -73,12 +73,12 @@ export default async function ManagerDashboard() {
     .eq('manager_id', user.id)
     .order('created_at', { ascending: true })
 
-  // Fetch unassigned users (no manager yet, not managers themselves)
+  // Fetch unassigned users (property-managers only — exclude managers and admins)
   const { data: unassignedProfiles } = await supabase
     .from('user_profiles')
     .select('id, full_name, email, manager_id')
     .is('manager_id', null)
-    .neq('role', 'manager')
+    .eq('role', 'property-manager')
 
   const teamMembers = profiles ?? []
   const unassigned = (unassignedProfiles ?? []).map(u => ({
