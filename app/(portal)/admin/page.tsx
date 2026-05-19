@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Users, Building2 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
+import InviteUserButton from '@/components/ui/InviteUserButton'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 
@@ -132,14 +133,17 @@ export default async function AdminPage() {
     <div className="space-y-6">
 
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-navy flex items-center justify-center flex-shrink-0">
-          <Building2 className="w-5 h-5 text-white" aria-hidden />
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-navy flex items-center justify-center flex-shrink-0">
+            <Building2 className="w-5 h-5 text-white" aria-hidden />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-navy">Organisation Overview</h1>
+            <p className="text-sm text-slate-500 mt-0.5">All teams · 2026–2027 Training Programme</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-xl font-bold text-navy">Organisation Overview</h1>
-          <p className="text-sm text-slate-500 mt-0.5">All teams · 2026–2027 Training Programme</p>
-        </div>
+        <InviteUserButton />
       </div>
 
       {/* Org-wide stats */}
