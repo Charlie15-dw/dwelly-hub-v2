@@ -85,11 +85,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Build our own confirm URL using the hashed_token so we hit /auth/confirm
-    // and route through the existing /auth/set-password flow.
+    // Send user directly to set-password with token_hash so OTP is verified
+    // client-side — this avoids session cookie propagation issues with server-side verify.
     const hashedToken = linkData.properties.hashed_token
     const inviteLink = hashedToken
-      ? `${siteUrl}/auth/confirm?token_hash=${hashedToken}&type=invite`
+      ? `${siteUrl}/auth/set-password?token_hash=${hashedToken}&type=invite`
       : linkData.properties.action_link
 
     const newUserId = linkData.user?.id
