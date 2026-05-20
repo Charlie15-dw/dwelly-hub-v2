@@ -5,8 +5,6 @@ import { buildReminderEmail, ReminderType } from '@/lib/email/reminderTemplate'
 const FROM_EMAIL = process.env.BREVO_FROM_EMAIL ?? 'charlie@dwelly.group'
 const FROM_NAME = 'Dwelly Training'
 const TOTAL_ASSESSMENTS = 14
-const INACTIVE_DAYS_THRESHOLD = 5
-const NOT_STARTED_DAYS_THRESHOLD = 3
 
 async function sendEmail(to: string, toName: string, subject: string, html: string) {
   const res = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -86,29 +84,18 @@ export async function GET(request: NextRequest) {
 
       const assessmentsPassed = passedByUser.get(profile.id) ?? 0
       const lastActivity = lastActivityByUser.get(profile.id) ?? null
-      const signedUpAt = new Date(profile.created_at)
-      const daysSinceSignUp = Math.floor((now.getTime() - signedUpAt.getTime()) / 86_400_000)
       const daysSinceActivity = lastActivity
         ? Math.floor((now.getTime() - lastActivity.getTime()) / 86_400_000)
         : null
 
+      // Skip anyone who has completed everything
       if (assessmentsPassed >= TOTAL_ASSESSMENTS) { skipped.push(email); continue }
 
-      let type: ReminderType | null = null
-
-      if (assessmentsPassed === 0 && daysSinceSignUp >= NOT_STARTED_DAYS_THRESHOLD) {
-        type = 'not_started'
-      } else if (
-        assessmentsPassed > 0 &&
-        assessmentsPassed < TOTAL_ASSESSMENTS &&
-        (daysSinceActivity === null || daysSinceActivity >= INACTIVE_DAYS_THRESHOLD)
-      ) {
-        type = assessmentsPassed >= Math.floor(TOTAL_ASSESSMENTS * 0.7)
+      const type: ReminderType = assessmentsPassed === 0
+        ? 'not_started'
+        : assessmentsPassed >= Math.floor(TOTAL_ASSESSMENTS * 0.7)
           ? 'nearly_there'
           : 'in_progress'
-      }
-
-      if (!type) { skipped.push(email); continue }
 
       const { subject, html } = buildReminderEmail({
         name: profile.full_name ?? 'there',
