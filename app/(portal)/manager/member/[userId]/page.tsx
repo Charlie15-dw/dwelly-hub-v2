@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowLeft, CheckCircle2, XCircle } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
+import ReassignButton from '@/components/ui/ReassignButton'
 
 const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
@@ -158,9 +159,16 @@ export default async function MemberDetailPage({
                       <CheckCircle2 className="w-3.5 h-3.5" /> Passed
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full">
-                      <XCircle className="w-3.5 h-3.5" /> Failed
-                    </span>
+                    <>
+                      <span className="flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full">
+                        <XCircle className="w-3.5 h-3.5" /> Failed
+                      </span>
+                      <ReassignButton
+                        userId={params.userId}
+                        moduleId={assessmentId}
+                        moduleName={ASSESSMENT_LABELS[assessmentId] ?? assessmentId}
+                      />
+                    </>
                   )}
                   <span className={cn('text-lg font-black tabular-nums', {
                     'text-teal': attempts[0].score >= 80,
