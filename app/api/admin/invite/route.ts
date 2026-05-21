@@ -62,45 +62,30 @@ export async function POST(request: NextRequest) {
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.dwelly.group'
-  const redirectTo = `${siteUrl}/auth/confirm`
 
   try {
     const service = createServiceClient()
 
-    // Generate an invite link without triggering Supabase's email sending.
-    const { data: linkData, error: linkError } = await service.auth.admin.generateLink({
-      type: 'invite',
-      email,
-      options: {
-        redirectTo,
-        data: fullName ? { full_name: fullName } : undefined,
-      },
-    })
+    // Store a pending invite — no Supabase token generated yet.
+    // The Supabase token is generated fresh when the user clicks the link,
+    // so the email link itself never expires.
+    const { data: invite, error: insertError } = await service
+      .from('pending_invites')
+      .insert({
+        email,
+        full_name: fullName,
+        role,
+        invited_by: callerProfile.full_name ?? callerProfile.email ?? null,
+      })
+      .select('id')
+      .single()
 
-    if (linkError || !linkData?.properties) {
-      console.error('[admin/invite] generateLink failed:', linkError)
-      return NextResponse.json(
-        { error: linkError?.message ?? 'Failed to generate invite link' },
-        { status: 500 },
-      )
+    if (insertError || !invite) {
+      console.error('[admin/invite] insert pending_invite failed:', insertError)
+      return NextResponse.json({ error: insertError?.message ?? 'Failed to create invite' }, { status: 500 })
     }
 
-    // Send user directly to set-password with token_hash so OTP is verified
-    // client-side — this avoids session cookie propagation issues with server-side verify.
-    const hashedToken = linkData.properties.hashed_token
-    const inviteLink = hashedToken
-      ? `${siteUrl}/auth/set-password?token_hash=${hashedToken}&type=invite`
-      : linkData.properties.action_link
-
-    const newUserId = linkData.user?.id
-
-    // Set role + full name on the newly-created profile (trigger creates the row).
-    if (newUserId) {
-      await service
-        .from('user_profiles')
-        .update({ role, full_name: fullName, email })
-        .eq('id', newUserId)
-    }
+    const inviteLink = `${siteUrl}/auth/accept-invite?token=${invite.id}`
 
     const { subject, html } = buildInviteEmail({
       inviteeName: fullName,
@@ -110,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     await sendInviteEmail(email, fullName ?? email, subject, html)
 
-    return NextResponse.json({ ok: true, email, userId: newUserId ?? null })
+    return NextResponse.json({ ok: true, email })
   } catch (err) {
     console.error('[admin/invite]', err)
     return NextResponse.json({ error: String(err) }, { status: 500 })

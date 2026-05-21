@@ -18,6 +18,19 @@ function SetPasswordForm() {
   useEffect(() => {
     const token_hash = searchParams.get('token_hash')
     const type = searchParams.get('type') as 'invite' | 'recovery' | null
+    const errorParam = searchParams.get('error')
+
+    if (errorParam) {
+      const messages: Record<string, string> = {
+        missing_token: 'This invite link is incomplete.',
+        invalid_token: 'This invite link is invalid or has already been used.',
+        already_used:  'This invite link has already been used. Please ask an admin to send a new one.',
+        invite_failed: 'Something went wrong processing your invite. Please ask an admin to send a new one.',
+      }
+      setError(messages[errorParam] ?? 'This invite link is invalid.')
+      setVerifying(false)
+      return
+    }
 
     if (!token_hash || !type) {
       // No token — assume already authenticated (e.g. password recovery via /auth/confirm)
