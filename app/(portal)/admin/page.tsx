@@ -55,7 +55,7 @@ export default async function AdminPage() {
   // Use service client to bypass RLS and read all users/results
   const service = createServiceClient()
 
-  const [{ data: allProfiles }, { data: allResults }] = await Promise.all([
+  const [{ data: allProfiles }, { data: allResults }, { data: pendingInvites }] = await Promise.all([
     service
       .from('user_profiles')
       .select('id, full_name, email, role, created_at, manager_id')
@@ -64,6 +64,11 @@ export default async function AdminPage() {
     service
       .from('assessment_results')
       .select('user_id, assessment_id, score, passed'),
+    service
+      .from('pending_invites')
+      .select('id, email, full_name, role, created_at, invited_by')
+      .is('used_at', null)
+      .order('created_at', { ascending: false }),
   ])
 
   const profiles = allProfiles ?? []
@@ -161,6 +166,39 @@ export default async function AdminPage() {
           </div>
         ))}
       </div>
+
+      {/* Pending invites */}
+      {(pendingInvites ?? []).length > 0 && (
+        <div className="card overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+            <Users className="w-4 h-4 text-amber-400" aria-hidden />
+            <h2 className="text-sm font-bold text-navy">Pending Invites</h2>
+            <span className="ml-auto text-xs text-slate-400">{(pendingInvites ?? []).length} invite{(pendingInvites ?? []).length !== 1 ? 's' : ''} not yet accepted</span>
+          </div>
+          <div className="divide-y divide-slate-50">
+            {(pendingInvites ?? []).map(invite => (
+              <div key={invite.id} className="flex items-center gap-4 px-5 py-3.5">
+                <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-amber-600 text-xs font-bold">
+                    {(invite.full_name ?? invite.email).slice(0, 2).toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-navy">{invite.full_name ?? '—'}</p>
+                  <p className="text-xs text-slate-400">{invite.email}</p>
+                </div>
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <span className="text-xs font-semibold text-slate-500 capitalize">{invite.role?.replace(/-/g, ' ')}</span>
+                  <span className="text-xs text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full font-semibold">Awaiting signup</span>
+                  <span className="text-xs text-slate-400">
+                    {invite.created_at ? new Date(invite.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Teams by manager */}
       <div>
