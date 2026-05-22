@@ -761,20 +761,11 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
       ]},
       { type: 'callout', variant: 'warning', text: 'Common Category 1 hazards include damp and mould growth, excess cold, falls on stairs, and electrical hazards. If a tenant or council inspector raises a Category 1 hazard, escalate to your manager immediately.' },
 
-      { type: 'heading', level: 1, text: 'Notice Periods and Section 21' },
-      { type: 'paragraph', text: 'A Section 21 notice is a "no-fault" eviction notice that allows a landlord to end an Assured Shorthold Tenancy (AST) at the end of the fixed term without giving a reason. Important rules apply.' },
-      { type: 'bullets', items: [
-        'Minimum two months\' notice must be given',
-        'Cannot be served in the first four months of the original tenancy',
-        'Expires after six months — if not acted upon a new notice must be served',
-        'Invalid if the property is unlicensed (where licensing is required)',
-        'Invalid if the landlord has not protected the deposit and provided prescribed information',
-        'Invalid if the landlord has not provided the EPC, Gas Safety certificate, and How to Rent guide',
-      ]},
-      { type: 'callout', variant: 'important', text: 'The Renters\' Rights Bill (progressing through Parliament as of 2025) proposes to abolish Section 21 entirely. Stay updated via your manager — any changes will be communicated as they take effect.' },
+      { type: 'heading', level: 1, text: 'Notice Periods and Possession' },
+      { type: 'paragraph', text: 'Following the Renters\' Rights Act (in force from 1 May 2026), no-fault eviction has been abolished. Landlords must now rely on Section 8 notices with specified grounds to seek possession.' },
 
-      { type: 'heading', level: 1, text: 'Section 8 — Fault-Based Eviction' },
-      { type: 'paragraph', text: 'A Section 8 notice is served when a tenant has breached the terms of their tenancy. The most common grounds are rent arrears (Grounds 8, 10, and 11) and anti-social behaviour (Ground 14). Unlike Section 21, a Section 8 notice must specify the grounds being relied upon and is subject to challenge in court.' },
+      { type: 'heading', level: 1, text: 'Section 8 — Possession Notice' },
+      { type: 'paragraph', text: 'A Section 8 notice is served when a tenant has breached the terms of their tenancy. The most common grounds are rent arrears (Grounds 8, 10, and 11) and anti-social behaviour (Ground 14). A Section 8 notice must specify the grounds being relied upon and is subject to challenge in court.' },
       { type: 'bullets', items: [
         'Ground 8: Mandatory — at least two months\' rent arrears at time of notice AND at hearing',
         'Ground 10: Discretionary — some rent arrears (court decides)',
@@ -787,7 +778,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
       { type: 'bullets', items: [
         'Approved schemes: Deposit Protection Service (DPS), MyDeposits, Tenancy Deposit Scheme (TDS)',
         'Failure to protect = tenant can claim 1–3x the deposit amount in court',
-        'Section 21 cannot be served if the deposit is not protected',
+        'Possession proceedings can be challenged if the deposit is not properly protected',
         'On renewal, re-protection is not required if the same deposit is carried forward — but check scheme rules',
       ]},
     ],
@@ -1196,7 +1187,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
         'Retain proof of protection and service for the duration of the tenancy.',
       ]},
       { type: 'heading', level: 1, text: 'Penalties for Non-Protection' },
-      { type: 'paragraph', text: 'If a deposit is not protected or prescribed information is not served, the tenant can apply to the county court. The court must order the landlord to repay the deposit or protect it, and pay compensation of between one and three times the deposit amount. Additionally, the landlord cannot serve a valid Section 21 notice until the deposit has been properly protected and prescribed information served.' },
+      { type: 'paragraph', text: 'If a deposit is not protected or prescribed information is not served, the tenant can apply to the county court. The court must order the landlord to repay the deposit or protect it, and pay compensation of between one and three times the deposit amount. Additionally, any possession proceedings may be challenged if the deposit has not been properly protected and prescribed information served.' },
       { type: 'callout', variant: 'warning', text: 'A single missed deposit protection can cost a landlord thousands of pounds in penalties plus prevent them from recovering possession. Always protect deposits on the day you receive them — do not wait.' },
       { type: 'heading', level: 1, text: 'End of Tenancy & Disputes' },
       { type: 'paragraph', text: 'At the end of the tenancy, the deposit should be returned within 10 days of both parties agreeing the amount. If there is a dispute over deductions (e.g. cleaning, damage beyond fair wear and tear), either party can raise it with the deposit scheme\'s free alternative dispute resolution (ADR) service. The adjudicator\'s decision is binding. Ensure you have a thorough check-in inventory and check-out report with dated photographs to support any deductions.' },

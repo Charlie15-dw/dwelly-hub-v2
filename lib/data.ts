@@ -1236,7 +1236,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Contact the local authority to confirm the application is valid and proceed to publish once they verbally confirm receipt',
     ],
     correct: 1,
-    rationale: 'A property requiring a selective licence must not be marketed or let until the licence is in place. Letting an unlicensed property is a criminal offence for the landlord, exposes the agency, and prevents a valid Section 21 being served. A pending application is not a licence — you must not publish until the licence is confirmed.',
+    rationale: 'A property requiring a selective licence must not be marketed or let until the licence is in place. Letting an unlicensed property is a criminal offence for the landlord, exposes the agency, and undermines any possession proceedings. A pending application is not a licence — you must not publish until the licence is confirmed.',
   },
   {
     id: 'q-m-prv-02-2', moduleId: 'prv-02', tier: 'master',
@@ -2280,10 +2280,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The primary risk is inconsistency with other tenancies in the agency\'s portfolio, which complicates portfolio-wide compliance audits — advise the landlord that a non-standard AST creates additional administrative burden but poses no direct legal risk if the landlord takes responsibility',
       'The key risk is that the agency\'s professional indemnity insurance may not cover tenancies managed under a non-standard AST — confirm with the insurer before accepting the template, and charge the landlord an additional fee for the legal review required',
       'The risk is limited to the landlord personally — the agency is not liable for defects in a landlord-supplied AST provided the agency keeps a written record confirming the landlord chose to use their own template against the agency\'s recommendation',
-      'The template must be reviewed for compliance with the Tenant Fees Act, Consumer Rights Act, and all prescribed information requirements — a non-standard AST may contain unlawful clauses or miss mandatory provisions, any of which could invalidate a Section 21 notice',
+      'The template must be reviewed for compliance with the Tenant Fees Act, Consumer Rights Act, and all prescribed information requirements — a non-standard AST may contain unlawful clauses or miss mandatory provisions, any of which could undermine possession proceedings or expose the agency to liability',
     ],
     correct: 3,
-    rationale: 'A landlord\'s own AST template must be reviewed for legal compliance before it is used. It may contain unlawful clauses under the Tenant Fees Act or Consumer Rights Act, or omit mandatory prescribed information. Any defect could expose both landlord and agency and may invalidate a Section 21. The agency cannot simply disclaim liability for using a template it has agreed to manage under.',
+    rationale: 'A landlord\'s own AST template must be reviewed for legal compliance before it is used. It may contain unlawful clauses under the Tenant Fees Act or Consumer Rights Act, or omit mandatory prescribed information. Any defect could expose both landlord and agency to liability. The agency cannot simply disclaim responsibility for using a template it has agreed to manage under.',
   },
   {
     id: 'q-r-prv-02-8', moduleId: 'prv-02', tier: 'recap',

@@ -1,15 +1,15 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
-  Award, CheckCircle2, Clock,
+  Award, Clock,
   Shield, Trophy,
 } from 'lucide-react'
 import AchievementBadge from '@/components/ui/AchievementBadge'
 import ExportPassportButton from '@/components/ui/ExportPassportButton'
-import { ACHIEVEMENTS } from '@/lib/achievements-data'
+import { computeAchievements } from '@/lib/achievements-data'
 import { ROLE_LABELS } from '@/lib/data'
 import { createServerClient } from '@/lib/supabase/server'
-import { formatDate, cn } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
 
 const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
@@ -41,6 +41,8 @@ export default async function PassportPage() {
   const avgScore = (resultRows ?? []).length > 0
     ? Math.round((resultRows ?? []).reduce((s, r) => s + r.score, 0) / (resultRows ?? []).length)
     : null
+
+  const achievements = computeAchievements(resultRows ?? [])
 
   return (
     <div className="space-y-6">
@@ -82,52 +84,19 @@ export default async function PassportPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Right col — now full width on its own row via sidebar */}
-        <div className="lg:col-span-1 space-y-5">
-
-          {/* T&C Supervision */}
-          <div className="card p-5">
-            <h3 className="text-sm font-bold text-navy mb-1">T&amp;C Supervision</h3>
-            <p className="text-xs text-slate-500 mb-3">90-day supervised period tracker</p>
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
-              <p className="text-xs text-slate-500">Your manager will update your supervision status here.</p>
-            </div>
-            <div className="mt-4 space-y-2">
-              {[
-                { label: 'Week 1 Observation', done: false },
-                { label: 'Month 1 Review',     done: false },
-                { label: 'Month 2 Review',     done: false },
-                { label: 'Month 3 Sign-Off',   done: false },
-              ].map(({ label, done }) => (
-                <div key={label} className="flex items-center gap-2.5">
-                  <div className={cn(
-                    'w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0',
-                    done ? 'bg-teal' : 'bg-slate-100 border border-slate-200',
-                  )}>
-                    {done && <CheckCircle2 className="w-3 h-3 text-white" />}
-                  </div>
-                  <span className={cn('text-xs', done ? 'text-teal font-medium' : 'text-slate-500')}>{label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Annual re-cert */}
-          <div className="card p-5 border-l-4 border-l-orange">
-            <div className="flex items-start gap-2.5">
-              <Shield className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" aria-hidden />
-              <div>
-                <h3 className="text-sm font-bold text-navy">Annual Re-Certification</h3>
-                <p className="text-xs text-slate-500 mt-0.5">December 2026</p>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                  Compliance-critical re-certification covering deposit protection, gas safety, and tenancy legislation.
-                </p>
-                <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">
-                  <Clock className="w-3 h-3" aria-hidden />
-                  <span>245 days until re-certification</span>
-                </div>
-              </div>
+      {/* Annual re-cert */}
+      <div className="card p-5 border-l-4 border-l-orange">
+        <div className="flex items-start gap-2.5">
+          <Shield className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" aria-hidden />
+          <div>
+            <h3 className="text-sm font-bold text-navy">Annual Re-Certification</h3>
+            <p className="text-xs text-slate-500 mt-0.5">December 2026</p>
+            <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+              Compliance-critical re-certification covering deposit protection, gas safety, and tenancy legislation.
+            </p>
+            <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">
+              <Clock className="w-3 h-3" aria-hidden />
+              <span>245 days until re-certification</span>
             </div>
           </div>
         </div>
@@ -141,11 +110,11 @@ export default async function PassportPage() {
             <h3 className="text-sm font-bold text-navy">Achievement Badges</h3>
           </div>
           <span className="text-xs text-slate-500">
-            {ACHIEVEMENTS.filter(a => a.earned).length} of {ACHIEVEMENTS.length} earned
+            {achievements.filter(a => a.earned).length} of {achievements.length} earned
           </span>
         </div>
         <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-5 gap-3">
-          {ACHIEVEMENTS.map(a => (
+          {achievements.map(a => (
             <AchievementBadge key={a.id} achievement={a} />
           ))}
         </div>

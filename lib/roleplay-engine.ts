@@ -2369,7 +2369,7 @@ export const SCENARIO_SCRIPTS: Record<string, ScenarioScript> = {
   // ─── rs-11: Landlord Wanting to Sell with Sitting Tenant — Rachel Osei ──────
   'rs-11': {
     opening: "Hi... I got a letter saying the landlord wants to sell the property? I've been here four years. I've got a seven-year-old daughter. What does this actually mean for us? Are we going to have to leave?",
-    resolved: "Okay. So I've got at least two months from a Section 21, you'll help with a reference letter, and I should contact the council about the housing register. And you said you'd check if the new buyer might keep me on as a tenant. I feel so much better now — thank you. I was in a complete panic before I came in.",
+    resolved: "Okay. So I've got at least two months' notice, you'll help with a reference letter, and I should contact the council about the housing register. And you said you'd check if the new buyer might keep me on as a tenant. I feel so much better now — thank you. I was in a complete panic before I came in.",
     stages: {
       tense: {
         responses: [
@@ -2382,11 +2382,11 @@ export const SCENARIO_SCRIPTS: Record<string, ScenarioScript> = {
             ],
           },
           {
-            triggers: ['evict', 'notice', 'section 21', 'court'],
+            triggers: ['evict', 'notice', 'possession', 'court'],
             messages: [
               "You're going to evict us? After four years of paying rent on time, never a single complaint, and this is how it ends?",
               "Court? I can't afford a solicitor! I can barely afford the rent as it is. This isn't fair.",
-              "A Section 21... I've heard of those. So the landlord doesn't even need a reason? How is that right?",
+              "So the landlord can just give notice and we have to leave? How is that right?",
             ],
             stageShift: 1,
           },
