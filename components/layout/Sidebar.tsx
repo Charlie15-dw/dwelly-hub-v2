@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
-  AlertTriangle, BarChart3, BookA, MessageCircle, Building2,
+  AlertTriangle, BarChart3, BookA, MessageCircle, Building2, Scale,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -145,6 +145,16 @@ export default function Sidebar() {
             </Link>
           )
         })()}
+        <a
+          href="https://deposit-sim.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="sidebar-link"
+        >
+          <Scale className="w-4 h-4 flex-shrink-0" aria-hidden />
+          <span className="flex-1">Deposit Simulator</span>
+          <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40 rotate-45" aria-hidden />
+        </a>
 
         {/* Your Development */}
         <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Your Development</p>
