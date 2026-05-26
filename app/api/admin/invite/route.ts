@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     if (insertError || !invite) {
       console.error('[admin/invite] insert pending_invite failed:', insertError)
-      return NextResponse.json({ error: insertError?.message ?? 'Failed to create invite' }, { status: 500 })
+      return NextResponse.json({ error: 'Failed to create invite' }, { status: 500 })
     }
 
     const inviteLink = `${siteUrl}/auth/accept-invite?token=${invite.id}`
@@ -98,6 +98,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true, email })
   } catch (err) {
     console.error('[admin/invite]', err)
-    return NextResponse.json({ error: String(err) }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to send invite' }, { status: 500 })
   }
 }

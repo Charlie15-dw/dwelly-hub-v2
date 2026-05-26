@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     .from('module_resets')
     .insert({ user_id: userId, module_id: moduleId, manager_id: user.id })
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) return NextResponse.json({ error: 'Failed to reset module' }, { status: 500 })
 
   // Reset module progress so the module shows as incomplete
   await supabase

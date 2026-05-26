@@ -34,6 +34,8 @@ export default function Sidebar() {
   const router = useRouter()
   const [isManager, setIsManager] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [userDisplayName, setUserDisplayName] = useState<string | null>(null)
+  const [userRole, setUserRole] = useState<string | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
@@ -41,11 +43,13 @@ export default function Sidebar() {
       if (!user) return
       const { data } = await supabase
         .from('user_profiles')
-        .select('role')
+        .select('role, full_name')
         .eq('id', user.id)
         .single()
       setIsManager(data?.role === 'manager')
       setIsAdmin(data?.role === 'admin')
+      setUserDisplayName(data?.full_name ?? user.email?.split('@')[0] ?? null)
+      setUserRole(data?.role ?? null)
     })
   }, [])
 
@@ -120,8 +124,8 @@ export default function Sidebar() {
           )
         })}
 
-        {/* Property Managers */}
-        <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Property Managers</p>
+        {/* Property Tools */}
+        <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Property Tools</p>
         {(() => {
           const active = pathname.startsWith('/recap')
           return (
@@ -201,6 +205,23 @@ export default function Sidebar() {
           </>
         )}
       </nav>
+
+      {/* User identity */}
+      {userDisplayName && (
+        <div className="px-4 py-3 border-t border-white/40 flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-full bg-[#1D1D1F]/20 flex items-center justify-center flex-shrink-0">
+            <span className="text-[#1D1D1F] text-[10px] font-bold leading-none">
+              {userDisplayName.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2)}
+            </span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[12px] font-semibold text-[#1D1D1F] truncate leading-tight">{userDisplayName}</p>
+            {userRole && (
+              <p className="text-[10px] text-[#1D1D1F]/50 leading-tight capitalize">{userRole.replace(/-/g, ' ')}</p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Bottom actions */}
       <div className="px-3 py-3 space-y-1 border-t border-white/40">

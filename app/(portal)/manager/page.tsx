@@ -11,6 +11,7 @@ import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
 import { MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
+import { ragStatus, RAG_DOT, RAG_ROW, RAG_LABEL, RAG_TEXT } from '@/lib/rag'
 
 // All assessable items — matches the assessments page exactly
 const ALL_ASSESSMENT_IDS = [
@@ -24,34 +25,6 @@ const ALL_ASSESSMENT_IDS = [
   'master-assessment',
 ]
 const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length // 15
-
-// RAG status based on progress percentage
-function ragStatus(progress: number): 'green' | 'amber' | 'red' {
-  if (progress >= 60) return 'green'
-  if (progress >= 20) return 'amber'
-  return 'red'
-}
-
-const RAG_DOT: Record<string, string> = {
-  red:   'bg-red-500',
-  amber: 'bg-amber-400',
-  green: 'bg-green-500',
-}
-const RAG_ROW: Record<string, string> = {
-  red:   'border-red-200 bg-red-50/40',
-  amber: 'border-amber-200 bg-amber-50/40',
-  green: 'border-teal/20 bg-teal/3',
-}
-const RAG_LABEL: Record<string, string> = {
-  green: 'On Track',
-  amber: 'In Progress',
-  red:   'Needs Attention',
-}
-const RAG_TEXT: Record<string, string> = {
-  green: 'text-green-700',
-  amber: 'text-amber-700',
-  red:   'text-red-700',
-}
 
 export default async function ManagerDashboard() {
   const supabase = createServerClient()
@@ -90,13 +63,17 @@ export default async function ManagerDashboard() {
     manager_id: u.manager_id ?? null,
   }))
 
-  // Fetch assessment results for all users
-  const { data: allResults } = await supabase
-    .from('assessment_results')
-    .select('user_id, assessment_id, score, passed, completed_at')
+  // Fetch assessment results scoped to this manager's team only
+  const teamIds = (profiles ?? []).map(p => p.id)
+  const { data: allResults } = teamIds.length > 0
+    ? await supabase
+        .from('assessment_results')
+        .select('user_id, assessment_id, score, passed, completed_at')
+        .in('user_id', teamIds)
+        .order('completed_at', { ascending: true })
+    : { data: [] }
 
   // Fetch learning profiles for team members
-  const teamIds = (profiles ?? []).map(p => p.id)
   const { data: learningProfiles } = teamIds.length > 0
     ? await supabase
         .from('learning_profiles')
@@ -121,8 +98,11 @@ export default async function ManagerDashboard() {
     const progressPct = Math.round((completedCount / TOTAL_ASSESSMENTS) * 100)
 
     const results = (allResults ?? []).filter(r => r.user_id === member.id)
-    const avgScore = results.length > 0
-      ? Math.round(results.reduce((s, r) => s + r.score, 0) / results.length)
+    // Deduplicate to last attempt per assessment before averaging
+    const lastByAssessment = new Map<string, number>()
+    for (const r of results) lastByAssessment.set(r.assessment_id, r.score)
+    const avgScore = lastByAssessment.size > 0
+      ? Math.round(Array.from(lastByAssessment.values()).reduce((s, v) => s + v, 0) / lastByAssessment.size)
       : null
 
     // Modules failed (score < 80, not a full/master assessment) — deduplicated to last attempt per module
@@ -145,7 +125,15 @@ export default async function ManagerDashboard() {
       ? new Date(member.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
       : '—'
 
-    return { ...member, displayName, initials, completedCount, progressPct, avgScore, rag, joinDate, failedModules }
+    const lastActiveTs = memberResults.reduce<string | null>((max, r) => {
+      if (!r.completed_at) return max
+      return max === null || r.completed_at > max ? r.completed_at : max
+    }, null)
+    const lastActive = lastActiveTs
+      ? new Date(lastActiveTs).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      : null
+
+    return { ...member, displayName, initials, completedCount, progressPct, avgScore, rag, joinDate, lastActive, failedModules }
   })
 
   // Summary stats
@@ -219,7 +207,7 @@ export default async function ManagerDashboard() {
             <table className="w-full" role="table">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/80">
-                  {['Team Member', 'Role', 'Assessments', 'Progress', 'Avg Score', 'Status', 'Joined'].map(h => (
+                  {['Team Member', 'Role', 'Assessments', 'Progress', 'Avg Score', 'Status', 'Last Active', 'Joined'].map(h => (
                     <th
                       key={h}
                       className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap"
@@ -298,6 +286,11 @@ export default async function ManagerDashboard() {
                           {RAG_LABEL[member.rag]}
                         </span>
                       </div>
+                    </td>
+
+                    {/* Last Active */}
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      <span className="text-sm text-slate-400">{member.lastActive ?? '—'}</span>
                     </td>
 
                     {/* Joined */}

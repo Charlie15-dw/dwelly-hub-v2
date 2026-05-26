@@ -5,6 +5,7 @@ import ProgressBar from '@/components/ui/ProgressBar'
 import InviteUserButton from '@/components/ui/InviteUserButton'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
+import { ragStatus, RAG_DOT, RAG_ROW, RAG_LABEL, RAG_TEXT } from '@/lib/rag'
 
 const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
@@ -12,25 +13,6 @@ const ALL_ASSESSMENT_IDS = [
   'kno-01', 'kno-02', 'kno-03', 'full-assessment', 'master-assessment',
 ]
 const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length
-
-function ragStatus(progress: number): 'green' | 'amber' | 'red' {
-  if (progress >= 60) return 'green'
-  if (progress >= 20) return 'amber'
-  return 'red'
-}
-
-const RAG_DOT: Record<string, string> = {
-  red: 'bg-red-500', amber: 'bg-amber-400', green: 'bg-green-500',
-}
-const RAG_ROW: Record<string, string> = {
-  red: 'border-red-200 bg-red-50/40', amber: 'border-amber-200 bg-amber-50/40', green: 'border-teal/20 bg-teal/3',
-}
-const RAG_LABEL: Record<string, string> = {
-  green: 'On Track', amber: 'In Progress', red: 'Needs Attention',
-}
-const RAG_TEXT: Record<string, string> = {
-  green: 'text-green-700', amber: 'text-amber-700', red: 'text-red-700',
-}
 
 function displayName(profile: { full_name?: string | null; email?: string | null }) {
   return profile.full_name
@@ -63,7 +45,8 @@ export default async function AdminPage() {
       .order('created_at', { ascending: true }),
     service
       .from('assessment_results')
-      .select('user_id, assessment_id, score, passed'),
+      .select('user_id, assessment_id, score, passed, completed_at')
+      .order('completed_at', { ascending: true }),
     service
       .from('pending_invites')
       .select('id, email, full_name, role, created_at, invited_by')
@@ -79,16 +62,23 @@ export default async function AdminPage() {
 
   function getMemberStats(member: typeof profiles[0]) {
     const memberResults = results.filter(r => r.user_id === member.id)
-    const latestPassed = new Map<string, boolean>()
+    // Results ordered ascending by completed_at — iterate oldest→newest
+    // completedCount: "ever passed" — a pass is permanent once earned
+    // avgScore: latest attempt per assessment (last write wins)
+    const everPassed = new Map<string, boolean>()
+    const latestScore = new Map<string, number>()
     for (const r of memberResults) {
       if (ALL_ASSESSMENT_IDS.includes(r.assessment_id)) {
-        if (!latestPassed.get(r.assessment_id)) latestPassed.set(r.assessment_id, r.passed)
+        if (r.passed) everPassed.set(r.assessment_id, true)
+        else if (!everPassed.get(r.assessment_id)) everPassed.set(r.assessment_id, false)
+        latestScore.set(r.assessment_id, r.score)
       }
     }
-    const completedCount = Array.from(latestPassed.values()).filter(Boolean).length
+    const completedCount = Array.from(everPassed.values()).filter(Boolean).length
     const progressPct = Math.round((completedCount / TOTAL_ASSESSMENTS) * 100)
-    const avgScore = memberResults.length > 0
-      ? Math.round(memberResults.reduce((s, r) => s + r.score, 0) / memberResults.length)
+    const scores = Array.from(latestScore.values())
+    const avgScore = scores.length > 0
+      ? Math.round(scores.reduce((s, v) => s + v, 0) / scores.length)
       : null
     const rag = ragStatus(progressPct)
     const name = displayName(member)

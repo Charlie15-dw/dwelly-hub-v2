@@ -32,6 +32,14 @@ export default async function PassportPage() {
   const role = (profile?.role as keyof typeof ROLE_LABELS) ?? 'property_manager'
   const startDate = profile?.created_at ?? user.created_at
 
+  // Re-certification: 1 year from account creation
+  const startDateObj = new Date(startDate)
+  const recertDate = new Date(startDateObj)
+  recertDate.setFullYear(recertDate.getFullYear() + 1)
+  const today = new Date()
+  const daysUntilRecert = Math.ceil((recertDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  const recertLabel = recertDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
+
   const passedIds = new Set(
     (resultRows ?? [])
       .filter(r => r.passed && ALL_ASSESSMENT_IDS.includes(r.assessment_id))
@@ -90,13 +98,13 @@ export default async function PassportPage() {
           <Shield className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" aria-hidden />
           <div>
             <h3 className="text-sm font-bold text-navy">Annual Re-Certification</h3>
-            <p className="text-xs text-slate-500 mt-0.5">December 2026</p>
+            <p className="text-xs text-slate-500 mt-0.5">{recertLabel}</p>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
               Compliance-critical re-certification covering deposit protection, gas safety, and tenancy legislation.
             </p>
             <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">
               <Clock className="w-3 h-3" aria-hidden />
-              <span>245 days until re-certification</span>
+              <span>{daysUntilRecert > 0 ? `${daysUntilRecert} days until re-certification` : 'Re-certification due'}</span>
             </div>
           </div>
         </div>
