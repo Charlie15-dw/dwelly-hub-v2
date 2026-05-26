@@ -76,7 +76,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   const [quizStarted, setQuizStarted]  = useState(false) // true once first answer submitted
 
   // Check lock status on mount — also checks Supabase for manager-triggered resets
-  // and restores any in-progress session
+  // and restores any in-progress session (Supabase takes priority over localStorage)
   useEffect(() => {
     if (isRecapQuiz) return
     async function checkLockAndReset() {
@@ -93,32 +93,60 @@ export default function QuizPage({ params }: { params: { id: string } }) {
           .maybeSingle()
 
         if (reset) {
-          // Consume the reset and unlock localStorage
+          // Consume the reset and clear all saved state
           await supabase
             .from('module_resets')
             .update({ consumed_at: new Date().toISOString() })
             .eq('id', reset.id)
+          await supabase
+            .from('assessment_sessions')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('module_id', moduleId)
           unlockAssessment(moduleId)
           clearInProgress(moduleId)
           return // allow the quiz to start fresh
         }
       }
+
       // No reset — check if fully locked first
       if (isLocked(moduleId)) {
         setLockedByStorage(true)
         setLastAttempt(getLastAttempt(moduleId))
         return
       }
-      // Restore any in-progress session (user navigated away mid-quiz)
+
+      // Try Supabase first for cross-device persistence
+      if (user) {
+        const { data: dbSession } = await supabase
+          .from('assessment_sessions')
+          .select('answers, current_question')
+          .eq('user_id', user.id)
+          .eq('module_id', moduleId)
+          .maybeSingle()
+
+        if (dbSession && dbSession.current_question >= 0) {
+          const restoredAnswers = [...(dbSession.answers as (number | null)[])]
+          while (restoredAnswers.length < demoQuestions.length) restoredAnswers.push(null)
+          setAnswers(restoredAnswers)
+          const resumeQ = dbSession.current_question + 1
+          setCurrentQ(Math.min(resumeQ, demoQuestions.length - 1))
+          if (dbSession.current_question >= demoQuestions.length - 1) {
+            setShowResults(true)
+          }
+          setQuizStarted(true)
+          return
+        }
+      }
+
+      // Fall back to localStorage
       const session = getInProgress(moduleId)
       if (session && session.submittedUpTo >= 0) {
         const restoredAnswers = [...session.answers]
-        // Pad or trim to match current question count
         while (restoredAnswers.length < demoQuestions.length) restoredAnswers.push(null)
         setAnswers(restoredAnswers)
         const resumeQ = session.submittedUpTo + 1
         setCurrentQ(Math.min(resumeQ, demoQuestions.length - 1))
-        // If they had answered the last question but not seen results, show results
         if (session.submittedUpTo >= demoQuestions.length - 1) {
           setShowResults(true)
         }
@@ -158,6 +186,13 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
+
+      // Clear the in-progress session from Supabase
+      await supabase
+        .from('assessment_sessions')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('module_id', moduleId)
 
       // Build full answers payload for manager review
       const allAnswers = demoQuestions.map((q, i) => {
@@ -291,6 +326,19 @@ export default function QuizPage({ params }: { params: { id: string } }) {
         answers: newAnswers,
         submittedUpTo: currentQ,
       })
+      // Also save to Supabase for cross-device persistence (fire-and-forget)
+      void (async () => {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+        await supabase.from('assessment_sessions').upsert({
+          user_id: user.id,
+          module_id: moduleId,
+          answers: newAnswers,
+          current_question: currentQ,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id,module_id' })
+      })()
     }
   }
 
