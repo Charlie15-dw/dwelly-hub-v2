@@ -16,9 +16,6 @@ function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5)
 }
 
-// Spaced rep intervals used in messaging
-const NEXT_REVIEW_DAYS = [3, 7, 30]
-
 // Video module sections (3 questions each for combined assessments)
 const VIDEO_MODULE_IDS = ['mnt-02', 'cmp-02', 'mvt-02', 'ins-02', 'sup-02']
 // Knowledge base sections
@@ -32,13 +29,23 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   const isRecapQuiz        = moduleId.startsWith('recap-')
   const recapRound         = isRecapQuiz ? RECAP_ROUNDS.find(r => r.id === moduleId) : undefined
 
+  // Recall quiz: recall-{baseAssessmentId}-{intervalDays} e.g. recall-mnt-01-3
+  const isRecallQuiz  = moduleId.startsWith('recall-')
+  const recallMatch   = isRecallQuiz ? moduleId.match(/^recall-(.+)-(\d+)$/) : null
+  const recallBase    = recallMatch?.[1] ?? null
+  const recallDays    = recallMatch ? parseInt(recallMatch[2]) : 0
+  const recallLabel   = recallDays === 3 ? '3-day' : recallDays === 7 ? '7-day' : '30-day'
+  const recallModuleTitle = recallBase ? (MODULES.find(m => m.id === recallBase)?.title ?? recallBase) : ''
+
   const module = isMasterAssessment
     ? { id: 'master-assessment', title: 'Master Assessment — All Sections', passmark: 80 }
     : isFullAssessment
       ? { id: 'full-assessment', title: 'Full Assessment — Video Modules', passmark: 80 }
       : isRecapQuiz
         ? { id: moduleId, title: `Monthly Recap — ${recapRound?.label ?? ''}`, passmark: 0 }
-        : MODULES.find(m => m.id === moduleId)
+        : isRecallQuiz
+          ? { id: moduleId, title: `Recall Check — ${recallModuleTitle}`, passmark: 0 }
+          : MODULES.find(m => m.id === moduleId)
 
   // Stable question list — computed once on mount so re-renders don't reshuffle
   const [demoQuestions] = useState(() => {
@@ -60,11 +67,16 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       )
       return shuffle(sampled).slice(0, recapRound.questionCount)
     }
+    if (isRecallQuiz) {
+      if (!recallBase) return []
+      const pool = QUIZ_QUESTIONS.filter(q => q.moduleId === recallBase && !q.tier)
+      return shuffle(pool).slice(0, 3)
+    }
     return QUIZ_QUESTIONS.filter(q => q.moduleId === moduleId && !q.tier)
   })
 
-  const backHref  = isMasterAssessment || isFullAssessment ? '/assessments' : isRecapQuiz ? '/recap' : `/modules/${moduleId}`
-  const backLabel = isMasterAssessment || isFullAssessment ? 'Back to Assessments' : isRecapQuiz ? 'Back to Recap & Refresh' : 'Back to Module'
+  const backHref  = isMasterAssessment || isFullAssessment ? '/assessments' : isRecapQuiz ? '/recap' : isRecallQuiz ? '/assessments' : `/modules/${moduleId}`
+  const backLabel = isMasterAssessment || isFullAssessment ? 'Back to Assessments' : isRecapQuiz ? 'Back to Recap & Refresh' : isRecallQuiz ? 'Back to Assessments' : 'Back to Module'
 
   const [currentQ, setCurrentQ]       = useState(0)
   const [selected, setSelected]        = useState<number | null>(null)
@@ -74,11 +86,19 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   const [lockedByStorage, setLockedByStorage] = useState(false)
   const [lastAttempt, setLastAttempt]  = useState<AttemptRecord | null>(null)
   const [quizStarted, setQuizStarted]  = useState(false) // true once first answer submitted
+  const [scheduleId, setScheduleId]    = useState<string | null>(null) // recall schedule UUID from URL
+
+  // Read scheduleId from URL on mount (recall quizzes only)
+  useEffect(() => {
+    if (!isRecallQuiz) return
+    const params = new URLSearchParams(window.location.search)
+    setScheduleId(params.get('schedule'))
+  }, [isRecallQuiz])
 
   // Check lock status on mount — also checks Supabase for manager-triggered resets
   // and restores any in-progress session (Supabase takes priority over localStorage)
   useEffect(() => {
-    if (isRecapQuiz) return
+    if (isRecapQuiz || isRecallQuiz) return
     async function checkLockAndReset() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
@@ -156,6 +176,32 @@ export default function QuizPage({ params }: { params: { id: string } }) {
     checkLockAndReset()
   }, [moduleId, isRecapQuiz])
 
+  // Save recall result to Supabase and mark schedule complete
+  useEffect(() => {
+    if (!showResults || !isRecallQuiz) return
+    async function saveRecallResult() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      await supabase.from('assessment_results').insert({
+        user_id: user.id,
+        assessment_id: moduleId,
+        score,
+        passed: true, // recall checks have no pass/fail
+        completed_at: new Date().toISOString(),
+      })
+      if (scheduleId) {
+        await fetch('/api/quiz/complete-recall', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scheduleId, score }),
+        })
+      }
+    }
+    saveRecallResult()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showResults])
+
   // Save recap result to Supabase when results appear
   useEffect(() => {
     if (!showResults || !isRecapQuiz) return
@@ -177,7 +223,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
 
   // Save attempt to localStorage AND Supabase when the results screen appears
   useEffect(() => {
-    if (!showResults || isRecapQuiz) return
+    if (!showResults || isRecapQuiz || isRecallQuiz) return
     clearInProgress(moduleId)
     saveAttempt({ moduleId, completedAt: new Date().toISOString(), score, passed })
 
@@ -225,6 +271,15 @@ export default function QuizPage({ params }: { params: { id: string } }) {
           completed: true,
           last_watched_at: new Date().toISOString(),
         }, { onConflict: 'user_id,module_id' })
+      }
+
+      // Schedule 3/7/30-day recall checks for passed module-level assessments
+      if (passed && !isFullAssessment && !isMasterAssessment) {
+        void fetch('/api/quiz/schedule-recall', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ assessmentId: moduleId }),
+        })
       }
     }
     saveToSupabase()
@@ -474,6 +529,99 @@ export default function QuizPage({ params }: { params: { id: string } }) {
     )
   }
 
+  // ── Recall results screen (no pass/fail — 3-question knowledge check) ──────────
+  if (showResults && isRecallQuiz) {
+    const allCorrect = correctCount === demoQuestions.length
+
+    return (
+      <div className="max-w-2xl mx-auto space-y-6">
+        <div className="card p-8 text-center">
+          <div
+            className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-4"
+            style={{ background: 'rgba(249,115,22,0.1)' }}
+          >
+            <RefreshCw className="w-9 h-9" style={{ color: '#f97316' }} aria-hidden />
+          </div>
+
+          <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: '#f97316' }}>
+            {recallLabel} recall check
+          </p>
+          <h2 className="text-2xl font-bold text-navy mb-1">Recall Check Complete</h2>
+          <p className="text-slate-500 text-sm mb-6">{recallModuleTitle}</p>
+
+          <div className="flex items-center justify-center gap-8 mb-6">
+            <div className="text-center">
+              <p className="text-4xl font-black tabular-nums" style={{ color: '#f97316' }}>{score}%</p>
+              <p className="text-xs text-slate-400 mt-1">Your Score</p>
+            </div>
+            <div className="text-center">
+              <p className="text-4xl font-black text-navy tabular-nums">{correctCount}/{demoQuestions.length}</p>
+              <p className="text-xs text-slate-400 mt-1">Correct</p>
+            </div>
+          </div>
+
+          {allCorrect ? (
+            <div className="rounded-xl border border-teal/30 bg-teal/5 p-4 mb-6 text-left">
+              <p className="text-sm font-bold text-teal mb-1">Knowledge retained ✓</p>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                You answered every question correctly — the knowledge from this module is firmly embedded.
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 mb-6 text-left">
+              <p className="text-sm font-bold text-amber-800 mb-1">Worth revisiting</p>
+              <p className="text-xs text-amber-700 leading-relaxed">
+                You missed {demoQuestions.length - correctCount} question{demoQuestions.length - correctCount !== 1 ? 's' : ''}.
+                {' '}Review the rationale below and consider re-reading the module material.
+              </p>
+            </div>
+          )}
+
+          {/* Answer review */}
+          <div className="text-left space-y-3 mb-6">
+            {demoQuestions.map((q, i) => {
+              const userAns = answers[i]
+              const isCorrect = userAns === q.correct
+              return (
+                <div key={q.id} className={cn(
+                  'rounded-xl p-4 border',
+                  isCorrect ? 'border-teal/30 bg-teal/5' : 'border-red-200 bg-red-50/50',
+                )}>
+                  <div className="flex items-start gap-2.5 mb-2">
+                    {isCorrect
+                      ? <CheckCircle2 className="w-4 h-4 text-teal flex-shrink-0 mt-0.5" aria-hidden />
+                      : <XCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" aria-hidden />
+                    }
+                    <p className="text-sm font-medium text-navy leading-snug">{q.question}</p>
+                  </div>
+                  {!isCorrect && (
+                    <>
+                      <p className="text-xs text-red-600 mb-1 ml-6">
+                        Your answer: {userAns !== null ? q.options[userAns] : 'No answer'}
+                      </p>
+                      <p className="text-xs text-teal font-medium mb-2 ml-6">
+                        Correct: {q.options[q.correct]}
+                      </p>
+                    </>
+                  )}
+                  <p className="text-xs text-slate-600 ml-6 bg-white/80 rounded-lg p-2 border border-slate-100 leading-relaxed">
+                    <span className="font-semibold">Rationale: </span>{q.rationale}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <Link href="/assessments" className="btn-primary flex items-center gap-1.5">
+              All Assessments <ArrowRight className="w-4 h-4" aria-hidden />
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // ── Standard results screen (pass/fail — modules & master assessment) ──────────
   if (showResults) {
     return (
@@ -551,14 +699,14 @@ export default function QuizPage({ params }: { params: { id: string } }) {
             })}
           </div>
 
-          {/* Spaced rep info */}
+          {/* Spaced rep confirmation */}
           {passed && (
             <div className="bg-gold/10 border border-gold/30 rounded-xl p-4 mb-6 text-left">
-              <p className="text-sm font-bold text-navy mb-1">Spaced Repetition Scheduled</p>
+              <p className="text-sm font-bold text-navy mb-1">Recall checks scheduled ✓</p>
               <p className="text-xs text-slate-600 leading-relaxed">
-                To beat the forgetting curve, you&apos;ll receive a 3-question recall check in{' '}
+                To beat the forgetting curve, you&apos;ll receive a 3-question email recall check in{' '}
                 <strong>3 days</strong>, <strong>7 days</strong>, and <strong>30 days</strong>.
-                Each check takes under 2 minutes.
+                Each check takes under 2 minutes and won&apos;t affect your score.
               </p>
             </div>
           )}
@@ -590,7 +738,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       <div className="card p-5">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <p className="text-xs text-slate-500 mb-0.5">{isRecapQuiz ? 'Monthly Recap' : 'Assessment'}</p>
+            <p className="text-xs text-slate-500 mb-0.5">{isRecapQuiz ? 'Monthly Recap' : isRecallQuiz ? `${recallLabel} Recall Check` : 'Assessment'}</p>
             <h1 className="text-base font-bold text-navy">{module?.title ?? 'Knowledge Check'}</h1>
           </div>
           <div className="flex items-center gap-4 text-sm">
@@ -624,7 +772,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
         </div>
         <div className="flex justify-between text-[11px] text-slate-400 mt-1">
           <span>Q{currentQ + 1} of {demoQuestions.length}</span>
-          <span>{isRecapQuiz ? 'Knowledge check — no pass mark' : `Pass mark: ${module?.passmark ?? 80}%`}</span>
+          <span>{isRecapQuiz || isRecallQuiz ? 'Knowledge check — no pass mark' : `Pass mark: ${module?.passmark ?? 80}%`}</span>
         </div>
       </div>
 
