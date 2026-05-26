@@ -10,6 +10,17 @@ import { QUIZ_QUESTIONS, MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { isLocked, getLastAttempt, saveAttempt, unlockAssessment, getInProgress, saveInProgress, clearInProgress, type AttemptRecord } from '@/lib/assessmentStorage'
 import { createClient } from '@/lib/supabase/client'
+import { hashStr, seededShuffle, getBrowserKey } from '@/lib/shuffle'
+
+/** Shuffle the options of a question and recalculate the correct index */
+function shuffleOptions(q: typeof QUIZ_QUESTIONS[0], seed: number): typeof QUIZ_QUESTIONS[0] {
+  const newOrder = seededShuffle(Array.from({ length: q.options.length }, (_, i) => i), seed)
+  return {
+    ...q,
+    options: newOrder.map(i => q.options[i]),
+    correct: newOrder.indexOf(q.correct),
+  }
+}
 
 // Shuffle helper — randomises question order for recap quizzes
 function shuffle<T>(arr: T[]): T[] {
@@ -47,8 +58,12 @@ export default function QuizPage({ params }: { params: { id: string } }) {
           ? { id: moduleId, title: `Recall Check — ${recallModuleTitle}`, passmark: 0 }
           : MODULES.find(m => m.id === moduleId)
 
-  // Stable question list — computed once on mount so re-renders don't reshuffle
+  // Stable question list — computed once on mount so re-renders don't reshuffle.
+  // For regular module assessments, question order AND option order are shuffled
+  // using a per-browser seed (stable for the same device, different across devices).
   const [demoQuestions] = useState(() => {
+    const browserKey = getBrowserKey()
+
     if (isMasterAssessment) {
       return [...VIDEO_MODULE_IDS, ...KNOWLEDGE_IDS].flatMap(mid =>
         QUIZ_QUESTIONS.filter(q => q.moduleId === mid && q.tier === 'master')
@@ -72,7 +87,12 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       const pool = QUIZ_QUESTIONS.filter(q => q.moduleId === recallBase && !q.tier)
       return shuffle(pool).slice(0, 3)
     }
-    return QUIZ_QUESTIONS.filter(q => q.moduleId === moduleId && !q.tier)
+
+    // Regular module assessment — shuffle question order and option order per browser
+    const pool = QUIZ_QUESTIONS.filter(q => q.moduleId === moduleId && !q.tier)
+    if (!browserKey) return pool // server render: no shuffle (hydration safe)
+    const shuffledPool = seededShuffle(pool, hashStr(browserKey + moduleId))
+    return shuffledPool.map(q => shuffleOptions(q, hashStr(browserKey + q.id)))
   })
 
   const backHref  = isMasterAssessment || isFullAssessment ? '/assessments' : isRecapQuiz ? '/recap' : isRecallQuiz ? '/assessments' : `/modules/${moduleId}`
@@ -136,30 +156,9 @@ export default function QuizPage({ params }: { params: { id: string } }) {
         return
       }
 
-      // Try Supabase first for cross-device persistence
-      if (user) {
-        const { data: dbSession } = await supabase
-          .from('assessment_sessions')
-          .select('answers, current_question')
-          .eq('user_id', user.id)
-          .eq('module_id', moduleId)
-          .maybeSingle()
-
-        if (dbSession && dbSession.current_question >= 0) {
-          const restoredAnswers = [...(dbSession.answers as (number | null)[])]
-          while (restoredAnswers.length < demoQuestions.length) restoredAnswers.push(null)
-          setAnswers(restoredAnswers)
-          const resumeQ = dbSession.current_question + 1
-          setCurrentQ(Math.min(resumeQ, demoQuestions.length - 1))
-          if (dbSession.current_question >= demoQuestions.length - 1) {
-            setShowResults(true)
-          }
-          setQuizStarted(true)
-          return
-        }
-      }
-
-      // Fall back to localStorage
+      // Restore from localStorage only — question shuffle is browser-specific so
+      // cross-device Supabase restore would map answer indices to the wrong questions.
+      // We still save to Supabase so managers can see in-progress state.
       const session = getInProgress(moduleId)
       if (session && session.submittedUpTo >= 0) {
         const restoredAnswers = [...session.answers]

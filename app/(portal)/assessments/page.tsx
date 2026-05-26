@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Trophy, ChevronRight, ClipboardCheck, BookOpen, Play, Library, ArrowRight, Lock } from 'lucide-react'
 import { isLocked } from '@/lib/assessmentStorage'
 import { createClient } from '@/lib/supabase/client'
+import { getBrowserKey, hashStr, seededShuffle } from '@/lib/shuffle'
 
 const VIDEO_MODULE_ASSESSMENTS = [
   { label: 'Maintenance 1/2 — Creating a Repair Request',    icon: '🔧', id: 'mnt-01', questions: 6  },
@@ -37,9 +38,13 @@ function SectionHeader({ icon: Icon, label }: { icon: React.ElementType; label: 
   )
 }
 
+type AssessmentEntry = { label: string; icon: string; id: string; questions: number }
+
 export default function AssessmentsPage() {
   const [lockedIds, setLockedIds] = useState<Set<string>>(new Set())
   const [ready, setReady] = useState(false)
+  const [videoList, setVideoList] = useState<AssessmentEntry[]>([...VIDEO_MODULE_ASSESSMENTS])
+  const [knowledgeList, setKnowledgeList] = useState<AssessmentEntry[]>([...KNOWLEDGE_ASSESSMENTS])
 
   useEffect(() => {
     async function init() {
@@ -78,6 +83,13 @@ export default function AssessmentsPage() {
 
         // Locked if passed in Supabase OR locked in localStorage
         setLockedIds(new Set(allIds.filter(id => passedInDb.has(id) || isLocked(id))))
+      }
+
+      // Shuffle assessment list order per browser so layout differs between users
+      const browserKey = getBrowserKey()
+      if (browserKey) {
+        setVideoList(seededShuffle([...VIDEO_MODULE_ASSESSMENTS], hashStr(browserKey + 'video')))
+        setKnowledgeList(seededShuffle([...KNOWLEDGE_ASSESSMENTS], hashStr(browserKey + 'knowledge')))
       }
 
       setReady(true)
@@ -151,7 +163,7 @@ export default function AssessmentsPage() {
           Complete each video module before taking its assessment. Work through them in order.
         </p>
         <div className="card divide-y divide-[#F5F5F7]">
-          {VIDEO_MODULE_ASSESSMENTS.map((a) => (
+          {videoList.map((a) => (
             <AssessmentRow key={a.id} {...a} />
           ))}
         </div>
@@ -211,7 +223,7 @@ export default function AssessmentsPage() {
           Read the knowledge article first, then test your understanding with the linked assessment.
         </p>
         <div className="card divide-y divide-[#F5F5F7]">
-          {KNOWLEDGE_ASSESSMENTS.map((a) => (
+          {knowledgeList.map((a) => (
             <AssessmentRow key={a.id} {...a} />
           ))}
         </div>
