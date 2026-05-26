@@ -2829,6 +2829,606 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     rationale: 'Linking support tasks to the correct property in Dwelly is essential for maintaining a complete audit trail. It ensures that all activity — renewals, rent reviews, landlord communications — is recorded against the property record. This means any PM who subsequently manages the property can see the full history, and reporting accurately reflects the property\'s management activity.',
   },
+
+  // ── MNT-02: Actioning Maintenance — extra pool ────────────────────────────
+
+  {
+    id: 'q-mnt-02-n1', moduleId: 'mnt-02',
+    question: 'When should a PM switch a maintenance job from Auto Mode to Pause or Manual Mode?',
+    options: [
+      'At the start of every job — all jobs should begin in Manual Mode to give the PM full control from the outset',
+      'When the job requires human judgement at a specific decision point — such as a contractor query, landlord objection, or tenant access issue — that the system cannot resolve automatically',
+      'Only when the landlord instructs them to pause — PMs should never manually override Auto Mode',
+      'When a job has been open for more than 14 days without a visit date being agreed',
+    ],
+    correct: 1,
+    rationale: 'Auto Mode handles routine steps so PMs can focus on decision points. PMs should switch to Pause or Manual only when a specific situation requires human intervention — an unresolved access issue, a contractor dispute, or a landlord query. Switching all jobs to Manual at the outset defeats the purpose of automation and significantly increases workload.',
+  },
+  {
+    id: 'q-mnt-02-n2', moduleId: 'mnt-02',
+    question: 'A contractor raises an invoice that is higher than the quote the landlord approved. What should the PM do?',
+    options: [
+      'Approve the invoice immediately to avoid delaying the contractor\'s payment and note the variance in the job chat',
+      'Reject the invoice outright and close the job — contractors cannot invoice above the approved amount under any circumstances',
+      'Do not approve the invoice — query the variance with the contractor, establish the reason, and obtain explicit landlord approval for the additional cost before processing payment',
+      'Split the invoice in the Ledger so the approved amount is paid immediately and the balance is held in dispute',
+    ],
+    correct: 2,
+    rationale: 'An invoice above the approved quote cannot be processed without explanation and renewed landlord authorisation. The PM must query the variance with the contractor (e.g. unforeseen additional works or materials), document the reason in the job chat, and obtain explicit landlord approval for the additional amount before any payment is processed.',
+  },
+  {
+    id: 'q-mnt-02-n3', moduleId: 'mnt-02',
+    question: 'What should a PM do when a landlord declines to authorise a repair that the PM believes is necessary?',
+    options: [
+      'Instruct the contractor regardless — the landlord\'s repairing obligation under Section 11 requires works to be carried out whether or not the landlord consents',
+      'Close the job and take no further action as the landlord has the final say on all maintenance decisions',
+      'Record the landlord\'s refusal in the job chat, advise the landlord clearly of any legal obligations or health and safety risks, and escalate internally if the repair is necessary to protect the tenant\'s habitability or safety',
+      'Inform the tenant they should contact the landlord directly to resolve the matter',
+    ],
+    correct: 2,
+    rationale: 'When a landlord refuses to authorise a repair, the PM must record the refusal in the job chat for audit purposes, advise the landlord of relevant legal obligations (such as Section 11 of the Landlord and Tenant Act 1985), and escalate internally if the property risks becoming uninhabitable or the refusal exposes the agency to liability.',
+  },
+  {
+    id: 'q-mnt-02-n4', moduleId: 'mnt-02',
+    question: 'A maintenance job in Auto Mode has returned to a PM\'s queue. What does this typically indicate?',
+    options: [
+      'The job was automatically completed by the system and is ready for archiving',
+      'The contractor has submitted their invoice and is awaiting payment approval',
+      'An automated step has completed or a deadline has been reached that requires the PM to make a decision before the job can progress further',
+      'The landlord has sent a message through their portal that needs the PM\'s attention',
+    ],
+    correct: 2,
+    rationale: 'When a job in Auto Mode returns to the PM\'s queue, it means either a step in the automated sequence has been completed and awaits the PM\'s next input, or a deadline (such as no provider response after repeated reminders) has been reached. The PM must review the job and take the appropriate next action to progress it.',
+  },
+  {
+    id: 'q-mnt-02-n5', moduleId: 'mnt-02',
+    question: 'What should a PM do if a tenant contacts them by phone to chase a repair already logged in Dwelly?',
+    options: [
+      'Close the current Dwelly job and create a new one flagged as urgent to move it to the top of the work queue',
+      'Respond directly to the tenant outside Dwelly — this demonstrates better customer service than routing everything through the system',
+      'Acknowledge the contact, log it as an internal note in the job chat, and update the tenant on the current status and expected next steps using Dwelly\'s communication tools',
+      'Forward the tenant\'s concern to the contractor directly so they can manage the tenant\'s expectations independently',
+    ],
+    correct: 2,
+    rationale: 'When a tenant chases a job, the PM should acknowledge the contact, record the chase as an internal note in the job chat, and communicate the current status back to the tenant through Dwelly. Responding outside the system creates an incomplete audit trail and breaks automated job progression.',
+  },
+  {
+    id: 'q-mnt-02-n6', moduleId: 'mnt-02',
+    question: 'After a maintenance visit is marked complete in Dwelly, the tenant reports the repair has not resolved the problem. What is the correct next step?',
+    options: [
+      'Advise the tenant to contact the contractor directly as the job is closed and no longer the agency\'s responsibility',
+      'Reopen the original closed job to avoid creating unnecessary duplicate records in the system',
+      'Create a new maintenance job in Dwelly linked to the same property, referencing the original job, and begin the contractor instruction process again',
+      'Close the complaint as the contractor confirmed the job was complete — any further issues require a new specialist survey',
+    ],
+    correct: 2,
+    rationale: 'When a completed repair has not resolved the issue, a new maintenance job must be created in Dwelly. Closed jobs should not be reopened as this disrupts the audit trail. The new job should reference the original job number so the history is clear, and the PM should consider whether the same contractor should be reinstructed or a second opinion obtained.',
+  },
+
+  // ── CMP-02: Deposit Compliance — extra pool ───────────────────────────────
+
+  {
+    id: 'q-cmp-02-n1', moduleId: 'cmp-02',
+    question: 'What is the purpose of the alternative dispute resolution (ADR) service offered by deposit protection schemes?',
+    options: [
+      'To help landlords and agents recover unpaid rent from tenants at the end of a tenancy',
+      'To provide a free, independent adjudication service that resolves deposit disputes between landlords and tenants without going to court',
+      'To negotiate on behalf of the landlord when a tenant has left the property in poor condition',
+      'To automatically distribute the deposit proportionally if no agreement can be reached',
+    ],
+    correct: 1,
+    rationale: 'All three authorised deposit protection schemes in England are required to offer a free alternative dispute resolution (ADR) service. This allows landlords and tenants to resolve disputes about deposit deductions without going to court. An independent adjudicator reviews the evidence from both parties and makes a binding decision.',
+  },
+  {
+    id: 'q-cmp-02-n2', moduleId: 'cmp-02',
+    question: 'What evidence is typically required when making a deposit deduction claim through a scheme\'s adjudication process?',
+    options: [
+      'Only the checkout report — schemes accept verbal confirmation from the contractor that works were required',
+      'A check-in inventory, a checkout report, receipts or contractor quotes for the costs claimed, and any relevant communication with the tenant about the issues',
+      'Solely the landlord\'s written statement of condition and estimated costs — photographic evidence is supplementary',
+      'A statutory declaration signed by the landlord and witnessed by a solicitor confirming the extent of the damage',
+    ],
+    correct: 1,
+    rationale: 'Successful deposit deduction claims rely on a strong evidence package: a detailed check-in inventory with photos, a checkout report highlighting differences, and receipts or quotes for costs being claimed. Without comparative check-in documentation, it is extremely difficult to establish that damage was caused by the tenant rather than being pre-existing.',
+  },
+  {
+    id: 'q-cmp-02-n3', moduleId: 'cmp-02',
+    question: 'A landlord wants to claim the full cost of repainting a room from a tenant\'s deposit due to wall marks. The tenant was in the property for 4 years. What key principle must be applied?',
+    options: [
+      'Any marking on walls constitutes damage and the full repainting cost can always be deducted',
+      'Fair wear and tear must be taken into account — minor marks expected after a reasonable tenancy period are not deductible; only damage beyond normal use can be claimed',
+      'The landlord can claim the full cost regardless of tenancy length or the nature of the marks',
+      'Repainting costs can only be deducted if the tenant admits responsibility in writing',
+    ],
+    correct: 1,
+    rationale: '"Fair wear and tear" is a fundamental principle in deposit disputes. Marks, scuffs, or fading expected from normal use over the tenancy period are not deductible. Only damage beyond reasonable wear and tear — such as large holes or unauthorised painting — can be claimed. Adjudicators also consider the age and condition of the decoration at check-in.',
+  },
+  {
+    id: 'q-cmp-02-n4', moduleId: 'cmp-02',
+    question: 'In an insured deposit protection scheme, who holds the tenant\'s deposit money during the tenancy?',
+    options: [
+      'The scheme provider holds the deposit in a ring-fenced client account on behalf of the tenant',
+      'The landlord or letting agent retains the deposit money and pays a fee to the scheme for the insurance protection',
+      'An independent escrow agent holds the deposit on behalf of both parties',
+      'The tenant retains the deposit in their own account until check-out',
+    ],
+    correct: 1,
+    rationale: 'In an insured deposit protection scheme, the landlord or agent holds the deposit money during the tenancy and pays a fee to the scheme provider for the insurance that protects the tenant\'s deposit. This is the key distinction from a custodial scheme, where the scheme holds the deposit itself. Both are legally compliant.',
+  },
+  {
+    id: 'q-cmp-02-n5', moduleId: 'cmp-02',
+    question: 'A carpet was new at the start of a tenancy 4 years ago and now has a stain. Can the landlord claim the full replacement cost from the deposit?',
+    options: [
+      'Yes — any damage caused by the tenant allows the full replacement cost to be claimed regardless of the item\'s age',
+      'No — a carpet installed 4 years ago has already used a significant portion of its useful life. A depreciation factor is applied and only a proportional share of the replacement cost is typically awarded',
+      'No deduction is possible — carpets are always considered fair wear and tear after 3 years',
+      'It depends entirely on the landlord\'s preference — deposit schemes do not apply depreciation',
+    ],
+    correct: 1,
+    rationale: 'Deposit scheme adjudicators apply a depreciation principle when assessing claims for damaged items. A carpet new at check-in with a useful life of 7–10 years that is 4 years old has used a substantial proportion of its expected life. An adjudicator will award only a proportional share of the replacement cost, not the full amount.',
+  },
+  {
+    id: 'q-cmp-02-n6', moduleId: 'cmp-02',
+    question: 'A landlord failed to protect a tenant\'s deposit within 30 days of receiving it. What are the potential legal consequences?',
+    options: [
+      'The tenancy is automatically voided and the tenant must be rehoused at the landlord\'s expense',
+      'The landlord is barred from serving a valid Section 21 notice until the deposit is protected and prescribed information issued; the court can also order a penalty of 1–3x the deposit amount',
+      'The landlord must return the deposit within 14 days and restart the tenancy on new terms',
+      'There are no consequences unless the tenant makes a formal complaint to the local authority',
+    ],
+    correct: 1,
+    rationale: 'Failing to protect a deposit within 30 days has two key consequences under the Housing Act 2004: the landlord cannot serve a valid Section 21 notice until the deposit is protected and prescribed information provided; and the court can order a financial penalty of between 1x and 3x the deposit amount.',
+  },
+
+  // ── INS-02: Completing the Inspection — extra pool ────────────────────────
+
+  {
+    id: 'q-ins-02-n1', moduleId: 'ins-02',
+    question: 'A PM arrives at a property for a scheduled inspection and the tenant refuses to allow entry. What is the correct response?',
+    options: [
+      'Use the spare key held by the agency to enter — the inspection was scheduled correctly with advance notice',
+      'Leave the property, fully record the refused access in the job chat, and notify both the landlord and tenant. If the tenant continues to refuse, follow the tenancy breach process',
+      'Cancel the inspection job and advise the landlord that inspections cannot take place as tenants always have the right to refuse',
+      'Immediately issue a formal breach of tenancy notice as the tenant has no right to refuse entry after proper notice',
+    ],
+    correct: 1,
+    rationale: 'While a tenant should allow access after proper notice, a PM must never enter a property against the tenant\'s will. The correct response is to leave, record the refused access in the job chat, notify the landlord and tenant, and consider formal breach notification if the tenant refuses a rescheduled inspection. Forcing entry would constitute trespass.',
+  },
+  {
+    id: 'q-ins-02-n2', moduleId: 'ins-02',
+    question: 'After completing an inspection where maintenance issues were identified, what must the PM do before closing the inspection job in Dwelly?',
+    options: [
+      'Close the inspection job immediately and raise maintenance jobs later when there is time to process them',
+      'Add an internal note listing the issues and set the job to On Hold pending landlord review',
+      'Select "Yes" for issues found, complete the Comment for LL field, upload the completed report, and create a separate maintenance job for each repair identified',
+      'Send the landlord a direct email summarising the issues and attach the inspection report as a PDF',
+    ],
+    correct: 2,
+    rationale: 'When issues are found, the correct workflow is: select "Yes", complete the Comment for LL field (automatically sent to the landlord), upload the completed inspection report, and create a separate maintenance job for each identified repair. Issues left inside the inspection job are not tracked as open maintenance tasks.',
+  },
+  {
+    id: 'q-ins-02-n3', moduleId: 'ins-02',
+    question: 'During a mid-term inspection, a PM notices signs suggesting additional occupants not named on the tenancy agreement. What should they do?',
+    options: [
+      'Confront the tenant during the inspection and demand they provide ID for any additional occupants immediately',
+      'Ignore the observation — it is not the PM\'s role to question occupancy during a routine inspection',
+      'Record the observation in the inspection report and as an internal note in the job chat, raise a support task to investigate, and notify the landlord — do not make accusations without establishing the facts',
+      'Immediately serve a breach of tenancy notice and instruct the landlord\'s solicitor to commence possession proceedings',
+    ],
+    correct: 2,
+    rationale: 'If unauthorised occupants are suspected, the PM must document the observation, raise a support task to investigate, and notify the landlord. Making direct accusations during the inspection without established facts risks harassment allegations. The correct process is to gather evidence and follow the tenancy breach process after the landlord has agreed on a course of action.',
+  },
+  {
+    id: 'q-ins-02-n4', moduleId: 'ins-02',
+    question: 'What is the purpose of the "Comment for LL" field in the Dwelly inspection report template?',
+    options: [
+      'Its content is automatically transmitted to the landlord when the inspection is submitted — it summarises the findings for the landlord',
+      'It is an internal note only, visible to the PM team but not sent to the landlord',
+      'It generates the tenant follow-up letter sent after the inspection',
+      'It is used by the finance team to identify whether any works need to be invoiced',
+    ],
+    correct: 0,
+    rationale: 'The Comment for LL field is specifically designed to communicate inspection findings to the landlord. When the inspection job is submitted in Dwelly, the content of this field is automatically sent to the landlord as part of the inspection notification. PMs must ensure the comment is clear, professional, and contains all relevant information about issues found.',
+  },
+  {
+    id: 'q-ins-02-n5', moduleId: 'ins-02',
+    question: 'Why is it mandatory to use the standard Dwelly inspection report template rather than a separate document or email?',
+    options: [
+      'Using the template is optional — some landlords prefer a bespoke format and PMs should accommodate this',
+      'The template ensures consistent records across all properties, enables automated landlord notifications, creates a searchable audit trail within the property record, and allows condition comparisons across inspections over time',
+      'The template is mandatory only for HMO properties — standard single-let inspections can use any format',
+      'Using the template speeds up processing in the billing department as it auto-generates inspection fee invoices',
+    ],
+    correct: 1,
+    rationale: 'Using the standard Dwelly inspection template is mandatory for all properties. It ensures consistent records, automates the landlord notification, and stores the report within the property\'s record so any PM can access the full inspection history. Storing reports outside Dwelly breaks the audit trail and prevents the system from functioning as a single source of truth.',
+  },
+  {
+    id: 'q-ins-02-n6', moduleId: 'ins-02',
+    question: 'During a mid-term inspection, a PM discovers an unauthorised pet that is not permitted under the tenancy agreement. What is the correct response?',
+    options: [
+      'Tell the tenant to remove the pet immediately during the inspection and take photos as evidence',
+      'Record the observation with photographic evidence in the inspection report, note it as an internal note in the job chat, raise a support task to notify the landlord and agree next steps, then communicate formally with the tenant',
+      'Advise the landlord verbally at the next phone call and mark the inspection as passing since the pet is not a maintenance issue',
+      'Consult the tenancy agreement first — if it is silent on pets, no action is required',
+    ],
+    correct: 1,
+    rationale: 'An unauthorised pet must be documented thoroughly and reported to the landlord via a support task. The landlord should decide how to proceed: granting retrospective permission or issuing a formal breach notice. The PM should communicate formally with the tenant only after the landlord has agreed a course of action. Acting unilaterally during the inspection risks escalating the situation inappropriately.',
+  },
+
+  // ── MVT-02: Completing the Move-Out — extra pool ──────────────────────────
+
+  {
+    id: 'q-mvt-02-n1', moduleId: 'mvt-02',
+    question: 'What is the role of the check-in inventory when assessing deposit deductions at the end of a tenancy?',
+    options: [
+      'The check-in inventory only confirms the tenant received the property in good condition — it has no bearing on deposit deductions',
+      'It establishes the baseline condition of the property at the start of the tenancy, allowing fair comparison with the checkout report to identify genuine damage beyond fair wear and tear',
+      'The check-in inventory automatically calculates the maximum deposit deduction allowed based on the property\'s initial condition score',
+      'Check-in inventories are only relevant for HMOs — single-let properties rely solely on the checkout report',
+    ],
+    correct: 1,
+    rationale: 'The check-in inventory is the baseline against which the property\'s condition at checkout is measured. Without a detailed check-in inventory, it is impossible to prove that any damage was caused by the tenant rather than being pre-existing. A comprehensive check-in inventory with photos is essential for protecting the landlord\'s position in any deposit dispute.',
+  },
+  {
+    id: 'q-mvt-02-n2', moduleId: 'mvt-02',
+    question: 'What does clicking "Mediation Finished" in the Dwelly move-out job signify?',
+    options: [
+      'The property has been physically cleaned and is ready for the next tenant to view',
+      'The landlord and tenant have reached agreement on the deposit return amount (or the scheme has completed adjudication) and the financial element of the move-out is resolved',
+      'The checkout inspection has been completed and the report has been successfully uploaded',
+      'All outstanding maintenance work identified at checkout has been completed',
+    ],
+    correct: 1,
+    rationale: '"Mediation Finished" in the Dwelly move-out workflow refers specifically to financial resolution — when the landlord and tenant have agreed how the deposit is to be distributed, or the deposit scheme\'s adjudication has concluded. It is separate from "Property Ready", which refers to the physical condition of the property. Both must be completed before the move-out job can be fully closed.',
+  },
+  {
+    id: 'q-mvt-02-n3', moduleId: 'mvt-02',
+    question: 'A tenant vacates the property but leaves several items of furniture behind. What should the PM do?',
+    options: [
+      'Arrange for the items to be removed and disposed of immediately, deducting the clearance cost from the deposit',
+      'Leave the items in the property and re-let with them included — tenants cannot retrieve belongings after returning their keys',
+      'Document the abandoned items with photographs immediately, notify the landlord, serve the appropriate notice to the tenant regarding abandoned goods, and retain evidence of all steps taken before any disposal',
+      'Contact the local council to collect the items — abandoned goods are outside the agency\'s remit',
+    ],
+    correct: 2,
+    rationale: 'Items left behind are "abandoned goods" under the Torts (Interference with Goods) Act 1977. The PM cannot simply dispose of them — the tenant must be formally notified and given reasonable time to collect their belongings. All steps must be documented with photographs and written notices. Only after the prescribed process has been followed can uncollected items be disposed of.',
+  },
+  {
+    id: 'q-mvt-02-n4', moduleId: 'mvt-02',
+    question: 'What information must a PM record in Dwelly when confirming key handover at move-out?',
+    options: [
+      'Only the number of keys returned — key condition is not relevant for the move-out record',
+      'The number and type of all keys and access fobs returned, the date and time of handover, who returned them, and confirmation that all key sets are fully accounted for',
+      'Key handover does not need to be recorded in Dwelly — a verbal confirmation from the tenant is sufficient',
+      'A note in the job chat confirming at least one front door key has been returned',
+    ],
+    correct: 1,
+    rationale: 'A complete key record at move-out must capture the number and type of all keys and access fobs returned, the exact date and time of handover, the name of the person who returned them, and confirmation that all key sets — including any held by the landlord directly — are fully accounted for. This is required before the "Everything is ready" step can be completed in Dwelly.',
+  },
+  {
+    id: 'q-mvt-02-n5', moduleId: 'mvt-02',
+    question: 'When should a PM proceed to a formal deposit dispute through the deposit protection scheme?',
+    options: [
+      'As soon as the tenancy ends — all deposit matters should be resolved through the scheme to avoid direct negotiation',
+      'Immediately after the checkout report is uploaded, as the scheme requires 28 days to process any claim',
+      'Only after direct negotiation between the landlord and tenant has broken down — the scheme\'s dispute resolution service should be a last resort after good-faith negotiation',
+      'Only if the tenant owes more than one month\'s deposit — minor deductions should be handled informally',
+    ],
+    correct: 2,
+    rationale: 'Most deposit disputes are resolved through direct negotiation facilitated by the PM. The deposit scheme\'s adjudication service exists for cases where agreement cannot be reached. PMs should always attempt a negotiated resolution first — it is faster, less adversarial, and preserves relationships. Escalating directly to adjudication without attempting negotiation is poor practice.',
+  },
+  {
+    id: 'q-mvt-02-n6', moduleId: 'mvt-02',
+    question: 'When should a PM begin the re-marketing process for a property during the move-out period?',
+    options: [
+      'Re-marketing cannot begin until "Tenancy Ended" has been clicked and the checkout report is uploaded',
+      'As soon as the PM is aware of the forthcoming vacancy — discuss strategy with the landlord, update the property\'s marketing status in Dwelly, and notify the Lettings team through the move-out job to minimise the void period',
+      'Re-marketing is solely the Lettings team\'s responsibility — Property Managers should not be involved',
+      'Properties can only be re-marketed once the deposit is fully resolved and "Mediation Finished" has been clicked',
+    ],
+    correct: 1,
+    rationale: 'Minimising the void period requires early action. As soon as the PM is aware of a forthcoming vacancy, they should discuss re-marketing strategy with the landlord, update the property\'s status in Dwelly, and ensure the Lettings team are informed via the move-out job. Waiting until checkout is complete before starting this process significantly increases the risk of an extended void.',
+  },
+
+  // ── SUP-02: Actioning the Support Task — extra pool ───────────────────────
+
+  {
+    id: 'q-sup-02-n1', moduleId: 'sup-02',
+    question: 'A landlord has not responded to multiple renewal messages with only 6 weeks until the tenancy expires. What should the PM do?',
+    options: [
+      'Allow the tenancy to fall into periodic automatically — this is the safest outcome if the landlord is not engaging',
+      'Instruct the tenant to sign a new agreement at the current rent without the landlord\'s approval to protect the tenant',
+      'Document all contact attempts in the job chat, escalate to a senior team member, try multiple contact methods, and advise the landlord in writing of the consequences of not responding in time',
+      'Serve the tenant a Section 21 notice immediately to protect the landlord\'s position pending instructions',
+    ],
+    correct: 2,
+    rationale: 'When a landlord is unresponsive to renewal discussions, the PM must document every contact attempt, try multiple channels, and escalate internally. The PM must also advise the landlord clearly — in writing via the job chat — of the consequences: the tenancy will fall into periodic, either party can terminate with short notice, and the rent review opportunity will be missed. Acting without the landlord\'s instruction is not permitted.',
+  },
+  {
+    id: 'q-sup-02-n2', moduleId: 'sup-02',
+    question: 'A tenant refuses to sign a tenancy renewal. What should the PM do?',
+    options: [
+      'Immediately serve a Section 21 notice on the landlord\'s behalf as the tenant has rejected the renewal offer',
+      'Record the refusal in the job chat, advise the landlord of the tenant\'s position, and discuss options — the tenancy will roll into periodic unless the landlord wishes to seek possession',
+      'Contact the tenant daily until they agree to sign — tenant refusals are a breach of the tenancy agreement',
+      'Inform the tenant that refusing to sign means they must vacate within 28 days',
+    ],
+    correct: 1,
+    rationale: 'A tenant cannot be compelled to sign a renewal — refusing to do so is not a tenancy breach. The PM should record the refusal, update the landlord, and discuss options: the tenancy rolls to periodic (which may be acceptable), or if the landlord wants the tenant to leave, the appropriate legal route (Section 21 notice with correct notice periods) must be followed.',
+  },
+  {
+    id: 'q-sup-02-n3', moduleId: 'sup-02',
+    question: 'What is the correct process for increasing the rent during an ongoing monthly periodic tenancy in England?',
+    options: [
+      'The landlord can increase the rent at any time by sending the tenant an email with the new amount — no formal process is required for periodic tenancies',
+      'A Section 13 notice (Form 4) must be served giving at least one month\'s notice — the new rent cannot be charged until the notice period has elapsed and the tenant has not successfully disputed it',
+      'The rent can only be increased at the anniversary of the original fixed term, regardless of how long the periodic tenancy has been running',
+      'Any increase must be countersigned by both the landlord and tenant in a new written agreement before it becomes effective',
+    ],
+    correct: 1,
+    rationale: 'To increase rent during a monthly periodic tenancy in England, the landlord must serve a Section 13 notice (prescribed Form 4) with at least one month\'s notice. The tenant can challenge the proposed increase to a First-tier Tribunal if they believe it is above market rate. Informally asking for more rent without this process does not create a legal obligation to pay the higher amount.',
+  },
+  {
+    id: 'q-sup-02-n4', moduleId: 'sup-02',
+    question: 'A tenant requests early termination of their fixed-term tenancy. What should the PM do?',
+    options: [
+      'Release the tenant immediately — agencies cannot legally prevent a tenant from leaving',
+      'Advise the tenant they remain liable for the full rent until the tenancy end date, then raise a support task to discuss the early surrender process with the landlord',
+      'Instruct the tenant to serve a two-month notice period and the tenancy will end automatically',
+      'Transfer the tenancy to a new tenant found by the agency without the landlord\'s involvement',
+    ],
+    correct: 1,
+    rationale: 'A tenant in a fixed-term tenancy cannot unilaterally end the tenancy early — they remain liable for rent until the end date. However, the landlord may agree to an early surrender, usually conditional on the tenant paying until a replacement is found or an agreed settlement is reached. The PM should raise a support task, advise the landlord of the request, and facilitate a mutual surrender agreement if the landlord agrees.',
+  },
+  {
+    id: 'q-sup-02-n5', moduleId: 'sup-02',
+    question: 'What is a break clause in a tenancy agreement?',
+    options: [
+      'A clause giving the landlord the right to terminate the tenancy at any time for any reason without notice',
+      'A contractual provision that gives one or both parties the right to end the tenancy at a specified point during the fixed term, provided the correct notice is served in the prescribed form',
+      'A clause that only applies if the property is sold during the tenancy',
+      'A clause that allows the rent to be reviewed to market rate mid-term without the tenant\'s consent',
+    ],
+    correct: 1,
+    rationale: 'A break clause is a contractual provision that gives one or both parties the right to terminate a fixed-term tenancy at a specified date during the term, provided the required notice is served correctly and on time. Break clauses do not take effect automatically — if notice is not served in the prescribed form and within the required timeframe, the break clause may not be exercisable.',
+  },
+  {
+    id: 'q-sup-02-n6', moduleId: 'sup-02',
+    question: 'Why should all landlord and tenant communications regarding renewals be conducted through the Dwelly job chat rather than by personal email or phone alone?',
+    options: [
+      'Using the job chat is optional — the primary obligation is to reach a timely agreement by any means',
+      'Dwelly cannot track financial outcomes unless communications are in the job chat',
+      'Job chat communications create a timestamped, auditable record of what was agreed, when, and by whom — protecting the agency, landlord, and tenant if any party later disputes the terms',
+      'Personal emails are prohibited by GDPR when used for tenancy negotiations',
+    ],
+    correct: 2,
+    rationale: 'Recording all communications in the Dwelly job chat creates a complete, timestamped audit trail. If there is ever a dispute about what was agreed in a renewal — the rent amount, the new term length, any special conditions — the job chat provides incontrovertible evidence. Conducting negotiations by phone or personal email without a written record leaves the agency exposed if any party later disputes what was agreed.',
+  },
+
+  // ── KNO-01: Difficult Conversations — extra pool ──────────────────────────
+
+  {
+    id: 'q-kno-01-n1', moduleId: 'kno-01',
+    question: 'What is best practice when communicating a difficult recommendation to a landlord — such as suggesting a rent reduction to retain a good tenant?',
+    options: [
+      'Avoid raising difficult topics unless the landlord asks — unsolicited advice creates unnecessary conflict',
+      'Present the relevant market data, the specific risk of vacancy, and a clear recommendation framed around the landlord\'s commercial interests rather than as a personal opinion',
+      'Delegate difficult conversations to a senior colleague whenever possible to preserve the relationship',
+      'Send a brief email with the recommendation only — detailed explanations create more questions',
+    ],
+    correct: 1,
+    rationale: 'Difficult conversations are most effective when commercially framed and evidence-based. A PM who presents comparable rents, the cost of a void versus a small reduction, and a clear recommendation demonstrates professionalism and is more likely to achieve the right outcome. Avoiding difficult topics or under-explaining damages trust over time.',
+  },
+  {
+    id: 'q-kno-01-n2', moduleId: 'kno-01',
+    question: 'A landlord calls very upset claiming a repair has not been progressed and threatening to leave. How should the PM respond?',
+    options: [
+      'Escalate to a manager immediately without explaining the situation to the landlord — upset clients should always be handled by senior staff',
+      'Apologise unconditionally and offer a management fee reduction before investigating whether the complaint is justified',
+      'Acknowledge the landlord\'s frustration, review the job history in Dwelly before or during the call to establish the facts, explain clearly what has happened and what is being done, and follow up in writing via the job chat',
+      'Advise the landlord that all complaints must be made in writing before they can be investigated',
+    ],
+    correct: 2,
+    rationale: 'When handling a complaint, acknowledge the frustration without admitting fault before checking the facts. Reviewing the Dwelly job history allows the PM to give an accurate, informed response. Offering refunds or escalating without understanding the situation first is reactive and may create unnecessary liability. Following up in writing creates an audit trail.',
+  },
+  {
+    id: 'q-kno-01-n3', moduleId: 'kno-01',
+    question: 'Why is it important to set clear expectations with a tenant at the start of a maintenance job about timescales and next steps?',
+    options: [
+      'Expectation setting is unnecessary for repairs resolved within 48 hours — tenants don\'t need managing for routine work',
+      'Clear expectations prevent unnecessary chase calls, reduce tenant frustration, build trust in the service, and give the PM a defined framework for follow-up communication',
+      'Expectations should only be set by the Lettings team at tenancy start — PM communication should be reactive',
+      'Expectations should be kept deliberately vague so the agency is not held to commitments affected by contractor availability',
+    ],
+    correct: 1,
+    rationale: 'Setting expectations at the outset — "we will be in touch within 48 hours with contractor details" — dramatically reduces incoming chase calls and demonstrates proactive service. Tenants who know what to expect are less likely to escalate. This is a core part of Dwelly\'s property management best practice.',
+  },
+  {
+    id: 'q-kno-01-n4', moduleId: 'kno-01',
+    question: 'What does it typically indicate if a PM has a high volume of jobs sitting in Pause Mode?',
+    options: [
+      'The PM is highly efficient — Pause Mode allows deferring non-urgent tasks until there is capacity',
+      'It suggests jobs are awaiting the PM\'s action — responses, approvals, or decisions that haven\'t been made — rather than running smoothly in Auto Mode',
+      'A high Pause count is normal — Auto Mode is only suitable for simple jobs; complex ones always require Pause',
+      'It is a positive sign showing the PM is actively managing each job rather than relying on automation',
+    ],
+    correct: 1,
+    rationale: 'A high volume of Pause Mode jobs typically indicates that jobs are awaiting the PM\'s action — responses, approvals, or decisions that haven\'t been made. Top-performing PMs keep the majority of jobs in Auto Mode, with jobs only sitting in Pause when genuinely waiting for a specific response. A large Pause queue suggests the PM may be behind on their workflow.',
+  },
+  {
+    id: 'q-kno-01-n5', moduleId: 'kno-01',
+    question: 'When dealing with a highly distressed tenant upset about a maintenance issue, what is the most important first step?',
+    options: [
+      'Immediately promise a specific resolution date to de-escalate the situation',
+      'Acknowledge the tenant\'s distress and demonstrate empathy before moving to practical next steps — emotional acknowledgement must come before problem-solving',
+      'Redirect the tenant to the tenant portal and explain they should submit all requests formally',
+      'Transfer the call to a manager immediately as distressed tenants are outside the PM\'s remit',
+    ],
+    correct: 1,
+    rationale: 'When a tenant is distressed, the most effective first step is to acknowledge their feelings before addressing practical matters. Jumping straight to solutions without recognising the emotional component makes the tenant feel unheard and often escalates the situation. Once acknowledged, tenants are far more receptive to hearing about the steps being taken.',
+  },
+  {
+    id: 'q-kno-01-n6', moduleId: 'kno-01',
+    question: 'Why should a PM avoid making specific repair completion date commitments to a tenant when a contractor has been instructed?',
+    options: [
+      'Because contractors are paid on a fixed-fee basis and completion dates affect how fees are calculated',
+      'Because promising dates the PM cannot control creates a direct failure point — if the contractor doesn\'t deliver, the agency has broken an explicit commitment, damaging trust and potentially creating liability',
+      'Commitments should always be made in writing anyway — verbal commitments are unenforceable',
+      'Because tenants are legally entitled to compensation if a committed repair date is missed, regardless of reason',
+    ],
+    correct: 1,
+    rationale: 'Committing to specific completion dates on behalf of contractors creates a promise the PM cannot directly control. If the contractor fails to deliver, the agency has broken an explicit commitment to the tenant, significantly damaging the relationship and potentially creating grounds for a service complaint. Best practice is to give timescales ("within 5–7 working days") rather than specific dates, and to update proactively if delays occur.',
+  },
+
+  // ── KNO-02: Handling Disrepair Claims — extra pool ────────────────────────
+
+  {
+    id: 'q-kno-02-n1', moduleId: 'kno-02',
+    question: 'A tenant sends a formal letter stating they intend to pursue a disrepair claim because a heating issue has been unresolved for 3 months. What should the PM do immediately?',
+    options: [
+      'Ignore the letter unless it comes from a solicitor — informal tenant letters have no legal standing',
+      'Review the job history in Dwelly to establish the full timeline, notify the landlord immediately, escalate internally, and progress the repair as a matter of urgency',
+      'Send the tenant a letter explaining that the landlord\'s obligations are limited under the current tenancy agreement',
+      'Advise the tenant to contact a housing charity as disrepair matters are outside the PM\'s remit',
+    ],
+    correct: 1,
+    rationale: 'A formal disrepair letter requires immediate action. The PM must review the Dwelly job history to understand the full timeline, notify the landlord, escalate internally, and urgently progress the repair. The timestamped record of every action taken is the evidence that will defend the claim if it escalates.',
+  },
+  {
+    id: 'q-kno-02-n2', moduleId: 'kno-02',
+    question: 'Why is responding to repair reports within SLA timeframes critical in the context of disrepair claims?',
+    options: [
+      'SLA compliance only matters for statistical reporting — it has no legal or practical significance for individual properties',
+      'Delays beyond SLA timeframes are evidence of failure to act promptly, which can significantly strengthen a disrepair claim and demonstrate a breach of the landlord\'s repairing obligations',
+      'SLA timeframes are targets rather than obligations — landlords and tenants understand repairs sometimes take longer',
+      'SLA compliance is only relevant for commercial properties',
+    ],
+    correct: 1,
+    rationale: 'In disrepair claims, the timeline of reported issues and responses is critical evidence. Delays beyond the expected SLA for a given urgency category demonstrate a failure to act with reasonable promptness. Adjudicators and courts compare the speed of response against what would be expected — consistently meeting SLAs is the agency\'s strongest defence.',
+  },
+  {
+    id: 'q-kno-02-n3', moduleId: 'kno-02',
+    question: 'What is the significance of a Category 2 hazard under the Housing Health and Safety Rating System (HHSRS)?',
+    options: [
+      'Category 2 hazards are less serious than Category 1 but still pose a risk — local authorities have the power (but not the duty) to act, and landlords should address them promptly before they escalate',
+      'Category 2 hazards are minor cosmetic issues requiring no action by either the landlord or local authority',
+      'Category 2 hazards automatically require remedial works within 28 days under statutory enforcement',
+      'Category 2 hazards are only relevant to HMO properties — standard residential lets are exempt',
+    ],
+    correct: 0,
+    rationale: 'Under the HHSRS, Category 2 hazards pose a less serious (but real) risk to occupant health or safety. Local authorities have discretionary power to act — not a duty as with Category 1 hazards. However, landlords should not ignore them: unaddressed Category 2 hazards can become Category 1 issues, and failure to act can still be relevant evidence in a disrepair claim.',
+  },
+  {
+    id: 'q-kno-02-n4', moduleId: 'kno-02',
+    question: 'What is the Pre-Action Protocol for Housing Conditions Claims and why is it relevant for property managers?',
+    options: [
+      'It is an internal Dwelly process PMs must complete before instructing contractors for major works',
+      'It is a court-prescribed process tenants must follow before issuing disrepair proceedings — requiring formal written notice to the landlord/agent and a reasonable opportunity to inspect and carry out repairs before court action commences',
+      'It is a protocol set by the landlord\'s insurer that must be followed before any disrepair claim can be covered',
+      'It only applies after court proceedings have started — it has no impact on the pre-litigation stage',
+    ],
+    correct: 1,
+    rationale: 'The Pre-Action Protocol for Housing Conditions Claims is a court-required process tenants (often via solicitors) must follow before issuing disrepair proceedings. The tenant notifies the landlord/agent in writing, gives them the opportunity to inspect, and sets a reasonable deadline for repairs. A prompt, evidenced response to a pre-action letter — documented in the job chat — can prevent the matter from reaching court.',
+  },
+  {
+    id: 'q-kno-02-n5', moduleId: 'kno-02',
+    question: 'How should a PM handle a damp and mould report where the landlord believes it is caused by the tenant\'s lifestyle rather than a structural defect?',
+    options: [
+      'Advise the tenant the damp is their responsibility and close the job with a note confirming the landlord\'s position',
+      'Inspect the property promptly, document the damp thoroughly, assess whether the cause is structural or lifestyle-related (recognising both may contribute), progress any necessary works, and advise both parties professionally — attributing blame without evidence is high-risk',
+      'Close the job immediately as lifestyle-induced damp is not a maintenance obligation under Section 11',
+      'Send the tenant a formal warning that lifestyle-induced damp may lead to deposit deductions at checkout',
+    ],
+    correct: 1,
+    rationale: 'Damp and mould must be treated seriously. Attributing all damp to lifestyle without investigation is a high-risk position, particularly following heightened awareness since Awaab Ishak\'s case. The correct approach is to inspect promptly, document thoroughly, establish the cause with appropriate expertise, and take proportionate action. Landlords who dismiss damp as a tenant lifestyle issue without evidence face significant legal and reputational risk.',
+  },
+  {
+    id: 'q-kno-02-n6', moduleId: 'kno-02',
+    question: 'What is the key feature of Section 11 repairing obligations that makes them particularly significant in disrepair claims?',
+    options: [
+      'They give tenants the right to withhold rent until repairs are carried out, regardless of response speed',
+      'They impose a statutory duty on landlords to maintain the structure, exterior, and services of the property — and cannot be contracted out of, meaning any tenancy clause purporting to remove this obligation is void',
+      'They apply only to commercial leases — residential tenancies are governed by separate obligations in the Housing Act 2004',
+      'They require the landlord to maintain only items specifically listed in the tenancy agreement',
+    ],
+    correct: 1,
+    rationale: 'Section 11 of the Landlord and Tenant Act 1985 imposes a mandatory duty on landlords to maintain the structure, exterior, and services (water, gas, electricity, heating) of any residential property let for less than 7 years. Crucially, this obligation cannot be contracted out of — any tenancy term that attempts to pass this obligation to the tenant is void. Disrepair claims typically rely on Section 11 as the underlying legal obligation.',
+  },
+
+  // ── KNO-03: Understanding a P&L — extra pool ─────────────────────────────
+
+  {
+    id: 'q-kno-03-n1', moduleId: 'kno-03',
+    question: 'What is the difference between the Landlord Ledger and the Tenant Ledger in Dwelly?',
+    options: [
+      'The two ledgers are identical views of the same financial data — the labels are just for navigation',
+      'The Landlord Ledger records payments to and from the landlord (rent received, disbursements, fees, invoices). The Tenant Ledger records the tenant\'s rent charges and payments, showing any arrears or credit balance',
+      'The Landlord Ledger is only visible to managers — PMs can only access the Tenant Ledger',
+      'The Tenant Ledger only shows the current month\'s transactions — historical data is held in the Landlord Ledger',
+    ],
+    correct: 1,
+    rationale: 'The Landlord Ledger records all financial activity between the agency and the landlord — rent received, management fees, maintenance invoices, and disbursements. The Tenant Ledger shows the tenant\'s account: their rent schedule, payments made, and any outstanding or credit balance. Understanding both is essential for handling landlord and tenant financial queries.',
+  },
+  {
+    id: 'q-kno-03-n2', moduleId: 'kno-03',
+    question: 'A landlord queries why their disbursement this month is lower than their rental income. What should the PM check first?',
+    options: [
+      'The Maintenance tab — lower disbursements are always caused by unpaid maintenance invoices',
+      'The Ledger — check for management fees charged, maintenance invoices deducted, or any reserves held, and be ready to explain each line item clearly',
+      'The Deals tab — it holds a summary of all deductions from the current month\'s disbursement',
+      'The tenant\'s payment history — a lower disbursement usually means the tenant only made a partial payment',
+    ],
+    correct: 1,
+    rationale: 'When a landlord queries their disbursement, the first step is to review the Ledger. It shows every charge, deduction, and credit on the landlord\'s account — management fees, maintenance invoices, compliance costs, and any reserves. The PM must be able to explain each line item clearly before calling the landlord.',
+  },
+  {
+    id: 'q-kno-03-n3', moduleId: 'kno-03',
+    question: 'What does a negative (credit) balance in a tenant\'s Dwelly ledger indicate?',
+    options: [
+      'The tenant is in arrears and owes money to the landlord',
+      'The tenant has overpaid and has a credit on their account — typically carried forward to offset the next rent charge',
+      'The tenant has been refunded their deposit and this has been recorded in the ledger',
+      'A negative balance always indicates a system error and should be flagged to the finance team immediately',
+    ],
+    correct: 1,
+    rationale: 'A negative (credit) balance in a tenant\'s ledger means the tenant has paid more than has been charged — giving them a credit. This commonly arises when a tenant pays in advance or if a payment reversal creates a credit. The credit balance is typically carried forward and offset against the next rent charge. It does not indicate arrears.',
+  },
+  {
+    id: 'q-kno-03-n4', moduleId: 'kno-03',
+    question: 'A tenant claims they have paid their rent but it is not showing in their Dwelly ledger. What should the PM do?',
+    options: [
+      'Tell the tenant the payment must not have been made and ask them to pay again immediately',
+      'Ask the tenant for proof of payment, check the ledger for recent unallocated transactions, and liaise with the finance team if the payment is not visible within the expected clearing time',
+      'Raise a maintenance job in Dwelly to report the missing payment to the technical team',
+      'Advise the tenant to contact their bank as all payment issues are between the tenant and their bank',
+    ],
+    correct: 1,
+    rationale: 'Payments can take time to clear and allocate. The correct response is to ask the tenant for proof of payment, review the Dwelly ledger for any unallocated transactions, and liaise with the finance team if the payment is not visible within the expected timeframe. Telling a tenant who has paid to pay again risks a double-payment dispute and is poor practice.',
+  },
+  {
+    id: 'q-kno-03-n5', moduleId: 'kno-03',
+    question: 'What is a landlord statement in Dwelly, and when is it typically generated?',
+    options: [
+      'A compliance document generated annually certifying all certificates are in date',
+      'A monthly financial document summarising rent received, management fees deducted, contractor invoices paid, and the net amount disbursed to the landlord for the period',
+      'Generated automatically whenever a maintenance invoice is approved, showing only that job\'s contractor costs',
+      'Issued only when the landlord requests one — it is not generated automatically',
+    ],
+    correct: 1,
+    rationale: 'A landlord statement is a monthly financial summary produced from the Ledger showing all income and expenditure: rent received, management fees, maintenance costs, and the net disbursement. Understanding how to read and explain a landlord statement is a core PM skill — all figures should be reconcilable against the Ledger entries.',
+  },
+  {
+    id: 'q-kno-03-n6', moduleId: 'kno-03',
+    question: 'What should a PM do if they identify an incorrect charge on a landlord\'s Dwelly account?',
+    options: [
+      'Wait for the landlord to raise the discrepancy themselves before investigating — raising it proactively may cause unnecessary concern',
+      'Remove the charge from the ledger independently to resolve it quickly before the next statement runs',
+      'Flag the discrepancy to the finance team immediately with supporting evidence, and proactively notify the landlord of the error and the steps being taken to correct it',
+      'Issue a manual credit note in the ledger to offset the charge and note the adjustment in the job chat',
+    ],
+    correct: 2,
+    rationale: 'If a PM identifies an incorrect charge, they must flag it to the finance team immediately — adjusting ledger entries independently without authorisation is not permitted. The PM should also proactively notify the landlord rather than waiting for them to discover it. Proactive error correction builds trust and demonstrates integrity.',
+  },
 ]
 
 

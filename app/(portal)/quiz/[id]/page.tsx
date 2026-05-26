@@ -33,6 +33,15 @@ const VIDEO_MODULE_IDS = ['mnt-02', 'cmp-02', 'mvt-02', 'ins-02', 'sup-02']
 const KNOWLEDGE_IDS    = ['kno-01', 'kno-02', 'kno-03']
 const PER_SECTION = 3
 
+// How many questions to show per module assessment (samples from the full pool)
+const ASSESSMENT_QUESTION_COUNTS: Record<string, number> = {
+  'mnt-01': 6,  'mnt-02': 10, 'mnt-03': 5,
+  'cmp-01': 6,  'cmp-02': 15,
+  'ins-02': 6,  'mvt-02': 8,
+  'sys-01': 5,  'sys-02': 5,  'sup-02': 6,
+  'kno-01': 5,  'kno-02': 7,  'kno-03': 5,
+}
+
 export default function QuizPage({ params }: { params: { id: string } }) {
   const moduleId = params.id
   const isFullAssessment   = moduleId === 'full-assessment'
@@ -88,11 +97,13 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       return shuffle(pool).slice(0, 3)
     }
 
-    // Regular module assessment — shuffle question order and option order per browser
+    // Regular module assessment — shuffle question order and option order per browser,
+    // then sample down to the assessment's target question count
     const pool = QUIZ_QUESTIONS.filter(q => q.moduleId === moduleId && !q.tier)
-    if (!browserKey) return pool // server render: no shuffle (hydration safe)
+    const sampleSize = ASSESSMENT_QUESTION_COUNTS[moduleId] ?? pool.length
+    if (!browserKey) return pool.slice(0, sampleSize) // server render: no shuffle (hydration safe)
     const shuffledPool = seededShuffle(pool, hashStr(browserKey + moduleId))
-    return shuffledPool.map(q => shuffleOptions(q, hashStr(browserKey + q.id)))
+    return shuffledPool.slice(0, sampleSize).map(q => shuffleOptions(q, hashStr(browserKey + q.id)))
   })
 
   const backHref  = isMasterAssessment || isFullAssessment ? '/assessments' : isRecapQuiz ? '/recap' : isRecallQuiz ? '/assessments' : `/modules/${moduleId}`
