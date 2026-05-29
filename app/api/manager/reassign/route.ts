@@ -21,15 +21,19 @@ export async function POST(req: NextRequest) {
 
   if (!isManager && !isAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  // Managers can only retake-grant their own team; admins can grant anyone
+  // Fetch the target user's role and manager_id
+  const { data: targetProfile } = await supabase
+    .from('user_profiles')
+    .select('role, manager_id')
+    .eq('id', userId)
+    .single()
+
   if (isManager) {
-    const { data: targetProfile } = await supabase
-      .from('user_profiles')
-      .select('manager_id')
-      .eq('id', userId)
-      .single()
+    // Managers can only reassign property-managers in their own team
+    if (targetProfile?.role !== 'property-manager') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     if (targetProfile?.manager_id !== user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
+  // Admins can reassign anyone (PMs and managers)
 
   // Insert reset record (quiz page will detect and consume this on next load)
   const { error } = await supabase

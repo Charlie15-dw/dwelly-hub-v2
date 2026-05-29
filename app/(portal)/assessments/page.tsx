@@ -59,15 +59,25 @@ export default function AssessmentsPage() {
           return
         }
 
-        // Fetch passed assessments from Supabase — these are locked regardless of localStorage
-        const { data: results } = await supabase
-          .from('assessment_results')
-          .select('assessment_id, passed')
-          .eq('user_id', user.id)
+        // Fetch passed assessments and pending resets in parallel
+        const [{ data: results }, { data: resets }] = await Promise.all([
+          supabase
+            .from('assessment_results')
+            .select('assessment_id, passed')
+            .eq('user_id', user.id),
+          supabase
+            .from('module_resets')
+            .select('module_id')
+            .eq('user_id', user.id)
+            .is('consumed_at', null),
+        ])
 
         const passedInDb = new Set(
           (results ?? []).filter(r => r.passed).map(r => r.assessment_id)
         )
+
+        // Pending resets unlock an assessment even if it was previously passed
+        const pendingResetIds = new Set((resets ?? []).map(r => r.module_id))
 
         const allIds = [
           'master-assessment',
@@ -76,8 +86,10 @@ export default function AssessmentsPage() {
           ...KNOWLEDGE_ASSESSMENTS.map(a => a.id),
         ] as string[]
 
-        // Locked if passed in Supabase OR locked in localStorage
-        setLockedIds(new Set(allIds.filter(id => passedInDb.has(id) || isLocked(id))))
+        // Locked if passed in Supabase OR locked in localStorage — UNLESS a pending reset exists
+        setLockedIds(new Set(allIds.filter(id =>
+          (passedInDb.has(id) || isLocked(id)) && !pendingResetIds.has(id)
+        )))
       }
 
       setReady(true)
