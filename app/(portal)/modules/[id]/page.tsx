@@ -178,7 +178,7 @@ export default async function ModulePage({ params }: { params: { id: string } })
           <div>
             <p className="text-sm font-semibold text-[#1D1D1F]">Video Guide</p>
             <p className="text-sm text-[#1D1D1F]/70 mt-0.5">
-              Please refer to <Link href="/modules/sup-01" className="underline font-semibold" style={{ color: '#5AADA8' }}>Support 1/2</Link> for the video guide — it covers the full support task workflow including actioning.
+              Please refer to Support 1/2 for the video guide — it covers the full support task workflow including actioning.
             </p>
           </div>
         </div>
