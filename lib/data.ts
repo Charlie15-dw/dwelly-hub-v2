@@ -2731,18 +2731,6 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'Under deposit protection legislation, the deposit (or the agreed portion) must be returned within 10 days of both parties reaching agreement on the amount. If the matter goes to adjudication or court, the scheme must return the deposit within 10 days of the decision. PMs must ensure the process moves swiftly to avoid unnecessary delays.',
   },
   {
-    id: 'q-sys-01-n3', moduleId: 'sys-01',
-    question: 'When should re-marketing of a property begin during the move-out process?',
-    options: [
-      'Re-marketing should only begin after the checkout inspection is complete and any required remedial works have been carried out',
-      'Re-marketing should begin as soon as the tenant gives notice, subject to the landlord\'s instruction — this maximises the chance of minimising the void period between tenancies',
-      'Re-marketing should start exactly 14 days before the tenancy end date as standard practice across all properties',
-      'Re-marketing is the landlord\'s responsibility and should not be initiated by the PM without a separate written instruction from the landlord',
-    ],
-    correct: 1,
-    rationale: 'Re-marketing should begin as soon as the tenant gives notice, subject to the landlord\'s instruction and agreement. Early marketing maximises the chance of finding a replacement tenant quickly and minimises the void period. The PM should discuss timing and strategy with the landlord as part of the move-out job workflow.',
-  },
-  {
     id: 'q-sys-01-n4', moduleId: 'sys-01',
     question: 'How should a checkout inspection be scheduled during the move-out process?',
     options: [
