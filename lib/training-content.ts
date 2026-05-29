@@ -243,7 +243,7 @@ export const TRAINING_PAGES: TrainingPage[] = [
       { type: 'subheading', level: 2, text: '5.2 Handling Remedial Works' },
       { type: 'paragraph', text: 'If a certificate is returned as unsatisfactory, the property must be treated as non-compliant until valid remedial evidence is received or a re-inspection is completed.' },
       { type: 'table', headers: ['Certificate Type', 'Remedial Requirement'], rows: [
-        ['EICR', 'C1/C2 items: remedial works within 28 days. Written confirmation or Minor Works Certificate. FI classification: follow-up inspection required.'],
+        ['EICR', 'C1 (Danger Present): immediate rectification required — the installation is unsafe and must be dealt with on the spot by the attending electrician. C2 and F1 items: remedial works within 28 days. C3 items: elective but strongly recommended. Written confirmation or Minor Works Certificate required for all remedial works. FI classification: follow-up inspection required.'],
         ['Gas Safety (CP12)', 'If marked unsafe (ID or AR): repairs by Gas Safe engineer and new certificate always required.'],
         ['Fire alarm / emergency lighting', 'Failed: remedial works completed and system re-tested. New pass certificate required.'],
         ['PAT', 'Failed appliances must be removed or repaired and re-tested.'],

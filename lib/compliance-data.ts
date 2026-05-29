@@ -166,7 +166,9 @@ export const LEGISLATION_SUMMARIES: LegislationSummary[] = [
     keyPoints: [
       'EICR must be obtained before a new tenancy and at least every 5 years',
       'Report must be supplied to tenants within 28 days of the inspection',
-      'Any remedial work identified as C1 or C2 must be completed within 28 days',
+      'C1 (Danger Present) requires immediate rectification — the installation is unsafe and must be dealt with on the spot',
+      'C2 and F1 remedial works must be completed within 28 days',
+      'C3 items are elective but strongly recommended — regulations evolve and C3s can become mandatory C2s',
       'Written confirmation of completed remedial work must be supplied to the local authority',
       'Applies to all new and existing private rented sector tenancies in England',
     ],
