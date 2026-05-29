@@ -169,26 +169,40 @@ export default async function ModulePage({ params }: { params: { id: string } })
         </div>
       </div>
 
-      {/* Video placeholder */}
-      <div className="card p-1 overflow-hidden rounded-2xl">
-        <div className="aspect-video rounded-xl flex items-center justify-center relative overflow-hidden" style={{ backgroundColor: '#E0F7F4' }}>
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #D4F3EF 0%, #E8FAF8 100%)' }} />
-          <div className="absolute right-6 top-4 w-28 h-28 rounded-full bg-white/40" />
-          <div className="absolute left-8 bottom-4 w-20 h-20 rounded-full bg-white/30" />
-          <div className="relative text-center">
-            <button
-              className="w-16 h-16 rounded-full bg-orange flex items-center justify-center
-                         shadow-lg hover:bg-orange-600 transition-colors focus:outline-none focus:ring-4 focus:ring-orange/30
-                         active:scale-95"
-              aria-label={`Play video: ${module.title}`}
-            >
-              <Play className="w-6 h-6 text-white ml-0.5" aria-hidden />
-            </button>
-            <p className="font-semibold mt-3 text-sm text-[#1D1D1F]">{module.title}</p>
-            <p className="text-xs mt-1" style={{ color: '#5AADA8' }}>{module.videoLength} · Dwelly Training Video</p>
+      {/* Video placeholder — sup-02 has no standalone video */}
+      {params.id === 'sup-02' ? (
+        <div className="card p-6 flex items-center gap-4 rounded-2xl" style={{ backgroundColor: '#E0F7F4' }}>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#5AADA8' }}>
+            <Play className="w-5 h-5 text-white ml-0.5" aria-hidden />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-[#1D1D1F]">Video Guide</p>
+            <p className="text-sm text-[#1D1D1F]/70 mt-0.5">
+              Please refer to <Link href="/modules/sup-01" className="underline font-semibold" style={{ color: '#5AADA8' }}>Support 1/2</Link> for the video guide — it covers the full support task workflow including actioning.
+            </p>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="card p-1 overflow-hidden rounded-2xl">
+          <div className="aspect-video rounded-xl flex items-center justify-center relative overflow-hidden" style={{ backgroundColor: '#E0F7F4' }}>
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #D4F3EF 0%, #E8FAF8 100%)' }} />
+            <div className="absolute right-6 top-4 w-28 h-28 rounded-full bg-white/40" />
+            <div className="absolute left-8 bottom-4 w-20 h-20 rounded-full bg-white/30" />
+            <div className="relative text-center">
+              <button
+                className="w-16 h-16 rounded-full bg-orange flex items-center justify-center
+                           shadow-lg hover:bg-orange-600 transition-colors focus:outline-none focus:ring-4 focus:ring-orange/30
+                           active:scale-95"
+                aria-label={`Play video: ${module.title}`}
+              >
+                <Play className="w-6 h-6 text-white ml-0.5" aria-hidden />
+              </button>
+              <p className="font-semibold mt-3 text-sm text-[#1D1D1F]">{module.title}</p>
+              <p className="text-xs mt-1" style={{ color: '#5AADA8' }}>{module.videoLength} · Dwelly Training Video</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Content body */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
