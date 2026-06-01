@@ -242,7 +242,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
 
   // Save attempt to localStorage AND Supabase when the results screen appears
   useEffect(() => {
-    if (!showResults || isRecapQuiz || isRecallQuiz || isReleaseQuiz) return
+    if (!showResults || isRecapQuiz || isRecallQuiz) return
     clearInProgress(moduleId)
     saveAttempt({ moduleId, completedAt: new Date().toISOString(), score, passed })
 
@@ -282,7 +282,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       })
 
       // If passed a module-level assessment, mark that module as completed
-      if (passed && !isFullAssessment && !isMasterAssessment) {
+      if (passed && !isFullAssessment && !isMasterAssessment && !isReleaseQuiz) {
         await supabase.from('module_progress').upsert({
           user_id: user.id,
           module_id: moduleId,
@@ -293,7 +293,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       }
 
       // Schedule 3/7/30-day recall checks for passed module-level assessments
-      if (passed && !isFullAssessment && !isMasterAssessment) {
+      if (passed && !isFullAssessment && !isMasterAssessment && !isReleaseQuiz) {
         void fetch('/api/quiz/schedule-recall', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
