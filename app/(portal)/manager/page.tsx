@@ -23,8 +23,9 @@ const ALL_ASSESSMENT_IDS = [
   'kno-01', 'kno-02', 'kno-03',
   'full-assessment',
   'master-assessment',
+  'release-contractor-portal-2026',
 ]
-const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length // 15
+const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length // 16
 
 export default async function ManagerDashboard() {
   const supabase = createServerClient()

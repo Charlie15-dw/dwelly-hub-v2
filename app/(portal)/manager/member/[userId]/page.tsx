@@ -9,6 +9,7 @@ const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
   'sys-01', 'mvt-02', 'sys-02', 'sup-02',
   'kno-01', 'kno-02', 'kno-03', 'full-assessment', 'master-assessment',
+  'release-contractor-portal-2026',
 ]
 
 const ASSESSMENT_LABELS: Record<string, string> = {

@@ -101,7 +101,9 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       return shuffle(pool).slice(0, 3)
     }
     if (isReleaseQuiz) {
-      return PRODUCT_RELEASE_QUESTIONS.filter(q => q.releaseId === moduleId)
+      const pool = PRODUCT_RELEASE_QUESTIONS.filter(q => q.releaseId === moduleId)
+      if (!browserKey) return pool
+      return seededShuffle(pool, hashStr(browserKey + moduleId)).map(q => shuffleOptions(q, hashStr(browserKey + q.id)))
     }
 
     // Regular module assessment — shuffle question order and option order per browser,
