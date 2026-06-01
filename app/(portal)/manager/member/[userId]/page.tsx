@@ -1,6 +1,6 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, CheckCircle2, XCircle } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, XCircle, RefreshCw } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 import ReassignButton from '@/components/ui/ReassignButton'
@@ -258,6 +258,49 @@ export default async function MemberDetailPage({
           )
         })}
       </div>
+
+      {/* Recap & Refresh scores */}
+      {(() => {
+        const recapResults = allResults.filter(r => r.assessment_id.startsWith('recap-'))
+        if (recapResults.length === 0) return null
+        // Deduplicate — keep best score per round
+        const bestByRound = new Map<string, typeof recapResults[0]>()
+        for (const r of recapResults) {
+          const existing = bestByRound.get(r.assessment_id)
+          if (!existing || r.score > existing.score) bestByRound.set(r.assessment_id, r)
+        }
+        const rounds = Array.from(bestByRound.values()).sort((a, b) => b.completed_at.localeCompare(a.completed_at))
+        return (
+          <div className="card overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-indigo-500" aria-hidden />
+              <h2 className="text-sm font-bold text-navy">Recap &amp; Refresh</h2>
+              <span className="ml-auto text-xs text-slate-400">{rounds.length} round{rounds.length !== 1 ? 's' : ''} completed</span>
+            </div>
+            <div className="divide-y divide-slate-50">
+              {rounds.map(r => {
+                const label = r.assessment_id.replace('recap-', '').replace(/-(\d+)$/, ' $1').replace(/\b\w/g, (c: string) => c.toUpperCase())
+                const date = r.completed_at ? new Date(r.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'
+                return (
+                  <div key={r.assessment_id} className="flex items-center justify-between px-5 py-3">
+                    <div>
+                      <p className="text-sm font-semibold text-navy">{label}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">{date}</p>
+                    </div>
+                    <span className={cn('text-sm font-bold tabular-nums px-3 py-1 rounded-full', {
+                      'bg-teal/10 text-teal border border-teal/20': r.score >= 80,
+                      'bg-amber-50 text-amber-600 border border-amber-200': r.score >= 60 && r.score < 80,
+                      'bg-red-50 text-red-600 border border-red-200': r.score < 60,
+                    })}>
+                      {r.score}%
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Assessments not yet attempted */}
       {(() => {
