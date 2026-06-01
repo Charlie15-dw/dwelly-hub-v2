@@ -18,6 +18,7 @@ const securityHeaders = [
       "img-src 'self' data: blob:",
       "font-src 'self'",
       "connect-src 'self' https://api.anthropic.com https://*.supabase.co wss://*.supabase.co",
+      "frame-src https://drive.google.com",
       "frame-ancestors 'none'",
     ].join('; '),
   },
