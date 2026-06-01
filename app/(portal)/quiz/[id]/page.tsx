@@ -6,7 +6,7 @@ import {
   ArrowLeft, CheckCircle2, XCircle, ChevronRight,
   Clock, Trophy, ArrowRight, ClipboardCheck, RefreshCw, BookOpen, Lock,
 } from 'lucide-react'
-import { QUIZ_QUESTIONS, MODULES, RECAP_ROUNDS } from '@/lib/data'
+import { QUIZ_QUESTIONS, MODULES, RECAP_ROUNDS, PRODUCT_RELEASE_QUIZZES, PRODUCT_RELEASE_QUESTIONS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { isLocked, getLastAttempt, saveAttempt, unlockAssessment, getInProgress, saveInProgress, clearInProgress, type AttemptRecord } from '@/lib/assessmentStorage'
 import { createClient } from '@/lib/supabase/client'
@@ -48,6 +48,8 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   const isMasterAssessment = moduleId === 'master-assessment'
   const isRecapQuiz        = moduleId.startsWith('recap-')
   const recapRound         = isRecapQuiz ? RECAP_ROUNDS.find(r => r.id === moduleId) : undefined
+  const isReleaseQuiz      = moduleId.startsWith('release-')
+  const releaseQuiz        = isReleaseQuiz ? PRODUCT_RELEASE_QUIZZES.find(r => r.id === moduleId) : undefined
 
   // Recall quiz: recall-{baseAssessmentId}-{intervalDays} e.g. recall-mnt-01-3
   const isRecallQuiz  = moduleId.startsWith('recall-')
@@ -65,7 +67,9 @@ export default function QuizPage({ params }: { params: { id: string } }) {
         ? { id: moduleId, title: `Monthly Recap — ${recapRound?.label ?? ''}`, passmark: 0 }
         : isRecallQuiz
           ? { id: moduleId, title: `Recall Check — ${recallModuleTitle}`, passmark: 0 }
-          : MODULES.find(m => m.id === moduleId)
+          : isReleaseQuiz
+            ? { id: moduleId, title: releaseQuiz?.title ?? 'Product Release Quiz', passmark: releaseQuiz?.passmark ?? 80 }
+            : MODULES.find(m => m.id === moduleId)
 
   // Stable question list — computed once on mount so re-renders don't reshuffle.
   // For regular module assessments, question order AND option order are shuffled
@@ -96,6 +100,9 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       const pool = QUIZ_QUESTIONS.filter(q => q.moduleId === recallBase && !q.tier)
       return shuffle(pool).slice(0, 3)
     }
+    if (isReleaseQuiz) {
+      return PRODUCT_RELEASE_QUESTIONS.filter(q => q.releaseId === moduleId)
+    }
 
     // Regular module assessment — shuffle question order and option order per browser,
     // then sample down to the assessment's target question count
@@ -106,8 +113,8 @@ export default function QuizPage({ params }: { params: { id: string } }) {
     return shuffledPool.slice(0, sampleSize).map(q => shuffleOptions(q, hashStr(browserKey + q.id)))
   })
 
-  const backHref  = isMasterAssessment || isFullAssessment ? '/assessments' : isRecapQuiz ? '/recap' : isRecallQuiz ? '/assessments' : `/modules/${moduleId}`
-  const backLabel = isMasterAssessment || isFullAssessment ? 'Back to Assessments' : isRecapQuiz ? 'Back to Recap & Refresh' : isRecallQuiz ? 'Back to Assessments' : 'Back to Module'
+  const backHref  = isMasterAssessment || isFullAssessment ? '/assessments' : isRecapQuiz ? '/recap' : isRecallQuiz ? '/assessments' : isReleaseQuiz ? '/recap' : `/modules/${moduleId}`
+  const backLabel = isMasterAssessment || isFullAssessment ? 'Back to Assessments' : isRecapQuiz ? 'Back to Recap & Refresh' : isRecallQuiz ? 'Back to Assessments' : isReleaseQuiz ? 'Back to Recap & Refresh' : 'Back to Module'
 
   const [currentQ, setCurrentQ]       = useState(0)
   const [selected, setSelected]        = useState<number | null>(null)
@@ -129,7 +136,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   // Check lock status on mount — also checks Supabase for manager-triggered resets
   // and restores any in-progress session (Supabase takes priority over localStorage)
   useEffect(() => {
-    if (isRecapQuiz || isRecallQuiz) return
+    if (isRecapQuiz || isRecallQuiz || isReleaseQuiz) return
     async function checkLockAndReset() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
@@ -233,7 +240,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
 
   // Save attempt to localStorage AND Supabase when the results screen appears
   useEffect(() => {
-    if (!showResults || isRecapQuiz || isRecallQuiz) return
+    if (!showResults || isRecapQuiz || isRecallQuiz || isReleaseQuiz) return
     clearInProgress(moduleId)
     saveAttempt({ moduleId, completedAt: new Date().toISOString(), score, passed })
 

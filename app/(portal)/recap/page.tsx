@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import {
   RefreshCw, Calendar, Flame, CheckCircle2, ChevronRight,
-  ArrowRight, Newspaper, BookOpen,
+  ArrowRight, Newspaper, BookOpen, Zap,
 } from 'lucide-react'
-import { RECAP_ROUNDS, PORTAL_UPDATES } from '@/lib/data'
+import { RECAP_ROUNDS, PORTAL_UPDATES, PRODUCT_RELEASE_QUIZZES } from '@/lib/data'
 import { KNOWLEDGE_ARTICLES } from '@/lib/training-content'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
@@ -24,20 +24,25 @@ export default async function RecapPage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Fetch this user's completed recap rounds from assessment_results
+  // Fetch this user's completed recap rounds and release quizzes from assessment_results
   const completedByRound: Record<string, { score: number; completedAt: string }> = {}
+  const completedReleaseIds = new Set<string>()
+
   if (user) {
     const { data: results } = await supabase
       .from('assessment_results')
-      .select('assessment_id, score, completed_at')
+      .select('assessment_id, score, passed, completed_at')
       .eq('user_id', user.id)
-      .like('assessment_id', 'recap-%')
       .order('completed_at', { ascending: true })
 
     for (const r of results ?? []) {
-      // Keep the most recent result per round
-      if (!completedByRound[r.assessment_id] || r.completed_at > completedByRound[r.assessment_id].completedAt) {
-        completedByRound[r.assessment_id] = { score: r.score, completedAt: r.completed_at }
+      if (r.assessment_id.startsWith('recap-')) {
+        if (!completedByRound[r.assessment_id] || r.completed_at > completedByRound[r.assessment_id].completedAt) {
+          completedByRound[r.assessment_id] = { score: r.score, completedAt: r.completed_at }
+        }
+      }
+      if (r.assessment_id.startsWith('release-') && r.passed) {
+        completedReleaseIds.add(r.assessment_id)
       }
     }
   }
@@ -70,6 +75,70 @@ export default async function RecapPage() {
 
   return (
     <div className="space-y-6 max-w-[1200px]">
+
+      {/* ── 0. Mandatory Product Release Quizzes ─────────────────────────────── */}
+      {PRODUCT_RELEASE_QUIZZES.filter(q => q.mandatory).map(quiz => {
+        const completed = completedReleaseIds.has(quiz.id)
+        return (
+          <div
+            key={quiz.id}
+            className="rounded-2xl p-5 relative overflow-hidden"
+            style={{
+              background: completed
+                ? 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)'
+                : 'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)',
+              border: completed ? '1px solid #BBF7D0' : '2px solid #FDBA74',
+            }}
+          >
+            <div className="absolute right-6 top-4 w-24 h-24 rounded-full bg-white/30 pointer-events-none" />
+            <div className="flex items-start justify-between gap-4 flex-wrap relative">
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+                  style={{ background: completed ? '#16A34A' : '#EA580C' }}
+                >
+                  {completed
+                    ? <CheckCircle2 className="w-5 h-5 text-white" aria-hidden />
+                    : <Zap className="w-5 h-5 text-white" aria-hidden />
+                  }
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span
+                      className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border"
+                      style={completed
+                        ? { background: '#DCFCE7', color: '#16A34A', borderColor: '#BBF7D0' }
+                        : { background: '#FFEDD5', color: '#EA580C', borderColor: '#FDBA74' }
+                      }
+                    >
+                      {completed ? 'Completed' : 'Mandatory'}
+                    </span>
+                  </div>
+                  <h2 className="text-base font-bold text-[#1D1D1F]">{quiz.title}</h2>
+                  <p className="text-sm text-[#1D1D1F]/60 mt-0.5">{quiz.subtitle}</p>
+                  <div className="flex items-center gap-3 mt-2 text-xs text-[#6E6E73]">
+                    <span>12 questions</span>
+                    <span>·</span>
+                    <span>Pass mark {quiz.passmark}%</span>
+                    <span>·</span>
+                    <span>Required for all staff</span>
+                  </div>
+                </div>
+              </div>
+              {!completed && (
+                <Link
+                  href={`/quiz/${quiz.id}`}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white flex-shrink-0 transition-opacity hover:opacity-90"
+                  style={{ background: '#EA580C' }}
+                >
+                  Start Quiz
+                  <ArrowRight className="w-4 h-4" aria-hidden />
+                </Link>
+              )}
+            </div>
+          </div>
+        )
+      })}
 
       {/* ── 1. Header banner ─────────────────────────────────────────────────── */}
       <div

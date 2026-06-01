@@ -3511,6 +3511,177 @@ export const RECAP_ROUNDS: RecapRound[] = [
   },
 ]
 
+// ─── Product Release Quizzes ──────────────────────────────────────────────────
+
+export interface ProductReleaseQuiz {
+  id: string           // e.g. 'release-contractor-portal-2026'
+  title: string
+  subtitle: string
+  date: string         // ISO date of release
+  passmark: number
+  mandatory: boolean
+}
+
+export const PRODUCT_RELEASE_QUIZZES: ProductReleaseQuiz[] = [
+  {
+    id: 'release-contractor-portal-2026',
+    title: 'New Product Release Quiz',
+    subtitle: 'Contractor Portal Update — June 2026',
+    date: '2026-06-01',
+    passmark: 80,
+    mandatory: true,
+  },
+]
+
+// ─── Product Release Quiz Questions ──────────────────────────────────────────
+
+export const PRODUCT_RELEASE_QUESTIONS: (QuizQuestion & { releaseId: string })[] = [
+  {
+    id: 'q-rel-cp-01', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'How can a contractor quickly find a specific job in the updated portal?',
+    options: [
+      'By scrolling through the full job list chronologically',
+      'By searching using the job number or property address, and filtering by job status',
+      'By filtering by contractor name only',
+      'By contacting the PM to locate the job reference number',
+    ],
+    correct: 1,
+    rationale: 'The updated contractor portal includes search by job number or property address, plus status filters — allowing contractors to quickly locate the jobs they need without scrolling.',
+  },
+  {
+    id: 'q-rel-cp-02', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'What does the new Schedule tab show?',
+    options: [
+      'A monthly calendar view of all compliance certificate expiry dates',
+      'A list of all jobs currently in Pause mode awaiting a response',
+      'All upcoming appointments for a selected day in one place',
+      'A weekly overview of all open maintenance jobs across the portfolio',
+    ],
+    correct: 2,
+    rationale: 'The new Schedule tab gives contractors a single view of all upcoming appointments for a selected day, making it easier to plan visits without jumping between individual jobs.',
+  },
+  {
+    id: 'q-rel-cp-03', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'Who can now set a visit date and time directly in the contractor portal?',
+    options: [
+      'Only the Property Manager, after receiving confirmation from the contractor',
+      'The tenant, via the tenant portal',
+      'Contractors can set the visit date and time directly in the portal themselves',
+      'The Team Coordinator, after the contractor confirms availability by phone',
+    ],
+    correct: 2,
+    rationale: 'Contractors can now set their own visit date and time directly in the portal — removing the need to relay this information via phone or email through the PM.',
+  },
+  {
+    id: 'q-rel-cp-04', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'What happens automatically once a contractor sets a visit date in the portal?',
+    options: [
+      'The job is moved to completed status pending invoice upload',
+      'The system parses the date and sends confirmation emails to all parties',
+      'The contractor receives a payment confirmation before the visit is booked',
+      'The landlord is asked to approve the visit before the tenant is notified',
+    ],
+    correct: 1,
+    rationale: 'Once a contractor sets a visit date, the system automatically parses it and sends confirmation emails to all relevant parties — the tenant, landlord, and PM — without manual intervention.',
+  },
+  {
+    id: 'q-rel-cp-05', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'Which document types can contractors upload on a compliance job?',
+    options: [
+      'Proof of works only',
+      'Invoices and proof of works',
+      'Certificates and invoices',
+      'Certificates only',
+    ],
+    correct: 2,
+    rationale: 'On compliance jobs, contractors can upload certificates and invoices. Proof of works is available on maintenance jobs, not compliance jobs.',
+  },
+  {
+    id: 'q-rel-cp-06', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'Which document types can contractors upload on a maintenance job?',
+    options: [
+      'Certificates and invoices',
+      'Certificates only',
+      'Proof of works only',
+      'Invoices and proof of works',
+    ],
+    correct: 3,
+    rationale: 'On maintenance jobs, contractors can upload invoices and proof of works. Certificates are specific to compliance jobs and are not available as an upload type on maintenance jobs.',
+  },
+  {
+    id: 'q-rel-cp-07', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'How can contractors now communicate with tenants directly from the portal?',
+    options: [
+      'By sending a letter template generated in the portal',
+      'Via the job chat only — direct contact is not permitted',
+      'By calling the tenant directly from the portal',
+      'By requesting the PM forwards their message on their behalf',
+    ],
+    correct: 2,
+    rationale: 'Contractors can now call tenants directly from the contractor portal — allowing them to coordinate access and visit details without needing to go through the PM.',
+  },
+  {
+    id: 'q-rel-cp-08', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'Which of the following best describes the mobile update to the contractor portal?',
+    options: [
+      'A dedicated mobile app has been released on the App Store and Google Play',
+      'The portal is now accessible on mobile devices via a mobile-optimised browser experience',
+      'Mobile access is available for document uploads only, not job management',
+      'Mobile access requires a separate login to the standard desktop credentials',
+    ],
+    correct: 1,
+    rationale: 'The contractor portal is now mobile-optimised, meaning contractors can access their full job list, schedule, and upload documents from any mobile browser using their existing login.',
+  },
+  {
+    id: 'q-rel-cp-09', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'A contractor has completed a compliance job and needs to upload both the certificate and their invoice. What should they do?',
+    options: [
+      'Upload both via the maintenance job — compliance and maintenance jobs share the same upload flow',
+      'Upload both via the compliance job in the contractor portal — both document types are supported on compliance jobs',
+      'Upload the certificate via the compliance job and email the invoice to the PM separately',
+      'Only the certificate can be uploaded — invoices on compliance jobs must be processed manually by the PM',
+    ],
+    correct: 1,
+    rationale: 'Compliance jobs support both certificate and invoice uploads directly in the contractor portal. There is no need to email the invoice separately — both documents can be uploaded against the same job.',
+  },
+  {
+    id: 'q-rel-cp-10', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'A contractor sets a visit date in the portal but the tenant later says they never received a confirmation. What is the most likely explanation and correct next step?',
+    options: [
+      'The contractor must have entered the wrong date format — the job should be deleted and recreated with the correct date',
+      'Confirmation emails are only sent to landlords, not tenants — the PM should contact the tenant directly',
+      'The tenant may not have an email address recorded in Dwelly — the PM should check the tenant\'s contact details and ensure a valid email is on file',
+      'The portal only sends confirmation emails for compliance jobs — maintenance visit confirmations must be sent manually',
+    ],
+    correct: 2,
+    rationale: 'Confirmation emails are sent automatically to all parties when a visit date is set — but only if valid contact details are on file. If a tenant hasn\'t received one, the most likely cause is a missing or incorrect email address in Dwelly.',
+  },
+  {
+    id: 'q-rel-cp-11', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'A contractor uses the new portal feature to call a tenant directly. The tenant later complains the contractor was rude during the call. How should the PM handle this?',
+    options: [
+      'The PM cannot take action as the call was made directly between the contractor and tenant — it falls outside Dwelly\'s remit',
+      'Raise the complaint with the contractor and document it in the job chat — direct contractor-tenant calls are a portal feature but the PM remains responsible for the service standard',
+      'Disable the contractor\'s portal access immediately until the complaint is resolved',
+      'Advise the tenant to contact the contractor\'s company directly — once a contractor calls a tenant, responsibility transfers to the contractor',
+    ],
+    correct: 1,
+    rationale: 'Even though the contractor called the tenant directly via the portal, the PM remains responsible for the overall service standard. The complaint should be raised with the contractor, documented in the job chat, and handled through the standard contractor management process.',
+  },
+  {
+    id: 'q-rel-cp-12', moduleId: 'release-contractor-portal-2026', releaseId: 'release-contractor-portal-2026',
+    question: 'Which of the following statements about the search and filter functionality in the contractor portal is correct?',
+    options: [
+      'Contractors can only search by job number — address search is not available in the portal',
+      'The status filter allows contractors to quickly identify jobs at specific stages, such as those awaiting a visit date or pending document upload',
+      'Search results show all jobs across all contractors in the agency — individual filtering is not available',
+      'The filter and search functions are only available on desktop and cannot be used on mobile',
+    ],
+    correct: 1,
+    rationale: 'The status filter in the contractor portal allows contractors to view jobs at specific stages — for example, jobs awaiting a visit date or those pending document upload — making workload management significantly faster.',
+  },
+]
+
 export interface PortalUpdate {
   id: string
   date: string                                               // ISO date
