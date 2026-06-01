@@ -3780,20 +3780,4 @@ export const PORTAL_UPDATES: PortalUpdate[] = [
     description: 'Awaab\'s Law — which requires landlords to investigate and resolve damp, mould, and other hazards within strict legal timeframes — is already in force for social housing (from October 2025). The government has confirmed it will extend to the private rented sector, expected from 2027, pending consultation. PMs should be aware this is coming: reviewing current damp and mould response processes now will help avoid compliance pressure when the duty becomes mandatory.',
     isNew: false,
   },
-  {
-    id: 'upd-012',
-    date: '2026-03-14',
-    title: 'Dwelly: Compliance certificate expiry notifications improved',
-    category: 'system',
-    description: 'Gas Safety and EICR expiry reminders now trigger 90 days before expiry (previously 60 days), giving more lead time for scheduling. Jobs are auto-created at the 90-day mark. No action required — this is a background system change.',
-    isNew: false,
-  },
-  {
-    id: 'upd-013',
-    date: '2026-03-01',
-    title: 'Process: Updated rent arrears escalation threshold',
-    category: 'process',
-    description: 'The internal escalation threshold for rent arrears has moved from 14 days to 10 days overdue. PMs should update their chase cadences accordingly. Updated guidance is available in the Training Guide under Support.',
-    isNew: false,
-  },
 ]
