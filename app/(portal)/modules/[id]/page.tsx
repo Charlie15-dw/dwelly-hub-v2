@@ -10,6 +10,19 @@ import { MODULES, SECTION_LABELS, QUIZ_QUESTIONS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 
+// Google Drive file IDs for each module video
+const MODULE_VIDEO_IDS: Record<string, string> = {
+  'mnt-01': '1Tl5wR27V0ZbsN-rFR-SN8XHsBpPESbl1',
+  'mnt-02': '19M5ZoqSetRZVMnu9q1hDDRs8bo9m3Lw9',
+  'cmp-01': '1NCdRKumaG0x3XnnK6HlKWd2xO6GGqgR7',
+  'cmp-02': '1ts1cLsFKS31TNdmTeQElabHd1Sl0blWD',
+  'sys-01': '1f5YG9ws1ppqsT0JXNSQJPETZCREeV2qS',
+  'mvt-02': '1ZzFhcIYHwNHYnY40KhgzCmFAF2CS8utZ',
+  'mnt-03': '1qGCefrjFoX9DBdhiqLCt3GvGFLCyr2_S',
+  'ins-02': '1vRj1eHsCS1Zg62g-tfBDx658hlRA0k4T',
+  'sys-02': '1IkylMB20u5MA_kJefE8ru9k1O0i1xiA1',
+}
+
 const SECTION_COLORS: Record<string, string> = {
   onboarding:  'text-teal bg-teal/10 border-teal/20',
   maintenance: 'text-orange bg-orange/10 border-orange/20',
@@ -169,7 +182,7 @@ export default async function ModulePage({ params }: { params: { id: string } })
         </div>
       </div>
 
-      {/* Video placeholder — sup-02 has no standalone video */}
+      {/* Video */}
       {params.id === 'sup-02' ? (
         <div className="card p-6 flex items-center gap-4 rounded-2xl" style={{ backgroundColor: '#E0F7F4' }}>
           <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#5AADA8' }}>
@@ -180,6 +193,18 @@ export default async function ModulePage({ params }: { params: { id: string } })
             <p className="text-sm text-[#1D1D1F]/70 mt-0.5">
               Please refer to Support 1/2 for the video guide — it covers the full support task workflow including actioning.
             </p>
+          </div>
+        </div>
+      ) : MODULE_VIDEO_IDS[params.id] ? (
+        <div className="card p-1 overflow-hidden rounded-2xl">
+          <div className="aspect-video rounded-xl overflow-hidden">
+            <iframe
+              src={`https://drive.google.com/file/d/${MODULE_VIDEO_IDS[params.id]}/preview`}
+              className="w-full h-full"
+              allow="autoplay"
+              allowFullScreen
+              title={`${module.title} video guide`}
+            />
           </div>
         </div>
       ) : (
