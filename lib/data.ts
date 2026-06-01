@@ -3767,9 +3767,9 @@ export const PORTAL_UPDATES: PortalUpdate[] = [
   {
     id: 'upd-010',
     date: '2026-04-01',
-    title: 'EPC must be in place before marketing — grace period removed',
+    title: 'Right to Rent: eVisa transition — physical documents are gone',
     category: 'compliance',
-    description: 'A valid EPC must now be obtained before a property is listed for rent or sale. The previous 28-day grace period (which allowed marketing to begin before the EPC was commissioned) has been removed. EPC obligations have also extended to whole HMOs where individual rooms are let. Ensure a valid, in-date EPC is in place for every property before it goes live on the market.',
+    description: 'The UK\'s transition from physical Biometric Residence Permits (BRPs) to digital eVisas completed in January 2025. Many tenants with a right to rent now have no physical immigration document — only an eVisa accessible via the GOV.UK online service. For these tenants, landlords must use the online share code service to carry out the Right to Rent check. Photocopies of expired BRPs do not provide a statutory excuse. If a tenant cannot produce a document or a valid share code, do not proceed and seek guidance. Penalties for a failed check are up to £10,000 per tenant for a first offence.',
     isNew: false,
   },
   {
