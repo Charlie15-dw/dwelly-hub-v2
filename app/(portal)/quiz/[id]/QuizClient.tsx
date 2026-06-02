@@ -114,7 +114,7 @@ export default function QuizClient({
 
   // Check lock status on mount — also checks Supabase for manager-triggered resets
   useEffect(() => {
-    if (isRecapQuiz || isRecallQuiz || isReleaseQuiz) return
+    if (isRecapQuiz || isRecallQuiz) return
     async function checkLockAndReset() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
