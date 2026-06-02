@@ -915,27 +915,27 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   {
     id: 'q-sys-02-1', moduleId: 'sup-02',
-    question: 'What is a periodic tenancy?',
+    question: 'What is an Assured Periodic Tenancy (APT) under the Renters\' Rights Act 2025?',
     options: [
       'A tenancy with a fixed, non-negotiable rent review date',
-      'A tenancy that continues on a rolling basis after the fixed term expires',
+      'A rolling month-to-month tenancy — the only tenancy type now available in the private rented sector following the abolition of fixed-term ASTs on 1 May 2026',
       'A tenancy specifically for short-term or holiday lets',
       'A tenancy where rent is paid at irregular intervals',
     ],
     correct: 1,
-    rationale: 'A periodic tenancy arises automatically when a fixed-term tenancy expires and no new agreement is signed. It rolls on a month-to-month (or week-to-week) basis on the same terms as the original agreement.',
+    rationale: 'Under the Renters\' Rights Act 2025, all new tenancies in the private rented sector are Assured Periodic Tenancies (APTs). Fixed-term ASTs were abolished from 1 May 2026, and all existing fixed-term tenancies automatically converted to APTs on that date. APTs roll on a month-to-month basis with no fixed end date.',
   },
   {
     id: 'q-sys-02-2', moduleId: 'sup-02',
-    question: 'When should renewal conversations with a landlord typically begin?',
+    question: 'Under the Renters\' Rights Act 2025, when should a PM initiate a rent review discussion with the landlord?',
     options: [
       'Only once the tenant has given notice to leave',
-      'At least 2–3 months before the tenancy expiry date',
-      'On the day the tenancy expires',
+      'Proactively — at least 3 months before the landlord wants a new rent to take effect, allowing time to research market comparables, advise on a figure, serve the Section 13 notice with one month\'s notice, and allow the tenant challenge window to elapse',
+      'On the first day of the new rent period when the increase is intended to begin',
       'At the annual inspection',
     ],
     correct: 1,
-    rationale: 'Renewal conversations should begin 2–3 months before expiry. This gives enough time to negotiate terms, agree on any rent increase, arrange paperwork, and avoid the tenancy falling into a periodic unnecessarily.',
+    rationale: 'Under the Renters\' Rights Act 2025, rent on an Assured Periodic Tenancy can only be increased once every 12 months via a Section 13 notice with at least one month\'s written notice. Proactive rent review discussions — ideally 3 months before the desired effective date — give time to research comparable rents, advise the landlord, and build in the notice period and any potential Tribunal referral window.',
   },
   {
     id: 'q-sys-02-3', moduleId: 'sup-02',
@@ -963,15 +963,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-sys-02-5', moduleId: 'sup-02',
-    question: 'What is the risk of allowing too many tenancies to fall into periodic without proactive renewal management?',
+    question: 'Under the Renters\' Rights Act 2025, how much notice must a tenant give to end a tenancy, and when can they first serve it?',
     options: [
-      'The landlord is required to reduce the rent under periodic tenancy law',
-      'The property is automatically re-listed on portals',
-      'Either party can end the tenancy with short notice, creating instability',
-      'Compliance certificates must be renewed immediately when periodic begins',
+      'One month\'s written notice at any point during the tenancy',
+      'Two months\' written notice, which cannot be served during the first four months of the tenancy',
+      'One rental period\'s notice at any time after the first month',
+      'Three months\' written notice, aligned with the new Ground 8 arrears threshold',
     ],
-    correct: 2,
-    rationale: 'Under a periodic tenancy, either the landlord or tenant can end the tenancy with relatively short notice (one rental period). This creates unnecessary instability and void risk for the landlord compared to a renewed fixed-term agreement.',
+    correct: 1,
+    rationale: 'Under the Renters\' Rights Act 2025, tenants on an Assured Periodic Tenancy can end the tenancy by serving two months\' written notice. However, they cannot serve this notice during the first four months of the tenancy — providing landlords with a minimum six-month occupancy. Landlords can no longer serve Section 21 notices and must rely on one of 37 Section 8 grounds to seek possession.',
   },
   {
     id: 'q-sys-02-6', moduleId: 'sup-02',
@@ -1318,15 +1318,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-m-ins-02-2', moduleId: 'ins-02', tier: 'master',
-    question: 'During an inspection, you notice the tenant has a dog and the AST contains a no-pets clause. The tenant says they got verbal approval from the landlord. What is the correct action?',
+    question: 'During an inspection, you notice the tenant has a dog and the tenancy agreement contains a no-pets clause. The tenant says they requested permission but have not received a formal response. What is the correct action under the Renters\' Rights Act 2025?',
     options: [
-      'Document the finding in the inspection report, advise the landlord, and ensure any permission to keep a pet is formalised as a written deed of variation — verbal approvals are not enforceable and do not protect either party in a future dispute',
-      'Accept the tenant\'s account of verbal approval and note it in the inspection report with a flag for the landlord to confirm in writing at their convenience before the next scheduled inspection',
-      'Disregard the finding as a matter solely between the landlord and tenant — the agency\'s inspection role is limited to property condition and enforcement of tenancy terms is outside your remit',
-      'Issue the tenant with a formal written notice to remove the pet within 14 days and advise them that continued breach may result in service of a Section 8 notice under Ground 12',
+      'Document the finding in the inspection report, advise the landlord that the tenant has a statutory right to request a pet under the RRA 2025, and ensure the landlord formally responds in writing within 28 days — consent cannot be unreasonably withheld and any approval should be confirmed as a written deed of variation',
+      'Accept the tenant\'s account and note it in the inspection report for the landlord to confirm at their convenience — no statutory right applies until the tenant has been in the property for 12 months',
+      'Disregard the finding as a matter solely between the landlord and tenant — the agency\'s inspection role is limited to property condition',
+      'Issue the tenant with a formal written notice to remove the pet within 14 days regardless of any pending request',
     ],
     correct: 0,
-    rationale: 'Verbal approvals for variations to the AST terms are not enforceable. Document the finding, notify the landlord, and advise that any consent to keep a pet must be formalised as a deed of variation or addendum to the tenancy agreement. This protects all parties if a future dispute arises.',
+    rationale: 'Under the Renters\' Rights Act 2025, tenants have a statutory right to request permission to keep a pet. The landlord must respond in writing within 28 days and cannot unreasonably refuse. Document the observation, advise the landlord they must formally respond, and if consent is given formalise it as a written deed of variation. Issuing a removal notice without considering the statutory right may itself be unlawful.',
   },
   {
     id: 'q-m-ins-02-3', moduleId: 'ins-02', tier: 'master',
@@ -1369,15 +1369,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-m-cmp-02-3', moduleId: 'cmp-02', tier: 'master',
-    question: 'A landlord failed to provide the latest version of the How to Rent guide when it was updated mid-tenancy. Could this affect future possession proceedings?',
+    question: 'The How to Rent guide has been replaced from 1 May 2026. What must landlords now provide to tenants at the start of a new tenancy?',
     options: [
-      'No — the landlord\'s obligation is to provide the How to Rent guide once at the commencement of the tenancy; no further distributions are required when updated versions are published during the tenancy term',
-      'Only if the updated guide contained information that materially altered the tenant\'s rights; a mere version update without substantive changes has no legal effect',
-      'Yes — landlords are advised to provide the current version of the How to Rent guide at all times; failure to provide an updated version issued during the tenancy can affect the landlord\'s ability to seek possession',
-      'No — digital publication by the government satisfies any ongoing distribution obligation regardless of whether a new copy was sent to the tenant',
+      'A copy of the original How to Rent guide — it remains valid as a historical document for tenancies that pre-date May 2026',
+      'The Renters\' Rights Act Information Sheet 2026, downloaded directly from GOV.UK immediately before serving to ensure the latest version is used',
+      'A copy of the Renters\' Rights Act 2025 in full — the legislation itself acts as the prescribed information document',
+      'No prescribed information document is required — the Renters\' Rights Act replaced the prescribed documentation regime entirely',
     ],
-    correct: 2,
-    rationale: 'Government guidance and case law indicate that if the How to Rent guide has been updated since the tenancy began, the landlord should provide the latest version. Failure to do so can affect future possession proceedings. Always provide the most current version at tenancy start and on renewal.',
+    correct: 1,
+    rationale: 'From 1 May 2026, the How to Rent guide has been replaced by the Renters\' Rights Act Information Sheet 2026. Landlords must provide this document to tenants at the start of every new tenancy. Always download the latest version directly from GOV.UK rather than using saved copies — versions change. If a tenancy converts and the document has been updated since it was last served, re-issue the latest version.',
   },
 
   // ── MASTER: Right to Rent (rtr-02) ────────────────────────────────────────
@@ -1462,15 +1462,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   {
     id: 'q-m-sup-02-1', moduleId: 'sup-02', tier: 'master',
-    question: 'A landlord wants to increase rent by 25% at renewal. The tenant disputes it and triggers the Section 13 statutory rent increase procedure. What happens next?',
+    question: 'A landlord wants to increase rent by 25% at renewal. The tenant disputes it and refers it to the First-tier Tribunal under Section 13. What happens next?',
     options: [
-      'The landlord can enforce the rent increase with immediate effect because they have followed the statutory Section 13 procedure — once properly served, the new rent becomes binding from the date specified in the notice regardless of any tenant challenge',
-      'The tenant must continue paying the proposed increased amount while the dispute is being reviewed — failure to pay the new rent during the Tribunal process constitutes a breach of the tenancy agreement',
-      'The tenancy automatically converts to a periodic tenancy upon receipt of the Section 13 notice, during which period neither the original rent nor the proposed increase is enforceable until both parties reach a written agreement',
-      'The tenant can refer the notice to the First-tier Tribunal (Property Chamber), which will independently determine a market rent — the proposed increase is suspended during the referral and cannot be enforced until the Tribunal issues its determination',
+      'The landlord can enforce the rent increase with immediate effect — once a Section 13 notice is properly served, the new rent becomes binding regardless of any tenant challenge',
+      'The tenant must continue paying the proposed increased amount while the dispute is reviewed — failure to pay the new rent during the Tribunal process constitutes a breach',
+      'The tenancy automatically ends upon Tribunal referral and both parties must negotiate a new agreement',
+      'The proposed increase is suspended while the referral is pending — the tenant continues paying the current rent; the Tribunal determines a market rent, which cannot be set higher than the landlord\'s proposed figure',
     ],
     correct: 3,
-    rationale: 'Under Section 13 of the Housing Act 1988, a tenant can refer a landlord\'s rent increase notice to the First-tier Tribunal (Property Chamber) for an independent market rent determination. The proposed increase is suspended during the referral. The Tribunal sets the rent based on open market evidence — which could be lower than, equal to, or higher than the landlord\'s proposed increase.',
+    rationale: 'Under Section 13 of the Housing Act 1988 as amended by the Renters\' Rights Act 2025, a tenant can refer a rent increase notice to the First-tier Tribunal (Tribunal fee: £47). The proposed increase is automatically suspended during the referral — the tenant pays the existing rent. The Tribunal sets a market rent based on open market evidence, but critically it cannot award a rent higher than the landlord\'s proposed figure. The landlord\'s mortgage costs are not a factor the Tribunal will consider.',
   },
   {
     id: 'q-m-sup-02-2', moduleId: 'sup-02', tier: 'master',
@@ -1486,15 +1486,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-m-sup-02-3', moduleId: 'sup-02', tier: 'master',
-    question: 'Both landlord and tenant verbally agree to renew the tenancy but no paperwork is signed before the fixed term expires. What is the legal status of the tenancy?',
+    question: 'A landlord and tenant mutually agree to vary the tenancy terms — for example, increasing the rent or adding a special condition. What is the correct legal process?',
     options: [
-      'The tenancy ends automatically on the fixed-term expiry date — without a signed renewal agreement, both parties revert to no tenancy and the property is legally available for re-letting from the next day',
-      'The tenancy becomes a statutory periodic tenancy automatically on expiry, continuing on the same terms as the original agreement on a rolling month-to-month basis — neither party needs to take any action for this to occur',
-      'A new fixed-term tenancy is created by operation of law based on the verbal agreement to renew — courts treat verbal agreements to renew residential tenancies as binding contracts under the Housing Act 1988',
-      'The landlord must serve a formal notice to legally terminate the expired fixed-term tenancy before any new periodic or fixed-term agreement can commence, regardless of whether both parties intend to continue',
+      'The tenancy must be ended and a brand new agreement signed for any change to terms to take legal effect',
+      'A verbal agreement between both parties to vary the terms is legally binding without further documentation',
+      'The variation must be formalised as a written deed of variation or addendum to the tenancy agreement, signed by both parties — an oral agreement alone is unenforceable',
+      'The landlord must serve a Section 13 notice for any change to tenancy terms, not just rent increases',
     ],
-    correct: 1,
-    rationale: 'Where a fixed-term AST expires without a new agreement being signed, the tenancy automatically becomes a statutory periodic tenancy under the Housing Act 1988, continuing on the same terms on a rolling basis. Neither party is required to do anything — the periodic tenancy arises automatically. This is why proactive renewal management is essential.',
+    correct: 2,
+    rationale: 'Under the Renters\' Rights Act 2025, all tenancies are Assured Periodic Tenancies. Any agreed variation to tenancy terms — whether rent (outside the Section 13 process), permitted occupiers, pets, or special conditions — must be formalised in writing as a deed of variation or addendum signed by both parties. An oral agreement is unenforceable and leaves both parties exposed if a dispute arises.',
   },
 
   // ── MASTER: Knowledge — Difficult Conversations (kno-01) ──────────────────
@@ -2771,15 +2771,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-sys-02-n2', moduleId: 'sys-02',
-    question: 'When should a PM begin the rent review discussion with the landlord ahead of a tenancy renewal?',
+    question: 'Under the Renters\' Rights Act 2025, when should a PM begin a rent review discussion with the landlord?',
     options: [
-      'On the day the tenancy expires, when the renewal terms must be confirmed immediately to avoid the tenancy becoming periodic',
-      'At least 2-3 months before the tenancy expiry date, giving sufficient time to research comparable rents, discuss options with the landlord, and negotiate with the tenant',
+      'On the day the current rent period ends, when the landlord can notify the tenant verbally',
+      'At least 3 months before the intended effective date — to research market rents, advise the landlord, serve the Section 13 notice with one month\'s notice, and allow for any potential Tribunal referral period',
       'Only when the tenant requests a rent reduction — if neither party raises the issue, the rent automatically carries forward unchanged',
-      'At the annual inspection, regardless of where the tenancy is in its term, as this is the most natural point to discuss property performance',
+      'At the annual inspection, regardless of where the tenancy is in its rent review cycle',
     ],
     correct: 1,
-    rationale: 'Rent review discussions should begin at least 2-3 months before the tenancy expiry date. This allows time to research comparable market rents, discuss the landlord\'s objectives, prepare a recommendation, and negotiate with the tenant. Starting too late risks the tenancy falling into a periodic without agreed renewal terms.',
+    rationale: 'Rent increases on an Assured Periodic Tenancy require a Section 13 notice with at least one month\'s written notice and can only be applied once every 12 months. Planning 3 months ahead allows the PM to research comparable market rents, give the landlord a recommendation, serve the notice with adequate lead time, and absorb any potential delay if the tenant refers the increase to the First-tier Tribunal (which suspends the increase pending determination).',
   },
   {
     id: 'q-sys-02-n3', moduleId: 'sys-02',
@@ -2960,12 +2960,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A landlord failed to protect a tenant\'s deposit within 30 days of receiving it. What are the potential legal consequences?',
     options: [
       'The tenancy is automatically voided and the tenant must be rehoused at the landlord\'s expense',
-      'The landlord is barred from serving a valid Section 21 notice until the deposit is protected and prescribed information issued; the court can also order a penalty of 1–3x the deposit amount',
+      'The court can order a financial penalty of between 1x and 3x the deposit amount, and the landlord may be prevented from recovering possession until the deposit is properly protected and prescribed information is served',
       'The landlord must return the deposit within 14 days and restart the tenancy on new terms',
       'There are no consequences unless the tenant makes a formal complaint to the local authority',
     ],
     correct: 1,
-    rationale: 'Failing to protect a deposit within 30 days has two key consequences under the Housing Act 2004: the landlord cannot serve a valid Section 21 notice until the deposit is protected and prescribed information provided; and the court can order a financial penalty of between 1x and 3x the deposit amount.',
+    rationale: 'Failing to protect a deposit within 30 days has two key consequences under the Housing Act 2004: the court can order a financial penalty of between 1x and 3x the deposit amount; and the landlord may be prevented from recovering possession until the deposit is properly protected and prescribed information is served. Note: the previous consequence that this barred service of a Section 21 notice is no longer relevant — Section 21 no-fault evictions were abolished from 1 May 2026.',
   },
 
   // ── INS-02: Completing the Inspection — extra pool ────────────────────────
@@ -3137,24 +3137,24 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A tenant refuses to sign a tenancy renewal. What should the PM do?',
     options: [
       'Immediately serve a Section 21 notice on the landlord\'s behalf as the tenant has rejected the renewal offer',
-      'Record the refusal in the job chat, advise the landlord of the tenant\'s position, and discuss options — the tenancy will roll into periodic unless the landlord wishes to seek possession',
+      'Record the refusal in the job chat, advise the landlord of the tenant\'s position, and discuss options — the tenancy continues as an Assured Periodic Tenancy, which may be acceptable, or if the landlord requires possession they must serve a Section 8 notice citing a valid statutory ground',
       'Contact the tenant daily until they agree to sign — tenant refusals are a breach of the tenancy agreement',
       'Inform the tenant that refusing to sign means they must vacate within 28 days',
     ],
     correct: 1,
-    rationale: 'A tenant cannot be compelled to sign a renewal — refusing to do so is not a tenancy breach. The PM should record the refusal, update the landlord, and discuss options: the tenancy rolls to periodic (which may be acceptable), or if the landlord wants the tenant to leave, the appropriate legal route (Section 21 notice with correct notice periods) must be followed.',
+    rationale: 'A tenant cannot be compelled to sign a renewal — refusing to do so is not a tenancy breach. The PM should record the refusal, update the landlord, and discuss options: under the Renters\' Rights Act 2025, the tenancy continues as an Assured Periodic Tenancy (which may be acceptable to the landlord), or if the landlord requires the tenant to leave, they must serve a Section 8 notice citing one of the 37 statutory grounds. Section 21 no-fault evictions were abolished from 1 May 2026.',
   },
   {
     id: 'q-sup-02-n3', moduleId: 'sup-02',
-    question: 'What is the correct process for increasing the rent during an ongoing monthly periodic tenancy in England?',
+    question: 'What is the correct process for increasing the rent on an Assured Periodic Tenancy in England under the Renters\' Rights Act 2025?',
     options: [
       'The landlord can increase the rent at any time by sending the tenant an email with the new amount — no formal process is required for periodic tenancies',
-      'A Section 13 notice (Form 4) must be served giving at least one month\'s notice — the new rent cannot be charged until the notice period has elapsed and the tenant has not successfully disputed it',
-      'The rent can only be increased at the anniversary of the original fixed term, regardless of how long the periodic tenancy has been running',
+      'A Section 13 notice must be served giving at least one month\'s notice — rent can only be increased once every 12 months, the increase is suspended if the tenant refers it to the First-tier Tribunal (£47 fee), and the Tribunal cannot set a rent higher than the landlord\'s proposed figure',
+      'The rent can only be increased once every two years under the Renters\' Rights Act 2025',
       'Any increase must be countersigned by both the landlord and tenant in a new written agreement before it becomes effective',
     ],
     correct: 1,
-    rationale: 'To increase rent during a monthly periodic tenancy in England, the landlord must serve a Section 13 notice (prescribed Form 4) with at least one month\'s notice. The tenant can challenge the proposed increase to a First-tier Tribunal if they believe it is above market rate. Informally asking for more rent without this process does not create a legal obligation to pay the higher amount.',
+    rationale: 'Under the Renters\' Rights Act 2025, rent on an Assured Periodic Tenancy can only be increased once every 12 months via a Section 13 notice with at least one month\'s written notice. If the tenant refers the proposed increase to the First-tier Tribunal (fee: £47), the increase is automatically suspended — the tenant does not pay the higher amount while waiting. Importantly, the Tribunal cannot award a rent higher than the landlord proposed, protecting tenants from perverse outcomes.',
   },
   {
     id: 'q-sup-02-n4', moduleId: 'sup-02',
@@ -3170,15 +3170,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-sup-02-n5', moduleId: 'sup-02',
-    question: 'What is a break clause in a tenancy agreement?',
+    question: 'Break clauses were previously included in fixed-term ASTs. Why are they no longer relevant for tenancies created after 1 May 2026?',
     options: [
-      'A clause giving the landlord the right to terminate the tenancy at any time for any reason without notice',
-      'A contractual provision that gives one or both parties the right to end the tenancy at a specified point during the fixed term, provided the correct notice is served in the prescribed form',
-      'A clause that only applies if the property is sold during the tenancy',
-      'A clause that allows the rent to be reviewed to market rate mid-term without the tenant\'s consent',
+      'Break clauses are still valid but now require a minimum of 6 months\' notice instead of the previous standard period',
+      'Fixed-term ASTs were abolished by the Renters\' Rights Act 2025 — all new tenancies are Assured Periodic Tenancies with no fixed term, making a break clause (which terminated a fixed term early) legally inapplicable',
+      'Break clauses have been replaced by Ground 1A — the new mandatory ground allowing landlords to seek possession when they intend to sell',
+      'Break clauses remain available but only for HMO tenancies created after 1 May 2026',
     ],
     correct: 1,
-    rationale: 'A break clause is a contractual provision that gives one or both parties the right to terminate a fixed-term tenancy at a specified date during the term, provided the required notice is served correctly and on time. Break clauses do not take effect automatically — if notice is not served in the prescribed form and within the required timeframe, the break clause may not be exercisable.',
+    rationale: 'Break clauses were contractual provisions allowing early termination of a fixed-term tenancy. Since fixed-term ASTs were abolished from 1 May 2026 under the Renters\' Rights Act 2025, break clauses have no application to new tenancies. All new tenancies are Assured Periodic Tenancies — the tenant can end the tenancy by serving 2 months\' written notice (after the first 4 months), and the landlord must rely on one of 37 Section 8 grounds to recover possession.',
   },
   {
     id: 'q-sup-02-n6', moduleId: 'sup-02',
