@@ -3158,15 +3158,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-sup-02-n4', moduleId: 'sup-02',
-    question: 'A tenant requests early termination of their fixed-term tenancy. What should the PM do?',
+    question: 'A tenant contacts the PM to say they want to end their tenancy and move out. What should the PM advise?',
     options: [
-      'Release the tenant immediately — agencies cannot legally prevent a tenant from leaving',
-      'Advise the tenant they remain liable for the full rent until the tenancy end date, then raise a support task to discuss the early surrender process with the landlord',
-      'Instruct the tenant to serve a two-month notice period and the tenancy will end automatically',
-      'Transfer the tenancy to a new tenant found by the agency without the landlord\'s involvement',
+      'The tenant must obtain the landlord\'s agreement before they can leave — ending a tenancy always requires both parties to sign a mutual surrender',
+      'The tenant should serve two months\' written notice expiring at the end of a rent period — the tenancy ends automatically once the notice period expires and no landlord consent is required',
+      'The tenant can leave without any notice at any time — there is no minimum notice requirement for tenants on a periodic tenancy',
+      'The PM should raise a support task and negotiate an early surrender with the landlord on the tenant\'s behalf',
     ],
     correct: 1,
-    rationale: 'A tenant in a fixed-term tenancy cannot unilaterally end the tenancy early — they remain liable for rent until the end date. However, the landlord may agree to an early surrender, usually conditional on the tenant paying until a replacement is found or an agreed settlement is reached. The PM should raise a support task, advise the landlord of the request, and facilitate a mutual surrender agreement if the landlord agrees.',
+    rationale: 'Under the Renters\' Rights Act 2025 (in force 1 May 2026), all tenancies are Assured Periodic Tenancies. Tenants have a statutory right to end the tenancy at any time by serving two months\' written notice, expiring at the end of a rent period — no landlord consent is needed. The one restriction is that tenants cannot serve notice during the first four months of the tenancy. The PM should confirm the notice is in writing and note the end date for move-out planning.',
   },
   {
     id: 'q-sup-02-n5', moduleId: 'sup-02',
