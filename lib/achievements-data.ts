@@ -10,7 +10,18 @@ export interface Achievement extends AchievementDef {
   earnedDate?: string
 }
 
+// User IDs granted the First Completer badge — add Supabase UUID(s) here
+export const FIRST_COMPLETER_USER_IDS: ReadonlySet<string> = new Set([
+  'ce5131a0-8a6c-43de-9e03-ed331cafc71e',
+])
+
 export const ACHIEVEMENT_DEFS: AchievementDef[] = [
+  {
+    id: 'first-completer',
+    title: 'First Completer',
+    description: 'The very first person to complete the entire Dwelly training programme.',
+    icon: '🎊',
+  },
   {
     id: 'first-steps',
     title: 'First Steps',
@@ -69,7 +80,7 @@ interface ResultRow {
 
 const TOTAL_ASSESSMENTS = 15
 
-export function computeAchievements(results: ResultRow[]): Achievement[] {
+export function computeAchievements(results: ResultRow[], userId?: string): Achievement[] {
   // Build maps for quick lookup
   const passedIds = new Set(results.filter(r => r.passed).map(r => r.assessment_id))
   const countByAssessment = new Map<string, number>()
@@ -78,6 +89,7 @@ export function computeAchievements(results: ResultRow[]): Achievement[] {
   }
 
   const checks: Record<string, boolean> = {
+    'first-completer':     !!userId && FIRST_COMPLETER_USER_IDS.has(userId),
     'first-steps':         passedIds.size >= 1,
     'assessment-ace':      results.some(r => r.passed && (countByAssessment.get(r.assessment_id) ?? 0) === 1),
     'perfect-score':       results.some(r => r.score === 100),

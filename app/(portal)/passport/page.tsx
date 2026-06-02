@@ -50,7 +50,7 @@ export default async function PassportPage() {
     ? Math.round((resultRows ?? []).reduce((s, r) => s + r.score, 0) / (resultRows ?? []).length)
     : null
 
-  const achievements = computeAchievements(resultRows ?? [])
+  const achievements = computeAchievements(resultRows ?? [], user.id)
 
   return (
     <div className="space-y-6">
