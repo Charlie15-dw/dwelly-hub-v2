@@ -480,9 +480,17 @@ export default async function AdminMemberDetailPage({
             <p className="text-sm font-bold text-navy mb-3">Not yet attempted ({notAttempted.length})</p>
             <div className="space-y-2">
               {notAttempted.map(id => (
-                <div key={id} className="flex items-center gap-2.5 py-1.5">
-                  <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-200 flex-shrink-0" />
-                  <span className="text-sm text-slate-400">{ASSESSMENT_LABELS[id] ?? id}</span>
+                <div key={id} className="flex items-center justify-between gap-2.5 py-1.5">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-200 flex-shrink-0" />
+                    <span className="text-sm text-slate-400">{ASSESSMENT_LABELS[id] ?? id}</span>
+                  </div>
+                  <ReassignButton
+                    userId={params.userId}
+                    moduleId={id}
+                    moduleName={ASSESSMENT_LABELS[id] ?? id}
+                    pending={pendingResetIds.has(id)}
+                  />
                 </div>
               ))}
             </div>

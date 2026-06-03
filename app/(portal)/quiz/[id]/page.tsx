@@ -6,6 +6,7 @@ import {
   PRODUCT_RELEASE_QUIZZES,
   PRODUCT_RELEASE_QUESTIONS,
 } from '@/lib/data'
+import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import QuizClient, { type QuizCategory } from './QuizClient'
 
 // Video module sections (3 questions each for combined assessments)
@@ -22,7 +23,7 @@ const ASSESSMENT_QUESTION_COUNTS: Record<string, number> = {
   'kno-01': 5,  'kno-02': 7,  'kno-03': 5,
 }
 
-export default function QuizPage({ params }: { params: { id: string } }) {
+export default async function QuizPage({ params }: { params: { id: string } }) {
   const moduleId = params.id
 
   const isFullAssessment   = moduleId === 'full-assessment'
@@ -135,6 +136,34 @@ export default function QuizPage({ params }: { params: { id: string } }) {
     ? RECAP_ROUNDS.find(r => r.id === moduleId)?.questionCount ?? questionPool.length
     : ASSESSMENT_QUESTION_COUNTS[moduleId] ?? questionPool.length
 
+  // Check for a pending manager reset — done server-side so RLS never blocks it
+  let wasReset = false
+  if (!isRecapQuiz && !isRecallQuiz) {
+    try {
+      const auth = createServerClient()
+      const { data: { user } } = await auth.getUser()
+      if (user) {
+        const service = createServiceClient()
+        const { data: reset } = await service
+          .from('module_resets')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('module_id', moduleId)
+          .is('consumed_at', null)
+          .maybeSingle()
+        if (reset) {
+          await service
+            .from('module_resets')
+            .update({ consumed_at: new Date().toISOString() })
+            .eq('id', reset.id)
+          wasReset = true
+        }
+      }
+    } catch {
+      // Non-critical — quiz will still load, lock check falls through to client
+    }
+  }
+
   return (
     <QuizClient
       moduleId={moduleId}
@@ -145,6 +174,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       sampleSize={sampleSize}
       backHref={backHref}
       backLabel={backLabel}
+      wasReset={wasReset}
       recapLabel={recapLabel}
       recapTheme={recapTheme}
       recapQuestionModuleIds={recapQuestionModuleIds}

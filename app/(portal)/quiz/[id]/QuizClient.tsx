@@ -46,6 +46,8 @@ export interface QuizClientProps {
   recallLabel?: string
   recallModuleTitle?: string
   recallDays?: number
+  // set to true when server detected and consumed a pending manager reset
+  wasReset?: boolean
 }
 
 export default function QuizClient({
@@ -63,6 +65,7 @@ export default function QuizClient({
   recapModuleTitles,
   recallLabel,
   recallModuleTitle,
+  wasReset = false,
 }: QuizClientProps) {
   const isFullAssessment   = quizCategory === 'full'
   const isMasterAssessment = quizCategory === 'master'
@@ -112,58 +115,36 @@ export default function QuizClient({
     setScheduleId(params.get('schedule'))
   }, [isRecallQuiz])
 
-  // Check lock status on mount — also checks Supabase for manager-triggered resets
+  // Check lock status on mount — reset is already consumed server-side if wasReset=true
   useEffect(() => {
     if (isRecapQuiz || isRecallQuiz) return
-    async function checkLockAndReset() {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const { data: reset } = await supabase
-          .from('module_resets')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('module_id', moduleId)
-          .is('consumed_at', null)
-          .maybeSingle()
 
-        if (reset) {
-          await supabase
-            .from('module_resets')
-            .update({ consumed_at: new Date().toISOString() })
-            .eq('id', reset.id)
-          await supabase
-            .from('assessment_sessions')
-            .delete()
-            .eq('user_id', user.id)
-            .eq('module_id', moduleId)
-          unlockAssessment(moduleId)
-          clearInProgress(moduleId)
-          return
-        }
-      }
-
-      if (isLocked(moduleId)) {
-        setLockedByStorage(true)
-        setLastAttempt(getLastAttempt(moduleId))
-        return
-      }
-
-      const session = getInProgress(moduleId)
-      if (session && session.submittedUpTo >= 0) {
-        const restoredAnswers = [...session.answers]
-        while (restoredAnswers.length < demoQuestions.length) restoredAnswers.push(null)
-        setAnswers(restoredAnswers)
-        const resumeQ = session.submittedUpTo + 1
-        setCurrentQ(Math.min(resumeQ, demoQuestions.length - 1))
-        if (session.submittedUpTo >= demoQuestions.length - 1) {
-          setShowResults(true)
-        }
-        setQuizStarted(true)
-      }
+    // Server already consumed the pending reset before this page rendered
+    if (wasReset) {
+      unlockAssessment(moduleId)
+      clearInProgress(moduleId)
+      return
     }
-    checkLockAndReset()
-  }, [moduleId, isRecapQuiz, isRecallQuiz, isReleaseQuiz, demoQuestions.length])
+
+    if (isLocked(moduleId)) {
+      setLockedByStorage(true)
+      setLastAttempt(getLastAttempt(moduleId))
+      return
+    }
+
+    const session = getInProgress(moduleId)
+    if (session && session.submittedUpTo >= 0) {
+      const restoredAnswers = [...session.answers]
+      while (restoredAnswers.length < demoQuestions.length) restoredAnswers.push(null)
+      setAnswers(restoredAnswers)
+      const resumeQ = session.submittedUpTo + 1
+      setCurrentQ(Math.min(resumeQ, demoQuestions.length - 1))
+      if (session.submittedUpTo >= demoQuestions.length - 1) {
+        setShowResults(true)
+      }
+      setQuizStarted(true)
+    }
+  }, [moduleId, wasReset, isRecapQuiz, isRecallQuiz, demoQuestions.length])
 
   // Save recall result to Supabase and mark schedule complete
   useEffect(() => {
