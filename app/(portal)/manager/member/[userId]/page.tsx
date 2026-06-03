@@ -65,14 +65,22 @@ export default async function MemberDetailPage({
 
   if (!memberProfile) notFound()
 
-  // Fetch all assessment results for this member
-  const { data: results } = await supabase
-    .from('assessment_results')
-    .select('assessment_id, score, passed, answers, completed_at')
-    .eq('user_id', params.userId)
-    .order('completed_at', { ascending: false })
+  // Fetch all assessment results and pending resets for this member
+  const [{ data: results }, { data: pendingResets }] = await Promise.all([
+    supabase
+      .from('assessment_results')
+      .select('assessment_id, score, passed, answers, completed_at')
+      .eq('user_id', params.userId)
+      .order('completed_at', { ascending: false }),
+    supabase
+      .from('module_resets')
+      .select('module_id')
+      .eq('user_id', params.userId)
+      .is('consumed_at', null),
+  ])
 
   const allResults = results ?? []
+  const pendingResetIds = new Set((pendingResets ?? []).map(r => r.module_id))
 
   const displayName = memberProfile.full_name
     || memberProfile.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
@@ -168,6 +176,7 @@ export default async function MemberDetailPage({
                         userId={params.userId}
                         moduleId={assessmentId}
                         moduleName={ASSESSMENT_LABELS[assessmentId] ?? assessmentId}
+                        pending={pendingResetIds.has(assessmentId)}
                       />
                     </>
                   )}

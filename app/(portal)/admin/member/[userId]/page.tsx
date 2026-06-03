@@ -77,7 +77,7 @@ export default async function AdminMemberDetailPage({
     || managerProfile?.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
     || 'Unassigned'
 
-  const [{ data: results }, { data: learningProfile }, { data: allManagers }] = await Promise.all([
+  const [{ data: results }, { data: learningProfile }, { data: allManagers }, { data: pendingResets }] = await Promise.all([
     service
       .from('assessment_results')
       .select('assessment_id, score, passed, answers, completed_at')
@@ -92,9 +92,15 @@ export default async function AdminMemberDetailPage({
       .from('user_profiles')
       .select('id, full_name, email')
       .eq('role', 'manager'),
+    service
+      .from('module_resets')
+      .select('module_id')
+      .eq('user_id', params.userId)
+      .is('consumed_at', null),
   ])
 
   const allResults = results ?? []
+  const pendingResetIds = new Set((pendingResets ?? []).map(r => r.module_id))
 
   const displayName = memberProfile.full_name
     || memberProfile.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
@@ -402,6 +408,7 @@ export default async function AdminMemberDetailPage({
                     userId={params.userId}
                     moduleId={f.assessmentId}
                     moduleName={ASSESSMENT_LABELS[f.assessmentId] ?? f.assessmentId}
+                    pending={pendingResetIds.has(f.assessmentId)}
                   />
                 </div>
               ))}

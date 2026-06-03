@@ -8,10 +8,12 @@ interface Props {
   userId: string
   moduleId: string
   moduleName: string
+  pending?: boolean
 }
 
-export default function ReassignButton({ userId, moduleId, moduleName }: Props) {
+export default function ReassignButton({ userId, moduleId, moduleName, pending = false }: Props) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
+  const [justReassigned, setJustReassigned] = useState(false)
 
   async function handleReassign() {
     if (status === 'loading' || status === 'done') return
@@ -23,11 +25,21 @@ export default function ReassignButton({ userId, moduleId, moduleName }: Props) 
         body: JSON.stringify({ userId, moduleId }),
       })
       if (!res.ok) throw new Error()
+      setJustReassigned(true)
       setStatus('done')
     } catch {
       setStatus('error')
       setTimeout(() => setStatus('idle'), 3000)
     }
+  }
+
+  if (pending && !justReassigned) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600">
+        <RefreshCw className="w-3.5 h-3.5" aria-hidden />
+        Reset Pending
+      </span>
+    )
   }
 
   if (status === 'done') {
