@@ -33,6 +33,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  return NextResponse.json({ message: 'Email reminders disabled — using Slack instead', sent: 0 })
+
   const supabase = createServiceClient()
   const now = new Date()
 

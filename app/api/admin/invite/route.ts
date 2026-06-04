@@ -87,15 +87,8 @@ export async function POST(request: NextRequest) {
 
     const inviteLink = `${siteUrl}/auth/accept-invite?token=${invite.id}`
 
-    const { subject, html } = buildInviteEmail({
-      inviteeName: fullName,
-      inviteLink,
-      invitedBy: callerProfile.full_name ?? callerProfile.email ?? null,
-    })
-
-    await sendInviteEmail(email, fullName ?? email, subject, html)
-
-    return NextResponse.json({ ok: true, email })
+    // Email sending disabled — return the invite link for manual sharing via Slack
+    return NextResponse.json({ ok: true, email, inviteLink })
   } catch (err) {
     console.error('[admin/invite]', err)
     return NextResponse.json({ error: 'Failed to send invite' }, { status: 500 })
