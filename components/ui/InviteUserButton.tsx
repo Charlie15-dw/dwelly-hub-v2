@@ -41,7 +41,7 @@ export default function InviteUserButton() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-    setSuccess(null)
+    setInviteLink(null)
     setLoading(true)
 
     try {

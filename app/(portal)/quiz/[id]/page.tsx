@@ -141,7 +141,7 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   if (!isRecapQuiz && !isRecallQuiz) {
     try {
       const auth = createServerClient()
-      const { data: { user } } = await auth.getUser()
+      const { data: { user } } = await auth.auth.getUser()
       if (user) {
         const service = createServiceClient()
         const { data: reset } = await service
@@ -156,6 +156,11 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
             .from('module_resets')
             .update({ consumed_at: new Date().toISOString() })
             .eq('id', reset.id)
+          await service
+            .from('assessment_sessions')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('module_id', moduleId)
           wasReset = true
         }
       }

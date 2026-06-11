@@ -1,30 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
-import { buildInviteEmail } from '@/lib/email/inviteTemplate'
-
-const FROM_EMAIL = process.env.BREVO_FROM_EMAIL ?? 'charlie@dwelly.group'
-const FROM_NAME = 'Dwelly Training'
-
-async function sendInviteEmail(to: string, toName: string, subject: string, html: string) {
-  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: {
-      'accept': 'application/json',
-      'content-type': 'application/json',
-      'api-key': process.env.BREVO_API_KEY!,
-    },
-    body: JSON.stringify({
-      sender: { name: FROM_NAME, email: FROM_EMAIL },
-      to: [{ email: to, name: toName || to }],
-      subject,
-      htmlContent: html,
-    }),
-  })
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`Brevo error ${res.status}: ${err}`)
-  }
-}
 
 export async function POST(request: NextRequest) {
   const supabase = createServerClient()
