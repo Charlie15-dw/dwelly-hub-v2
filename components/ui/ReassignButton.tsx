@@ -33,12 +33,19 @@ export default function ReassignButton({ userId, moduleId, moduleName, pending =
     }
   }
 
-  if (pending && !justReassigned) {
+  if (pending && !justReassigned && status === 'idle') {
     return (
-      <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600">
+      <button
+        onClick={handleReassign}
+        title={`A reset is already queued for ${moduleName}. Click to queue it again.`}
+        className={cn(
+          'inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg border transition-colors',
+          'border-amber-300 text-amber-600 hover:bg-amber-50',
+        )}
+      >
         <RefreshCw className="w-3.5 h-3.5" aria-hidden />
-        Reset Pending
-      </span>
+        Reset Pending — Reassign again
+      </button>
     )
   }
 
