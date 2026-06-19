@@ -144,18 +144,21 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
       const { data: { user } } = await auth.auth.getUser()
       if (user) {
         const service = createServiceClient()
-        const { data: reset } = await service
+        // There may be more than one pending reset if reassign was pressed
+        // multiple times — consume them all, not just one.
+        const { data: resets } = await service
           .from('module_resets')
           .select('id')
           .eq('user_id', user.id)
           .eq('module_id', moduleId)
           .is('consumed_at', null)
-          .maybeSingle()
-        if (reset) {
+        if (resets && resets.length > 0) {
           await service
             .from('module_resets')
             .update({ consumed_at: new Date().toISOString() })
-            .eq('id', reset.id)
+            .eq('user_id', user.id)
+            .eq('module_id', moduleId)
+            .is('consumed_at', null)
           await service
             .from('assessment_sessions')
             .delete()

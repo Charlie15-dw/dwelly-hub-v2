@@ -35,6 +35,15 @@ export async function POST(req: NextRequest) {
   }
   // Admins can reassign anyone (PMs and managers)
 
+  // Clear any existing pending resets first so we never pile up duplicate
+  // rows (which previously broke single-row detection on the quiz page).
+  await supabase
+    .from('module_resets')
+    .delete()
+    .eq('user_id', userId)
+    .eq('module_id', moduleId)
+    .is('consumed_at', null)
+
   // Insert reset record (quiz page will detect and consume this on next load)
   const { error } = await supabase
     .from('module_resets')
