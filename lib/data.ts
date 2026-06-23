@@ -121,10 +121,10 @@ export const MODULES: Module[] = [
   },
   {
     id: 'cmp-02', title: 'Compliance 2/2 — Actioning the Compliance Task', section: 'compliance', phase: 'foundation',
-    duration: '35 min', videoLength: '5 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 26,
+    duration: '35 min', videoLength: '5 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 8,
     roles: ['property_manager', 'lettings_negotiator'],
-    description: 'TDS/DPS/mydeposits schemes, 30-day rule, prescribed information requirements.',
-    tags: ['deposits', 'TDS', 'legal'], spacedRepetitionDue: null, confidenceRating: null,
+    description: 'Actioning a compliance job in Dwelly — assigning providers, handling the landlord\'s own contractor, certificates and remedial works.',
+    tags: ['gas', 'EICR', 'certificates', 'compliance'], spacedRepetitionDue: null, confidenceRating: null,
   },
   // MOVE-OUTS / SUPPORT
   {
@@ -748,68 +748,6 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     rationale: 'The golden rule for compliance: use Auto Mode at every stage except two — (1) the landlord is using their own provider (no provider to assign), or (2) an unsatisfactory certificate was returned and remedial works are required. All other stages should remain in Auto Mode.',
-  },
-
-  // ─── CMP-02: Deposit Protection Rules ────────────────────────────────────
-
-  {
-    id: 'q-cmp-02-1', moduleId: 'cmp-02',
-    question: 'How many days does a landlord have to protect a tenancy deposit under an approved scheme?',
-    options: ['14 days', '21 days', '30 days', '60 days'],
-    correct: 2,
-    rationale: 'Under the Housing Act 2004, deposits must be protected within 30 days of receipt. Failure to do so can result in a court-ordered penalty of 1–3x the deposit amount.',
-  },
-  {
-    id: 'q-cmp-02-2', moduleId: 'cmp-02',
-    question: 'Which of the following is NOT an approved deposit protection scheme in England?',
-    options: ['Tenancy Deposit Scheme (TDS)', 'Deposit Protection Service (DPS)', 'mydeposits', 'SafeDeposits England'],
-    correct: 3,
-    rationale: 'SafeDeposits Scotland is an approved scheme but only operates in Scotland. The three England/Wales approved schemes are TDS, DPS, and mydeposits.',
-  },
-  {
-    id: 'q-cmp-02-3', moduleId: 'cmp-02',
-    question: 'What must be given to the tenant alongside deposit protection?',
-    options: [
-      'A copy of the Energy Performance Certificate',
-      'Prescribed information about the scheme',
-      'The landlord\'s mortgage agreement',
-      'A signed copy of the inventory report',
-    ],
-    correct: 1,
-    rationale: 'Alongside protecting the deposit, landlords must provide "prescribed information" — details about the protection scheme, how to reclaim the deposit, and the dispute resolution process.',
-  },
-  {
-    id: 'q-cmp-02-4', moduleId: 'cmp-02',
-    question: 'What is the maximum penalty a court can award against a landlord for failing to protect a deposit?',
-    options: ['1x the deposit amount', '2x the deposit amount', '3x the deposit amount', '5x the deposit amount'],
-    correct: 2,
-    rationale: 'Courts can award a penalty of between 1x and 3x the deposit amount where a landlord has failed to protect a deposit correctly or on time.',
-  },
-  {
-    id: 'q-cmp-02-5', moduleId: 'cmp-02',
-    question: 'Under which Act are tenancy deposit protection rules governed in England and Wales?',
-    options: ['Landlord and Tenant Act 1985', 'Housing Act 2004', 'Renters Reform Act 2025', 'Deregulation Act 2015'],
-    correct: 1,
-    rationale: 'Tenancy deposit protection is governed by the Housing Act 2004, which introduced mandatory deposit protection schemes for assured shorthold tenancies.',
-  },
-  {
-    id: 'q-cmp-02-6', moduleId: 'cmp-02',
-    question: 'Where are deposit-related documents stored in Dwelly?',
-    options: ['Ledger tab', 'File Manager > Property / Landlord Files', 'Maintenance tab > Primary', 'Deals tab'],
-    correct: 1,
-    rationale: 'Deposit-related documents, including the deposit protection confirmation and prescribed information, are stored in the File Manager under Property / Landlord Files.',
-  },
-  {
-    id: 'q-cmp-02-7', moduleId: 'cmp-02',
-    question: 'What is a "custodial" deposit protection scheme?',
-    options: [
-      'A scheme where the landlord holds the deposit in a separate bank account',
-      'A scheme where the deposit is held by the scheme itself until the end of the tenancy',
-      'A scheme requiring a guarantor to act as custodian of the deposit',
-      'A scheme only available to portfolio landlords',
-    ],
-    correct: 1,
-    rationale: 'In a custodial scheme, the deposit is physically held by the scheme provider until the tenancy ends. The Deposit Protection Service (DPS) offers a free custodial option. In contrast, insured schemes allow the landlord to hold the deposit.',
   },
 
   // ─── SYS-01: Move-Out Process in Dwelly ──────────────────────────────────
@@ -1646,18 +1584,6 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'Backdating a gas safety certificate is fraud and a criminal offence. The PM must refuse, document the gap with actual dates, and escalate internally. The "defer to the engineer\'s professional judgement" distractor is subtly wrong because it frames fraud as a discretionary professional decision — neither the engineer nor the agency has the authority to backdate a safety certificate under any circumstances.',
   },
   {
-    id: 'q-r-cmp-02-3', moduleId: 'cmp-02', tier: 'recap',
-    question: 'A tenant\'s deposit was protected within 30 days of receipt but the prescribed information was served on day 32. The tenant\'s solicitor has now raised the late service in a dispute. What is the exposure?',
-    options: [
-      'The exposure is limited — prescribed information must be served within a \'reasonable time\' after deposit protection, and 32 days is within the tolerance accepted by most courts provided the deposit itself was protected within the statutory 30-day window',
-      'The solicitor\'s argument has no merit — the 30-day requirement applies only to the act of protecting the deposit with the scheme, not to the service of prescribed information, which has a separate 14-day window from the date of protection confirmation',
-      'The exposure is a potential compliance flag on the agency\'s record with the deposit scheme, but it does not affect the validity of the deposit protection itself — the tenant\'s solicitor cannot claim compensation for late prescribed information if the deposit was protected on time',
-      'The prescribed information must also be served within 30 days. Late service — even by 2 days — means the deposit is not validly protected under the legislation, exposing the landlord to compensation of 1x to 3x the deposit value and affecting the landlord\'s ability to seek possession until the situation is remedied',
-    ],
-    correct: 3,
-    rationale: 'Both the deposit protection and service of prescribed information must be completed within 30 days of receipt. Serving prescribed information on day 32 — even just 2 days late — means the deposit is not validly protected, exposing the landlord to compensation of 1x to 3x the deposit and affecting the landlord\'s ability to seek possession. The "reasonable time" distractor is wrong because the 30-day deadline is statutory and absolute with no tolerance.',
-  },
-  {
     id: 'q-r-cmp-02-4', moduleId: 'cmp-02', tier: 'recap',
     question: 'An EICR report returns as \'unsatisfactory\' with C2 observations (potentially dangerous). The landlord asks whether the tenancy can continue while remedial works are scheduled. What is the correct position?',
     options: [
@@ -1692,30 +1618,6 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 3,
     rationale: 'Each property requires its own individual gas safety certificate regardless of shared boiler systems. A certificate for Flat A cannot be extended, shared, or applied to Flat B. The "communal installations provision" distractor is the most plausible wrong answer because it uses real-sounding regulatory language, but no such provision exists — each dwelling must be separately inspected and certified.',
-  },
-  {
-    id: 'q-r-cmp-02-7', moduleId: 'cmp-02', tier: 'recap',
-    question: 'The government announces a change to deposit protection legislation taking effect in 60 days. Your portfolio has 120 active tenancies. What should the agency do during the transition period?',
-    options: [
-      'Conduct a full audit of all 120 deposits against the new requirements, identify tenancies that will become non-compliant, create an action plan with individual deadlines, and implement all changes before the effective date — waiting until the deadline creates concentrated risk',
-      'Focus on new tenancies commencing after the effective date only — existing tenancies are protected by transitional provisions that allow landlords up to 12 months from the effective date to bring their deposit arrangements into compliance with the new rules',
-      'Wait for formal guidance from the deposit protection schemes before taking any action — the schemes will contact each landlord individually with specific instructions for their portfolio, and premature action risks creating compliance issues if the guidance differs from the legislation',
-      'Implement changes immediately across all 120 tenancies without waiting for the effective date — early compliance demonstrates best practice and the deposit schemes will process changes at any point, so there is no benefit to waiting for the official start date',
-    ],
-    correct: 0,
-    rationale: 'The agency should conduct a full audit of all deposits against the new requirements, identify non-compliant tenancies, create an action plan, and implement changes before the effective date. Waiting creates concentrated risk. The "transitional provisions" distractor is plausible because transitional provisions do sometimes exist in legislation, but assuming they apply without verifying is a dangerous compliance gamble.',
-  },
-  {
-    id: 'q-r-cmp-02-8', moduleId: 'cmp-02', tier: 'recap',
-    question: 'A landlord wants to switch deposit protection schemes mid-tenancy because they found a cheaper provider. What must happen to ensure continuous compliance?',
-    options: [
-      'Advise the landlord that switching schemes mid-tenancy is not possible — the deposit must remain with the original scheme for the duration of the tenancy, and can only be transferred at the point of tenancy renewal when a new prescribed information notice is due in any event',
-      'The deposit must be returned from the original scheme and re-protected with the new scheme within 30 days, with new prescribed information served on the tenant within the same timeframe — the original protection must remain in place until the new scheme confirms protection is active',
-      'The deposit can be transferred directly between schemes using the inter-scheme transfer process, which maintains continuous protection without any gap — the tenant does not need to be notified as the transfer is administrative and does not affect their rights',
-      'The landlord can switch schemes but only at the next rent review date, as the prescribed information includes the scheme details and can only be lawfully re-served at a point where other tenancy terms are also being reviewed or amended',
-    ],
-    correct: 1,
-    rationale: 'Switching deposit schemes mid-tenancy is possible but requires careful management: the deposit must be returned from the original scheme and re-protected with the new scheme within 30 days, with new prescribed information served on the tenant. Crucially, the original protection must remain active until the new scheme confirms coverage. The "not possible mid-tenancy" distractor is incorrect — there is no legal barrier to switching schemes, but the process must be managed to avoid any gap in protection.',
   },
 
   // ── RECAP: Maintenance (mnt-02) ───────────────────────────────────────────
@@ -2891,81 +2793,6 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     rationale: 'When a completed repair has not resolved the issue, a new maintenance job must be created in Dwelly. Closed jobs should not be reopened as this disrupts the audit trail. The new job should reference the original job number so the history is clear, and the PM should consider whether the same contractor should be reinstructed or a second opinion obtained.',
-  },
-
-  // ── CMP-02: Deposit Compliance — extra pool ───────────────────────────────
-
-  {
-    id: 'q-cmp-02-n1', moduleId: 'cmp-02',
-    question: 'What is the purpose of the alternative dispute resolution (ADR) service offered by deposit protection schemes?',
-    options: [
-      'To help landlords and agents recover unpaid rent from tenants at the end of a tenancy',
-      'To provide a free, independent adjudication service that resolves deposit disputes between landlords and tenants without going to court',
-      'To negotiate on behalf of the landlord when a tenant has left the property in poor condition',
-      'To automatically distribute the deposit proportionally if no agreement can be reached',
-    ],
-    correct: 1,
-    rationale: 'All three authorised deposit protection schemes in England are required to offer a free alternative dispute resolution (ADR) service. This allows landlords and tenants to resolve disputes about deposit deductions without going to court. An independent adjudicator reviews the evidence from both parties and makes a binding decision.',
-  },
-  {
-    id: 'q-cmp-02-n2', moduleId: 'cmp-02',
-    question: 'What evidence is typically required when making a deposit deduction claim through a scheme\'s adjudication process?',
-    options: [
-      'Only the checkout report — schemes accept verbal confirmation from the contractor that works were required',
-      'A check-in inventory, a checkout report, receipts or contractor quotes for the costs claimed, and any relevant communication with the tenant about the issues',
-      'Solely the landlord\'s written statement of condition and estimated costs — photographic evidence is supplementary',
-      'A statutory declaration signed by the landlord and witnessed by a solicitor confirming the extent of the damage',
-    ],
-    correct: 1,
-    rationale: 'Successful deposit deduction claims rely on a strong evidence package: a detailed check-in inventory with photos, a checkout report highlighting differences, and receipts or quotes for costs being claimed. Without comparative check-in documentation, it is extremely difficult to establish that damage was caused by the tenant rather than being pre-existing.',
-  },
-  {
-    id: 'q-cmp-02-n3', moduleId: 'cmp-02',
-    question: 'A landlord wants to claim the full cost of repainting a room from a tenant\'s deposit due to wall marks. The tenant was in the property for 4 years. What key principle must be applied?',
-    options: [
-      'Any marking on walls constitutes damage and the full repainting cost can always be deducted',
-      'Fair wear and tear must be taken into account — minor marks expected after a reasonable tenancy period are not deductible; only damage beyond normal use can be claimed',
-      'The landlord can claim the full cost regardless of tenancy length or the nature of the marks',
-      'Repainting costs can only be deducted if the tenant admits responsibility in writing',
-    ],
-    correct: 1,
-    rationale: '"Fair wear and tear" is a fundamental principle in deposit disputes. Marks, scuffs, or fading expected from normal use over the tenancy period are not deductible. Only damage beyond reasonable wear and tear — such as large holes or unauthorised painting — can be claimed. Adjudicators also consider the age and condition of the decoration at check-in.',
-  },
-  {
-    id: 'q-cmp-02-n4', moduleId: 'cmp-02',
-    question: 'In an insured deposit protection scheme, who holds the tenant\'s deposit money during the tenancy?',
-    options: [
-      'The scheme provider holds the deposit in a ring-fenced client account on behalf of the tenant',
-      'The landlord or letting agent retains the deposit money and pays a fee to the scheme for the insurance protection',
-      'An independent escrow agent holds the deposit on behalf of both parties',
-      'The tenant retains the deposit in their own account until check-out',
-    ],
-    correct: 1,
-    rationale: 'In an insured deposit protection scheme, the landlord or agent holds the deposit money during the tenancy and pays a fee to the scheme provider for the insurance that protects the tenant\'s deposit. This is the key distinction from a custodial scheme, where the scheme holds the deposit itself. Both are legally compliant.',
-  },
-  {
-    id: 'q-cmp-02-n5', moduleId: 'cmp-02',
-    question: 'A carpet was new at the start of a tenancy 4 years ago and now has a stain. Can the landlord claim the full replacement cost from the deposit?',
-    options: [
-      'Yes — any damage caused by the tenant allows the full replacement cost to be claimed regardless of the item\'s age',
-      'No — a carpet installed 4 years ago has already used a significant portion of its useful life. A depreciation factor is applied and only a proportional share of the replacement cost is typically awarded',
-      'No deduction is possible — carpets are always considered fair wear and tear after 3 years',
-      'It depends entirely on the landlord\'s preference — deposit schemes do not apply depreciation',
-    ],
-    correct: 1,
-    rationale: 'Deposit scheme adjudicators apply a depreciation principle when assessing claims for damaged items. A carpet new at check-in with a useful life of 7–10 years that is 4 years old has used a substantial proportion of its expected life. An adjudicator will award only a proportional share of the replacement cost, not the full amount.',
-  },
-  {
-    id: 'q-cmp-02-n6', moduleId: 'cmp-02',
-    question: 'A landlord failed to protect a tenant\'s deposit within 30 days of receiving it. What are the potential legal consequences?',
-    options: [
-      'The tenancy is automatically voided and the tenant must be rehoused at the landlord\'s expense',
-      'The court can order a financial penalty of between 1x and 3x the deposit amount, and the landlord may be prevented from recovering possession until the deposit is properly protected and prescribed information is served',
-      'The landlord must return the deposit within 14 days and restart the tenancy on new terms',
-      'There are no consequences unless the tenant makes a formal complaint to the local authority',
-    ],
-    correct: 1,
-    rationale: 'Failing to protect a deposit within 30 days has two key consequences under the Housing Act 2004: the court can order a financial penalty of between 1x and 3x the deposit amount; and the landlord may be prevented from recovering possession until the deposit is properly protected and prescribed information is served. Note: the previous consequence that this barred service of a Section 21 notice is no longer relevant — Section 21 no-fault evictions were abolished from 1 May 2026.',
   },
 
   // ── INS-02: Completing the Inspection — extra pool ────────────────────────

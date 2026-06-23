@@ -17,7 +17,7 @@ const PER_SECTION = 3
 // How many questions to show per module assessment (samples from the full pool)
 const ASSESSMENT_QUESTION_COUNTS: Record<string, number> = {
   'mnt-01': 6,  'mnt-02': 10, 'mnt-03': 5,
-  'cmp-01': 6,  'cmp-02': 15,
+  'cmp-01': 6,  'cmp-02': 8,
   'ins-02': 6,  'mvt-02': 8,
   'sys-01': 5,  'sys-02': 5,  'sup-02': 6,
   'kno-01': 5,  'kno-02': 7,  'kno-03': 5,
