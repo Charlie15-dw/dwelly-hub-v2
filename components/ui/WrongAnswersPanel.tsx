@@ -10,6 +10,7 @@ interface WrongAnswer {
   yourAnswer: string
   correctAnswer: string
   rationale: string
+  isCorrect?: boolean
 }
 
 interface Props {
@@ -41,7 +42,10 @@ export default function WrongAnswersPanel({ userId, moduleId, moduleName, score 
         .limit(1)
         .maybeSingle()
 
-      setWrongAnswers((data?.answers as WrongAnswer[]) ?? [])
+      // Stored answers include every question with an isCorrect flag — only
+      // show the ones the user actually got wrong.
+      const all = (data?.answers as WrongAnswer[]) ?? []
+      setWrongAnswers(all.filter(a => a.isCorrect === false))
     } catch {
       setError(true)
     } finally {
