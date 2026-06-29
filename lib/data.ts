@@ -145,15 +145,15 @@ export const MODULES: Module[] = [
     id: 'sys-02', title: 'Support 1/2 — Raising a Support Task', section: 'support', phase: 'embedding',
     duration: '35 min', videoLength: '5 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 5,
     roles: ['property_manager', 'lettings_negotiator'],
-    description: 'The full renewal process from landlord conversation to agreement. Market positioning.',
-    tags: ['renewals', 'rent-reviews', 'landlords'], spacedRepetitionDue: null, confidenceRating: null,
+    description: 'How to raise a support task in Dwelly for non-maintenance, non-compliance requests — logging landlord queries, tenant welfare referrals, and other ad hoc tasks, and tracking them through to resolution.',
+    tags: ['support-tasks', 'landlords', 'tenants'], spacedRepetitionDue: null, confidenceRating: null,
   },
   {
     id: 'sup-02', title: 'Support 2/2 — Actioning the Support Task', section: 'support', phase: 'embedding',
     duration: '25 min', videoLength: '4 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 6,
     roles: ['property_manager', 'lettings_negotiator'],
-    description: 'How to action renewal and support tasks within Dwelly — processing the renewal, updating rent, and confirming tenancy terms.',
-    tags: ['renewals', 'rent-reviews', 'landlords'], spacedRepetitionDue: null, confidenceRating: null,
+    description: 'How to action a support task in Dwelly — progressing landlord queries, tenant welfare referrals, and other ad hoc requests, escalating where needed, and recording the outcome.',
+    tags: ['support-tasks', 'tenants', 'landlords'], spacedRepetitionDue: null, confidenceRating: null,
   },
 
   // KNOWLEDGE
@@ -849,31 +849,31 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'The final step is confirming all key sets have been returned. Only once keys are confirmed does Dwelly show the "Everything is ready" button. Clicking this permanently closes the move-out job — no further edits can be made after this point.',
   },
 
-  // ─── SYS-02: Tenancy Renewals & Rent Reviews ──────────────────────────────
+  // ─── SUP-02: Actioning the Support Task ───────────────────────────────────
 
   {
     id: 'q-sys-02-1', moduleId: 'sup-02',
-    question: 'What is an Assured Periodic Tenancy (APT) under the Renters\' Rights Act 2025?',
+    question: 'When a PM picks up a newly raised support task in Dwelly, what should they do first?',
     options: [
-      'A tenancy with a fixed, non-negotiable rent review date',
-      'A rolling month-to-month tenancy — the only tenancy type now available in the private rented sector following the abolition of fixed-term ASTs on 1 May 2026',
-      'A tenancy specifically for short-term or holiday lets',
-      'A tenancy where rent is paid at irregular intervals',
+      'Close the task straight away if the request looks minor, so it does not clutter the workload',
+      'Review the details and any attachments, confirm the request is correctly categorised as a support task, and acknowledge it so the requester knows it is being actioned',
+      'Reassign it to the Maintenance flow without reading it, as support tasks are usually repairs in disguise',
+      'Wait for the requester to chase before starting, in case the issue resolves itself',
     ],
     correct: 1,
-    rationale: 'Under the Renters\' Rights Act 2025, all new tenancies in the private rented sector are Assured Periodic Tenancies (APTs). Fixed-term ASTs were abolished from 1 May 2026, and all existing fixed-term tenancies automatically converted to APTs on that date. APTs roll on a month-to-month basis with no fixed end date.',
+    rationale: 'The first step in actioning a support task is to understand it: review the details and any attachments, confirm it genuinely belongs in the Support flow rather than Maintenance or Compliance, and acknowledge it so the requester knows it is in hand. Acknowledging early sets expectations and starts the audit trail; closing or ignoring a task before understanding it risks missing the real issue.',
   },
   {
     id: 'q-sys-02-2', moduleId: 'sup-02',
-    question: 'Under the Renters\' Rights Act 2025, when should a PM initiate a rent review discussion with the landlord?',
+    question: 'A PM has several open support tasks at once. How should they decide which to action first?',
     options: [
-      'Only once the tenant has given notice to leave',
-      'Proactively — at least 3 months before the landlord wants a new rent to take effect, allowing time to research market comparables, advise on a figure, serve the Section 13 notice with one month\'s notice, and allow the tenant challenge window to elapse',
-      'On the first day of the new rent period when the increase is intended to begin',
-      'At the annual inspection',
+      'Always work strictly oldest-first, regardless of what each task involves',
+      'Prioritise by urgency and impact — for example a vulnerable tenant\'s welfare concern ahead of a routine document request — while keeping every task moving and updating expected timescales',
+      'Action whichever tasks are quickest to close first, to keep the open-task count low',
+      'Only action the tasks that the landlord or tenant has chased',
     ],
     correct: 1,
-    rationale: 'Under the Renters\' Rights Act 2025, rent on an Assured Periodic Tenancy can only be increased once every 12 months via a Section 13 notice with at least one month\'s written notice. Proactive rent review discussions — ideally 3 months before the desired effective date — give time to research comparable rents, advise the landlord, and build in the notice period and any potential Tribunal referral window.',
+    rationale: 'Support tasks should be prioritised by urgency and impact, not simply by age or how quickly they can be closed. A vulnerable tenant\'s welfare concern outranks a routine document request. The PM should keep all tasks progressing and update requesters on realistic timescales rather than letting lower-priority items stall or cherry-picking the easy wins.',
   },
   {
     id: 'q-sys-02-3', moduleId: 'sup-02',
@@ -889,15 +889,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-sys-02-4', moduleId: 'sup-02',
-    question: 'What factors should be considered when recommending a rent increase to a landlord?',
+    question: 'A support task will take longer to resolve than expected because the PM is waiting on a third party. What is best practice?',
     options: [
-      'Only the landlord\'s mortgage costs',
-      'Market conditions, comparable rents in the area, and the tenant\'s payment history',
-      'The original rent agreed when the landlord joined Dwelly',
-      'The CPI inflation rate only',
+      'Say nothing to the requester until the task is fully resolved, to avoid raising concerns prematurely',
+      'Update the task status and post a brief note in the job chat explaining the delay and the expected next step, so the requester has visibility',
+      'Close the task now and reopen it once the third party responds',
+      'Remove the task from the active list so it does not appear overdue',
     ],
     correct: 1,
-    rationale: 'A rent review recommendation should consider current market conditions, comparable properties in the area, the tenant\'s reliability and payment history, and the landlord\'s objectives. Relying on a single factor leads to poor advice.',
+    rationale: 'When a support task is delayed by a third party, the PM should keep the requester informed: update the task status and add a short job-chat note explaining the delay and the next step. Visibility maintains trust and a clear audit trail. Going silent, closing and reopening, or hiding the task all break that trail and leave the requester in the dark.',
   },
   {
     id: 'q-sys-02-5', moduleId: 'sup-02',
@@ -1396,19 +1396,19 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'Adjudicators apply fair wear and tear principles rigorously. Decoration has an expected lifespan — typically 3–5 years for paintwork. After a 4-year tenancy, some deterioration is expected and cannot be fully charged to the tenant. Any deduction would be prorated against the age and condition at the start. A full repaint claim after 4 years is unlikely to be awarded in full.',
   },
 
-  // ── MASTER: Renewals & Tenant Support (sup-02) ────────────────────────────
+  // ── MASTER: Actioning Support Tasks & Tenant Support (sup-02) ─────────────
 
   {
     id: 'q-m-sup-02-1', moduleId: 'sup-02', tier: 'master',
-    question: 'A landlord wants to increase rent by 25% at renewal. The tenant disputes it and refers it to the First-tier Tribunal under Section 13. What happens next?',
+    question: 'A landlord raises a support request that the PM cannot resolve within their own authority because it needs a policy decision from the agency. The landlord is pressing for an answer. What is the correct action?',
     options: [
-      'The landlord can enforce the rent increase with immediate effect — once a Section 13 notice is properly served, the new rent becomes binding regardless of any tenant challenge',
-      'The tenant must continue paying the proposed increased amount while the dispute is reviewed — failure to pay the new rent during the Tribunal process constitutes a breach',
-      'The tenancy automatically ends upon Tribunal referral and both parties must negotiate a new agreement',
-      'The proposed increase is suspended while the referral is pending — the tenant continues paying the current rent; the Tribunal determines a market rent, which cannot be set higher than the landlord\'s proposed figure',
+      'Give the landlord a best-guess answer immediately to keep them satisfied, and correct it later if the policy turns out to be different',
+      'Close the task as "cannot action" since it falls outside the PM\'s authority, and advise the landlord to take it up elsewhere',
+      'Document what has been done so far, escalate to a senior team member or manager through the task, and keep the landlord informed of the status — without letting the task stall',
+      'Leave the task open without escalating, on the basis that someone more senior will eventually notice it',
     ],
-    correct: 3,
-    rationale: 'Under Section 13 of the Housing Act 1988 as amended by the Renters\' Rights Act 2025, a tenant can refer a rent increase notice to the First-tier Tribunal (Tribunal fee: £47). The proposed increase is automatically suspended during the referral — the tenant pays the existing rent. The Tribunal sets a market rent based on open market evidence, but critically it cannot award a rent higher than the landlord\'s proposed figure. The landlord\'s mortgage costs are not a factor the Tribunal will consider.',
+    correct: 2,
+    rationale: 'When a support request exceeds the PM\'s authority, the task must not stall. The PM should record what has been done, escalate it through the task to a senior colleague or manager, and keep the landlord updated on where it stands. Guessing at a policy answer risks giving wrong information, closing it abdicates the agency\'s duty, and leaving it un-escalated means it simply drifts.',
   },
   {
     id: 'q-m-sup-02-2', moduleId: 'sup-02', tier: 'master',
@@ -1424,15 +1424,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-m-sup-02-3', moduleId: 'sup-02', tier: 'master',
-    question: 'A landlord and tenant mutually agree to vary the tenancy terms — for example, increasing the rent or adding a special condition. What is the correct legal process?',
+    question: 'What must a PM ensure before marking a support task as complete in Dwelly?',
     options: [
-      'The tenancy must be ended and a brand new agreement signed for any change to terms to take legal effect',
-      'A verbal agreement between both parties to vary the terms is legally binding without further documentation',
-      'The variation must be formalised as a written deed of variation or addendum to the tenancy agreement, signed by both parties — an oral agreement alone is unenforceable',
-      'The landlord must serve a Section 13 notice for any change to tenancy terms, not just rent increases',
+      'Only that a reply of some kind has been sent to the requester',
+      'That the requester\'s issue has actually been resolved or the agreed action taken, the outcome is documented in the job chat, and any necessary follow-up is scheduled',
+      'That at least seven days have passed since the task was raised, regardless of progress',
+      'That the task has been assigned to someone — assignment is the point at which a task can be closed',
     ],
-    correct: 2,
-    rationale: 'Under the Renters\' Rights Act 2025, all tenancies are Assured Periodic Tenancies. Any agreed variation to tenancy terms — whether rent (outside the Section 13 process), permitted occupiers, pets, or special conditions — must be formalised in writing as a deed of variation or addendum signed by both parties. An oral agreement is unenforceable and leaves both parties exposed if a dispute arises.',
+    correct: 1,
+    rationale: 'A support task should only be closed once the underlying issue is genuinely resolved or the agreed action has been carried out, the outcome is recorded in the job chat, and any follow-up is scheduled. Closing on the basis of a single reply, an elapsed timer, or mere assignment leaves the requester\'s problem unsolved and the record incomplete.',
   },
 
   // ── MASTER: Knowledge — Difficult Conversations (kno-01) ──────────────────
@@ -1915,7 +1915,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'Excessive inspections without justification can amount to harassment under the Protection from Eviction Act 1977 and breach the tenant\'s right to quiet enjoyment. Quarterly is the industry standard; monthly requires a genuine reason. Option 0 is wrong because the landlord\'s preference does not override the tenant\'s statutory protections, and \'reasonable intervals\' would not typically include monthly visits without cause.',
   },
 
-  // ── RECAP: Support & Renewals (sup-02) ─────────────────────────────────────
+  // ── RECAP: Support Tasks & Tenant Support (sup-02) ─────────────────────────
 
   {
     id: 'q-r-sup-02-1', moduleId: 'sup-02', tier: 'recap',
@@ -2661,51 +2661,51 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   {
     id: 'q-sys-02-n1', moduleId: 'sys-02',
-    question: 'How is a tenancy renewal managed within Dwelly?',
+    question: 'A tenant contacts the PM about a personal welfare concern that needs follow-up and signposting to external support services. How should this be handled in Dwelly?',
     options: [
-      'The PM emails the landlord and tenant separately with the proposed new terms and uploads the signed agreement to the File Manager once agreed',
-      'A support task is created in Dwelly for the renewal, which tracks the process from initial landlord discussion through to agreement on terms, rent review, document preparation, and tenant confirmation',
-      'Renewals are handled entirely outside Dwelly using a separate renewal management spreadsheet maintained by the lettings team',
-      'The system automatically renews all tenancies on the same terms unless the landlord logs into their portal and selects alternative options before the expiry date',
+      'Raise a support task so the concern is logged, assigned an owner, and tracked through to resolution with a full audit trail',
+      'Deal with it informally over the phone and avoid creating any record, to respect the tenant\'s privacy',
+      'Log it as a maintenance task so it appears alongside the PM\'s repair jobs in the daily list',
+      'Refer it straight to the landlord, as tenant welfare matters are the landlord\'s responsibility rather than the agency\'s',
     ],
-    correct: 1,
-    rationale: 'Tenancy renewals are managed through a support task in Dwelly. This task tracks every step from the initial landlord discussion about renewal intentions and rent review, through to agreement on terms, document preparation, and final tenant confirmation. Managing renewals within the system ensures nothing is missed and creates a complete audit trail.',
+    correct: 0,
+    rationale: 'Tenant welfare concerns are a non-maintenance, non-compliance activity, so they should be raised as a support task in Dwelly. This logs the concern, assigns an owner, and tracks the follow-up through to resolution while keeping a complete, timestamped audit trail — rather than relying on informal phone calls that leave no record or miscategorising it as a repair.',
   },
   {
     id: 'q-sys-02-n2', moduleId: 'sys-02',
-    question: 'Under the Renters\' Rights Act 2025, when should a PM begin a rent review discussion with the landlord?',
+    question: 'Which of the following is correctly handled as a support task rather than a maintenance or compliance job?',
     options: [
-      'On the day the current rent period ends, when the landlord can notify the tenant verbally',
-      'At least 3 months before the intended effective date — to research market rents, advise the landlord, serve the Section 13 notice with one month\'s notice, and allow for any potential Tribunal referral period',
-      'Only when the tenant requests a rent reduction — if neither party raises the issue, the rent automatically carries forward unchanged',
-      'At the annual inspection, regardless of where the tenancy is in its rent review cycle',
+      'A landlord query about their management statement that needs investigating and a written response',
+      'A broken boiler that has left the tenant without heating or hot water',
+      'An expired gas safety certificate that needs renewing before the deadline',
+      'A Category 1 electrical hazard flagged on the latest EICR',
     ],
-    correct: 1,
-    rationale: 'Rent increases on an Assured Periodic Tenancy require a Section 13 notice with at least one month\'s written notice and can only be applied once every 12 months. Planning 3 months ahead allows the PM to research comparable market rents, give the landlord a recommendation, serve the notice with adequate lead time, and absorb any potential delay if the tenant refers the increase to the First-tier Tribunal (which suspends the increase pending determination).',
+    correct: 0,
+    rationale: 'Support tasks cover non-maintenance, non-compliance activities — such as landlord queries, tenant welfare referrals, and general enquiries. A broken boiler is a maintenance job, while an expired gas certificate or a Category 1 electrical hazard are compliance matters. Correctly categorising the request ensures it follows the right workflow in Dwelly.',
   },
   {
     id: 'q-sys-02-n3', moduleId: 'sys-02',
     question: 'What types of tasks can be created using the Support flow in Dwelly?',
     options: [
-      'Only tenancy renewal tasks — all other support activities are managed through the Maintenance or Compliance flows',
-      'Support tasks cover a range of non-maintenance, non-compliance activities including tenancy renewals, rent reviews, landlord queries, tenant welfare referrals, and other ad hoc property management tasks that need tracking',
+      'Only landlord query tasks — all other support activities are managed through the Maintenance or Compliance flows',
+      'Support tasks cover a range of non-maintenance, non-compliance requests including landlord queries, tenant welfare referrals, general enquiries, document requests, and other ad hoc property management tasks that need tracking',
       'Support tasks are exclusively for tenant complaints and must be escalated to a manager within 24 hours of creation',
       'Support tasks are used only for financial queries such as rent arrears, payment plans, and landlord statement disputes',
     ],
     correct: 1,
-    rationale: 'The Support flow in Dwelly covers a broad range of property management activities that fall outside the Maintenance and Compliance flows. This includes tenancy renewals, rent reviews, landlord queries, tenant welfare referrals, and other ad hoc tasks. Creating support tasks ensures these activities are tracked, auditable, and visible in the PM\'s workload.',
+    rationale: 'The Support flow in Dwelly covers a broad range of property management requests that fall outside the Maintenance and Compliance flows. This includes landlord queries, tenant welfare referrals, general enquiries, document requests, and other ad hoc tasks. Creating support tasks ensures these requests are tracked, auditable, and visible in the PM\'s workload.',
   },
   {
     id: 'q-sys-02-n4', moduleId: 'sys-02',
-    question: 'How should a PM communicate renewal terms to the landlord?',
+    question: 'How should a PM keep the landlord updated on the progress of a support request?',
     options: [
-      'Verbally during a phone call, with the agreed terms confirmed by the landlord sending a text message or WhatsApp reply',
-      'Through the Dwelly job chat within the support task, providing a written summary of the proposed terms including any rent change, tenancy length, and any special conditions — ensuring there is a documented record of the landlord\'s agreement',
-      'By posting a letter to the landlord\'s registered address, as digital communication does not constitute formal instruction for tenancy terms',
-      'Via the landlord portal only — PMs should not discuss renewal terms directly but instead update the portal and wait for the landlord to review and approve',
+      'Verbally during a phone call, with the outcome confirmed by the landlord sending a text message or WhatsApp reply',
+      'Through the Dwelly job chat within the support task, providing a written summary of the request, the action taken, and the outcome — ensuring there is a documented, timestamped record',
+      'By posting a letter to the landlord\'s registered address, as digital communication does not constitute a formal record',
+      'Via the landlord portal only — PMs should not message the landlord directly but instead update the portal and wait for them to check it',
     ],
     correct: 1,
-    rationale: 'Renewal terms should be communicated through the Dwelly job chat within the relevant support task. This creates a documented, timestamped record of the proposed terms and the landlord\'s response. Written confirmation through the system protects the agency if there is any later dispute about what was agreed. Verbal agreements alone are insufficient.',
+    rationale: 'Updates on a support request should be communicated through the Dwelly job chat within the relevant support task. This creates a documented, timestamped record of the request, the action taken, and the outcome. Keeping the conversation in the system protects the agency if there is any later query about what was done, whereas verbal updates alone leave no reliable record.',
   },
   {
     id: 'q-sys-02-n5', moduleId: 'sys-02',
@@ -2717,7 +2717,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Linking is required by GDPR to ensure personal data processing is associated with the correct data subject',
     ],
     correct: 1,
-    rationale: 'Linking support tasks to the correct property in Dwelly is essential for maintaining a complete audit trail. It ensures that all activity — renewals, rent reviews, landlord communications — is recorded against the property record. This means any PM who subsequently manages the property can see the full history, and reporting accurately reflects the property\'s management activity.',
+    rationale: 'Linking support tasks to the correct property in Dwelly is essential for maintaining a complete audit trail. It ensures that all activity — landlord queries, tenant welfare referrals, and other support requests — is recorded against the property record. This means any PM who subsequently manages the property can see the full history, and reporting accurately reflects the property\'s management activity.',
   },
 
   // ── MNT-02: Actioning Maintenance — extra pool ────────────────────────────
@@ -2949,39 +2949,39 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   {
     id: 'q-sup-02-n1', moduleId: 'sup-02',
-    question: 'A landlord has not responded to multiple renewal messages with only 6 weeks until the tenancy expires. What should the PM do?',
+    question: 'A tenant has chased the same support task twice because they have had no response. What does this indicate, and what should the PM do?',
     options: [
-      'Allow the tenancy to fall into periodic automatically — this is the safest outcome if the landlord is not engaging',
-      'Instruct the tenant to sign a new agreement at the current rent without the landlord\'s approval to protect the tenant',
-      'Document all contact attempts in the job chat, escalate to a senior team member, try multiple contact methods, and advise the landlord in writing of the consequences of not responding in time',
-      'Serve the tenant a Section 21 notice immediately to protect the landlord\'s position pending instructions',
+      'Nothing needs to change — the task is already logged in Dwelly, so repeated chases can be left until the PM next reviews their list',
+      'It indicates a communication gap — the PM should respond promptly, acknowledge the delay, give a realistic timescale, and make sure the task status reflects reality from then on',
+      'The task should be closed to stop the chases, and the tenant told to raise a fresh task if they still need help',
+      'The chases should be escalated to the landlord, as repeated tenant contact is the landlord\'s responsibility to manage',
     ],
-    correct: 2,
-    rationale: 'When a landlord is unresponsive to renewal discussions, the PM must document every contact attempt, try multiple channels, and escalate internally. The PM must also advise the landlord clearly — in writing via the job chat — of the consequences: the tenancy will fall into periodic, either party can terminate with short notice, and the rent review opportunity will be missed. Acting without the landlord\'s instruction is not permitted.',
+    correct: 1,
+    rationale: 'Repeated chasing is a signal that the requester has been left without an update. The PM should respond promptly, acknowledge the delay, give a realistic timescale, and keep the task status accurate going forward. Ignoring the chases, closing the task to silence them, or bouncing the tenant to the landlord all damage trust and leave the underlying request unresolved.',
   },
   {
     id: 'q-sup-02-n2', moduleId: 'sup-02',
-    question: 'A tenant refuses to sign a tenancy renewal. What should the PM do?',
+    question: 'While actioning a support task, the PM realises the request is actually a maintenance issue — the tenant has reported a faulty boiler. What should they do?',
     options: [
-      'Immediately serve a Section 21 notice on the landlord\'s behalf as the tenant has rejected the renewal offer',
-      'Record the refusal in the job chat, advise the landlord of the tenant\'s position, and discuss options — the tenancy continues as an Assured Periodic Tenancy, which may be acceptable, or if the landlord requires possession they must serve a Section 8 notice citing a valid statutory ground',
-      'Contact the tenant daily until they agree to sign — tenant refusals are a breach of the tenancy agreement',
-      'Inform the tenant that refusing to sign means they must vacate within 28 days',
+      'Resolve the boiler informally within the support task, since it has already been opened and the tenant is waiting',
+      'Raise the appropriate maintenance job so it follows the correct workflow, note the link in the support task, and update the tenant on what happens next',
+      'Close the support task and tell the tenant to report the boiler again through the right channel',
+      'Leave the request unactioned, as a boiler fault is not what the support task was opened for',
     ],
     correct: 1,
-    rationale: 'A tenant cannot be compelled to sign a renewal — refusing to do so is not a tenancy breach. The PM should record the refusal, update the landlord, and discuss options: under the Renters\' Rights Act 2025, the tenancy continues as an Assured Periodic Tenancy (which may be acceptable to the landlord), or if the landlord requires the tenant to leave, they must serve a Section 8 notice citing one of the 37 statutory grounds. Section 21 no-fault evictions were abolished from 1 May 2026.',
+    rationale: 'A repair belongs in the Maintenance flow, where it follows the correct workflow for contractor instruction, authorisation, and tracking. The PM should raise the maintenance job, cross-reference it in the support task, and keep the tenant informed — rather than bodging the repair through a support task, bouncing the tenant back to square one, or ignoring it.',
   },
   {
     id: 'q-sup-02-n3', moduleId: 'sup-02',
-    question: 'What is the correct process for increasing the rent on an Assured Periodic Tenancy in England under the Renters\' Rights Act 2025?',
+    question: 'Why is it important to record the actions taken and the final outcome when actioning a support task?',
     options: [
-      'The landlord can increase the rent at any time by sending the tenant an email with the new amount — no formal process is required for periodic tenancies',
-      'A Section 13 notice must be served giving at least one month\'s notice — rent can only be increased once every 12 months, the increase is suspended if the tenant refers it to the First-tier Tribunal (£47 fee), and the Tribunal cannot set a rent higher than the landlord\'s proposed figure',
-      'The rent can only be increased once every two years under the Renters\' Rights Act 2025',
-      'Any increase must be countersigned by both the landlord and tenant in a new written agreement before it becomes effective',
+      'Recording is only necessary for support tasks that involve a financial transaction',
+      'It creates a complete, timestamped audit trail so any colleague can see what was done, protects the agency in a dispute, and ensures continuity if the property later changes hands',
+      'Only the final outcome needs recording — the individual steps taken along the way are not relevant',
+      'Recording is optional once the requester has confirmed they are happy with the result',
     ],
     correct: 1,
-    rationale: 'Under the Renters\' Rights Act 2025, rent on an Assured Periodic Tenancy can only be increased once every 12 months via a Section 13 notice with at least one month\'s written notice. If the tenant refers the proposed increase to the First-tier Tribunal (fee: £47), the increase is automatically suspended — the tenant does not pay the higher amount while waiting. Importantly, the Tribunal cannot award a rent higher than the landlord proposed, protecting tenants from perverse outcomes.',
+    rationale: 'Documenting the steps taken and the outcome of a support task creates a complete, timestamped audit trail. This lets any colleague pick the history up, protects the agency if a dispute arises, and preserves continuity when a property changes hands. Recording is not limited to financial tasks, the steps matter as much as the outcome, and it is never optional just because the requester is currently satisfied.',
   },
   {
     id: 'q-sup-02-n4', moduleId: 'sup-02',
@@ -2997,27 +2997,27 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-sup-02-n5', moduleId: 'sup-02',
-    question: 'Break clauses were previously included in fixed-term ASTs. Why are they no longer relevant for tenancies created after 1 May 2026?',
+    question: 'A PM finds two open support tasks covering the same landlord query. What is the correct way to handle this?',
     options: [
-      'Break clauses are still valid but now require a minimum of 6 months\' notice instead of the previous standard period',
-      'Fixed-term ASTs were abolished by the Renters\' Rights Act 2025 — all new tenancies are Assured Periodic Tenancies with no fixed term, making a break clause (which terminated a fixed term early) legally inapplicable',
-      'Break clauses have been replaced by Ground 1A — the new mandatory ground allowing landlords to seek possession when they intend to sell',
-      'Break clauses remain available but only for HMO tenancies created after 1 May 2026',
+      'Action both tasks separately to be safe, even though they cover the same query',
+      'Consolidate the work into one task as the single record, cross-reference and close the duplicate with an explanatory note, so there is one clear audit trail',
+      'Delete one of the tasks entirely so only a single record remains',
+      'Leave both open and let the requester decide which one they want progressed',
     ],
     correct: 1,
-    rationale: 'Break clauses were contractual provisions allowing early termination of a fixed-term tenancy. Since fixed-term ASTs were abolished from 1 May 2026 under the Renters\' Rights Act 2025, break clauses have no application to new tenancies. All new tenancies are Assured Periodic Tenancies — the tenant can end the tenancy by serving 2 months\' written notice (after the first 4 months), and the landlord must rely on one of 37 Section 8 grounds to recover possession.',
+    rationale: 'Duplicate tasks should be consolidated: keep one as the live record, close the duplicate with a note cross-referencing the one being progressed, and continue the work there. This maintains a single, clear audit trail. Working both wastes effort and risks conflicting updates, deleting a task destroys the record, and leaving both open creates confusion.',
   },
   {
     id: 'q-sup-02-n6', moduleId: 'sup-02',
-    question: 'Why should all landlord and tenant communications regarding renewals be conducted through the Dwelly job chat rather than by personal email or phone alone?',
+    question: 'A PM with several open support tasks is about to go on leave for two weeks. What should they do?',
     options: [
-      'Using the job chat is optional — the primary obligation is to reach a timely agreement by any means',
-      'Dwelly cannot track financial outcomes unless communications are in the job chat',
-      'Job chat communications create a timestamped, auditable record of what was agreed, when, and by whom — protecting the agency, landlord, and tenant if any party later disputes the terms',
-      'Personal emails are prohibited by GDPR when used for tenancy negotiations',
+      'Close all open support tasks before leaving and ask requesters to raise them again on the PM\'s return',
+      'Make sure each task\'s status and next steps are clearly documented in the job chat and arrange cover so the tasks keep progressing while the PM is away',
+      'Leave the tasks exactly as they are, since they are already logged in Dwelly and will be waiting on return',
+      'Set an out-of-office reply and resume all tasks personally once back, with no cover arranged',
     ],
-    correct: 2,
-    rationale: 'Recording all communications in the Dwelly job chat creates a complete, timestamped audit trail. If there is ever a dispute about what was agreed in a renewal — the rent amount, the new term length, any special conditions — the job chat provides incontrovertible evidence. Conducting negotiations by phone or personal email without a written record leaves the agency exposed if any party later disputes what was agreed.',
+    correct: 1,
+    rationale: 'Support tasks should not stall because a PM is on leave. Before going away, the PM should document each task\'s current status and next steps in the job chat and arrange cover so progress continues. Closing tasks forces requesters to start over, and simply leaving them untouched means tenants and landlords go two weeks without a response.',
   },
 
   // ── KNO-01: Difficult Conversations — extra pool ──────────────────────────
