@@ -19,9 +19,9 @@ const ASSESSMENT_META: Record<string, { label: string; section: string }> = {
   'mvt-02': { label: 'Move-Outs — End of Tenancy',              section: 'Move-Outs'    },
   'ins-02': { label: 'Inspections — Mid-Term Reports',          section: 'Inspections'  },
   'sup-02': { label: 'Support — Tenant Relations',              section: 'Support'      },
-  'kno-01': { label: 'Knowledge — Difficult Conversations',     section: 'Knowledge'    },
-  'kno-02': { label: 'Knowledge — Disrepair Claims',            section: 'Knowledge'    },
-  'kno-03': { label: 'Knowledge — Understanding a P&L',         section: 'Knowledge'    },
+  'kno-01': { label: 'Knowledge — Dwelly Best Practice',            section: 'Knowledge' },
+  'kno-02': { label: 'Knowledge — Repairs & Legal Responsibilities', section: 'Knowledge' },
+  'kno-03': { label: 'Knowledge — Property Finances & the Ledger',   section: 'Knowledge' },
   'full-assessment':   { label: 'Full Assessment — All Video Modules', section: 'Combined' },
   'master-assessment': { label: 'Master Assessment — All Sections',    section: 'Combined' },
 }

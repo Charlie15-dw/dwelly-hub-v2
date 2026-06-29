@@ -158,21 +158,21 @@ export const MODULES: Module[] = [
 
   // KNOWLEDGE
   {
-    id: 'kno-01', title: 'Difficult Conversations', section: 'knowledge', phase: 'embedding',
+    id: 'kno-01', title: 'Dwelly Best Practice', section: 'knowledge', phase: 'embedding',
     duration: '40 min', videoLength: '6 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 5,
     roles: ['property_manager', 'lettings_negotiator'],
-    description: 'Handling rent arrears conversations, complaint calls, and confrontational tenants.',
-    tags: ['communication', 'arrears', 'conflict'], spacedRepetitionDue: null, confidenceRating: null,
+    description: 'Dwelly best practice — internal notes, documented chasing cadence, email delivery statuses, and using Auto mode well.',
+    tags: ['best-practice', 'communication', 'documentation'], spacedRepetitionDue: null, confidenceRating: null,
   },
   {
-    id: 'kno-02', title: 'Handling Disrepair Claims', section: 'knowledge', phase: 'embedding',
+    id: 'kno-02', title: 'Repairs & Legal Responsibilities', section: 'knowledge', phase: 'embedding',
     duration: '45 min', videoLength: '7 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 7,
     roles: ['property_manager'],
     description: 'Legal obligations, timescales, evidence requirements and escalation to specialists.',
     tags: ['disrepair', 'legal', 'evidence'], spacedRepetitionDue: null, confidenceRating: null,
   },
   {
-    id: 'kno-03', title: 'Understanding a P&L', section: 'knowledge', phase: 'embedding',
+    id: 'kno-03', title: 'Property Finances & the Ledger', section: 'knowledge', phase: 'embedding',
     duration: '30 min', videoLength: '5 min', passmark: 75, completed: false, progress: 0, locked: false, quizCount: 5,
     roles: ['property_manager'],
     description: 'Basic financial literacy — service charges, deductions, and explaining costs to landlords.',
@@ -919,7 +919,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'The Ledger holds all financial records for the property, landlord, and each individual tenant. Each tenant has their own tab within the Ledger showing transfers, payments, and transaction history.',
   },
 
-  // ─── KNO-01: Difficult Conversations ──────────────────────────────────────
+  // ─── KNO-01: Dwelly Best Practice ─────────────────────────────────────────
 
   {
     id: 'q-kno-01-1', moduleId: 'kno-01',
@@ -982,7 +982,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'Dwelly\'s best practice guidance requires following a documented chasing cadence and recording every attempt in the job chat. This demonstrates due diligence and protects the agency if the matter escalates.',
   },
 
-  // ─── KNO-02: Handling Disrepair Claims ────────────────────────────────────
+  // ─── KNO-02: Repairs & Legal Responsibilities ─────────────────────────────
 
   {
     id: 'q-kno-02-1', moduleId: 'kno-02',
@@ -1064,7 +1064,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'The Homes (Fitness for Human Habitation) Act 2018 requires that privately rented homes are fit for human habitation at the start of and throughout the tenancy. It gives tenants the right to take action in the county court if the property is unfit.',
   },
 
-  // ─── KNO-03: Understanding a P&L ─────────────────────────────────────────
+  // ─── KNO-03: Property Finances & the Ledger ──────────────────────────────
 
   {
     id: 'q-kno-03-1', moduleId: 'kno-03',
@@ -1435,7 +1435,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'A support task should only be closed once the underlying issue is genuinely resolved or the agreed action has been carried out, the outcome is recorded in the job chat, and any follow-up is scheduled. Closing on the basis of a single reply, an elapsed timer, or mere assignment leaves the requester\'s problem unsolved and the record incomplete.',
   },
 
-  // ── MASTER: Knowledge — Difficult Conversations (kno-01) ──────────────────
+  // ── MASTER: Knowledge — Dwelly Best Practice (kno-01) ─────────────────────
 
   {
     id: 'q-m-kno-01-1', moduleId: 'kno-01', tier: 'master',
@@ -1474,7 +1474,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'Any allegation of discrimination — even where you are confident it is unfounded — must be taken seriously and investigated properly. Acknowledge receipt, review the objective job records, and escalate internally. Dismissing it without investigation exposes the agency to significant legal and reputational risk under the Equality Act 2010.',
   },
 
-  // ── MASTER: Knowledge — Disrepair (kno-02) ────────────────────────────────
+  // ── MASTER: Knowledge — Repairs & Legal Responsibilities (kno-02) ─────────
 
   {
     id: 'q-m-kno-02-1', moduleId: 'kno-02', tier: 'master',
@@ -1513,7 +1513,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'A strong disrepair defence requires a complete, contemporaneous audit trail: when the issue was reported, what action was taken and when, who was contacted, what delays occurred and why, and when the issue was resolved. Dwelly\'s job chat creates exactly this record. A single invoice or verbal account is far weaker without the full timeline.',
   },
 
-  // ── MASTER: Knowledge — Financial Literacy (kno-03) ───────────────────────
+  // ── MASTER: Knowledge — Property Finances & the Ledger (kno-03) ───────────
 
   {
     id: 'q-m-kno-03-1', moduleId: 'kno-03', tier: 'master',
@@ -3020,7 +3020,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'Support tasks should not stall because a PM is on leave. Before going away, the PM should document each task\'s current status and next steps in the job chat and arrange cover so progress continues. Closing tasks forces requesters to start over, and simply leaving them untouched means tenants and landlords go two weeks without a response.',
   },
 
-  // ── KNO-01: Difficult Conversations — extra pool ──────────────────────────
+  // ── KNO-01: Dwelly Best Practice — extra pool ─────────────────────────────
 
   {
     id: 'q-kno-01-n1', moduleId: 'kno-01',
@@ -3095,7 +3095,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'Committing to specific completion dates on behalf of contractors creates a promise the PM cannot directly control. If the contractor fails to deliver, the agency has broken an explicit commitment to the tenant, significantly damaging the relationship and potentially creating grounds for a service complaint. Best practice is to give timescales ("within 5–7 working days") rather than specific dates, and to update proactively if delays occur.',
   },
 
-  // ── KNO-02: Handling Disrepair Claims — extra pool ────────────────────────
+  // ── KNO-02: Repairs & Legal Responsibilities — extra pool ─────────────────
 
   {
     id: 'q-kno-02-n1', moduleId: 'kno-02',
@@ -3170,7 +3170,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'Section 11 of the Landlord and Tenant Act 1985 imposes a mandatory duty on landlords to maintain the structure, exterior, and services (water, gas, electricity, heating) of any residential property let for less than 7 years. Crucially, this obligation cannot be contracted out of — any tenancy term that attempts to pass this obligation to the tenant is void. Disrepair claims typically rely on Section 11 as the underlying legal obligation.',
   },
 
-  // ── KNO-03: Understanding a P&L — extra pool ─────────────────────────────
+  // ── KNO-03: Property Finances & the Ledger — extra pool ───────────────────
 
   {
     id: 'q-kno-03-n1', moduleId: 'kno-03',

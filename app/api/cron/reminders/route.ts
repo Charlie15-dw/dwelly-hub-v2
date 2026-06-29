@@ -16,9 +16,9 @@ const REMINDER_ASSESSMENTS: { id: string; label: string }[] = [
   { id: 'mvt-02', label: 'Move-Outs 2/2 — Completing the Move-Out' },
   { id: 'sys-02', label: 'Support 1/2 — Raising a Support Task' },
   { id: 'sup-02', label: 'Support 2/2 — Actioning the Support Task' },
-  { id: 'kno-01', label: 'Knowledge — Difficult Conversations' },
-  { id: 'kno-02', label: 'Knowledge — Handling Disrepair Claims' },
-  { id: 'kno-03', label: 'Knowledge — Understanding a P&L' },
+  { id: 'kno-01', label: 'Knowledge — Dwelly Best Practice' },
+  { id: 'kno-02', label: 'Knowledge — Repairs & Legal Responsibilities' },
+  { id: 'kno-03', label: 'Knowledge — Property Finances & the Ledger' },
   { id: 'release-contractor-portal-2026', label: 'New Product Release Quiz — Contractor Portal' },
 ]
 

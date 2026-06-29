@@ -24,9 +24,9 @@ const ASSESSMENT_LABELS: Record<string, string> = {
   'mvt-02': 'Move-Outs 2/2 — Completing the Move-Out',
   'sys-02': 'Support 1/2 — Raising a Support Task',
   'sup-02': 'Support 2/2 — Actioning the Support Task',
-  'kno-01': 'Knowledge — Difficult Conversations',
-  'kno-02': 'Knowledge — Handling Disrepair Claims',
-  'kno-03': 'Knowledge — Understanding a P&L',
+  'kno-01': 'Knowledge — Dwelly Best Practice',
+  'kno-02': 'Knowledge — Repairs & Legal Responsibilities',
+  'kno-03': 'Knowledge — Property Finances & the Ledger',
   'full-assessment':   'Full Programme Assessment',
   'master-assessment': 'Master Assessment',
 }

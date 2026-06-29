@@ -20,9 +20,9 @@ const VIDEO_MODULE_ASSESSMENTS = [
 ] as const
 
 const KNOWLEDGE_ASSESSMENTS = [
-  { label: 'Difficult Conversations',   icon: '💬', id: 'kno-01', questions: 5 },
-  { label: 'Handling Disrepair Claims', icon: '🔨', id: 'kno-02', questions: 7 },
-  { label: 'Understanding a P&L',       icon: '📊', id: 'kno-03', questions: 5 },
+  { label: 'Dwelly Best Practice',             icon: '💬', id: 'kno-01', questions: 5 },
+  { label: 'Repairs & Legal Responsibilities', icon: '🔨', id: 'kno-02', questions: 7 },
+  { label: 'Property Finances & the Ledger',   icon: '📊', id: 'kno-03', questions: 5 },
 ] as const
 
 function SectionHeader({ icon: Icon, label }: { icon: React.ElementType; label: string }) {

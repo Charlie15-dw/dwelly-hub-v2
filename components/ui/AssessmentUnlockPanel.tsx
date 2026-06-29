@@ -13,9 +13,9 @@ const MODULE_LABELS: Record<string, string> = {
   'mvt-02': 'Move-Outs',
   'ins-02': 'Inspections',
   'sup-02': 'Support',
-  'kno-01': 'Difficult Conversations',
-  'kno-02': 'Handling Disrepair Claims',
-  'kno-03': 'Understanding a P&L',
+  'kno-01': 'Dwelly Best Practice',
+  'kno-02': 'Repairs & Legal Responsibilities',
+  'kno-03': 'Property Finances & the Ledger',
 }
 
 export default function AssessmentUnlockPanel() {
