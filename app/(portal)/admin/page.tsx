@@ -41,7 +41,6 @@ export default async function AdminPage() {
     service
       .from('user_profiles')
       .select('id, full_name, email, role, created_at, manager_id')
-      .neq('role', 'admin')
       .order('created_at', { ascending: true }),
     service
       .from('assessment_results')
@@ -57,8 +56,10 @@ export default async function AdminPage() {
   const profiles = allProfiles ?? []
   const results = allResults ?? []
 
-  const managers = profiles.filter(p => p.role === 'manager')
-  const learners = profiles.filter(p => p.role !== 'manager')
+  // Both managers and admins can lead a team (a property manager can be
+  // assigned directly to an admin). Learners are everyone else.
+  const supervisors = profiles.filter(p => p.role === 'manager' || p.role === 'admin')
+  const learners = profiles.filter(p => p.role !== 'manager' && p.role !== 'admin')
 
   function getMemberStats(member: typeof profiles[0]) {
     const memberResults = results.filter(r => r.user_id === member.id)
@@ -85,8 +86,8 @@ export default async function AdminPage() {
     return { ...member, displayName: name, initials: initials(name), completedCount, progressPct, avgScore, rag }
   }
 
-  // Manager team summaries
-  const managerSummaries = managers.map(mgr => {
+  // Team summaries — one per supervisor (manager or admin)
+  const supervisorSummaries = supervisors.map(mgr => {
     const team = learners.filter(p => p.manager_id === mgr.id).map(getMemberStats)
     const avgProgress = team.length > 0
       ? Math.round(team.reduce((s, m) => s + m.progressPct, 0) / team.length)
@@ -144,7 +145,7 @@ export default async function AdminPage() {
       {/* Org-wide stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: 'Total Learners',    value: allLearnerStats.length, sub: `across ${managers.length} manager${managers.length !== 1 ? 's' : ''}` },
+          { label: 'Total Learners',    value: allLearnerStats.length, sub: `across ${supervisorSummaries.length} team${supervisorSummaries.length !== 1 ? 's' : ''}` },
           { label: 'Org Avg Progress',  value: `${orgAvgProgress}%`,   sub: 'across all learners' },
           { label: 'On Track',          value: orgRag.green,            sub: 'learners at 60%+', accent: 'text-green-600' },
           { label: 'Needs Attention',   value: orgRag.red,              sub: 'learners below 20%', accent: 'text-red-600' },
@@ -158,21 +159,31 @@ export default async function AdminPage() {
       </div>
 
 
-      {/* Teams by manager */}
+      {/* Teams by supervisor (managers + admins) */}
       <div>
-        <h2 className="text-sm font-bold text-navy mb-3">Teams by Manager</h2>
+        <h2 className="text-sm font-bold text-navy mb-3">Teams</h2>
         <div className="space-y-4">
-          {managerSummaries.map(mgr => (
+          {supervisorSummaries.map(mgr => (
             <div key={mgr.id} className="card overflow-hidden">
 
-              {/* Manager header — clickable to view their scores */}
+              {/* Supervisor header — clickable to view their scores */}
               <Link href={`/admin/member/${mgr.id}`} className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4 flex-wrap hover:bg-slate-50/60 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
                     <span className="text-white text-sm font-bold">{mgr.initials}</span>
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-navy">{mgr.displayName}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-navy">{mgr.displayName}</p>
+                      <span className={cn(
+                        'text-[10px] font-semibold px-1.5 py-0.5 rounded-full border',
+                        mgr.role === 'admin'
+                          ? 'text-purple-700 bg-purple-100 border-purple-200'
+                          : 'text-indigo-700 bg-indigo-100 border-indigo-200',
+                      )}>
+                        {mgr.role === 'admin' ? 'Admin' : 'Manager'}
+                      </span>
+                    </div>
                     <p className="text-xs text-slate-400">{mgr.email} · {mgr.teamCount} {mgr.teamCount === 1 ? 'member' : 'members'} · <span className="text-teal">View scores →</span></p>
                   </div>
                 </div>
@@ -251,7 +262,7 @@ export default async function AdminPage() {
             <div className="card overflow-hidden">
               <div className="px-5 py-4 border-b border-slate-100">
                 <p className="text-sm font-bold text-navy">Unassigned Learners</p>
-                <p className="text-xs text-slate-400 mt-0.5">{unassigned.length} {unassigned.length === 1 ? 'user' : 'users'} not yet assigned to a manager</p>
+                <p className="text-xs text-slate-400 mt-0.5">{unassigned.length} {unassigned.length === 1 ? 'user' : 'users'} not yet assigned to a manager or admin</p>
               </div>
               <div className="divide-y divide-slate-50">
                 {unassigned.map(member => (
@@ -276,12 +287,12 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      {/* Full all-users table — includes managers */}
+      {/* Full all-users table — includes managers and admins */}
       <div className="card overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
           <Users className="w-4 h-4 text-slate-400" aria-hidden />
           <h2 className="text-sm font-bold text-navy">All Users</h2>
-          <span className="ml-auto text-xs text-slate-400">{allLearnerStats.length + managers.length} total · sorted by status</span>
+          <span className="ml-auto text-xs text-slate-400">{allLearnerStats.length + supervisorSummaries.length} total · sorted by status</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full" role="table">
@@ -293,12 +304,12 @@ export default async function AdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {/* Managers first */}
-              {managerSummaries.map(mgr => (
-                <tr key={mgr.id} className="transition-colors hover:bg-slate-50/60 bg-indigo-50/30 border-indigo-100">
+              {/* Managers and admins first */}
+              {supervisorSummaries.map(mgr => (
+                <tr key={mgr.id} className={cn('transition-colors hover:bg-slate-50/60', mgr.role === 'admin' ? 'bg-purple-50/30 border-purple-100' : 'bg-indigo-50/30 border-indigo-100')}>
                   <td className="px-5 py-4 whitespace-nowrap">
                     <Link href={`/admin/member/${mgr.id}`} className="flex items-center gap-3 group/name">
-                      <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center flex-shrink-0">
+                      <div className={cn('w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0', mgr.role === 'admin' ? 'bg-purple-600' : 'bg-indigo-600')}>
                         <span className="text-white text-xs font-bold">{mgr.initials}</span>
                       </div>
                       <div>
@@ -308,7 +319,7 @@ export default async function AdminPage() {
                     </Link>
                   </td>
                   <td className="px-5 py-4 whitespace-nowrap">
-                    <span className="text-xs font-semibold text-indigo-700 bg-indigo-100 border border-indigo-200 px-2 py-0.5 rounded-full">Manager</span>
+                    <span className={cn('text-xs font-semibold px-2 py-0.5 rounded-full border', mgr.role === 'admin' ? 'text-purple-700 bg-purple-100 border-purple-200' : 'text-indigo-700 bg-indigo-100 border-indigo-200')}>{mgr.role === 'admin' ? 'Admin' : 'Manager'}</span>
                   </td>
                   <td className="px-5 py-4 whitespace-nowrap">
                     <span className="text-base font-bold tabular-nums text-navy">
@@ -344,7 +355,7 @@ export default async function AdminPage() {
               ))}
               {/* Learners */}
               {allLearnerStats.map(member => {
-                const mgr = managers.find(m => m.id === member.manager_id)
+                const mgr = supervisors.find(m => m.id === member.manager_id)
                 const mgrName = mgr ? displayName(mgr) : '—'
                 return (
                   <tr key={member.id} className={cn('transition-colors hover:bg-slate-50/60', RAG_ROW[member.rag])}>
