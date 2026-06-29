@@ -39,6 +39,8 @@ export default function Sidebar() {
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<string | null>(null)
   const [trainingOpen, setTrainingOpen] = useState(false)
+  const [propertyToolsOpen, setPropertyToolsOpen] = useState(false)
+  const [developmentOpen, setDevelopmentOpen] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
@@ -46,10 +48,18 @@ export default function Sidebar() {
       if (!user) return
       const preview = isHubPreview(user.email)
       setIsPreview(preview)
-      // In the Hub preview, training lives inside a collapsible group; open it
-      // automatically when the user is already on a training page.
-      if (preview && journeyItems.some(i => pathname === i.href || pathname.startsWith(i.href))) {
-        setTrainingOpen(true)
+      // In the Hub preview, these sections are collapsible groups; open the one
+      // matching the current page automatically.
+      if (preview) {
+        if (pathname === '/dashboard' || journeyItems.some(i => pathname === i.href || pathname.startsWith(i.href))) {
+          setTrainingOpen(true)
+        }
+        if (['/glossary', '/emergency'].some(p => pathname.startsWith(p))) {
+          setPropertyToolsOpen(true)
+        }
+        if (['/recap', '/analytics'].some(p => pathname.startsWith(p))) {
+          setDevelopmentOpen(true)
+        }
       }
       const { data } = await supabase
         .from('user_profiles')
@@ -96,8 +106,8 @@ export default function Sidebar() {
           )
         })()}
 
-        {/* Dashboard */}
-        {(() => {
+        {/* Dashboard — top-level in classic nav; lives inside Training in Hub preview */}
+        {!isPreview && (() => {
           const active = pathname === '/dashboard'
           return (
             <Link href="/dashboard" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
@@ -108,11 +118,11 @@ export default function Sidebar() {
           )
         })()}
 
-        {/* Training — flat "Your Journey" list, or a collapsible group in Hub preview */}
         {isPreview ? (
           <>
+            {/* Training — collapsible group: Dashboard + numbered journey steps */}
             {(() => {
-              const groupActive = journeyItems.some(i => pathname === i.href || pathname.startsWith(i.href))
+              const groupActive = pathname === '/dashboard' || journeyItems.some(i => pathname === i.href || pathname.startsWith(i.href))
               return (
                 <button
                   type="button"
@@ -128,7 +138,17 @@ export default function Sidebar() {
             })()}
             {trainingOpen && (
               <div className="ml-3 pl-3 border-l border-white/40 space-y-1">
-                {journeyItems.map(({ href, label, icon: Icon, step }) => {
+                {(() => {
+                  const active = pathname === '/dashboard'
+                  return (
+                    <Link href="/dashboard" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                      <LayoutDashboard className="w-4 h-4 flex-shrink-0" aria-hidden />
+                      <span className="flex-1">Dashboard</span>
+                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                    </Link>
+                  )
+                })()}
+                {journeyItems.map(({ href, label, step }) => {
                   const active = pathname === href || pathname.startsWith(href)
                   return (
                     <Link
@@ -150,11 +170,119 @@ export default function Sidebar() {
                 })}
               </div>
             )}
+
+            {/* Ask Dobby — standalone (kept out of any group) */}
+            {(() => {
+              const active = pathname.startsWith('/dobby')
+              return (
+                <Link href="/dobby" className={cn('sidebar-link mt-2', active && 'active')} aria-current={active ? 'page' : undefined}>
+                  <MessageCircle className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Ask Dobby</span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                </Link>
+              )
+            })()}
+
+            {/* Property Tools — collapsible group */}
+            {(() => {
+              const groupActive = ['/glossary', '/emergency'].some(p => pathname.startsWith(p))
+              return (
+                <button
+                  type="button"
+                  onClick={() => setPropertyToolsOpen(o => !o)}
+                  aria-expanded={propertyToolsOpen}
+                  className={cn('sidebar-link w-full text-left mt-2', groupActive && !propertyToolsOpen && 'active')}
+                >
+                  <Scale className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Property Tools</span>
+                  <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', propertyToolsOpen && 'rotate-180')} aria-hidden />
+                </button>
+              )
+            })()}
+            {propertyToolsOpen && (
+              <div className="ml-3 pl-3 border-l border-white/40 space-y-1">
+                {(() => {
+                  const active = pathname.startsWith('/glossary')
+                  return (
+                    <Link href="/glossary" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                      <BookA className="w-4 h-4 flex-shrink-0" aria-hidden />
+                      <span className="flex-1">Glossary</span>
+                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                    </Link>
+                  )
+                })()}
+                {(() => {
+                  const active = pathname.startsWith('/emergency')
+                  return (
+                    <Link href="/emergency" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                      <AlertTriangle className="w-4 h-4 flex-shrink-0" aria-hidden />
+                      <span className="flex-1">Emergency Procedures</span>
+                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                    </Link>
+                  )
+                })()}
+                <a
+                  href="https://deposit-sim.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sidebar-link"
+                >
+                  <Scale className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Deposit Simulator</span>
+                  <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40 rotate-45" aria-hidden />
+                </a>
+              </div>
+            )}
+
+            {/* Your Development — collapsible group */}
+            {(() => {
+              const groupActive = ['/recap', '/analytics'].some(p => pathname.startsWith(p))
+              return (
+                <button
+                  type="button"
+                  onClick={() => setDevelopmentOpen(o => !o)}
+                  aria-expanded={developmentOpen}
+                  className={cn('sidebar-link w-full text-left mt-2', groupActive && !developmentOpen && 'active')}
+                >
+                  <BarChart3 className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Your Development</span>
+                  <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', developmentOpen && 'rotate-180')} aria-hidden />
+                </button>
+              )
+            })()}
+            {developmentOpen && (
+              <div className="ml-3 pl-3 border-l border-white/40 space-y-1">
+                {(() => {
+                  const active = pathname.startsWith('/recap')
+                  return (
+                    <Link href="/recap" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                      <RefreshCw className="w-4 h-4 flex-shrink-0" aria-hidden />
+                      <span className="flex-1">Recap &amp; Refresh</span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
+                        Monthly
+                      </span>
+                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                    </Link>
+                  )
+                })()}
+                {(() => {
+                  const active = pathname.startsWith('/analytics')
+                  return (
+                    <Link href="/analytics" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                      <BarChart3 className="w-4 h-4 flex-shrink-0" aria-hidden />
+                      <span className="flex-1">My Analytics</span>
+                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                    </Link>
+                  )
+                })()}
+              </div>
+            )}
           </>
         ) : (
           <>
+            {/* Your Journey */}
             <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Your Journey</p>
-            {journeyItems.map(({ href, label, icon: Icon, step }) => {
+            {journeyItems.map(({ href, label, step }) => {
               const active = pathname === href || pathname.startsWith(href)
               return (
                 <Link
@@ -174,75 +302,75 @@ export default function Sidebar() {
                 </Link>
               )
             })}
+
+            {/* References */}
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">References</p>
+            {referenceItems.map(({ href, label, icon: Icon }) => {
+              const active = pathname === href || pathname.startsWith(href)
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn('sidebar-link', active && 'active')}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">{label}</span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                </Link>
+              )
+            })}
+
+            {/* Property Tools */}
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Property Tools</p>
+            {(() => {
+              const active = pathname.startsWith('/recap')
+              return (
+                <Link href="/recap" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                  <RefreshCw className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Recap &amp; Refresh</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
+                    Monthly
+                  </span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                </Link>
+              )
+            })()}
+            {(() => {
+              const active = pathname.startsWith('/dobby')
+              return (
+                <Link href="/dobby" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                  <MessageCircle className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Ask Dobby</span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                </Link>
+              )
+            })()}
+            <a
+              href="https://deposit-sim.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="sidebar-link"
+            >
+              <Scale className="w-4 h-4 flex-shrink-0" aria-hidden />
+              <span className="flex-1">Deposit Simulator</span>
+              <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40 rotate-45" aria-hidden />
+            </a>
+
+            {/* Your Development */}
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Your Development</p>
+            {(() => {
+              const active = pathname.startsWith('/analytics')
+              return (
+                <Link href="/analytics" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                  <BarChart3 className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">My Analytics</span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                </Link>
+              )
+            })()}
           </>
         )}
-
-        {/* References */}
-        <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">References</p>
-        {referenceItems.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(href)
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={cn('sidebar-link', active && 'active')}
-              aria-current={active ? 'page' : undefined}
-            >
-              <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
-              <span className="flex-1">{label}</span>
-              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-            </Link>
-          )
-        })}
-
-        {/* Property Tools */}
-        <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Property Tools</p>
-        {(() => {
-          const active = pathname.startsWith('/recap')
-          return (
-            <Link href="/recap" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-              <RefreshCw className="w-4 h-4 flex-shrink-0" aria-hidden />
-              <span className="flex-1">Recap &amp; Refresh</span>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
-                Monthly
-              </span>
-              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-            </Link>
-          )
-        })()}
-        {(() => {
-          const active = pathname.startsWith('/dobby')
-          return (
-            <Link href="/dobby" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-              <MessageCircle className="w-4 h-4 flex-shrink-0" aria-hidden />
-              <span className="flex-1">Ask Dobby</span>
-              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-            </Link>
-          )
-        })()}
-        <a
-          href="https://deposit-sim.vercel.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="sidebar-link"
-        >
-          <Scale className="w-4 h-4 flex-shrink-0" aria-hidden />
-          <span className="flex-1">Deposit Simulator</span>
-          <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40 rotate-45" aria-hidden />
-        </a>
-
-        {/* Your Development */}
-        <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Your Development</p>
-        {(() => {
-          const active = pathname.startsWith('/analytics')
-          return (
-            <Link href="/analytics" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-              <BarChart3 className="w-4 h-4 flex-shrink-0" aria-hidden />
-              <span className="flex-1">My Analytics</span>
-              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-            </Link>
-          )
-        })()}
 
         {/* Management — managers and admins */}
         {(isManager || isAdmin) && (
