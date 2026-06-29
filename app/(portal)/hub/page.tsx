@@ -30,10 +30,10 @@ const HUB_AREAS = [
   {
     href: '/hub/ask',
     label: 'Anonymous Q&A',
-    description: 'Raise questions, ideas and sticking points honestly. Every submission gets a visible status.',
+    description: 'Raise questions, ideas and sticking points honestly — no name attached. Only the admin team sees submissions.',
     icon: MessageSquareDashed,
     accent: 'text-purple-700 bg-purple-100 border-purple-200',
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     href: '/hub/meet',
