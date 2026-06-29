@@ -4,31 +4,33 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { UserPlus } from 'lucide-react'
 
-interface Manager {
+interface Supervisor {
   id: string
   full_name: string | null
   email: string | null
+  role?: string | null
 }
 
 export default function AssignManagerPanel({
   userId,
   currentManagerId,
-  managers,
+  supervisors,
 }: {
   userId: string
   currentManagerId: string | null
-  managers: Manager[]
+  supervisors: Supervisor[]
 }) {
   const router = useRouter()
   const [selectedManagerId, setSelectedManagerId] = useState(currentManagerId ?? '')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  function displayName(m: Manager) {
-    return m.full_name
+  function displayName(m: Supervisor) {
+    const name = m.full_name
       || m.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
       || m.email
       || 'Unknown'
+    return m.role === 'admin' ? `${name} (Admin)` : name
   }
 
   async function handleSave() {
@@ -54,7 +56,7 @@ export default function AssignManagerPanel({
     <div className="card p-5">
       <div className="flex items-center gap-2 mb-4">
         <UserPlus className="w-4 h-4 text-navy" />
-        <h3 className="text-sm font-bold text-navy">Assign to Manager</h3>
+        <h3 className="text-sm font-bold text-navy">Assign Supervisor</h3>
       </div>
 
       <div className="flex items-center gap-3">
@@ -64,7 +66,7 @@ export default function AssignManagerPanel({
           className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
         >
           <option value="">— Unassigned —</option>
-          {managers.map(m => (
+          {supervisors.map(m => (
             <option key={m.id} value={m.id}>{displayName(m)}</option>
           ))}
         </select>
@@ -80,7 +82,7 @@ export default function AssignManagerPanel({
 
       <p className="text-[11px] text-slate-400 mt-2">
         {(() => {
-          const mgr = managers.find(m => m.id === selectedManagerId)
+          const mgr = supervisors.find(m => m.id === selectedManagerId)
           return mgr
             ? `This user will appear in ${displayName(mgr)}'s team.`
             : 'This user is currently unassigned and will not appear in any team.'

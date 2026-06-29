@@ -77,7 +77,7 @@ export default async function AdminMemberDetailPage({
     || managerProfile?.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
     || 'Unassigned'
 
-  const [{ data: results }, { data: learningProfile }, { data: allManagers }, { data: pendingResets }] = await Promise.all([
+  const [{ data: results }, { data: learningProfile }, { data: allSupervisors }, { data: pendingResets }] = await Promise.all([
     service
       .from('assessment_results')
       .select('assessment_id, score, passed, answers, completed_at')
@@ -90,8 +90,8 @@ export default async function AdminMemberDetailPage({
       .maybeSingle(),
     service
       .from('user_profiles')
-      .select('id, full_name, email')
-      .eq('role', 'manager'),
+      .select('id, full_name, email, role')
+      .in('role', ['manager', 'admin']),
     service
       .from('module_resets')
       .select('module_id')
@@ -168,12 +168,13 @@ export default async function AdminMemberDetailPage({
         </div>
       </div>
 
-      {/* Assign to Manager — admin only, property-managers only */}
+      {/* Assign supervisor — admin only, property-managers only.
+          Supervisors can be either managers or admins. */}
       {memberProfile.role === 'property-manager' && (
         <AssignManagerPanel
           userId={params.userId}
           currentManagerId={memberProfile.manager_id ?? null}
-          managers={allManagers ?? []}
+          supervisors={allSupervisors ?? []}
         />
       )}
 
