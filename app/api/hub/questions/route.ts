@@ -67,7 +67,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'Forbidden — admin only' }, { status: 403 })
   }
 
-  let payload: { id?: string; status?: string; adminResponse?: string }
+  let payload: { id?: string; status?: string; adminResponse?: string; published?: boolean }
   try {
     payload = await request.json()
   } catch {
@@ -78,7 +78,12 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
   }
 
-  const update: { status?: string; admin_response?: string | null; updated_at: string } = {
+  const update: {
+    status?: string
+    admin_response?: string | null
+    published_at?: string | null
+    updated_at: string
+  } = {
     updated_at: new Date().toISOString(),
   }
 
@@ -91,6 +96,10 @@ export async function PATCH(request: NextRequest) {
 
   if (payload.adminResponse !== undefined) {
     update.admin_response = payload.adminResponse.trim() || null
+  }
+
+  if (payload.published !== undefined) {
+    update.published_at = payload.published ? new Date().toISOString() : null
   }
 
   const service = createServiceClient()

@@ -21,7 +21,7 @@ export default async function AdminQuestionsPage() {
   const service = createServiceClient()
   const { data: questions } = await service
     .from('hub_questions')
-    .select('id, body, category, status, admin_response, created_at')
+    .select('id, body, category, status, admin_response, created_at, published_at')
     .order('created_at', { ascending: false })
 
   const all = questions ?? []

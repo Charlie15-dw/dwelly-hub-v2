@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
-  Megaphone, MessageSquareDashed, Users, GraduationCap, ArrowRight,
+  Megaphone, MessageSquareDashed, MessageSquareReply, Users, GraduationCap, ArrowRight,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isHubPreview } from '@/lib/preview'
@@ -33,6 +33,14 @@ const HUB_AREAS = [
     description: 'Raise questions, ideas and sticking points honestly — no name attached. Only the admin team sees submissions.',
     icon: MessageSquareDashed,
     accent: 'text-purple-700 bg-purple-100 border-purple-200',
+    comingSoon: false,
+  },
+  {
+    href: '/hub/answered',
+    label: 'You said, we did',
+    description: 'See the questions and ideas the team raised, and what we did about them.',
+    icon: MessageSquareReply,
+    accent: 'text-teal bg-teal/10 border-teal/20',
     comingSoon: false,
   },
   {

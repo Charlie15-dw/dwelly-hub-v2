@@ -31,6 +31,11 @@ export default async function AskPage() {
       </div>
 
       <AskQuestionForm />
+
+      <p className="text-xs text-slate-400">
+        Answered questions are published on the{' '}
+        <Link href="/hub/answered" className="text-teal hover:underline">You said, we did</Link> feed.
+      </p>
     </div>
   )
 }
