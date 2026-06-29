@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { isHubPreview } from '@/lib/preview'
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
@@ -44,9 +45,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
-  // If already logged in and visiting the login page → redirect to dashboard
+  // If already logged in and visiting the login page → redirect to their home.
+  // Hub preview users land on /hub; everyone else on the training dashboard.
   if (user && pathname === '/') {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    const home = isHubPreview(user.email) ? '/hub' : '/dashboard'
+    return NextResponse.redirect(new URL(home, request.url))
   }
 
   return supabaseResponse

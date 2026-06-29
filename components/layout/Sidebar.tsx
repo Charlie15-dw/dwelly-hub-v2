@@ -5,10 +5,11 @@ import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
-  AlertTriangle, BarChart3, BookA, MessageCircle, Building2, Scale,
+  AlertTriangle, BarChart3, BookA, MessageCircle, Building2, Scale, LayoutGrid, ChevronDown,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
+import { isHubPreview } from '@/lib/preview'
 import { useEffect, useState } from 'react'
 
 const journeyItems = [
@@ -34,13 +35,22 @@ export default function Sidebar() {
   const router = useRouter()
   const [isManager, setIsManager] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [isPreview, setIsPreview] = useState(false)
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<string | null>(null)
+  const [trainingOpen, setTrainingOpen] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) return
+      const preview = isHubPreview(user.email)
+      setIsPreview(preview)
+      // In the Hub preview, training lives inside a collapsible group; open it
+      // automatically when the user is already on a training page.
+      if (preview && journeyItems.some(i => pathname === i.href || pathname.startsWith(i.href))) {
+        setTrainingOpen(true)
+      }
       const { data } = await supabase
         .from('user_profiles')
         .select('role, full_name')
@@ -51,7 +61,7 @@ export default function Sidebar() {
       setUserDisplayName(data?.full_name ?? user.email?.split('@')[0] ?? null)
       setUserRole(data?.role ?? null)
     })
-  }, [])
+  }, [pathname])
 
   async function handleSignOut() {
     const supabase = createClient()
@@ -66,11 +76,26 @@ export default function Sidebar() {
       <div className="flex flex-col gap-1 px-5 py-5 border-b border-white/40">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.svg" alt="Dwelly" width={108} height={29} className="block" />
-        <p className="text-[10px] font-medium text-[#1D1D1F] pl-0.5">Training Portal</p>
+        <p className="text-[10px] font-medium text-[#1D1D1F] pl-0.5">{isPreview ? 'The Hub' : 'Training Portal'}</p>
       </div>
 
       {/* Main nav */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-hide" aria-label="Main navigation">
+        {/* Hub — the front door (preview only) */}
+        {isPreview && (() => {
+          const active = pathname.startsWith('/hub')
+          return (
+            <Link href="/hub" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+              <LayoutGrid className="w-4 h-4 flex-shrink-0" aria-hidden />
+              <span className="flex-1">Hub</span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange/10 text-orange border border-orange/20">
+                Preview
+              </span>
+              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+            </Link>
+          )
+        })()}
+
         {/* Dashboard */}
         {(() => {
           const active = pathname === '/dashboard'
@@ -83,28 +108,74 @@ export default function Sidebar() {
           )
         })()}
 
-        {/* Your Journey — numbered learning steps */}
-        <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Your Journey</p>
-        {journeyItems.map(({ href, label, icon: Icon, step }) => {
-          const active = pathname === href || pathname.startsWith(href)
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={cn('sidebar-link', active && 'active')}
-              aria-current={active ? 'page' : undefined}
-            >
-              <span className={cn(
-                'w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold leading-none',
-                active ? 'bg-[#1D1D1F] text-white' : 'bg-[#1D1D1F]/15 text-[#1D1D1F]/60',
-              )}>
-                {step}
-              </span>
-              <span className="flex-1">{label}</span>
-              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-            </Link>
-          )
-        })}
+        {/* Training — flat "Your Journey" list, or a collapsible group in Hub preview */}
+        {isPreview ? (
+          <>
+            {(() => {
+              const groupActive = journeyItems.some(i => pathname === i.href || pathname.startsWith(i.href))
+              return (
+                <button
+                  type="button"
+                  onClick={() => setTrainingOpen(o => !o)}
+                  aria-expanded={trainingOpen}
+                  className={cn('sidebar-link w-full text-left mt-4', groupActive && !trainingOpen && 'active')}
+                >
+                  <GraduationCap className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Training</span>
+                  <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', trainingOpen && 'rotate-180')} aria-hidden />
+                </button>
+              )
+            })()}
+            {trainingOpen && (
+              <div className="ml-3 pl-3 border-l border-white/40 space-y-1">
+                {journeyItems.map(({ href, label, icon: Icon, step }) => {
+                  const active = pathname === href || pathname.startsWith(href)
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={cn('sidebar-link', active && 'active')}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      <span className={cn(
+                        'w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold leading-none',
+                        active ? 'bg-[#1D1D1F] text-white' : 'bg-[#1D1D1F]/15 text-[#1D1D1F]/60',
+                      )}>
+                        {step}
+                      </span>
+                      <span className="flex-1">{label}</span>
+                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Your Journey</p>
+            {journeyItems.map(({ href, label, icon: Icon, step }) => {
+              const active = pathname === href || pathname.startsWith(href)
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn('sidebar-link', active && 'active')}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  <span className={cn(
+                    'w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold leading-none',
+                    active ? 'bg-[#1D1D1F] text-white' : 'bg-[#1D1D1F]/15 text-[#1D1D1F]/60',
+                  )}>
+                    {step}
+                  </span>
+                  <span className="flex-1">{label}</span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                </Link>
+              )
+            })}
+          </>
+        )}
 
         {/* References */}
         <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">References</p>
