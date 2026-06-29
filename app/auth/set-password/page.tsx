@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, ArrowRight, Shield } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { isHubPreview } from '@/lib/preview'
 
 function SetPasswordForm() {
   const router = useRouter()
@@ -77,7 +78,8 @@ function SetPasswordForm() {
       return
     }
 
-    router.push('/dashboard')
+    const { data: { user } } = await supabase.auth.getUser()
+    router.push(isHubPreview(user?.email) ? '/hub' : '/dashboard')
     router.refresh()
   }
 

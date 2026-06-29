@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, ArrowRight, Shield, BookOpen, Award, Brain } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { isHubPreview } from '@/lib/preview'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -29,7 +30,7 @@ export default function LoginPage() {
       return
     }
 
-    router.push('/dashboard')
+    router.push(isHubPreview(email) ? '/hub' : '/dashboard')
     router.refresh()
   }
 
