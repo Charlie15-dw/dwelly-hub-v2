@@ -177,7 +177,7 @@ export const ROLEPLAY_SCENARIOS: RoleplayScenario[] = [
     moodInstructions: 'Be visibly upset but not aggressive. You are frightened about where you and your daughter will go. Ask lots of questions — how long do you have? Is there anything you can do to stay? What are your rights? If the PM is honest and supportive, start to calm down and engage practically. Mention your daughter early — not as a manipulation, just because it\'s the reality of your situation.',
     situation: 'The landlord has instructed the agency to begin the process of regaining possession because they want to sell the property with vacant possession. You have been notified and are calling to discuss your options.',
     background: 'You are a single mother with a 7-year-old. You have been in the property for 4 years. The local rental market is very competitive and you cannot afford current market rates elsewhere. You are not in breach of any terms.',
-    coachingTip: 'Be honest about the situation. Under the Renters Rights Bill the landlord needs a valid ground for possession. Explain the process clearly. Offer support with finding alternative accommodation. Check if the landlord would consider selling with tenant in situ. The agency has a duty of care to both parties.',
+    coachingTip: 'Be honest about the situation. Under the Renters\' Rights Act 2025 the landlord needs a valid ground for possession. Explain the process clearly. Offer support with finding alternative accommodation. Check if the landlord would consider selling with tenant in situ. The agency has a duty of care to both parties.',
     difficulty: 'intermediate',
   },
   {

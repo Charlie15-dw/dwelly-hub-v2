@@ -713,7 +713,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   {
     id: 'kb-tenancy-law',
     title: 'Tenancy Law Essentials',
-    subtitle: 'Key legislation every property manager must know — from Section 11 to the Renters Reform Bill.',
+    subtitle: 'Key legislation every property manager must know — from Section 11 to the Renters\' Rights Act 2025.',
     icon: '⚖️',
     category: 'legal',
     readTime: '10 min read',

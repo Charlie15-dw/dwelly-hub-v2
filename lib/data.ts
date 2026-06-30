@@ -3522,7 +3522,7 @@ export const PORTAL_UPDATES: PortalUpdate[] = [
   {
     id: 'upd-001',
     date: '2026-05-01',
-    title: 'Renters Rights Act: Section 21 abolished — what this means for you',
+    title: 'Renters\' Rights Act: Section 21 abolished — what this means for you',
     category: 'compliance',
     description: 'From 1 May 2026, Section 21 "no-fault" evictions are abolished. Landlords can no longer end a tenancy without a legal reason. The only route to possession is now a Section 8 notice citing one of 37 statutory grounds. Any Section 21 notices served before 1 May may still run their course under transitional rules, but no new ones can be served. If a tenant needs to be asked to leave, a valid Section 8 ground and correct notice must be in place before any action is taken.',
     isNew: true,
@@ -3530,7 +3530,7 @@ export const PORTAL_UPDATES: PortalUpdate[] = [
   {
     id: 'upd-002',
     date: '2026-05-01',
-    title: 'Renters Rights Act: Fixed-term tenancies are abolished',
+    title: 'Renters\' Rights Act: Fixed-term tenancies are abolished',
     category: 'compliance',
     description: 'Fixed-term ASTs no longer exist. All tenancies are now Assured Periodic Tenancies, rolling month-to-month (or week-to-week) with no end date. All existing fixed-term tenancies automatically converted on 1 May 2026 — fixed-term end dates have no legal effect. Tenants can give 2 months\' notice at any time after the first 4 months of the tenancy. Landlords cannot give equivalent notice — possession requires a Section 8 ground. There are no more "end of tenancy" processes for fixed terms.',
     isNew: true,
@@ -3538,7 +3538,7 @@ export const PORTAL_UPDATES: PortalUpdate[] = [
   {
     id: 'upd-003',
     date: '2026-05-01',
-    title: 'Renters Rights Act: New Section 8 grounds — key changes',
+    title: 'Renters\' Rights Act: New Section 8 grounds — key changes',
     category: 'compliance',
     description: 'The Section 8 possession grounds have expanded from 17 to 37. Key changes: (1) New mandatory Ground 1A — landlord can seek possession if they intend to sell, requiring 4 months\' notice. (2) Ground 8 rent arrears threshold raised to 3 months\' rent (was 2 months). (3) Ground 7A for anti-social behaviour now has a lower evidential threshold. Every notice must cite the correct ground with supporting evidence — incorrect or unsupported notices will fail at court. All possession action must now follow this process.',
     isNew: true,
@@ -3546,7 +3546,7 @@ export const PORTAL_UPDATES: PortalUpdate[] = [
   {
     id: 'upd-004',
     date: '2026-05-01',
-    title: 'Renters Rights Act: Tenants can now challenge rent increases',
+    title: 'Renters\' Rights Act: Tenants can now challenge rent increases',
     category: 'compliance',
     description: 'Rent can only be increased once per year, using a formal Section 13 notice. Tenants can now challenge any proposed increase at the First-tier Tribunal for a £47 fee. Once challenged, the increase is automatically suspended. Critically, the Tribunal can only set rent at or below the landlord\'s proposed figure — it cannot award more than was proposed. The Tribunal will not consider the landlord\'s mortgage costs when determining market rent. Rent increase notices must be accurate and well-timed to avoid disputes.',
     isNew: true,
@@ -3554,7 +3554,7 @@ export const PORTAL_UPDATES: PortalUpdate[] = [
   {
     id: 'upd-005',
     date: '2026-05-01',
-    title: 'Renters Rights Act: Tenant right to request pets',
+    title: 'Renters\' Rights Act: Tenant right to request pets',
     category: 'compliance',
     description: 'Tenants now have a statutory right to request permission to keep a pet. Landlords must respond in writing within 28 days of the request. Consent cannot be unreasonably withheld, and each request must be assessed on its own merits. No separate pet deposit or pet fee can be charged — the existing 5-week deposit cap applies to all deposits. If a landlord refuses and the tenant disputes it, they can escalate to the PRS Ombudsman (once operational) or court. Pet requests must be handled carefully and within the 28-day window.',
     isNew: true,
@@ -3562,7 +3562,7 @@ export const PORTAL_UPDATES: PortalUpdate[] = [
   {
     id: 'upd-006',
     date: '2026-05-01',
-    title: 'Renters Rights Act: Advance rent capped at one month',
+    title: 'Renters\' Rights Act: Advance rent capped at one month',
     category: 'compliance',
     description: 'Landlords and agents are now prohibited from requesting or requiring more than one month\'s rent in advance. Large upfront payments (e.g. 3 or 6 months in advance) are banned. The tenancy deposit cap remains at 5 weeks\' rent. These changes are in force immediately — any new tenancies or move-ins must comply. Move-out financial reconciliations and deposit processes are otherwise unchanged.',
     isNew: true,
@@ -3578,9 +3578,9 @@ export const PORTAL_UPDATES: PortalUpdate[] = [
   {
     id: 'upd-008',
     date: '2026-05-01',
-    title: 'Renters Rights Act: PRS Ombudsman and landlord database coming',
+    title: 'Renters\' Rights Act: PRS Ombudsman and landlord database coming',
     category: 'compliance',
-    description: 'The Renters Rights Act creates a mandatory Private Rented Sector Ombudsman that all private landlords in England must join. A publicly searchable PRS Database (landlord register) is also being introduced. Both are being rolled out gradually from late 2026, with full operation expected around 2028. Tenants will be able to raise complaints for free. Landlords who fail to engage with Ombudsman decisions will face automatic awards against them. No action is required yet, but watch for further guidance from Dwelly.',
+    description: 'The Renters\' Rights Act creates a mandatory Private Rented Sector Ombudsman that all private landlords in England must join. A publicly searchable PRS Database (landlord register) is also being introduced. Both are being rolled out gradually from late 2026, with full operation expected around 2028. Tenants will be able to raise complaints for free. Landlords who fail to engage with Ombudsman decisions will face automatic awards against them. No action is required yet, but watch for further guidance from Dwelly.',
     isNew: true,
   },
   {

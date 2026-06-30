@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
-  ArrowLeft, Clock, ClipboardCheck, ChevronRight,
+  ArrowLeft, Clock, ChevronRight,
   AlertTriangle, Info, Lightbulb,
 } from 'lucide-react'
 import { KNOWLEDGE_ARTICLES, getKnowledgeArticle, type ContentBlock } from '@/lib/training-content'
 import KnowledgeTabs from '@/components/roleplay/KnowledgeTabs'
 import ContentCompletionButton from '@/components/hub/ContentCompletionButton'
+import ReadingProgress from '@/components/knowledge/ReadingProgress'
+import ArticleTOC from '@/components/knowledge/ArticleTOC'
 import { cn } from '@/lib/utils'
 
 export function generateStaticParams() {
@@ -19,12 +21,26 @@ const DIFFICULTY_META = {
   advanced:     { label: 'Advanced',     colour: 'bg-red-50 text-red-700 border-red-200' },
 }
 
+const CATEGORY_LABEL: Record<string, string> = {
+  legal: 'Legal & Compliance',
+  communication: 'Communication',
+  finance: 'Finance',
+  standards: 'Property Standards',
+  landlord: 'Landlord Relations',
+}
+
+// Stable anchor id from a heading's text, shared by the rendered heading and
+// the table of contents so in-page links line up.
+function slugify(text: string) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+}
+
 function renderBlock(block: ContentBlock, i: number) {
   switch (block.type) {
 
     case 'heading':
       return (
-        <h2 key={i} className="text-xl font-bold text-[#1D1D1F] tracking-tight pt-2 first:pt-0">
+        <h2 key={i} id={slugify(block.text ?? '')} className="text-xl font-bold text-[#1D1D1F] tracking-tight pt-2 first:pt-0 scroll-mt-24">
           {block.text}
         </h2>
       )
@@ -137,119 +153,108 @@ export default function KnowledgeArticlePage({ params }: { params: { id: string 
   const diff = DIFFICULTY_META[article.difficulty]
   const isRoleplayArticle = article.id === 'kb-difficult-conversations'
 
+  // Top-level headings drive the table of contents. Skip it for the tabbed
+  // roleplay article, where the content lives inside a tab panel.
+  const headings = isRoleplayArticle
+    ? []
+    : article.content
+        .filter((b): b is ContentBlock & { text: string } => b.type === 'heading' && !!b.text)
+        .map(b => ({ id: slugify(b.text), text: b.text }))
+
   // Adjacent articles
   const idx = KNOWLEDGE_ARTICLES.findIndex(a => a.id === article.id)
   const prev = idx > 0 ? KNOWLEDGE_ARTICLES[idx - 1] : null
   const next = idx < KNOWLEDGE_ARTICLES.length - 1 ? KNOWLEDGE_ARTICLES[idx + 1] : null
 
-  // Article content + assessment CTA — shared by both tabbed and plain layouts
   const articleContent = (
-    <>
-      <div className="card p-7 space-y-6">
-        {article.content.map((block, i) => renderBlock(block, i))}
-      </div>
-
-      {article.quizModuleId && (
-        <div className="card p-5 flex items-center justify-between gap-4 flex-wrap border-[#0071E3]/20 bg-[#F0F7FF]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#0071E3]/10 flex items-center justify-center flex-shrink-0">
-              <ClipboardCheck className="w-5 h-5 text-[#0071E3]" aria-hidden />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-[#1D1D1F]">Ready to test your knowledge?</p>
-              <p className="text-xs text-[#6E6E73]">Take the assessment linked to this article</p>
-            </div>
-          </div>
-          <Link href={`/quiz/${article.quizModuleId}`} className="btn-primary text-sm flex-shrink-0">
-            Start Assessment
-            <ChevronRight className="w-4 h-4" aria-hidden />
-          </Link>
-        </div>
-      )}
-    </>
+    <div className="card p-7 space-y-6">
+      {article.content.map((block, i) => renderBlock(block, i))}
+    </div>
   )
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <>
+      <ReadingProgress />
+      <div className="mx-auto max-w-5xl">
+        <div className="flex gap-10">
+          {/* Main column */}
+          <div className="flex-1 min-w-0 max-w-3xl space-y-6">
 
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm">
-        <Link href="/knowledge" className="text-[#6E6E73] hover:text-[#1D1D1F] flex items-center gap-1.5 transition-colors">
-          <ArrowLeft className="w-3.5 h-3.5" /> Knowledge Base
-        </Link>
-        <span className="text-[#D2D2D7]">/</span>
-        <span className="text-[#1D1D1F] font-medium">{article.title}</span>
-      </div>
-
-      {/* Header card */}
-      <div className="card p-7">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#F5F5F7] flex items-center justify-center text-2xl flex-shrink-0">
-            {article.icon}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap mb-1.5">
-              <h1 className="text-2xl font-bold tracking-tight text-[#1D1D1F]">{article.title}</h1>
-              <span className={cn('text-[10px] font-semibold px-2 py-1 rounded-full border', diff.colour)}>
-                {diff.label}
-              </span>
-              {isRoleplayArticle && (
-                <span className="text-[10px] font-semibold text-[#0071E3] bg-[#0071E3]/10 border border-[#0071E3]/20 px-2 py-1 rounded-full">
-                  Includes AI Roleplay
-                </span>
-              )}
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-sm">
+              <Link href="/knowledge" className="text-[#6E6E73] hover:text-[#1D1D1F] flex items-center gap-1.5 transition-colors">
+                <ArrowLeft className="w-3.5 h-3.5" /> Knowledge Base
+              </Link>
+              <span className="text-[#D2D2D7]">/</span>
+              <span className="text-[#1D1D1F] font-medium">{article.title}</span>
             </div>
-            <p className="text-[#6E6E73] text-sm leading-relaxed max-w-xl">{article.subtitle}</p>
-            <div className="flex items-center gap-4 mt-3 flex-wrap">
-              <span className="flex items-center gap-1.5 text-xs text-[#AEAEB2]">
-                <Clock className="w-3.5 h-3.5" aria-hidden /> {article.readTime}
-              </span>
-              {article.quizModuleId && (
-                <Link
-                  href={`/quiz/${article.quizModuleId}`}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-[#0071E3] hover:underline"
-                >
-                  <ClipboardCheck className="w-3.5 h-3.5" aria-hidden />
-                  Take the assessment
+
+            {/* Header card */}
+            <div className="card p-7">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#F5F5F7] flex items-center justify-center text-2xl flex-shrink-0">
+                  {article.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                    <h1 className="text-2xl font-bold tracking-tight text-[#1D1D1F]">{article.title}</h1>
+                    <span className={cn('text-[10px] font-semibold px-2 py-1 rounded-full border', diff.colour)}>
+                      {diff.label}
+                    </span>
+                    {isRoleplayArticle && (
+                      <span className="text-[10px] font-semibold text-[#0071E3] bg-[#0071E3]/10 border border-[#0071E3]/20 px-2 py-1 rounded-full">
+                        Includes AI Roleplay
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[#6E6E73] text-sm leading-relaxed max-w-xl">{article.subtitle}</p>
+                  <div className="flex items-center gap-4 mt-3 flex-wrap">
+                    <span className="text-xs font-medium text-[#6E6E73]">{CATEGORY_LABEL[article.category]}</span>
+                    <span className="flex items-center gap-1.5 text-xs text-[#AEAEB2]">
+                      <Clock className="w-3.5 h-3.5" aria-hidden /> {article.readTime}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Content — tabbed for Difficult Conversations, plain for all others */}
+            {isRoleplayArticle
+              ? <KnowledgeTabs articleContent={articleContent} />
+              : articleContent
+            }
+
+            {/* Mark as read */}
+            <ContentCompletionButton contentType="knowledge" contentId={article.id} />
+
+            {/* Article navigation */}
+            <div className="grid grid-cols-2 gap-3">
+              {prev ? (
+                <Link href={`/knowledge/${prev.id}`} className="card card-hover p-4 flex items-center gap-3 group">
+                  <ArrowLeft className="w-4 h-4 text-[#AEAEB2] flex-shrink-0 group-hover:text-[#0071E3] transition-colors" />
+                  <div className="min-w-0">
+                    <p className="text-[10px] text-[#AEAEB2] uppercase tracking-wide font-medium">Previous</p>
+                    <p className="text-sm font-semibold text-[#1D1D1F] truncate mt-0.5">{prev.title}</p>
+                  </div>
                 </Link>
-              )}
+              ) : <div />}
+
+              {next ? (
+                <Link href={`/knowledge/${next.id}`} className="card card-hover p-4 flex items-center justify-end gap-3 text-right group">
+                  <div className="min-w-0">
+                    <p className="text-[10px] text-[#AEAEB2] uppercase tracking-wide font-medium">Next</p>
+                    <p className="text-sm font-semibold text-[#1D1D1F] truncate mt-0.5">{next.title}</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#AEAEB2] flex-shrink-0 group-hover:text-[#0071E3] transition-colors" />
+                </Link>
+              ) : <div />}
             </div>
           </div>
+
+          {/* Table of contents */}
+          <ArticleTOC headings={headings} />
         </div>
       </div>
-
-      {/* Content — tabbed for Difficult Conversations, plain for all others */}
-      {isRoleplayArticle
-        ? <KnowledgeTabs articleContent={articleContent} />
-        : articleContent
-      }
-
-      {/* Mark as read */}
-      <ContentCompletionButton contentType="knowledge" contentId={article.id} />
-
-      {/* Article navigation */}
-      <div className="grid grid-cols-2 gap-3">
-        {prev ? (
-          <Link href={`/knowledge/${prev.id}`} className="card card-hover p-4 flex items-center gap-3 group">
-            <ArrowLeft className="w-4 h-4 text-[#AEAEB2] flex-shrink-0 group-hover:text-[#0071E3] transition-colors" />
-            <div className="min-w-0">
-              <p className="text-[10px] text-[#AEAEB2] uppercase tracking-wide font-medium">Previous</p>
-              <p className="text-sm font-semibold text-[#1D1D1F] truncate mt-0.5">{prev.title}</p>
-            </div>
-          </Link>
-        ) : <div />}
-
-        {next ? (
-          <Link href={`/knowledge/${next.id}`} className="card card-hover p-4 flex items-center justify-end gap-3 text-right group">
-            <div className="min-w-0">
-              <p className="text-[10px] text-[#AEAEB2] uppercase tracking-wide font-medium">Next</p>
-              <p className="text-sm font-semibold text-[#1D1D1F] truncate mt-0.5">{next.title}</p>
-            </div>
-            <ChevronRight className="w-4 h-4 text-[#AEAEB2] flex-shrink-0 group-hover:text-[#0071E3] transition-colors" />
-          </Link>
-        ) : <div />}
-      </div>
-
-    </div>
+    </>
   )
 }
