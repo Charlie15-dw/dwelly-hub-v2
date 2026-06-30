@@ -1,28 +1,27 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
-  GraduationCap, ArrowRight, Megaphone, MessageSquareDashed, MessageSquareReply, Users,
+  ArrowRight, Megaphone, MessageSquareDashed, MessageSquareReply, Users,
   BookA, AlertTriangle, RefreshCw, BarChart3, Scale, Sparkles, type LucideIcon,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isHubPreview } from '@/lib/preview'
 import { hubUpdatesSorted } from '@/lib/updates'
+import { MODULES } from '@/lib/data'
 import WelcomeGreeting from '@/components/ui/WelcomeGreeting'
 import HubSearchPrompt from '@/components/hub/HubSearchPrompt'
+import HubJourney, { type JourneyStep } from '@/components/hub/HubJourney'
 
 // The Hub home — the centre of the Hub and the first place everyone lands.
-// A hero, the full training journey kept as one, the latest Dwelly update, and
-// the rest of the Hub grouped for quick access. Preview-gated.
+// A hero, a progress-aware training journey, the latest Dwelly update, and the
+// rest of the Hub grouped for quick access. Preview-gated.
 
-// Training is one cohesive journey; these are its stages, surfaced as quick
-// links on the training feature card.
-const TRAINING_STEPS = [
-  { href: '/pre-training', label: 'Learning Profile' },
-  { href: '/training', label: 'Training Guide' },
-  { href: '/modules', label: 'Video Modules' },
-  { href: '/knowledge', label: 'Knowledge Base' },
-  { href: '/assessments', label: 'Assessments' },
-  { href: '/passport', label: 'Competency Passport' },
+// The canonical 15 assessments (mirrors ALL_ASSESSMENT_IDS on the dashboard) —
+// used to measure assessment progress consistently with the dashboard.
+const ALL_ASSESSMENT_IDS = [
+  'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
+  'sys-01', 'mvt-02', 'sys-02', 'sup-02',
+  'kno-01', 'kno-02', 'kno-03', 'full-assessment', 'master-assessment',
 ]
 
 interface ExploreItem {
@@ -121,13 +120,103 @@ export default async function HubPage() {
   if (!user) redirect('/')
   if (!isHubPreview(user.email)) redirect('/dashboard')
 
+  // Progress for the journey — same tables the dashboard reads.
+  const [{ data: profile }, { data: resultRows }, { data: progressRows }, { data: learningProfile }] =
+    await Promise.all([
+      supabase.from('user_profiles').select('full_name').eq('id', user.id).maybeSingle(),
+      supabase.from('assessment_results').select('assessment_id, passed').eq('user_id', user.id),
+      supabase.from('module_progress').select('module_id, completed').eq('user_id', user.id),
+      supabase.from('learning_profiles').select('completed_at').eq('user_id', user.id).maybeSingle(),
+    ])
+
+  const passedIds = new Set(
+    (resultRows ?? [])
+      .filter(r => r.passed && ALL_ASSESSMENT_IDS.includes(r.assessment_id))
+      .map(r => r.assessment_id)
+  )
+  const completedAssessments = passedIds.size
+  const totalAssessments = ALL_ASSESSMENT_IDS.length // 15
+
+  const completedModuleIds = new Set(
+    (progressRows ?? []).filter(r => r.completed).map(r => r.module_id)
+  )
+  const totalModules = MODULES.filter(m => !m.locked).length
+  const completedModules = Math.min(completedModuleIds.size, totalModules)
+
+  const hasLearningProfile = !!learningProfile
+  const modulesStarted = completedModuleIds.size > 0
+  const modulesDone = totalModules > 0 && completedModules >= totalModules
+  const assessmentsStarted = (resultRows ?? []).length > 0
+  const assessmentsDone = completedAssessments >= totalAssessments
+
+  const isNewStarter = !hasLearningProfile && !modulesStarted && !assessmentsStarted
+
+  // The single "current" milestone drives the Continue button and step states.
+  const current: 'profile' | 'modules' | 'assessments' | 'passport' =
+    !hasLearningProfile ? 'profile'
+    : !modulesDone ? 'modules'
+    : !assessmentsDone ? 'assessments'
+    : 'passport'
+
+  const continueHref =
+    current === 'profile' ? '/pre-training'
+    : current === 'modules' ? '/modules'
+    : current === 'assessments' ? '/assessments'
+    : '/passport'
+  const continueLabel =
+    isNewStarter ? 'Start here'
+    : current === 'profile' ? 'Continue: Learning Profile'
+    : current === 'modules' ? 'Continue: Video Modules'
+    : current === 'assessments' ? 'Continue: Assessments'
+    : 'View your Passport'
+
+  const pct = Math.round(
+    ((hasLearningProfile ? 1 : 0)
+      + (totalModules > 0 ? completedModules / totalModules : 0)
+      + completedAssessments / totalAssessments) / 3 * 100
+  )
+
+  const firstName = (profile?.full_name ?? user.email?.split('@')[0] ?? '').split(' ')[0]
+
+  const steps: JourneyStep[] = [
+    {
+      n: 1, label: 'Learning Profile', href: '/pre-training',
+      state: hasLearningProfile ? 'done' : 'current',
+      detail: hasLearningProfile ? 'Completed' : 'Start here — takes a couple of minutes',
+    },
+    {
+      n: 2, label: 'Training Guide', href: '/training',
+      state: 'explore',
+      detail: 'Written guides for every area of the platform',
+    },
+    {
+      n: 3, label: 'Video Modules', href: '/modules',
+      state: modulesDone ? 'done' : current === 'modules' ? 'current' : 'todo',
+      detail: modulesDone ? 'All modules complete' : `${completedModules} of ${totalModules} modules complete`,
+    },
+    {
+      n: 4, label: 'Knowledge Base', href: '/knowledge',
+      state: 'explore',
+      detail: 'In-depth property management articles',
+    },
+    {
+      n: 5, label: 'Assessments', href: '/assessments',
+      state: assessmentsDone ? 'done' : current === 'assessments' ? 'current' : 'todo',
+      detail: `${completedAssessments} of ${totalAssessments} passed`,
+    },
+    {
+      n: 6, label: 'Competency Passport', href: '/passport',
+      state: current === 'passport' ? 'current' : 'todo',
+      detail: current === 'passport' ? 'Ready — view your signed-off record' : 'Your finish line',
+    },
+  ]
+
   const latest = hubUpdatesSorted()[0]
 
   return (
     <div className="space-y-8">
       {/* Hero — the centre of the Hub */}
       <section className="relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
-        {/* Decorative glow */}
         <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-orange/30 blur-3xl" aria-hidden />
         <div className="pointer-events-none absolute -bottom-24 -left-10 w-72 h-72 rounded-full bg-teal-400/10 blur-3xl" aria-hidden />
         <div className="relative px-7 py-9 sm:px-10 sm:py-11">
@@ -145,59 +234,35 @@ export default async function HubPage() {
         </div>
       </section>
 
-      {/* Training feature + latest update */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Training — kept as one journey */}
-        <Link
-          href="/dashboard"
-          className="lg:col-span-2 card p-6 group hover:shadow-md transition block relative overflow-hidden"
-        >
-          <div className="flex items-start justify-between">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center border bg-orange/10 text-orange border-orange/20">
-              <GraduationCap className="w-5 h-5" aria-hidden />
-            </div>
-            <span className="inline-flex items-center gap-1 text-sm font-semibold text-orange group-hover:gap-2 transition-all">
-              Open training <ArrowRight className="w-4 h-4" aria-hidden />
-            </span>
-          </div>
-          <h3 className="text-lg font-bold text-navy mt-4">Training</h3>
-          <p className="text-sm text-slate-500 mt-1 max-w-xl leading-relaxed">
-            Your complete learning journey — guides, video modules, the knowledge base,
-            assessments and your competency passport, all in one path from day one to signed off.
-          </p>
-          <div className="flex flex-wrap gap-2 mt-5">
-            {TRAINING_STEPS.map((step, i) => (
-              <span
-                key={step.href}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-full pl-1.5 pr-3 py-1"
-              >
-                <span className="w-4 h-4 rounded-full bg-navy text-white flex items-center justify-center text-[9px] font-bold leading-none">
-                  {i + 1}
-                </span>
-                {step.label}
-              </span>
-            ))}
-          </div>
-        </Link>
+      {/* Your journey — progress-aware */}
+      <HubJourney
+        firstName={firstName}
+        isNewStarter={isNewStarter}
+        pct={pct}
+        continueHref={continueHref}
+        continueLabel={continueLabel}
+        steps={steps}
+      />
 
-        {/* Latest from Dwelly */}
-        {latest && (
-          <Link href="/hub/updates" className="card p-6 group hover:shadow-md transition block">
-            <div className="flex items-center gap-2 text-indigo-700">
-              <Sparkles className="w-4 h-4" aria-hidden />
-              <span className="text-[11px] font-bold uppercase tracking-widest">Latest update</span>
+      {/* Latest from Dwelly */}
+      {latest && (
+        <Link href="/hub/updates" className="card p-5 group hover:shadow-md transition flex items-center gap-4">
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center border bg-indigo-100 text-indigo-700 border-indigo-200 flex-shrink-0">
+            <Sparkles className="w-5 h-5" aria-hidden />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-indigo-700">Latest update</span>
+              <span className="text-xs text-slate-400">{formatDate(latest.date)}</span>
             </div>
-            <h3 className="text-base font-bold text-navy mt-3">{latest.title}</h3>
-            <p className="text-xs text-slate-400 mt-1">{formatDate(latest.date)}</p>
-            {latest.intro && (
-              <p className="text-sm text-slate-500 mt-3 leading-relaxed line-clamp-4">{latest.intro}</p>
-            )}
-            <span className="inline-flex items-center gap-1 text-sm font-semibold text-orange mt-4 group-hover:gap-2 transition-all">
-              See what&apos;s new <ArrowRight className="w-4 h-4" aria-hidden />
-            </span>
-          </Link>
-        )}
-      </div>
+            <p className="text-sm font-bold text-navy mt-0.5 truncate">{latest.title}</p>
+            {latest.intro && <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{latest.intro}</p>}
+          </div>
+          <span className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-orange flex-shrink-0 group-hover:gap-2 transition-all">
+            See what&apos;s new <ArrowRight className="w-4 h-4" aria-hidden />
+          </span>
+        </Link>
+      )}
 
       {/* Explore the Hub */}
       <div className="space-y-6">
