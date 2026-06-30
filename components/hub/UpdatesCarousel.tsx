@@ -150,48 +150,48 @@ export default function UpdatesCarousel({ updates }: { updates: HubUpdate[] }) {
 
   return (
     <div className="space-y-6">
-      <div ref={topRef} className="relative scroll-mt-6">
-        {/* Prev (newer) */}
-        <button
-          type="button"
-          onClick={() => go(active - 1)}
-          disabled={atStart}
-          aria-label="Newer update"
-          className="absolute left-0 sm:-left-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-navy hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition"
-        >
-          <ChevronLeft className="w-5 h-5" aria-hidden />
-        </button>
+      <div ref={topRef} className="scroll-mt-6 space-y-3">
+        {/* Navigation bar */}
+        <div className="flex items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={() => go(active - 1)}
+            disabled={atStart}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          >
+            <ChevronLeft className="w-4 h-4" aria-hidden />
+            Newer
+          </button>
 
-        {/* Next (older) */}
-        <button
-          type="button"
-          onClick={() => go(active + 1)}
-          disabled={atEnd}
-          aria-label="Older update"
-          className="absolute right-0 sm:-right-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-navy hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition"
-        >
-          <ChevronRight className="w-5 h-5" aria-hidden />
-        </button>
+          <div className="flex flex-col items-center gap-1.5">
+            <span className="text-xs font-medium text-slate-500">Update {active + 1} of {count}</span>
+            <div className="flex gap-1.5">
+              {updates.map((u, i) => (
+                <button
+                  key={u.id}
+                  type="button"
+                  onClick={() => go(i)}
+                  aria-label={`Go to update ${i + 1}`}
+                  aria-current={i === active}
+                  className={`w-2 h-2 rounded-full transition ${i === active ? 'bg-indigo-600' : 'bg-slate-300 hover:bg-slate-400'}`}
+                />
+              ))}
+            </div>
+          </div>
 
-        <div className="card p-6 sm:px-12 min-h-[200px]">
-          <UpdateContent update={current} />
+          <button
+            type="button"
+            onClick={() => go(active + 1)}
+            disabled={atEnd}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          >
+            Older
+            <ChevronRight className="w-4 h-4" aria-hidden />
+          </button>
         </div>
-      </div>
 
-      {/* Position indicator */}
-      <div className="flex items-center justify-center gap-3">
-        <span className="text-xs text-slate-400">Update {active + 1} of {count}</span>
-        <div className="flex gap-1.5">
-          {updates.map((u, i) => (
-            <button
-              key={u.id}
-              type="button"
-              onClick={() => go(i)}
-              aria-label={`Go to update ${i + 1}`}
-              aria-current={i === active}
-              className={`w-2 h-2 rounded-full transition ${i === active ? 'bg-indigo-600' : 'bg-slate-300 hover:bg-slate-400'}`}
-            />
-          ))}
+        <div className="card p-6 min-h-[200px]">
+          <UpdateContent update={current} />
         </div>
       </div>
 
