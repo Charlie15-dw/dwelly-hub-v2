@@ -136,6 +136,75 @@ export default function Sidebar() {
     router.refresh()
   }
 
+  const renderGroup = (group: HubNavGroup) => {
+    const GroupIcon = group.icon
+    const open = !!openGroups[group.id]
+    const groupActive = group.items.some(i => !i.external && pathname.startsWith(i.href))
+    return (
+      <div key={group.id}>
+        <button
+          type="button"
+          onClick={() => setOpenGroups(prev => ({ ...prev, [group.id]: !prev[group.id] }))}
+          aria-expanded={open}
+          className={cn('sidebar-link w-full text-left mt-2', groupActive && !open && 'active')}
+        >
+          <GroupIcon className="w-4 h-4 flex-shrink-0" aria-hidden />
+          <span className="flex-1">{group.label}</span>
+          <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', open && 'rotate-180')} aria-hidden />
+        </button>
+        {open && (
+          <div className="ml-3 pl-3 border-l border-white/40 space-y-1 mt-1">
+            {group.items.map((item) => {
+              const Icon = item.icon
+              if (item.external) {
+                return (
+                  <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="sidebar-link">
+                    <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                    <span className="flex-1">{item.label}</span>
+                    <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40 rotate-45" aria-hidden />
+                  </a>
+                )
+              }
+              if (item.comingSoon) {
+                return (
+                  <div key={item.href} className="sidebar-link opacity-60 cursor-default select-none">
+                    <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                    <span className="flex-1">{item.label}</span>
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#1D1D1F]/10 text-[#1D1D1F]/50 border border-[#1D1D1F]/10">
+                      Soon
+                    </span>
+                  </div>
+                )
+              }
+              const active = pathname.startsWith(item.href)
+              return (
+                <Link key={item.href} href={item.href} className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                  {item.step ? (
+                    <span className={cn(
+                      'w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold leading-none',
+                      active ? 'bg-[#1D1D1F] text-white' : 'bg-[#1D1D1F]/15 text-[#1D1D1F]/60',
+                    )}>
+                      {item.step}
+                    </span>
+                  ) : (
+                    <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  )}
+                  <span className="flex-1">{item.label}</span>
+                  {item.badge && (
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
+                      {item.badge}
+                    </span>
+                  )}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                </Link>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <aside className="fixed inset-y-0 left-0 z-40 w-64 flex flex-col bg-gradient-navy select-none">
       {/* Logo */}
@@ -176,7 +245,10 @@ export default function Sidebar() {
 
         {isPreview ? (
           <>
-            {/* Ask Dobby — standalone (kept out of any pillar) */}
+            {/* Connect — featured above Ask Dobby */}
+            {HUB_GROUPS.filter(g => g.id === 'connect').map(renderGroup)}
+
+            {/* Ask Dobby — standalone (kept out of any group) */}
             {(() => {
               const active = pathname.startsWith('/dobby')
               return (
@@ -188,75 +260,8 @@ export default function Sidebar() {
               )
             })()}
 
-            {/* Collapsible groups — Training kept as one journey */}
-            {HUB_GROUPS.map((group) => {
-              const GroupIcon = group.icon
-              const open = !!openGroups[group.id]
-              const groupActive = group.items.some(i => !i.external && pathname.startsWith(i.href))
-              return (
-                <div key={group.id}>
-                  <button
-                    type="button"
-                    onClick={() => setOpenGroups(prev => ({ ...prev, [group.id]: !prev[group.id] }))}
-                    aria-expanded={open}
-                    className={cn('sidebar-link w-full text-left mt-2', groupActive && !open && 'active')}
-                  >
-                    <GroupIcon className="w-4 h-4 flex-shrink-0" aria-hidden />
-                    <span className="flex-1">{group.label}</span>
-                    <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', open && 'rotate-180')} aria-hidden />
-                  </button>
-                  {open && (
-                    <div className="ml-3 pl-3 border-l border-white/40 space-y-1 mt-1">
-                      {group.items.map((item) => {
-                        const Icon = item.icon
-                        if (item.external) {
-                          return (
-                            <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="sidebar-link">
-                              <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
-                              <span className="flex-1">{item.label}</span>
-                              <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40 rotate-45" aria-hidden />
-                            </a>
-                          )
-                        }
-                        if (item.comingSoon) {
-                          return (
-                            <div key={item.href} className="sidebar-link opacity-60 cursor-default select-none">
-                              <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
-                              <span className="flex-1">{item.label}</span>
-                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#1D1D1F]/10 text-[#1D1D1F]/50 border border-[#1D1D1F]/10">
-                                Soon
-                              </span>
-                            </div>
-                          )
-                        }
-                        const active = pathname.startsWith(item.href)
-                        return (
-                          <Link key={item.href} href={item.href} className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-                            {item.step ? (
-                              <span className={cn(
-                                'w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold leading-none',
-                                active ? 'bg-[#1D1D1F] text-white' : 'bg-[#1D1D1F]/15 text-[#1D1D1F]/60',
-                              )}>
-                                {item.step}
-                              </span>
-                            ) : (
-                              <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
-                            )}
-                            <span className="flex-1">{item.label}</span>
-                            {item.badge && (
-                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
-                                {item.badge}
-                              </span>
-                            )}
-                            {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-                          </Link>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+            {/* Remaining collapsible groups — Training kept as one journey */}
+            {HUB_GROUPS.filter(g => g.id !== 'connect').map(renderGroup)}
           </>
         ) : (
           <>
