@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ArrowLeft, Megaphone } from 'lucide-react'
+import { ArrowLeft, Megaphone, Info } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isHubPreview } from '@/lib/preview'
 import { hubUpdatesSorted } from '@/lib/updates'
@@ -52,18 +52,54 @@ export default async function UpdatesPage() {
                   )}
                 </div>
 
+                {update.notes && update.notes.length > 0 && (
+                  <div className="space-y-2">
+                    {update.notes.map((note, i) => (
+                      <div key={i} className="flex gap-2.5 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2.5">
+                        <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden />
+                        <p className="text-sm text-amber-900">{note}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="space-y-4">
                   {update.sections.map(section => (
                     <div key={section.heading}>
                       <h3 className="text-sm font-semibold text-navy">{section.heading}</h3>
-                      <ul className="mt-1.5 space-y-1">
+                      {section.intro && (
+                        <p className="text-sm text-slate-500 mt-1">{section.intro}</p>
+                      )}
+                      <ul className="mt-1.5 space-y-1.5">
                         {section.items.map((item, i) => (
-                          <li key={i} className="flex gap-2 text-sm text-slate-600">
-                            <span className="mt-1.5 w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0" aria-hidden />
-                            <span>{item}</span>
+                          <li key={i} className="text-sm text-slate-600">
+                            <div className="flex gap-2">
+                              <span className="mt-1.5 w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0" aria-hidden />
+                              <span>{item.text}</span>
+                            </div>
+                            {item.children && item.children.length > 0 && (
+                              <ul className="mt-1.5 ml-5 space-y-1">
+                                {item.children.map((child, j) => (
+                                  <li key={j} className="flex gap-2 text-slate-500">
+                                    <span className="mt-1.5 w-1 h-1 rounded-full bg-slate-300 flex-shrink-0" aria-hidden />
+                                    <span>{child}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                           </li>
                         ))}
                       </ul>
+                      {section.image && (
+                        <figure className="mt-3">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={section.image.src}
+                            alt={section.image.alt}
+                            className="w-full rounded-lg border border-slate-200"
+                          />
+                        </figure>
+                      )}
                     </div>
                   ))}
                 </div>
