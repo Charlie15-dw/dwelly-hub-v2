@@ -25,7 +25,7 @@ const HUB_AREAS = [
     description: 'What\u2019s changing and why — with a rolling FAQ and a searchable archive of past decisions.',
     icon: Megaphone,
     accent: 'text-indigo-700 bg-indigo-100 border-indigo-200',
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     href: '/hub/ask',
