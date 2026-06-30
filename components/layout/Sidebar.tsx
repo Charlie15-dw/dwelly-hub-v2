@@ -49,6 +49,7 @@ interface HubNavGroup {
   label: string
   icon: LucideIcon
   items: HubNavItem[]
+  href?: string // if set, the group header links to this page (plus a toggle)
 }
 
 const HUB_GROUPS: HubNavGroup[] = [
@@ -80,7 +81,7 @@ const HUB_GROUPS: HubNavGroup[] = [
     ],
   },
   {
-    id: 'connect', label: 'Connect', icon: Users,
+    id: 'connect', label: 'Connect', icon: Users, href: '/hub/connect',
     items: [
       { href: '/hub/updates', label: 'Dwelly Updates', icon: Megaphone },
       { href: '/hub/ask', label: 'Anonymous Q&A', icon: MessageSquareDashed },
@@ -111,7 +112,8 @@ export default function Sidebar() {
       if (preview) {
         const toOpen: Record<string, boolean> = {}
         for (const group of HUB_GROUPS) {
-          if (group.items.some(i => !i.external && pathname.startsWith(i.href))) {
+          const hrefMatch = group.href ? pathname.startsWith(group.href) : false
+          if (hrefMatch || group.items.some(i => !i.external && pathname.startsWith(i.href))) {
             toOpen[group.id] = true
           }
         }
@@ -139,19 +141,44 @@ export default function Sidebar() {
   const renderGroup = (group: HubNavGroup) => {
     const GroupIcon = group.icon
     const open = !!openGroups[group.id]
-    const groupActive = group.items.some(i => !i.external && pathname.startsWith(i.href))
+    const hrefActive = group.href ? pathname.startsWith(group.href) : false
+    const groupActive = hrefActive || group.items.some(i => !i.external && pathname.startsWith(i.href))
+    const toggle = () => setOpenGroups(prev => ({ ...prev, [group.id]: !prev[group.id] }))
     return (
       <div key={group.id}>
-        <button
-          type="button"
-          onClick={() => setOpenGroups(prev => ({ ...prev, [group.id]: !prev[group.id] }))}
-          aria-expanded={open}
-          className={cn('sidebar-link w-full text-left mt-2', groupActive && !open && 'active')}
-        >
-          <GroupIcon className="w-4 h-4 flex-shrink-0" aria-hidden />
-          <span className="flex-1">{group.label}</span>
-          <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', open && 'rotate-180')} aria-hidden />
-        </button>
+        {group.href ? (
+          // Header links to the group's page; a separate chevron toggles the dropdown.
+          <div className="flex items-center gap-1 mt-2">
+            <Link
+              href={group.href}
+              className={cn('sidebar-link flex-1', groupActive && 'active')}
+              aria-current={hrefActive ? 'page' : undefined}
+            >
+              <GroupIcon className="w-4 h-4 flex-shrink-0" aria-hidden />
+              <span className="flex-1">{group.label}</span>
+            </Link>
+            <button
+              type="button"
+              onClick={toggle}
+              aria-expanded={open}
+              aria-label={`${open ? 'Collapse' : 'Expand'} ${group.label}`}
+              className="flex items-center justify-center px-2 py-2.5 rounded-xl text-[#1D1D1F]/40 hover:bg-white/55 hover:text-[#1D1D1F] transition-all flex-shrink-0"
+            >
+              <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', open && 'rotate-180')} aria-hidden />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={toggle}
+            aria-expanded={open}
+            className={cn('sidebar-link w-full text-left mt-2', groupActive && !open && 'active')}
+          >
+            <GroupIcon className="w-4 h-4 flex-shrink-0" aria-hidden />
+            <span className="flex-1">{group.label}</span>
+            <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', open && 'rotate-180')} aria-hidden />
+          </button>
+        )}
         {open && (
           <div className="ml-3 pl-3 border-l border-white/40 space-y-1 mt-1">
             {group.items.map((item) => {
