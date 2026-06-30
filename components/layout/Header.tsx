@@ -2,7 +2,10 @@
 
 
 import { usePathname } from 'next/navigation'
+import { Search } from 'lucide-react'
 import SearchBar from '@/components/ui/SearchBar'
+import { useUser } from '@/components/UserProvider'
+import { isHubPreview } from '@/lib/preview'
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
   '/dashboard':    { title: 'Dashboard',            subtitle: 'Your learning overview' },
@@ -24,6 +27,8 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
 export default function Header() {
   const pathname = usePathname()
   const pageInfo = pageTitles[pathname] ?? { title: 'Portal', subtitle: 'Dwelly Training System' }
+  const { email } = useUser()
+  const isPreview = isHubPreview(email)
 
   return (
     <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 sticky top-0 z-30">
@@ -35,8 +40,24 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Search */}
-        <SearchBar />
+        {/* Search — preview users get the universal Cmd-K palette trigger;
+            everyone else keeps the existing inline search. */}
+        {isPreview ? (
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event('hub:open-search'))}
+            className="group flex items-center gap-2 h-9 pl-3 pr-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-slate-300 transition text-slate-400"
+            aria-label="Search the Hub"
+          >
+            <Search className="w-4 h-4 flex-shrink-0" aria-hidden />
+            <span className="text-sm hidden sm:block">Search the Hub…</span>
+            <kbd className="hidden sm:flex items-center gap-0.5 text-[10px] font-sans font-semibold text-slate-400 bg-white border border-slate-200 rounded px-1.5 py-0.5">
+              ⌘K
+            </kbd>
+          </button>
+        ) : (
+          <SearchBar />
+        )}
 
         {/* Date */}
         <div className="hidden lg:block text-right">

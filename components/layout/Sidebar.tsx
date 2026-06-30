@@ -6,7 +6,7 @@ import {
   LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
   AlertTriangle, BarChart3, BookA, MessageCircle, Building2, Scale, LayoutGrid, ChevronDown,
-  MessageSquareDashed,
+  MessageSquareDashed, Megaphone, MessageSquareReply, MonitorPlay, Compass, type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -31,6 +31,67 @@ const managerItems = [
   { href: '/manager', label: 'Manager Dashboard', icon: Users },
 ]
 
+// Hub preview navigation, organised into the same five pillars as the Hub
+// landing page (Learn the craft / Master the system / Do the job / Grow & prove
+// it / Connect). Each pillar is a collapsible group.
+interface HubNavItem {
+  href: string
+  label: string
+  icon: LucideIcon
+  external?: boolean
+  comingSoon?: boolean
+  badge?: string
+}
+interface HubNavPillar {
+  id: string
+  label: string
+  icon: LucideIcon
+  items: HubNavItem[]
+}
+
+const HUB_PILLARS: HubNavPillar[] = [
+  {
+    id: 'learn', label: 'Learn the craft', icon: Compass,
+    items: [
+      { href: '/knowledge', label: 'Knowledge Base', icon: Library },
+      { href: '/glossary', label: 'Glossary', icon: BookA },
+    ],
+  },
+  {
+    id: 'system', label: 'Master the system', icon: MonitorPlay,
+    items: [
+      { href: '/pre-training', label: 'Learning Profile', icon: Brain },
+      { href: '/training', label: 'Training Guide', icon: GraduationCap },
+      { href: '/modules', label: 'Video Modules', icon: BookOpen },
+    ],
+  },
+  {
+    id: 'do', label: 'Do the job', icon: AlertTriangle,
+    items: [
+      { href: '/emergency', label: 'Emergency Procedures', icon: AlertTriangle },
+      { href: 'https://deposit-sim.vercel.app/', label: 'Deposit Simulator', icon: Scale, external: true },
+    ],
+  },
+  {
+    id: 'grow', label: 'Grow & prove it', icon: Award,
+    items: [
+      { href: '/assessments', label: 'Assessments', icon: ClipboardCheck },
+      { href: '/passport', label: 'Competency Passport', icon: Award },
+      { href: '/recap', label: 'Recap & Refresh', icon: RefreshCw, badge: 'Monthly' },
+      { href: '/analytics', label: 'My Analytics', icon: BarChart3 },
+    ],
+  },
+  {
+    id: 'connect', label: 'Connect', icon: Users,
+    items: [
+      { href: '/hub/updates', label: 'Dwelly Updates', icon: Megaphone },
+      { href: '/hub/ask', label: 'Anonymous Q&A', icon: MessageSquareDashed },
+      { href: '/hub/answered', label: 'You said, we did', icon: MessageSquareReply },
+      { href: '/hub/meet', label: 'Monthly PM Meet', icon: Users, comingSoon: true },
+    ],
+  },
+]
+
 export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
@@ -39,9 +100,7 @@ export default function Sidebar() {
   const [isPreview, setIsPreview] = useState(false)
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<string | null>(null)
-  const [trainingOpen, setTrainingOpen] = useState(false)
-  const [propertyToolsOpen, setPropertyToolsOpen] = useState(false)
-  const [developmentOpen, setDevelopmentOpen] = useState(false)
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     const supabase = createClient()
@@ -49,18 +108,16 @@ export default function Sidebar() {
       if (!user) return
       const preview = isHubPreview(user.email)
       setIsPreview(preview)
-      // In the Hub preview, these sections are collapsible groups; open the one
+      // In the Hub preview, each pillar is a collapsible group; open the one
       // matching the current page automatically.
       if (preview) {
-        if (pathname === '/dashboard' || journeyItems.some(i => pathname === i.href || pathname.startsWith(i.href))) {
-          setTrainingOpen(true)
+        const toOpen: Record<string, boolean> = {}
+        for (const pillar of HUB_PILLARS) {
+          if (pillar.items.some(i => !i.external && pathname.startsWith(i.href))) {
+            toOpen[pillar.id] = true
+          }
         }
-        if (['/glossary', '/emergency'].some(p => pathname.startsWith(p))) {
-          setPropertyToolsOpen(true)
-        }
-        if (['/recap', '/analytics'].some(p => pathname.startsWith(p))) {
-          setDevelopmentOpen(true)
-        }
+        if (Object.keys(toOpen).length) setOpenGroups(prev => ({ ...prev, ...toOpen }))
       }
       const { data } = await supabase
         .from('user_profiles')
@@ -94,7 +151,7 @@ export default function Sidebar() {
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-hide" aria-label="Main navigation">
         {/* Hub — the front door (preview only) */}
         {isPreview && (() => {
-          const active = pathname.startsWith('/hub')
+          const active = pathname === '/hub'
           return (
             <Link href="/hub" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
               <LayoutGrid className="w-4 h-4 flex-shrink-0" aria-hidden />
@@ -102,6 +159,18 @@ export default function Sidebar() {
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange/10 text-orange border border-orange/20">
                 Preview
               </span>
+              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+            </Link>
+          )
+        })()}
+
+        {/* Dashboard — top-level quick access (preview) */}
+        {isPreview && (() => {
+          const active = pathname === '/dashboard'
+          return (
+            <Link href="/dashboard" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+              <LayoutDashboard className="w-4 h-4 flex-shrink-0" aria-hidden />
+              <span className="flex-1">Dashboard</span>
               {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
             </Link>
           )
@@ -121,58 +190,7 @@ export default function Sidebar() {
 
         {isPreview ? (
           <>
-            {/* Training — collapsible group: Dashboard + numbered journey steps */}
-            {(() => {
-              const groupActive = pathname === '/dashboard' || journeyItems.some(i => pathname === i.href || pathname.startsWith(i.href))
-              return (
-                <button
-                  type="button"
-                  onClick={() => setTrainingOpen(o => !o)}
-                  aria-expanded={trainingOpen}
-                  className={cn('sidebar-link w-full text-left mt-4', groupActive && !trainingOpen && 'active')}
-                >
-                  <GraduationCap className="w-4 h-4 flex-shrink-0" aria-hidden />
-                  <span className="flex-1">Training</span>
-                  <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', trainingOpen && 'rotate-180')} aria-hidden />
-                </button>
-              )
-            })()}
-            {trainingOpen && (
-              <div className="ml-3 pl-3 border-l border-white/40 space-y-1">
-                {(() => {
-                  const active = pathname === '/dashboard'
-                  return (
-                    <Link href="/dashboard" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-                      <LayoutDashboard className="w-4 h-4 flex-shrink-0" aria-hidden />
-                      <span className="flex-1">Dashboard</span>
-                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-                    </Link>
-                  )
-                })()}
-                {journeyItems.map(({ href, label, step }) => {
-                  const active = pathname === href || pathname.startsWith(href)
-                  return (
-                    <Link
-                      key={href}
-                      href={href}
-                      className={cn('sidebar-link', active && 'active')}
-                      aria-current={active ? 'page' : undefined}
-                    >
-                      <span className={cn(
-                        'w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold leading-none',
-                        active ? 'bg-[#1D1D1F] text-white' : 'bg-[#1D1D1F]/15 text-[#1D1D1F]/60',
-                      )}>
-                        {step}
-                      </span>
-                      <span className="flex-1">{label}</span>
-                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-                    </Link>
-                  )
-                })}
-              </div>
-            )}
-
-            {/* Ask Dobby — standalone (kept out of any group) */}
+            {/* Ask Dobby — standalone (kept out of any pillar) */}
             {(() => {
               const active = pathname.startsWith('/dobby')
               return (
@@ -184,100 +202,66 @@ export default function Sidebar() {
               )
             })()}
 
-            {/* Property Tools — collapsible group */}
-            {(() => {
-              const groupActive = ['/glossary', '/emergency'].some(p => pathname.startsWith(p))
+            {/* Five pillars — collapsible groups matching the Hub landing */}
+            {HUB_PILLARS.map((pillar) => {
+              const PillarIcon = pillar.icon
+              const open = !!openGroups[pillar.id]
+              const groupActive = pillar.items.some(i => !i.external && pathname.startsWith(i.href))
               return (
-                <button
-                  type="button"
-                  onClick={() => setPropertyToolsOpen(o => !o)}
-                  aria-expanded={propertyToolsOpen}
-                  className={cn('sidebar-link w-full text-left mt-2', groupActive && !propertyToolsOpen && 'active')}
-                >
-                  <Scale className="w-4 h-4 flex-shrink-0" aria-hidden />
-                  <span className="flex-1">Property Tools</span>
-                  <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', propertyToolsOpen && 'rotate-180')} aria-hidden />
-                </button>
+                <div key={pillar.id}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenGroups(prev => ({ ...prev, [pillar.id]: !prev[pillar.id] }))}
+                    aria-expanded={open}
+                    className={cn('sidebar-link w-full text-left mt-2', groupActive && !open && 'active')}
+                  >
+                    <PillarIcon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                    <span className="flex-1">{pillar.label}</span>
+                    <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', open && 'rotate-180')} aria-hidden />
+                  </button>
+                  {open && (
+                    <div className="ml-3 pl-3 border-l border-white/40 space-y-1 mt-1">
+                      {pillar.items.map((item) => {
+                        const Icon = item.icon
+                        if (item.external) {
+                          return (
+                            <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="sidebar-link">
+                              <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                              <span className="flex-1">{item.label}</span>
+                              <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40 rotate-45" aria-hidden />
+                            </a>
+                          )
+                        }
+                        if (item.comingSoon) {
+                          return (
+                            <div key={item.href} className="sidebar-link opacity-60 cursor-default select-none">
+                              <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                              <span className="flex-1">{item.label}</span>
+                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#1D1D1F]/10 text-[#1D1D1F]/50 border border-[#1D1D1F]/10">
+                                Soon
+                              </span>
+                            </div>
+                          )
+                        }
+                        const active = pathname.startsWith(item.href)
+                        return (
+                          <Link key={item.href} href={item.href} className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                            <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                            <span className="flex-1">{item.label}</span>
+                            {item.badge && (
+                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
+                                {item.badge}
+                              </span>
+                            )}
+                            {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
               )
-            })()}
-            {propertyToolsOpen && (
-              <div className="ml-3 pl-3 border-l border-white/40 space-y-1">
-                {(() => {
-                  const active = pathname.startsWith('/glossary')
-                  return (
-                    <Link href="/glossary" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-                      <BookA className="w-4 h-4 flex-shrink-0" aria-hidden />
-                      <span className="flex-1">Glossary</span>
-                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-                    </Link>
-                  )
-                })()}
-                {(() => {
-                  const active = pathname.startsWith('/emergency')
-                  return (
-                    <Link href="/emergency" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-                      <AlertTriangle className="w-4 h-4 flex-shrink-0" aria-hidden />
-                      <span className="flex-1">Emergency Procedures</span>
-                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-                    </Link>
-                  )
-                })()}
-                <a
-                  href="https://deposit-sim.vercel.app/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="sidebar-link"
-                >
-                  <Scale className="w-4 h-4 flex-shrink-0" aria-hidden />
-                  <span className="flex-1">Deposit Simulator</span>
-                  <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40 rotate-45" aria-hidden />
-                </a>
-              </div>
-            )}
-
-            {/* Your Development — collapsible group */}
-            {(() => {
-              const groupActive = ['/recap', '/analytics'].some(p => pathname.startsWith(p))
-              return (
-                <button
-                  type="button"
-                  onClick={() => setDevelopmentOpen(o => !o)}
-                  aria-expanded={developmentOpen}
-                  className={cn('sidebar-link w-full text-left mt-2', groupActive && !developmentOpen && 'active')}
-                >
-                  <BarChart3 className="w-4 h-4 flex-shrink-0" aria-hidden />
-                  <span className="flex-1">Your Development</span>
-                  <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', developmentOpen && 'rotate-180')} aria-hidden />
-                </button>
-              )
-            })()}
-            {developmentOpen && (
-              <div className="ml-3 pl-3 border-l border-white/40 space-y-1">
-                {(() => {
-                  const active = pathname.startsWith('/recap')
-                  return (
-                    <Link href="/recap" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-                      <RefreshCw className="w-4 h-4 flex-shrink-0" aria-hidden />
-                      <span className="flex-1">Recap &amp; Refresh</span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
-                        Monthly
-                      </span>
-                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-                    </Link>
-                  )
-                })()}
-                {(() => {
-                  const active = pathname.startsWith('/analytics')
-                  return (
-                    <Link href="/analytics" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-                      <BarChart3 className="w-4 h-4 flex-shrink-0" aria-hidden />
-                      <span className="flex-1">My Analytics</span>
-                      {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-                    </Link>
-                  )
-                })()}
-              </div>
-            )}
+            })}
           </>
         ) : (
           <>

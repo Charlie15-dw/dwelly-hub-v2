@@ -1,10 +1,12 @@
 import Sidebar from '@/components/layout/Sidebar'
 import Header from '@/components/layout/Header'
 import { UserProvider } from '@/components/UserProvider'
+import CommandPalette from '@/components/hub/CommandPalette'
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   return (
     <UserProvider>
+    <CommandPalette />
     <div className="min-h-screen bg-slate-50">
       <Sidebar />
       <div className="pl-64 flex flex-col min-h-screen">

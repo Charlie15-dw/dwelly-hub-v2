@@ -29,7 +29,7 @@ export default function EmergencyCard({ procedure }: { procedure: EmergencyProce
   const p = procedure
 
   return (
-    <div className={cn('rounded-2xl border p-5 space-y-4', PRIORITY_STYLES[p.priority])}>
+    <div id={p.id} className={cn('rounded-2xl border p-5 space-y-4 scroll-mt-6', PRIORITY_STYLES[p.priority])}>
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
