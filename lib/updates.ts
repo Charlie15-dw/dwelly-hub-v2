@@ -39,6 +39,45 @@ export interface HubUpdate {
 
 export const HUB_UPDATES: HubUpdate[] = [
   {
+    id: 'provider-portal-upgrades-2026-06-26',
+    title: 'Provider Portal upgrades',
+    date: '2026-06-26',
+    intro: "We've shipped a set of upgrades to the provider portal.",
+    sections: [
+      {
+        heading: 'New Earnings tab',
+        items: [
+          { text: 'Service providers can now access a dedicated Earnings tab in their portal to track their financial details and payouts.' },
+        ],
+        image: {
+          src: '/updates/provider-portal-2026-06-26-earnings.png',
+          alt: 'Provider portal Earnings tab showing monthly earnings and upcoming payouts.',
+        },
+      },
+      {
+        heading: 'Contractor Terms of Business (ToB)',
+        items: [
+          { text: 'A new Terms of Business row has been added to the portal navigation. This page is currently inactive — providers are not yet prompted or required to sign it.' },
+        ],
+        image: {
+          src: '/updates/provider-portal-2026-06-26-tob.png',
+          alt: 'Provider portal navigation showing the new Terms of Business row.',
+        },
+      },
+      {
+        heading: 'Authentication & security fixes',
+        items: [
+          { text: 'The portal now correctly displays an error message when a provider enters an incorrect username or password.' },
+          { text: 'Fixed a security issue with the Dashboard auto-login button, ensuring the generated link cannot be intercepted and reused.' },
+        ],
+        image: {
+          src: '/updates/provider-portal-2026-06-26-signin.png',
+          alt: 'Provider portal sign-in screen showing an incorrect login error message.',
+        },
+      },
+    ],
+  },
+  {
     id: 'landlord-service-2026-06-09',
     title: 'New Landlord service in the CRM',
     date: '2026-06-09',
