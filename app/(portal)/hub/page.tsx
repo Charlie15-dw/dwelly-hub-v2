@@ -8,6 +8,7 @@ import { createServerClient } from '@/lib/supabase/server'
 import { isHubPreview } from '@/lib/preview'
 import { hubUpdatesSorted } from '@/lib/updates'
 import { MODULES } from '@/lib/data'
+import { TRAINING_PAGES, KNOWLEDGE_ARTICLES } from '@/lib/training-content'
 import WelcomeGreeting from '@/components/ui/WelcomeGreeting'
 import HubSearchPrompt from '@/components/hub/HubSearchPrompt'
 import HubJourney, { type JourneyStep } from '@/components/hub/HubJourney'
@@ -121,12 +122,13 @@ export default async function HubPage() {
   if (!isHubPreview(user.email)) redirect('/dashboard')
 
   // Progress for the journey — same tables the dashboard reads.
-  const [{ data: profile }, { data: resultRows }, { data: progressRows }, { data: learningProfile }] =
+  const [{ data: profile }, { data: resultRows }, { data: progressRows }, { data: learningProfile }, { data: completionRows }] =
     await Promise.all([
       supabase.from('user_profiles').select('full_name').eq('id', user.id).maybeSingle(),
       supabase.from('assessment_results').select('assessment_id, passed').eq('user_id', user.id),
       supabase.from('module_progress').select('module_id, completed').eq('user_id', user.id),
       supabase.from('learning_profiles').select('completed_at').eq('user_id', user.id).maybeSingle(),
+      supabase.from('content_completions').select('content_type, content_id').eq('user_id', user.id),
     ])
 
   const passedIds = new Set(
@@ -142,6 +144,19 @@ export default async function HubPage() {
   )
   const totalModules = MODULES.filter(m => !m.locked).length
   const completedModules = Math.min(completedModuleIds.size, totalModules)
+
+  // Content "I've read this" markers for Training Guides and Knowledge Base.
+  const completions = completionRows ?? []
+  const trainingRead = new Set(
+    completions.filter(c => c.content_type === 'training').map(c => c.content_id)
+  ).size
+  const knowledgeRead = new Set(
+    completions.filter(c => c.content_type === 'knowledge').map(c => c.content_id)
+  ).size
+  const totalTraining = TRAINING_PAGES.length
+  const totalKnowledge = KNOWLEDGE_ARTICLES.length
+  const trainingDone = totalTraining > 0 && trainingRead >= totalTraining
+  const knowledgeDone = totalKnowledge > 0 && knowledgeRead >= totalKnowledge
 
   const hasLearningProfile = !!learningProfile
   const modulesStarted = completedModuleIds.size > 0
@@ -186,8 +201,12 @@ export default async function HubPage() {
     },
     {
       n: 2, label: 'Training Guide', href: '/training',
-      state: 'explore',
-      detail: 'Written guides for every area of the platform',
+      state: trainingDone ? 'done' : 'explore',
+      detail: trainingDone
+        ? 'All guides read'
+        : trainingRead > 0
+          ? `${trainingRead} of ${totalTraining} guides read`
+          : 'Written guides for every area of the platform',
     },
     {
       n: 3, label: 'Video Modules', href: '/modules',
@@ -196,8 +215,12 @@ export default async function HubPage() {
     },
     {
       n: 4, label: 'Knowledge Base', href: '/knowledge',
-      state: 'explore',
-      detail: 'In-depth property management articles',
+      state: knowledgeDone ? 'done' : 'explore',
+      detail: knowledgeDone
+        ? 'All articles read'
+        : knowledgeRead > 0
+          ? `${knowledgeRead} of ${totalKnowledge} articles read`
+          : 'In-depth property management articles',
     },
     {
       n: 5, label: 'Assessments', href: '/assessments',

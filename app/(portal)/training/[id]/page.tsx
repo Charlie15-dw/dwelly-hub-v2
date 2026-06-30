@@ -5,6 +5,7 @@ import {
   ChevronLeft, BookOpen, AlertTriangle, Info, Lightbulb,
 } from 'lucide-react'
 import { getTrainingPage, getAdjacentPages, TRAINING_PAGES } from '@/lib/training-content'
+import ContentCompletionButton from '@/components/hub/ContentCompletionButton'
 import { cn } from '@/lib/utils'
 
 export function generateStaticParams() {
@@ -212,6 +213,9 @@ export default function TrainingSectionPage({ params }: { params: { id: string }
           )}
         </div>
       )}
+
+      {/* Mark as read */}
+      <ContentCompletionButton contentType="training" contentId={page.id} />
 
       {/* Section navigation */}
       <div className="grid grid-cols-2 gap-3">

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Users, Building2 } from 'lucide-react'
+import { Users, Building2, Activity } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import InviteUserButton from '@/components/ui/InviteUserButton'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
@@ -139,7 +139,13 @@ export default async function AdminPage() {
             <p className="text-sm text-slate-500 mt-0.5">All teams · 2026–2027 Training Programme</p>
           </div>
         </div>
-        <InviteUserButton />
+        <div className="flex items-center gap-2">
+          <Link href="/admin/usage" className="btn-outline text-sm">
+            <Activity className="w-4 h-4" aria-hidden />
+            Usage
+          </Link>
+          <InviteUserButton />
+        </div>
       </div>
 
       {/* Org-wide stats */}
