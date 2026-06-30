@@ -6,7 +6,7 @@ import {
   LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
   AlertTriangle, BarChart3, BookA, MessageCircle, Building2, Scale, LayoutGrid, ChevronDown,
-  MessageSquareDashed, Megaphone, MessageSquareReply, MonitorPlay, Compass, type LucideIcon,
+  MessageSquareDashed, Megaphone, MessageSquareReply, type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -31,9 +31,10 @@ const managerItems = [
   { href: '/manager', label: 'Manager Dashboard', icon: Users },
 ]
 
-// Hub preview navigation, organised into the same five pillars as the Hub
-// landing page (Learn the craft / Master the system / Do the job / Grow & prove
-// it / Connect). Each pillar is a collapsible group.
+// Hub preview navigation, organised into collapsible groups. Training is kept
+// as one cohesive journey (the numbered steps, including assessments and the
+// competency passport); the remaining areas group into tools, development and
+// the Hub's own connective features.
 interface HubNavItem {
   href: string
   label: string
@@ -41,42 +42,39 @@ interface HubNavItem {
   external?: boolean
   comingSoon?: boolean
   badge?: string
+  step?: number
 }
-interface HubNavPillar {
+interface HubNavGroup {
   id: string
   label: string
   icon: LucideIcon
   items: HubNavItem[]
 }
 
-const HUB_PILLARS: HubNavPillar[] = [
+const HUB_GROUPS: HubNavGroup[] = [
   {
-    id: 'learn', label: 'Learn the craft', icon: Compass,
+    id: 'training', label: 'Training', icon: GraduationCap,
     items: [
-      { href: '/knowledge', label: 'Knowledge Base', icon: Library },
+      { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { href: '/pre-training', label: 'Learning Profile', icon: Brain, step: 1 },
+      { href: '/training', label: 'Training Guide', icon: GraduationCap, step: 2 },
+      { href: '/modules', label: 'Video Modules', icon: BookOpen, step: 3 },
+      { href: '/knowledge', label: 'Knowledge Base', icon: Library, step: 4 },
+      { href: '/assessments', label: 'Assessments', icon: ClipboardCheck, step: 5 },
+      { href: '/passport', label: 'Competency Passport', icon: Award, step: 6 },
+    ],
+  },
+  {
+    id: 'tools', label: 'Tools & Reference', icon: Scale,
+    items: [
       { href: '/glossary', label: 'Glossary', icon: BookA },
-    ],
-  },
-  {
-    id: 'system', label: 'Master the system', icon: MonitorPlay,
-    items: [
-      { href: '/pre-training', label: 'Learning Profile', icon: Brain },
-      { href: '/training', label: 'Training Guide', icon: GraduationCap },
-      { href: '/modules', label: 'Video Modules', icon: BookOpen },
-    ],
-  },
-  {
-    id: 'do', label: 'Do the job', icon: AlertTriangle,
-    items: [
       { href: '/emergency', label: 'Emergency Procedures', icon: AlertTriangle },
       { href: 'https://deposit-sim.vercel.app/', label: 'Deposit Simulator', icon: Scale, external: true },
     ],
   },
   {
-    id: 'grow', label: 'Grow & prove it', icon: Award,
+    id: 'development', label: 'Your Development', icon: BarChart3,
     items: [
-      { href: '/assessments', label: 'Assessments', icon: ClipboardCheck },
-      { href: '/passport', label: 'Competency Passport', icon: Award },
       { href: '/recap', label: 'Recap & Refresh', icon: RefreshCw, badge: 'Monthly' },
       { href: '/analytics', label: 'My Analytics', icon: BarChart3 },
     ],
@@ -112,9 +110,9 @@ export default function Sidebar() {
       // matching the current page automatically.
       if (preview) {
         const toOpen: Record<string, boolean> = {}
-        for (const pillar of HUB_PILLARS) {
-          if (pillar.items.some(i => !i.external && pathname.startsWith(i.href))) {
-            toOpen[pillar.id] = true
+        for (const group of HUB_GROUPS) {
+          if (group.items.some(i => !i.external && pathname.startsWith(i.href))) {
+            toOpen[group.id] = true
           }
         }
         if (Object.keys(toOpen).length) setOpenGroups(prev => ({ ...prev, ...toOpen }))
@@ -164,18 +162,6 @@ export default function Sidebar() {
           )
         })()}
 
-        {/* Dashboard — top-level quick access (preview) */}
-        {isPreview && (() => {
-          const active = pathname === '/dashboard'
-          return (
-            <Link href="/dashboard" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-              <LayoutDashboard className="w-4 h-4 flex-shrink-0" aria-hidden />
-              <span className="flex-1">Dashboard</span>
-              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
-            </Link>
-          )
-        })()}
-
         {/* Dashboard — top-level in classic nav; lives inside Training in Hub preview */}
         {!isPreview && (() => {
           const active = pathname === '/dashboard'
@@ -202,26 +188,26 @@ export default function Sidebar() {
               )
             })()}
 
-            {/* Five pillars — collapsible groups matching the Hub landing */}
-            {HUB_PILLARS.map((pillar) => {
-              const PillarIcon = pillar.icon
-              const open = !!openGroups[pillar.id]
-              const groupActive = pillar.items.some(i => !i.external && pathname.startsWith(i.href))
+            {/* Collapsible groups — Training kept as one journey */}
+            {HUB_GROUPS.map((group) => {
+              const GroupIcon = group.icon
+              const open = !!openGroups[group.id]
+              const groupActive = group.items.some(i => !i.external && pathname.startsWith(i.href))
               return (
-                <div key={pillar.id}>
+                <div key={group.id}>
                   <button
                     type="button"
-                    onClick={() => setOpenGroups(prev => ({ ...prev, [pillar.id]: !prev[pillar.id] }))}
+                    onClick={() => setOpenGroups(prev => ({ ...prev, [group.id]: !prev[group.id] }))}
                     aria-expanded={open}
                     className={cn('sidebar-link w-full text-left mt-2', groupActive && !open && 'active')}
                   >
-                    <PillarIcon className="w-4 h-4 flex-shrink-0" aria-hidden />
-                    <span className="flex-1">{pillar.label}</span>
+                    <GroupIcon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                    <span className="flex-1">{group.label}</span>
                     <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', open && 'rotate-180')} aria-hidden />
                   </button>
                   {open && (
                     <div className="ml-3 pl-3 border-l border-white/40 space-y-1 mt-1">
-                      {pillar.items.map((item) => {
+                      {group.items.map((item) => {
                         const Icon = item.icon
                         if (item.external) {
                           return (
@@ -246,7 +232,16 @@ export default function Sidebar() {
                         const active = pathname.startsWith(item.href)
                         return (
                           <Link key={item.href} href={item.href} className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
-                            <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                            {item.step ? (
+                              <span className={cn(
+                                'w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold leading-none',
+                                active ? 'bg-[#1D1D1F] text-white' : 'bg-[#1D1D1F]/15 text-[#1D1D1F]/60',
+                              )}>
+                                {item.step}
+                              </span>
+                            ) : (
+                              <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
+                            )}
                             <span className="flex-1">{item.label}</span>
                             {item.badge && (
                               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
