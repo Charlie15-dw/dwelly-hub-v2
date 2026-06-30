@@ -21,6 +21,11 @@ export interface HubUpdateVideo {
   label?: string
 }
 
+export interface HubUpdateLink {
+  label: string
+  href: string
+}
+
 export interface HubUpdate {
   id: string
   title: string
@@ -28,10 +33,63 @@ export interface HubUpdate {
   intro?: string
   notes?: string[] // highlighted callouts shown near the top of the entry
   sections: HubUpdateSection[]
+  links?: HubUpdateLink[] // related links shown as buttons
   videos?: HubUpdateVideo[]
 }
 
 export const HUB_UPDATES: HubUpdate[] = [
+  {
+    id: 'landlord-service-2026-06-09',
+    title: 'New Landlord service in the CRM',
+    date: '2026-06-09',
+    intro: "We're launching the new Landlord service in the CRM. The main change for you is that landlord details are now read-only.",
+    notes: [
+      "Landlord details are now read-only in the CRM. To update a landlord's personal details, follow the process on the linked page below.",
+      "SLA: please expect the data to be updated within one business day after the MD's confirmation.",
+    ],
+    sections: [
+      {
+        heading: 'Why the process has changed',
+        intro: 'Controlling and maintaining clean client data is an important prerequisite to delivering excellent service. Previously there was no link between the data of the contact person(s) acting on behalf of a landlord and the official property owner details. As a result, several negative outcomes occurred:',
+        items: [
+          { text: 'Some landlords received statements with the wrong name on them.' },
+          { text: 'Because landlords were stored as one shared entity, editing a contact name on a single property quietly changed it across every property tied to that landlord.' },
+          { text: 'Plus several other avoidable scenarios.' },
+        ],
+      },
+      {
+        heading: 'What has changed behind the scenes',
+        items: [
+          { text: 'All information connected to a landlord is now unified into a single, consistent record, and historic data has been migrated to the new setup.' },
+          { text: 'Everything that used to sit under Maintenance / Landlords and Maintenance → Ownership Shares now lives in the new Landlords service.' },
+          { text: 'For security reasons and to preserve data quality, we have introduced restrictions on editing.' },
+          { text: 'The LL onboarding functionality (to onboard new landlords and sign ASTs) is no longer available. Please follow the canvas instructions to fill in the form, and use your new ToB templates in PandaDoc previously introduced by Anton.' },
+        ],
+      },
+      {
+        heading: "Where we're heading next",
+        items: [
+          { text: 'This manual step is temporary.' },
+          { text: 'In parallel, we have already begun building a way for landlords to update their own details directly, verified securely by email or SMS through the LL portal. Once live, the need to route changes manually will be mostly removed — less work for everyone, and properly verified data by default.' },
+          { text: 'We are also planning a further landlord data clean-up by validating records with MDs. Keeping editing access limited for now helps us avoid conflicting changes while that clean-up is in progress.' },
+        ],
+      },
+      {
+        heading: 'For your info',
+        items: [
+          { text: "With a migration this size, there's a small chance some records may look a little off in the early days, and it's possible the odd thing goes out with the wrong details while everything settles." },
+          { text: 'If you spot anything like that, please flag it immediately — fixing these is our number one priority and we will jump on them straight away.' },
+          { text: 'Thanks for bearing with us while we get the ball rolling — your cooperation here makes a real difference!' },
+        ],
+      },
+    ],
+    links: [
+      {
+        label: 'Process for updating landlord details (Slack doc)',
+        href: 'https://dwelly-group.slack.com/docs/T07PAALJVQC/F0B880YNRQU',
+      },
+    ],
+  },
   {
     id: 'provider-portal-2026-05-29',
     title: 'Provider Portal update',

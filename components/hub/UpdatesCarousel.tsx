@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react'
 import type { HubUpdate } from '@/lib/updates'
 
 function formatDate(date: string) {
@@ -75,6 +75,23 @@ function UpdateContent({ update }: { update: HubUpdate }) {
           </div>
         ))}
       </div>
+
+      {update.links && update.links.length > 0 && (
+        <div className="flex flex-wrap gap-2 pt-1">
+          {update.links.map(link => (
+            <a
+              key={link.href}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition"
+            >
+              <ExternalLink className="w-4 h-4 flex-shrink-0" aria-hidden />
+              <span>{link.label}</span>
+            </a>
+          ))}
+        </div>
+      )}
 
       {update.videos && update.videos.length > 0 && (
         <div className="space-y-3 pt-1">
