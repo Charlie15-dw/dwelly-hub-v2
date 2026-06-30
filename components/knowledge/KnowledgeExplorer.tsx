@@ -106,7 +106,7 @@ export default function KnowledgeExplorer() {
         <div className="pointer-events-none absolute -bottom-24 -left-10 w-72 h-72 rounded-full bg-teal-400/10 blur-3xl" aria-hidden />
         <div className="relative px-7 py-9 sm:px-10 sm:py-10">
           <p className="text-[11px] font-bold uppercase tracking-widest text-white/60 mb-2">Knowledge Base</p>
-          <h2 className="text-2xl sm:text-3xl font-bold">Property &amp; Management Knowledge</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">Property &amp; Management Knowledge</h2>
           <p className="text-sm text-white/70 mt-2 max-w-2xl leading-relaxed">
             In-depth guides on tenancy law, property standards, finance and communication — the
             reference library that takes you beyond the video modules.
