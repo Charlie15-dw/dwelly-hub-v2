@@ -165,6 +165,11 @@ export default function KnowledgeArticlePage({ params }: { params: { id: string 
   const prev = idx > 0 ? KNOWLEDGE_ARTICLES[idx - 1] : null
   const next = idx < KNOWLEDGE_ARTICLES.length - 1 ? KNOWLEDGE_ARTICLES[idx + 1] : null
 
+  // Curated related reading — resolve ids to articles, dropping any that don't exist.
+  const related = (article.related ?? [])
+    .map(getKnowledgeArticle)
+    .filter((a): a is NonNullable<typeof a> => !!a)
+
   const articleContent = (
     <div className="card p-7 space-y-6">
       {article.content.map((block, i) => renderBlock(block, i))}
@@ -230,6 +235,30 @@ export default function KnowledgeArticlePage({ params }: { params: { id: string 
               ? <KnowledgeTabs articleContent={articleContent} />
               : articleContent
             }
+
+            {/* Related articles */}
+            {related.length > 0 && (
+              <div>
+                <h2 className="text-sm font-semibold text-[#1D1D1F] uppercase tracking-wide mb-3">Related articles</h2>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {related.map((r) => (
+                    <Link
+                      key={r.id}
+                      href={`/knowledge/${r.id}`}
+                      className="card card-hover p-4 flex items-start gap-3 group"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-[#F5F5F7] flex items-center justify-center text-lg flex-shrink-0">
+                        {r.icon}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[10px] text-[#AEAEB2] uppercase tracking-wide font-medium">{CATEGORY_LABEL[r.category]}</p>
+                        <p className="text-sm font-semibold text-[#1D1D1F] mt-0.5 group-hover:text-[#0071E3] transition-colors">{r.title}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Article navigation */}
             <div className="grid grid-cols-2 gap-3">

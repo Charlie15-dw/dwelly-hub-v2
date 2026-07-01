@@ -709,6 +709,8 @@ export interface KnowledgeArticle {
   // Month/year of the last formal accuracy review, shown in the article header.
   // Only set on law/regulation-driven articles where currency matters.
   lastReviewed?: string
+  // Ids of related Knowledge Base articles, surfaced at the foot of the article.
+  related?: TrainingSection[]
   content: ContentBlock[]
 }
 
@@ -717,6 +719,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     id: 'kb-tenancy-law',
     lastReviewed: 'July 2026',
     title: 'Tenancy Law Essentials',
+    related: ['kb-section-8', 'kb-deposit-schemes', 'kb-disrepair'],
     subtitle: 'Key legislation every property manager must know — from Section 11 to the Renters\' Rights Act 2025.',
     icon: '⚖️',
     category: 'legal',
@@ -811,6 +814,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     id: 'kb-disrepair',
     lastReviewed: 'July 2026',
     title: 'Disrepair Claims — A Complete Guide',
+    related: ['kb-tenancy-law', 'kb-damp-mould', 'kb-property-standards'],
     subtitle: 'How to prevent, manage, and defend disrepair claims using documentation and Dwelly.',
     icon: '🔨',
     category: 'legal',
@@ -875,6 +879,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   {
     id: 'kb-difficult-conversations',
     title: 'Difficult Conversations',
+    related: ['kb-antisocial', 'kb-landlord-relations'],
     subtitle: 'Handling rent arrears, complaint calls, and confrontational tenants with confidence.',
     icon: '💬',
     category: 'communication',
@@ -941,6 +946,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   {
     id: 'kb-financial-literacy',
     title: 'Understanding Property Financials',
+    related: ['kb-void-management', 'kb-landlord-relations'],
     subtitle: 'Reading a P&L, service charges, deductions, and explaining costs to landlords.',
     icon: '📊',
     category: 'finance',
@@ -1008,6 +1014,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     id: 'kb-property-standards',
     lastReviewed: 'July 2026',
     title: 'Property Standards & Compliance',
+    related: ['kb-damp-mould', 'kb-energy-mees', 'kb-disrepair'],
     subtitle: 'Minimum standards, mandatory certificates, licensing, and what inspections look for.',
     icon: '🏠',
     category: 'standards',
@@ -1072,6 +1079,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   {
     id: 'kb-landlord-relations',
     title: 'Landlord Relationships',
+    related: ['kb-financial-literacy', 'kb-tenant-referencing', 'kb-difficult-conversations'],
     subtitle: 'Managing landlord expectations, communications, and the agency relationship.',
     icon: '🤝',
     category: 'landlord',
@@ -1141,6 +1149,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     id: 'kb-hmo-licensing',
     lastReviewed: 'July 2026',
     title: 'HMO Licensing & Management',
+    related: ['kb-property-standards', 'kb-tenancy-law'],
     subtitle: 'Understanding Houses in Multiple Occupation — licensing requirements, management regulations, and fire safety obligations.',
     icon: '🏘️',
     category: 'legal',
@@ -1188,6 +1197,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     id: 'kb-deposit-schemes',
     lastReviewed: 'July 2026',
     title: 'Deposit Protection Schemes',
+    related: ['kb-tenancy-law', 'kb-tenant-referencing'],
     subtitle: 'How to protect tenancy deposits correctly — approved schemes, prescribed information, and dispute resolution.',
     icon: '🔒',
     category: 'legal',
@@ -1235,6 +1245,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     id: 'kb-section-8',
     lastReviewed: 'July 2026',
     title: 'Section 8 Notices — Serving & Grounds for Possession',
+    related: ['kb-tenancy-law', 'kb-disrepair', 'kb-antisocial'],
     subtitle: 'The Dwelly SOP for serving Section 8 notices — Form 3A, mandatory and discretionary grounds, compliance audit, and service procedure under the Renters\' Rights Act.',
     icon: '📋',
     category: 'legal',
@@ -1377,6 +1388,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     id: 'kb-damp-mould',
     lastReviewed: 'July 2026',
     title: 'Damp, Mould & Condensation',
+    related: ['kb-property-standards', 'kb-disrepair'],
     subtitle: 'Identifying causes, understanding landlord obligations under Awaab\'s Law, and managing remediation effectively.',
     icon: '💧',
     category: 'standards',
@@ -1425,6 +1437,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   {
     id: 'kb-tenant-referencing',
     title: 'Tenant Referencing & Affordability',
+    related: ['kb-deposit-schemes', 'kb-landlord-relations'],
     subtitle: 'Running thorough reference checks — credit, employment, landlord references, and affordability criteria.',
     icon: '🔍',
     category: 'landlord',
@@ -1472,6 +1485,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   {
     id: 'kb-void-management',
     title: 'Void Management & Turnaround',
+    related: ['kb-financial-literacy', 'kb-property-standards'],
     subtitle: 'Minimising void periods — checklists, marketing strategies, and KPIs for efficient property turnaround.',
     icon: '🔑',
     category: 'finance',
@@ -1523,6 +1537,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     id: 'kb-antisocial',
     lastReviewed: 'July 2026',
     title: 'Anti-Social Behaviour Procedures',
+    related: ['kb-section-8', 'kb-difficult-conversations'],
     subtitle: 'Handling noise complaints, harassment, and nuisance — from evidence gathering to escalation.',
     icon: '🚨',
     category: 'communication',
@@ -1566,6 +1581,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     id: 'kb-energy-mees',
     lastReviewed: 'July 2026',
     title: 'Energy Performance & MEES Compliance',
+    related: ['kb-property-standards', 'kb-hmo-licensing'],
     subtitle: 'EPC ratings, Minimum Energy Efficiency Standards, and preparing for future regulatory tightening.',
     icon: '⚡',
     category: 'standards',
