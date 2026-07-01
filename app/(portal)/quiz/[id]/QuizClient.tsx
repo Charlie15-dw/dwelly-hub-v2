@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import { isLocked, getLastAttempt, saveAttempt, unlockAssessment, getInProgress, saveInProgress, clearInProgress, type AttemptRecord } from '@/lib/assessmentStorage'
 import { createClient } from '@/lib/supabase/client'
 import { hashStr, seededShuffle, getBrowserKey } from '@/lib/shuffle'
+import { scoreQuiz } from '@/lib/quiz-scoring'
 
 /** Shuffle the options of a question and recalculate the correct index */
 function shuffleOptions(q: QuizQuestion, seed: number): QuizQuestion {
@@ -354,9 +355,7 @@ export default function QuizClient({
   }
 
   const question = demoQuestions[currentQ]
-  const correctCount = answers.filter((a, i) => a === demoQuestions[i]?.correct).length
-  const score = Math.round((correctCount / demoQuestions.length) * 100)
-  const passed = score >= passmark
+  const { correctCount, score, passed } = scoreQuiz(answers, demoQuestions, passmark)
 
   function handleSelect(idx: number) {
     if (submitted) return

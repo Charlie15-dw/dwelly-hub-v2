@@ -10,7 +10,8 @@ import { hubUpdatesSorted } from '@/lib/updates'
 import { MODULES } from '@/lib/data'
 import WelcomeGreeting from '@/components/ui/WelcomeGreeting'
 import HubSearchPrompt from '@/components/hub/HubSearchPrompt'
-import HubJourney, { type JourneyStep } from '@/components/hub/HubJourney'
+import HubJourney from '@/components/hub/HubJourney'
+import { computeJourney } from '@/lib/hub-journey'
 
 // The Hub home — the centre of the Hub and the first place everyone lands.
 // A hero, a progress-aware training journey, the latest Dwelly update, and the
@@ -156,77 +157,19 @@ export default async function HubPage() {
     c => c.content_type === 'knowledge' && c.content_id === SECTION_ID
   )
 
-  const hasLearningProfile = !!learningProfile
-  const modulesStarted = completedModuleIds.size > 0
-  const modulesDone = totalModules > 0 && completedModules >= totalModules
-  const assessmentsStarted = (resultRows ?? []).length > 0
-  const assessmentsDone = completedAssessments >= totalAssessments
-
-  const isNewStarter = !hasLearningProfile && !modulesStarted && !assessmentsStarted
-
-  // The single "current" milestone drives the Continue button and step states.
-  const current: 'profile' | 'modules' | 'assessments' | 'passport' =
-    !hasLearningProfile ? 'profile'
-    : !modulesDone ? 'modules'
-    : !assessmentsDone ? 'assessments'
-    : 'passport'
-
-  const continueHref =
-    current === 'profile' ? '/pre-training'
-    : current === 'modules' ? '/modules'
-    : current === 'assessments' ? '/assessments'
-    : '/passport'
-  const continueLabel =
-    isNewStarter ? 'Start here'
-    : current === 'profile' ? 'Continue: Learning Profile'
-    : current === 'modules' ? 'Continue: Video Modules'
-    : current === 'assessments' ? 'Continue: Assessments'
-    : 'View your Passport'
-
-  const pct = Math.round(
-    ((hasLearningProfile ? 1 : 0)
-      + (totalModules > 0 ? completedModules / totalModules : 0)
-      + completedAssessments / totalAssessments) / 3 * 100
-  )
+  const { isNewStarter, continueHref, continueLabel, pct, steps } = computeJourney({
+    hasLearningProfile: !!learningProfile,
+    completedModules,
+    totalModules,
+    completedAssessments,
+    totalAssessments,
+    hasAssessmentAttempts: (resultRows ?? []).length > 0,
+    modulesStarted: completedModuleIds.size > 0,
+    trainingDone,
+    knowledgeDone,
+  })
 
   const firstName = (profile?.full_name ?? user.email?.split('@')[0] ?? '').split(' ')[0]
-
-  const steps: JourneyStep[] = [
-    {
-      n: 1, label: 'Learning Profile', href: '/pre-training',
-      state: hasLearningProfile ? 'done' : 'current',
-      detail: hasLearningProfile ? 'Completed' : 'Start here — takes a couple of minutes',
-    },
-    {
-      n: 2, label: 'Training Guide', href: '/training',
-      state: trainingDone ? 'done' : 'explore',
-      detail: trainingDone
-        ? 'Marked complete'
-        : 'Written guides for every area of the platform',
-    },
-    {
-      n: 3, label: 'Video Modules', href: '/modules',
-      state: modulesDone ? 'done' : current === 'modules' ? 'current' : 'todo',
-      detail: modulesDone ? 'All modules complete' : `${completedModules} of ${totalModules} modules complete`,
-    },
-    {
-      n: 4, label: 'Knowledge Base', href: '/knowledge',
-      state: knowledgeDone ? 'done' : 'explore',
-      detail: knowledgeDone
-        ? 'Marked complete'
-        : 'In-depth property management articles',
-    },
-    {
-      n: 5, label: 'Assessments', href: '/assessments',
-      state: assessmentsDone ? 'done' : current === 'assessments' ? 'current' : 'todo',
-      detail: `${completedAssessments} of ${totalAssessments} passed`,
-    },
-    {
-      n: 6, label: 'Competency Passport', href: '/passport',
-      state: current === 'passport' ? 'current' : 'todo',
-      detail: current === 'passport' ? 'Ready — view your signed-off record' : 'Your finish line',
-    },
-  ]
 
   const latest = hubUpdatesSorted()[0]
 

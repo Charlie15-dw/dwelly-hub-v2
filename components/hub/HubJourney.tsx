@@ -1,21 +1,14 @@
 import Link from 'next/link'
 import { Check, ArrowRight, ChevronRight, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import type { JourneyState, JourneyStep } from '@/lib/hub-journey'
 
 // Progress-aware "Your journey" for the Hub home. Pure presentational — all
 // progress is computed server-side (from learning_profiles, module_progress and
 // assessment_results) and passed in. No completion data is invented: untracked
 // steps are shown as "explore" rather than checkable milestones.
 
-export type JourneyState = 'done' | 'current' | 'todo' | 'explore'
-
-export interface JourneyStep {
-  n: number
-  label: string
-  href: string
-  state: JourneyState
-  detail: string
-}
+export type { JourneyState, JourneyStep }
 
 interface HubJourneyProps {
   firstName: string
