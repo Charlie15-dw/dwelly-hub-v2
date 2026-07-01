@@ -26,6 +26,19 @@ function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5)
 }
 
+/** Shown on a results screen when a result/progress write to Supabase failed. */
+function SaveErrorBanner() {
+  return (
+    <div className="rounded-xl border border-red-200 bg-red-50 p-4 mb-6 text-left" role="alert">
+      <p className="text-sm font-bold text-red-700 mb-1">We couldn&apos;t save this result</p>
+      <p className="text-xs text-red-600 leading-relaxed">
+        Your answers were scored correctly, but there was a problem saving them to your record.
+        Please check your connection and try again, or let your manager know so it can be recorded manually.
+      </p>
+    </div>
+  )
+}
+
 export type QuizCategory = 'module' | 'full' | 'master' | 'recap' | 'recall' | 'release'
 
 export interface QuizClientProps {
@@ -107,6 +120,9 @@ export default function QuizClient({
   const [lastAttempt, setLastAttempt]  = useState<AttemptRecord | null>(null)
   const [quizStarted, setQuizStarted]  = useState(false)
   const [scheduleId, setScheduleId]    = useState<string | null>(null)
+  // True when a critical result/progress write to Supabase failed, so we can
+  // warn the user rather than silently losing their result.
+  const [saveError, setSaveError]      = useState(false)
 
   // Read scheduleId from URL on mount (recall quizzes only)
   useEffect(() => {
@@ -153,13 +169,18 @@ export default function QuizClient({
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
-      await supabase.from('assessment_results').insert({
+      const { error } = await supabase.from('assessment_results').insert({
         user_id: user.id,
         assessment_id: moduleId,
         score,
         passed: true,
         completed_at: new Date().toISOString(),
       })
+      if (error) {
+        console.error('Failed to save recall result', error)
+        setSaveError(true)
+        return
+      }
       if (scheduleId) {
         await fetch('/api/quiz/complete-recall', {
           method: 'POST',
@@ -179,13 +200,17 @@ export default function QuizClient({
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
-      await supabase.from('assessment_results').insert({
+      const { error } = await supabase.from('assessment_results').insert({
         user_id: user.id,
         assessment_id: moduleId,
         score,
         passed: true,
         completed_at: new Date().toISOString(),
       })
+      if (error) {
+        console.error('Failed to save recap result', error)
+        setSaveError(true)
+      }
     }
     saveRecapToSupabase()
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -219,7 +244,7 @@ export default function QuizClient({
         }
       })
 
-      await supabase.from('assessment_results').insert({
+      const { error: resultError } = await supabase.from('assessment_results').insert({
         user_id: user.id,
         assessment_id: moduleId,
         score,
@@ -227,15 +252,23 @@ export default function QuizClient({
         answers: allAnswers,
         completed_at: new Date().toISOString(),
       })
+      if (resultError) {
+        console.error('Failed to save assessment result', resultError)
+        setSaveError(true)
+      }
 
       if (passed && !isFullAssessment && !isMasterAssessment && !isReleaseQuiz) {
-        await supabase.from('module_progress').upsert({
+        const { error: progressError } = await supabase.from('module_progress').upsert({
           user_id: user.id,
           module_id: moduleId,
           progress: 100,
           completed: true,
           last_watched_at: new Date().toISOString(),
         }, { onConflict: 'user_id,module_id' })
+        if (progressError) {
+          console.error('Failed to save module progress', progressError)
+          setSaveError(true)
+        }
       }
 
       if (passed && !isFullAssessment && !isMasterAssessment && !isReleaseQuiz) {
@@ -399,6 +432,8 @@ export default function QuizClient({
             {recapLabel} — {recapTheme}
           </p>
 
+          {saveError && <SaveErrorBanner />}
+
           <div className="flex items-center justify-center gap-8 mb-6">
             <div className="text-center">
               <p className="text-4xl font-black tabular-nums" style={{ color: '#4F46E5' }}>{score}%</p>
@@ -505,6 +540,8 @@ export default function QuizClient({
           <h2 className="text-2xl font-bold text-navy mb-1">Recall Check Complete</h2>
           <p className="text-slate-500 text-sm mb-6">{recallModuleTitle}</p>
 
+          {saveError && <SaveErrorBanner />}
+
           <div className="flex items-center justify-center gap-8 mb-6">
             <div className="text-center">
               <p className="text-4xl font-black tabular-nums" style={{ color: '#f97316' }}>{score}%</p>
@@ -600,6 +637,8 @@ export default function QuizClient({
               : `You scored ${score}%. The pass threshold is ${passmark}%. Review the module and try again.`
             }
           </p>
+
+          {saveError && <SaveErrorBanner />}
 
           <div className="flex items-center justify-center gap-8 mb-6">
             <div className="text-center">
