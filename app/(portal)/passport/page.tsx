@@ -131,7 +131,7 @@ export default async function PassportPage() {
                 {monogram}
               </div>
               <div className="min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-bold leading-tight truncate">{name}</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold leading-tight truncate text-white">{name}</h1>
                 <p className="text-sm text-white/70 mt-0.5">{ROLE_LABELS[role] ?? 'Property Manager'}</p>
               </div>
             </div>
