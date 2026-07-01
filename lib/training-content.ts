@@ -716,12 +716,13 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     subtitle: 'Key legislation every property manager must know — from Section 11 to the Renters\' Rights Act 2025.',
     icon: '⚖️',
     category: 'legal',
-    readTime: '10 min read',
+    readTime: '13 min read',
     difficulty: 'intermediate',
     content: [
       { type: 'heading', level: 1, text: 'Why Tenancy Law Matters' },
       { type: 'paragraph', text: 'As a property manager you are the person tenants and landlords rely on when things go wrong. A working knowledge of the legislation that governs residential tenancies is not optional — it protects the agency, protects your landlord clients, and ensures tenants are treated fairly and lawfully.' },
       { type: 'callout', variant: 'important', text: 'You do not need to be a lawyer, but you do need to know when a situation crosses a legal threshold and when to escalate to a specialist or your line manager.' },
+      { type: 'callout', variant: 'info', text: 'Last reviewed: July 2026. This article reflects the law in England following the Renters\' Rights Act 2025, which received Royal Assent on 27 October 2025. The first major reforms — including the abolition of Section 21 — came into force on 1 May 2026. Some provisions (the Private Rented Sector Database and the Decent Homes Standard) are being phased in later; always check the current position before advising a landlord or tenant.' },
 
       { type: 'heading', level: 1, text: 'The Landlord and Tenant Act 1985 — Section 11' },
       { type: 'paragraph', text: 'Section 11 of the Landlord and Tenant Act 1985 is the cornerstone of a landlord\'s repair obligations for residential tenancies under seven years. It requires landlords to keep the structure and exterior of the property in repair and to maintain the installations for water, gas, electricity, sanitation, heating, and hot water.' },
@@ -761,16 +762,35 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
       ]},
       { type: 'callout', variant: 'warning', text: 'Common Category 1 hazards include damp and mould growth, excess cold, falls on stairs, and electrical hazards. If a tenant or council inspector raises a Category 1 hazard, escalate to your manager immediately.' },
 
-      { type: 'heading', level: 1, text: 'Notice Periods and Possession' },
-      { type: 'paragraph', text: 'Following the Renters\' Rights Act (in force from 1 May 2026), no-fault eviction has been abolished. Landlords must now rely on Section 8 notices with specified grounds to seek possession.' },
-
-      { type: 'heading', level: 1, text: 'Section 8 — Possession Notice' },
-      { type: 'paragraph', text: 'A Section 8 notice is served when a tenant has breached the terms of their tenancy. The most common grounds are rent arrears (Grounds 8, 10, and 11) and anti-social behaviour (Ground 14). A Section 8 notice must specify the grounds being relied upon and is subject to challenge in court.' },
+      { type: 'heading', level: 1, text: 'The Renters\' Rights Act 2025 — What Changed' },
+      { type: 'paragraph', text: 'The Renters\' Rights Act 2025 is the most significant reform of the private rented sector in a generation. It abolished assured shorthold tenancies (ASTs) and fixed terms, ended no-fault eviction, and changed how landlords can seek possession and increase rent. From 1 May 2026, every assured tenancy in England is governed by this new framework — including tenancies that started before that date, which converted automatically.' },
+      { type: 'subheading', level: 2, text: 'Periodic tenancies replace fixed terms' },
+      { type: 'paragraph', text: 'Fixed-term ASTs no longer exist. All assured tenancies are now open-ended periodic tenancies with a rent period of one month or shorter. A tenant cannot be locked into a minimum term, and a tenancy simply continues until it is lawfully ended.' },
       { type: 'bullets', items: [
-        'Ground 8: Mandatory — at least two months\' rent arrears at time of notice AND at hearing',
-        'Ground 10: Discretionary — some rent arrears (court decides)',
-        'Ground 11: Discretionary — persistent late payment even if arrears cleared',
-        'Ground 14: Discretionary — anti-social behaviour or nuisance to neighbours',
+        'Existing fixed-term ASTs converted to periodic tenancies on 1 May 2026',
+        'A tenant can end the tenancy at any time by giving two months\' written notice',
+        'A landlord can only end the tenancy using a Section 8 notice on a valid statutory ground',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Possession — Section 21 Abolished' },
+      { type: 'paragraph', text: 'Section 21 "no-fault" eviction has been abolished. A landlord can no longer end a tenancy simply by giving notice with no reason. The only route to possession is now a Section 8 notice specifying one or more statutory grounds, which the landlord must be able to evidence at court. Section 8 notices served on or after 1 May 2026 must use Form 3A.' },
+      { type: 'paragraph', text: 'Grounds are either mandatory (the court must grant possession if the ground is proved) or discretionary (the court may grant possession if it is reasonable to do so). The most frequently used grounds are set out below. This is a summary — for the full Dwelly procedure, the complete grounds table, and the compliance audit required before service, see the dedicated "Section 8 Notices — Serving & Grounds for Possession" article.' },
+      { type: 'table', headers: ['Ground', 'Type', 'Summary', 'Notice Period'], rows: [
+        ['1 & 1A', 'Mandatory', 'Landlord or family moving in (1) or selling (1A). Cannot be used in the first 12 months of a tenancy.', '4 months'],
+        ['8', 'Mandatory', 'Serious rent arrears — at least 3 months\' rent (or 13 weeks\' if rent is paid weekly/fortnightly) outstanding both when notice is served AND at the hearing.', '4 weeks'],
+        ['10 & 11', 'Discretionary', 'Some arrears (10) or persistent late payment even if cleared (11).', '4 weeks'],
+        ['14', 'Discretionary', 'Anti-social behaviour or nuisance to neighbours.', 'No minimum — can be immediate'],
+      ]},
+      { type: 'callout', variant: 'warning', text: 'The Ground 8 arrears threshold rose from two months to THREE months under the Renters\' Rights Act, and the notice period doubled to four weeks. If arrears fall below three months before the hearing, mandatory possession is lost. Any rent unpaid only because a Universal Credit housing payment had not yet arrived is disregarded when calculating arrears.' },
+      { type: 'callout', variant: 'important', text: 'Dwelly serves Section 8 notices on behalf of landlords under a strict SOP with MD sign-off. Never advise a landlord on grounds or serve a notice without following that process — an invalid notice costs the landlord time and money and exposes the business to liability.' },
+
+      { type: 'heading', level: 1, text: 'Rent Increases Under the New Rules' },
+      { type: 'paragraph', text: 'The Act also standardised how rent can be increased. Contractual rent-review clauses (including RPI/CPI escalators) no longer have effect. A landlord can only increase the rent on an existing tenancy using the statutory Section 13 procedure.' },
+      { type: 'bullets', items: [
+        'Rent can be increased at most once every 12 months',
+        'The landlord must serve a Section 13 notice giving at least two months\' notice of the new rent',
+        'The increase can take effect no earlier than 52 weeks after the tenancy began (or the last increase)',
+        'A tenant who believes the proposed rent is above market rate can challenge it at the First-tier Tribunal, which cannot set a rent higher than the landlord proposed',
       ]},
 
       { type: 'heading', level: 1, text: 'Deposit Protection' },
