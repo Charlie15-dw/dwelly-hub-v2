@@ -103,13 +103,6 @@ export default async function HubConnectPage() {
             </>
           )
 
-          if (comingSoon) {
-            return (
-              <div key={href} className="card p-5 opacity-70 cursor-default select-none">
-                {inner}
-              </div>
-            )
-          }
           return (
             <Link key={href} href={href} className="card p-5 group hover:shadow-md transition block">
               {inner}

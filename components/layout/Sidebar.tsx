@@ -192,18 +192,18 @@ export default function Sidebar() {
                   </a>
                 )
               }
+              const active = pathname.startsWith(item.href)
               if (item.comingSoon) {
                 return (
-                  <div key={item.href} className="sidebar-link opacity-60 cursor-default select-none">
+                  <Link key={item.href} href={item.href} className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
                     <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
                     <span className="flex-1">{item.label}</span>
                     <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#1D1D1F]/10 text-[#1D1D1F]/50 border border-[#1D1D1F]/10">
                       Soon
                     </span>
-                  </div>
+                  </Link>
                 )
               }
-              const active = pathname.startsWith(item.href)
               return (
                 <Link key={item.href} href={item.href} className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
                   {item.step ? (

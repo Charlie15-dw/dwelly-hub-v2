@@ -98,9 +98,6 @@ function ExploreCard({ item }: { item: ExploreItem }) {
     </>
   )
 
-  if (item.comingSoon) {
-    return <div className="card p-4 opacity-70 cursor-default select-none">{inner}</div>
-  }
   if (item.external) {
     return (
       <a href={item.href} target="_blank" rel="noopener noreferrer" className="card p-4 group hover:shadow-md transition block">
