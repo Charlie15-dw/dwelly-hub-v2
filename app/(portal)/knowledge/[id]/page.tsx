@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
   ArrowLeft, Clock, ChevronRight,
-  AlertTriangle, Info, Lightbulb,
+  AlertTriangle, Info, Lightbulb, CalendarCheck,
 } from 'lucide-react'
 import { KNOWLEDGE_ARTICLES, getKnowledgeArticle, type ContentBlock } from '@/lib/training-content'
 import KnowledgeTabs from '@/components/roleplay/KnowledgeTabs'
@@ -212,6 +212,14 @@ export default function KnowledgeArticlePage({ params }: { params: { id: string 
                     <span className="flex items-center gap-1.5 text-xs text-[#AEAEB2]">
                       <Clock className="w-3.5 h-3.5" aria-hidden /> {article.readTime}
                     </span>
+                    {article.lastReviewed && (
+                      <span
+                        className="flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full"
+                        title="Content checked against current legislation and guidance"
+                      >
+                        <CalendarCheck className="w-3.5 h-3.5" aria-hidden /> Reviewed {article.lastReviewed}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

@@ -706,12 +706,16 @@ export interface KnowledgeArticle {
   readTime: string
   quizModuleId?: string   // links to QUIZ_QUESTIONS in data.ts
   difficulty: 'foundation' | 'intermediate' | 'advanced'
+  // Month/year of the last formal accuracy review, shown in the article header.
+  // Only set on law/regulation-driven articles where currency matters.
+  lastReviewed?: string
   content: ContentBlock[]
 }
 
 export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   {
     id: 'kb-tenancy-law',
+    lastReviewed: 'July 2026',
     title: 'Tenancy Law Essentials',
     subtitle: 'Key legislation every property manager must know — from Section 11 to the Renters\' Rights Act 2025.',
     icon: '⚖️',
@@ -722,7 +726,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
       { type: 'heading', level: 1, text: 'Why Tenancy Law Matters' },
       { type: 'paragraph', text: 'As a property manager you are the person tenants and landlords rely on when things go wrong. A working knowledge of the legislation that governs residential tenancies is not optional — it protects the agency, protects your landlord clients, and ensures tenants are treated fairly and lawfully.' },
       { type: 'callout', variant: 'important', text: 'You do not need to be a lawyer, but you do need to know when a situation crosses a legal threshold and when to escalate to a specialist or your line manager.' },
-      { type: 'callout', variant: 'info', text: 'Last reviewed: July 2026. This article reflects the law in England following the Renters\' Rights Act 2025, which received Royal Assent on 27 October 2025. The first major reforms — including the abolition of Section 21 — came into force on 1 May 2026. Some provisions (the Private Rented Sector Database and the Decent Homes Standard) are being phased in later; always check the current position before advising a landlord or tenant.' },
+      { type: 'callout', variant: 'info', text: 'This article reflects the law in England following the Renters\' Rights Act 2025, which received Royal Assent on 27 October 2025. The first major reforms — including the abolition of Section 21 — came into force on 1 May 2026. Some provisions (the Private Rented Sector Database and the Decent Homes Standard) are being phased in later; always check the current position before advising a landlord or tenant.' },
 
       { type: 'heading', level: 1, text: 'The Landlord and Tenant Act 1985 — Section 11' },
       { type: 'paragraph', text: 'Section 11 of the Landlord and Tenant Act 1985 is the cornerstone of a landlord\'s repair obligations for residential tenancies under seven years. It requires landlords to keep the structure and exterior of the property in repair and to maintain the installations for water, gas, electricity, sanitation, heating, and hot water.' },
@@ -805,6 +809,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   },
   {
     id: 'kb-disrepair',
+    lastReviewed: 'July 2026',
     title: 'Disrepair Claims — A Complete Guide',
     subtitle: 'How to prevent, manage, and defend disrepair claims using documentation and Dwelly.',
     icon: '🔨',
@@ -1001,6 +1006,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   },
   {
     id: 'kb-property-standards',
+    lastReviewed: 'July 2026',
     title: 'Property Standards & Compliance',
     subtitle: 'Minimum standards, mandatory certificates, licensing, and what inspections look for.',
     icon: '🏠',
@@ -1133,6 +1139,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   // ─── HMO Licensing & Management ──────────────────────────────────────────────
   {
     id: 'kb-hmo-licensing',
+    lastReviewed: 'July 2026',
     title: 'HMO Licensing & Management',
     subtitle: 'Understanding Houses in Multiple Occupation — licensing requirements, management regulations, and fire safety obligations.',
     icon: '🏘️',
@@ -1179,6 +1186,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   // ─── Deposit Protection Schemes ──────────────────────────────────────────────
   {
     id: 'kb-deposit-schemes',
+    lastReviewed: 'July 2026',
     title: 'Deposit Protection Schemes',
     subtitle: 'How to protect tenancy deposits correctly — approved schemes, prescribed information, and dispute resolution.',
     icon: '🔒',
@@ -1225,6 +1233,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   // ─── Section 8 Notices & Grounds for Possession ──────────────────────────────
   {
     id: 'kb-section-8',
+    lastReviewed: 'July 2026',
     title: 'Section 8 Notices — Serving & Grounds for Possession',
     subtitle: 'The Dwelly SOP for serving Section 8 notices — Form 3A, mandatory and discretionary grounds, compliance audit, and service procedure under the Renters\' Rights Act.',
     icon: '📋',
@@ -1366,6 +1375,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   // ─── Damp, Mould & Condensation ──────────────────────────────────────────────
   {
     id: 'kb-damp-mould',
+    lastReviewed: 'July 2026',
     title: 'Damp, Mould & Condensation',
     subtitle: 'Identifying causes, understanding landlord obligations under Awaab\'s Law, and managing remediation effectively.',
     icon: '💧',
@@ -1511,6 +1521,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   // ─── Anti-Social Behaviour Procedures ────────────────────────────────────────
   {
     id: 'kb-antisocial',
+    lastReviewed: 'July 2026',
     title: 'Anti-Social Behaviour Procedures',
     subtitle: 'Handling noise complaints, harassment, and nuisance — from evidence gathering to escalation.',
     icon: '🚨',
@@ -1553,6 +1564,7 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
   // ─── Energy Performance & MEES Compliance ────────────────────────────────────
   {
     id: 'kb-energy-mees',
+    lastReviewed: 'July 2026',
     title: 'Energy Performance & MEES Compliance',
     subtitle: 'EPC ratings, Minimum Energy Efficiency Standards, and preparing for future regulatory tightening.',
     icon: '⚡',
