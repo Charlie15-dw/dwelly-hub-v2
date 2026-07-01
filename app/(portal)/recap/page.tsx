@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import {
   RefreshCw, Calendar, Flame, CheckCircle2, ChevronRight,
-  ArrowRight, Newspaper, BookOpen, Zap,
+  ArrowRight, Newspaper, BookOpen, Zap, Target,
 } from 'lucide-react'
-import { RECAP_ROUNDS, PORTAL_UPDATES, PRODUCT_RELEASE_QUIZZES } from '@/lib/data'
+import { RECAP_ROUNDS, PORTAL_UPDATES, PRODUCT_RELEASE_QUIZZES, MODULES, SECTION_LABELS, type ModuleSection } from '@/lib/data'
 import { KNOWLEDGE_ARTICLES } from '@/lib/training-content'
+import { computeFocusAreas } from '@/lib/recap-focus'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 import VideoLibraryTabs from './VideoLibraryTabs'
@@ -27,6 +28,7 @@ export default async function RecapPage() {
   // Fetch this user's completed recap rounds and release quizzes from assessment_results
   const completedByRound: Record<string, { score: number; completedAt: string }> = {}
   const completedReleaseIds = new Set<string>()
+  let allResults: { assessment_id: string; score: number; passed: boolean; completed_at: string }[] = []
 
   if (user) {
     const { data: results } = await supabase
@@ -35,7 +37,9 @@ export default async function RecapPage() {
       .eq('user_id', user.id)
       .order('completed_at', { ascending: true })
 
-    for (const r of results ?? []) {
+    allResults = results ?? []
+
+    for (const r of allResults) {
       if (r.assessment_id.startsWith('recap-')) {
         if (!completedByRound[r.assessment_id] || r.completed_at > completedByRound[r.assessment_id].completedAt) {
           completedByRound[r.assessment_id] = { score: r.score, completedAt: r.completed_at }
@@ -46,6 +50,13 @@ export default async function RecapPage() {
       }
     }
   }
+
+  // Personalised focus areas: modules the user most recently scored below the
+  // pass mark on. Empty (and the panel hidden) when there's nothing to flag.
+  const focusAreas = computeFocusAreas(
+    allResults,
+    MODULES.map(m => ({ id: m.id, title: m.title, section: m.section, passmark: m.passmark })),
+  )
 
   const completedIds = new Set(Object.keys(completedByRound))
 
@@ -298,6 +309,54 @@ export default async function RecapPage() {
           </div>
         )}
       </div>
+
+      {/* ── 2b. Your focus areas ─────────────────────────────────────────────── */}
+      {focusAreas.length > 0 && (
+        <div className="card p-6" style={{ borderLeft: '4px solid #EA580C' }}>
+          <div className="flex items-center gap-2 mb-2">
+            <Target className="w-4 h-4 flex-shrink-0 text-orange-600" aria-hidden />
+            <p className="text-xs font-bold text-[#1D1D1F] uppercase tracking-widest">Your Focus Areas</p>
+          </div>
+          <p className="text-xs text-[#6E6E73] mb-5">
+            Based on your latest assessment scores — the areas where a quick refresh would help most.
+          </p>
+          <div className="space-y-2">
+            {focusAreas.map(area => (
+              <div
+                key={area.moduleId}
+                className="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-[#F5D9C4] bg-[#FFF7ED]"
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white border border-[#F5D9C4] text-orange-700">
+                      {SECTION_LABELS[area.section as ModuleSection]}
+                    </span>
+                    <span className="text-xs font-bold text-orange-700 tabular-nums">
+                      Last score {area.score}%
+                    </span>
+                  </div>
+                  <p className="text-sm font-semibold text-[#1D1D1F] truncate">{area.title}</p>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <Link
+                    href={`/modules/${area.moduleId}`}
+                    className="text-xs font-semibold px-3 py-2 rounded-lg border border-[#E8E8ED] bg-white text-[#6E6E73] hover:border-[#1D1D1F]/30 transition"
+                  >
+                    Rewatch
+                  </Link>
+                  <Link
+                    href={`/quiz/${area.moduleId}`}
+                    className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg text-white transition-opacity hover:opacity-90"
+                    style={{ background: '#EA580C' }}
+                  >
+                    Revise <ArrowRight className="w-3.5 h-3.5" aria-hidden />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── 3. What's New ────────────────────────────────────────────────────── */}
       <div className="card p-5">
