@@ -1,51 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { User, Bell, BookOpen, Eye, Shield, Settings as SettingsIcon } from 'lucide-react'
 import { ROLE_LABELS } from '@/lib/data'
 import { useUser } from '@/components/UserProvider'
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface PortalSettings {
-  notifications: {
-    emailDigest: boolean
-    spacedRepetitionReminders: boolean
-    complianceAlerts: boolean
-    assessmentResults: boolean
-  }
-  learning: {
-    preferredTime: 'morning' | 'afternoon' | 'evening'
-    weeklyGoal: number
-    autoPlayVideos: boolean
-  }
-  accessibility: {
-    textSize: 'small' | 'medium' | 'large'
-    reducedMotion: boolean
-    highContrast: boolean
-  }
-}
-
-const DEFAULT_SETTINGS: PortalSettings = {
-  notifications: {
-    emailDigest: true,
-    spacedRepetitionReminders: true,
-    complianceAlerts: true,
-    assessmentResults: false,
-  },
-  learning: {
-    preferredTime: 'morning',
-    weeklyGoal: 4,
-    autoPlayVideos: true,
-  },
-  accessibility: {
-    textSize: 'medium',
-    reducedMotion: false,
-    highContrast: false,
-  },
-}
-
-const STORAGE_KEY = 'portal_settings'
+import { useSettings } from '@/components/SettingsProvider'
 
 // ─── Toggle Switch Component ──────────────────────────────────────────────────
 
@@ -129,68 +87,7 @@ function SectionHeader({
 
 export default function SettingsPage() {
   const { displayName, email, initials, profile } = useUser()
-  const [settings, setSettings] = useState<PortalSettings>(DEFAULT_SETTINGS)
-  const [loaded, setLoaded] = useState(false)
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored) as Partial<PortalSettings>
-        setSettings((prev) => ({
-          notifications: { ...prev.notifications, ...parsed.notifications },
-          learning: { ...prev.learning, ...parsed.learning },
-          accessibility: { ...prev.accessibility, ...parsed.accessibility },
-        }))
-      }
-    } catch {
-      // Ignore parse errors, fall back to defaults
-    }
-    setLoaded(true)
-  }, [])
-
-  // Persist to localStorage on change (after initial load)
-  useEffect(() => {
-    if (!loaded) return
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
-    } catch {
-      // Ignore storage errors
-    }
-  }, [settings, loaded])
-
-  // ── Setters ──────────────────────────────────────────────────────────────
-
-  function setNotification<K extends keyof PortalSettings['notifications']>(
-    key: K,
-    value: PortalSettings['notifications'][K]
-  ) {
-    setSettings((prev) => ({
-      ...prev,
-      notifications: { ...prev.notifications, [key]: value },
-    }))
-  }
-
-  function setLearning<K extends keyof PortalSettings['learning']>(
-    key: K,
-    value: PortalSettings['learning'][K]
-  ) {
-    setSettings((prev) => ({
-      ...prev,
-      learning: { ...prev.learning, [key]: value },
-    }))
-  }
-
-  function setAccessibility<K extends keyof PortalSettings['accessibility']>(
-    key: K,
-    value: PortalSettings['accessibility'][K]
-  ) {
-    setSettings((prev) => ({
-      ...prev,
-      accessibility: { ...prev.accessibility, [key]: value },
-    }))
-  }
+  const { settings, setNotification, setLearning, setAccessibility } = useSettings()
 
   const roleLabel = profile?.role
     ? ROLE_LABELS[profile.role as keyof typeof ROLE_LABELS] ?? profile.role

@@ -24,6 +24,35 @@
 
   html { scroll-behavior: smooth; }
 
+  /* ── Accessibility: text size (scales all rem-based type) ─────────────── */
+  html[data-text-size="small"]  { font-size: 15px; }
+  html[data-text-size="medium"] { font-size: 16px; }
+  html[data-text-size="large"]  { font-size: 18px; }
+
+  /* ── Accessibility: reduced motion ───────────────────────────────────── */
+  html.reduce-motion,
+  html.reduce-motion *,
+  html.reduce-motion *::before,
+  html.reduce-motion *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* ── Accessibility: high contrast ────────────────────────────────────── */
+  html.high-contrast {
+    --text-secondary: #1D1D1F;
+    --text-tertiary:  #3A3A3C;
+    --border:         #1D1D1F;
+    --border-subtle:  #6E6E73;
+  }
+  html.high-contrast .card { border-color: #6E6E73; }
+  html.high-contrast .text-slate-400,
+  html.high-contrast .text-slate-500 { color: #3A3A3C !important; }
+  html.high-contrast .border-slate-100,
+  html.high-contrast .border-slate-200 { border-color: #86868B !important; }
+
   body {
     @apply antialiased;
     background-color: #F5F5F7;
