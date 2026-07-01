@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
   ArrowLeft, Clock, ChevronRight,
-  AlertTriangle, Info, Lightbulb, CalendarCheck,
+  AlertTriangle, Info, Lightbulb, CalendarCheck, ClipboardCheck,
 } from 'lucide-react'
 import { KNOWLEDGE_ARTICLES, getKnowledgeArticle, type ContentBlock } from '@/lib/training-content'
 import KnowledgeTabs from '@/components/roleplay/KnowledgeTabs'
@@ -235,6 +235,25 @@ export default function KnowledgeArticlePage({ params }: { params: { id: string 
               ? <KnowledgeTabs articleContent={articleContent} />
               : articleContent
             }
+
+            {/* Test yourself — links to the article's linked quiz */}
+            {article.quizModuleId && (
+              <Link
+                href={`/quiz/${article.quizModuleId}`}
+                className="card card-hover p-5 flex items-center gap-4 group"
+              >
+                <div className="w-11 h-11 rounded-xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0">
+                  <ClipboardCheck className="w-5 h-5" aria-hidden />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[#1D1D1F]">Test yourself on this topic</p>
+                  <p className="text-xs text-[#6E6E73] mt-0.5">Take a short quiz to check what you&apos;ve taken in.</p>
+                </div>
+                <span className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-[#0071E3] flex-shrink-0 group-hover:gap-2 transition-all">
+                  Start quiz <ChevronRight className="w-4 h-4" aria-hidden />
+                </span>
+              </Link>
+            )}
 
             {/* Related articles */}
             {related.length > 0 && (
