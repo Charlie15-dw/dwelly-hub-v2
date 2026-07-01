@@ -5,6 +5,7 @@
 // remove the calls to isHubPreview() at the call sites (or widen this list).
 const HUB_PREVIEW_EMAILS = [
   'charlie@dwelly.group',
+  'walter@dwelly.group',
 ]
 
 export function isHubPreview(email: string | null | undefined): boolean {
