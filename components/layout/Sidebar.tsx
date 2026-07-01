@@ -11,6 +11,7 @@ import {
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { isHubPreview } from '@/lib/preview'
+import { useSidebar } from '@/components/layout/SidebarContext'
 import { useEffect, useState } from 'react'
 
 const journeyItems = [
@@ -94,6 +95,7 @@ const HUB_GROUPS: HubNavGroup[] = [
 export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const { open, close } = useSidebar()
   const [isManager, setIsManager] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const [isPreview, setIsPreview] = useState(false)
@@ -130,6 +132,10 @@ export default function Sidebar() {
       setUserRole(data?.role ?? null)
     })
   }, [pathname])
+
+  // Close the mobile drawer whenever the route changes (i.e. a nav link was
+  // tapped). No-op on desktop where the sidebar is always visible.
+  useEffect(() => { close() }, [pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSignOut() {
     const supabase = createClient()
@@ -233,7 +239,23 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 w-64 flex flex-col bg-gradient-navy select-none">
+    <>
+    {/* Mobile backdrop — tap to dismiss the drawer */}
+    <div
+      className={cn(
+        'lg:hidden fixed inset-0 z-40 bg-black/40 transition-opacity duration-300',
+        open ? 'opacity-100' : 'opacity-0 pointer-events-none',
+      )}
+      onClick={close}
+      aria-hidden
+    />
+    <aside
+      className={cn(
+        'fixed inset-y-0 left-0 z-50 w-64 flex flex-col bg-gradient-navy select-none',
+        'transform transition-transform duration-300 lg:translate-x-0',
+        open ? 'translate-x-0' : '-translate-x-full',
+      )}
+    >
       {/* Logo */}
       <div className="flex flex-col gap-1 px-5 py-5 border-b border-white/40">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -465,5 +487,6 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
+    </>
   )
 }

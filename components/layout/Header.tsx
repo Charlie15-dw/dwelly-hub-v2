@@ -2,9 +2,10 @@
 
 
 import { usePathname } from 'next/navigation'
-import { Search } from 'lucide-react'
+import { Search, Menu } from 'lucide-react'
 import SearchBar from '@/components/ui/SearchBar'
 import { useUser } from '@/components/UserProvider'
+import { useSidebar } from '@/components/layout/SidebarContext'
 import { isHubPreview } from '@/lib/preview'
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
@@ -29,10 +30,19 @@ export default function Header() {
   const pageInfo = pageTitles[pathname] ?? { title: 'Portal', subtitle: 'Dwelly Training System' }
   const { email } = useUser()
   const isPreview = isHubPreview(email)
+  const { toggle } = useSidebar()
 
   return (
-    <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 sticky top-0 z-30">
+    <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-30">
       <div className="flex items-center gap-2 min-w-0">
+        <button
+          type="button"
+          onClick={toggle}
+          className="lg:hidden -ml-1 mr-1 p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-navy transition flex-shrink-0"
+          aria-label="Open navigation menu"
+        >
+          <Menu className="w-5 h-5" aria-hidden />
+        </button>
         <div className="min-w-0">
           <h1 className="text-base font-bold text-navy leading-none">{pageInfo.title}</h1>
           <p className="text-xs text-slate-400 mt-0.5 leading-none hidden sm:block">{pageInfo.subtitle}</p>

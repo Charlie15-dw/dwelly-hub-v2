@@ -2,6 +2,7 @@ import Sidebar from '@/components/layout/Sidebar'
 import Header from '@/components/layout/Header'
 import { UserProvider } from '@/components/UserProvider'
 import { SettingsProvider } from '@/components/SettingsProvider'
+import { SidebarProvider } from '@/components/layout/SidebarContext'
 import CommandPalette from '@/components/hub/CommandPalette'
 import ActivityTracker from '@/components/hub/ActivityTracker'
 
@@ -9,11 +10,12 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   return (
     <UserProvider>
     <SettingsProvider>
+    <SidebarProvider>
     <CommandPalette />
     <ActivityTracker />
     <div className="min-h-screen bg-slate-50">
       <Sidebar />
-      <div className="pl-64 flex flex-col min-h-screen">
+      <div className="lg:pl-64 flex flex-col min-h-screen">
         <Header />
         <main id="main-content" className="flex-1 p-6 max-w-[1400px]">
           {children}
@@ -28,6 +30,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
         </footer>
       </div>
     </div>
+    </SidebarProvider>
     </SettingsProvider>
     </UserProvider>
   )
