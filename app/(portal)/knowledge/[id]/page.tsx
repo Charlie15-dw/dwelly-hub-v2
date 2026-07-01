@@ -6,7 +6,6 @@ import {
 } from 'lucide-react'
 import { KNOWLEDGE_ARTICLES, getKnowledgeArticle, type ContentBlock } from '@/lib/training-content'
 import KnowledgeTabs from '@/components/roleplay/KnowledgeTabs'
-import ContentCompletionButton from '@/components/hub/ContentCompletionButton'
 import ReadingProgress from '@/components/knowledge/ReadingProgress'
 import ArticleTOC from '@/components/knowledge/ArticleTOC'
 import { cn } from '@/lib/utils'
@@ -223,9 +222,6 @@ export default function KnowledgeArticlePage({ params }: { params: { id: string 
               ? <KnowledgeTabs articleContent={articleContent} />
               : articleContent
             }
-
-            {/* Mark as read */}
-            <ContentCompletionButton contentType="knowledge" contentId={article.id} />
 
             {/* Article navigation */}
             <div className="grid grid-cols-2 gap-3">

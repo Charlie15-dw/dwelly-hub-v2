@@ -5,20 +5,24 @@ import { Check, Circle, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 
-// A "Mark as read" toggle shown at the bottom of Training Guides and Knowledge
-// Base articles. Persists per-user to content_completions and reflects the
-// saved state on load. Clicking again un-marks it. Feeds the Hub journey ticks.
+// Section-level "Mark as complete" toggle shown at the bottom of the Training
+// Guide and Knowledge Base listing pages. One marker per (user, section).
+// Persists to content_completions and feeds the ticks on the Hub journey.
+
+// All articles/guides in a section share a single sentinel content_id.
+const SECTION_ID = '__section__'
 
 export default function ContentCompletionButton({
   contentType,
-  contentId,
+  label,
 }: {
   contentType: 'training' | 'knowledge'
-  contentId: string
+  label: string
 }) {
   const [done, setDone] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -36,7 +40,7 @@ export default function ContentCompletionButton({
         .select('id')
         .eq('user_id', user.id)
         .eq('content_type', contentType)
-        .eq('content_id', contentId)
+        .eq('content_id', SECTION_ID)
         .maybeSingle()
 
       if (!active) return
@@ -46,31 +50,32 @@ export default function ContentCompletionButton({
 
     load()
     return () => { active = false }
-  }, [contentType, contentId])
+  }, [contentType])
 
   async function toggle() {
     if (!userId || saving) return
     const supabase = createClient()
     setSaving(true)
+    setError(false)
     const next = !done
     setDone(next) // optimistic
 
     if (next) {
-      const { error } = await supabase
+      const { error: err } = await supabase
         .from('content_completions')
         .upsert(
-          { user_id: userId, content_type: contentType, content_id: contentId, completed_at: new Date().toISOString() },
+          { user_id: userId, content_type: contentType, content_id: SECTION_ID, completed_at: new Date().toISOString() },
           { onConflict: 'user_id,content_type,content_id' },
         )
-      if (error) setDone(false)
+      if (err) { setDone(false); setError(true) }
     } else {
-      const { error } = await supabase
+      const { error: err } = await supabase
         .from('content_completions')
         .delete()
         .eq('user_id', userId)
         .eq('content_type', contentType)
-        .eq('content_id', contentId)
-      if (error) setDone(true)
+        .eq('content_id', SECTION_ID)
+      if (err) { setDone(true); setError(true) }
     }
     setSaving(false)
   }
@@ -92,10 +97,14 @@ export default function ContentCompletionButton({
         </div>
         <div>
           <p className="text-sm font-bold text-[#1D1D1F]">
-            {done ? 'Marked as read' : 'Finished reading?'}
+            {done ? `${label} complete` : `Worked through the ${label}?`}
           </p>
           <p className="text-xs text-[#6E6E73]">
-            {done ? 'This shows as complete on your Hub journey.' : 'Mark this as read to track it on your Hub journey.'}
+            {error
+              ? 'Couldn\u2019t save — please try again in a moment.'
+              : done
+                ? 'This shows as complete on your Hub journey.'
+                : 'Mark it complete to tick it off on your Hub journey.'}
           </p>
         </div>
       </div>
@@ -111,7 +120,7 @@ export default function ContentCompletionButton({
         )}
       >
         {saving && <Loader2 className="w-4 h-4 animate-spin" aria-hidden />}
-        {done ? 'Mark as unread' : 'Mark as read'}
+        {done ? 'Mark as not complete' : 'Mark as complete'}
       </button>
     </div>
   )

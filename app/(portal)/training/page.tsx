@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ChevronRight, Clock, BookOpen, ExternalLink } from 'lucide-react'
 import { TRAINING_PAGES } from '@/lib/training-content'
+import ContentCompletionButton from '@/components/hub/ContentCompletionButton'
 import { cn } from '@/lib/utils'
 
 const COMPLIANCE_IDS = ['compliance', 'auto-vs-hold-compliance']
@@ -115,6 +116,9 @@ export default function TrainingHubPage() {
           . Work through both for full understanding.
         </p>
       </div>
+
+      {/* Mark the whole Training Guide as complete */}
+      <ContentCompletionButton contentType="training" label="Training Guide" />
     </div>
   )
 }
