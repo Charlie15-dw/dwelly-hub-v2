@@ -4,9 +4,11 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
   Search, Clock, ArrowRight, BookOpen, Layers, Sparkles,
-  Scale, MessageCircle, BarChart2, Home, Handshake, X, type LucideIcon,
+  Scale, MessageCircle, BarChart2, Home, Handshake, X, Bookmark, type LucideIcon,
 } from 'lucide-react'
 import { KNOWLEDGE_ARTICLES, type KnowledgeArticle } from '@/lib/training-content'
+import { useSettings } from '@/components/SettingsProvider'
+import BookmarkButton from '@/components/knowledge/BookmarkButton'
 import { cn } from '@/lib/utils'
 
 type Category = KnowledgeArticle['category']
@@ -48,9 +50,12 @@ function ArticleCard({ article }: { article: KnowledgeArticle }) {
     >
       <div className="flex items-start justify-between">
         <span className="text-2xl" aria-hidden>{article.icon}</span>
-        <span className={cn('text-[10px] font-semibold px-2 py-1 rounded-full border', diff.colour)}>
-          {diff.label}
-        </span>
+        <div className="flex items-center gap-1">
+          <span className={cn('text-[10px] font-semibold px-2 py-1 rounded-full border', diff.colour)}>
+            {diff.label}
+          </span>
+          <BookmarkButton articleId={article.id} />
+        </div>
       </div>
       <div className="flex-1">
         <h3 className="text-sm font-bold text-[#1D1D1F] leading-snug group-hover:text-[#0071E3] transition-colors">{article.title}</h3>
@@ -74,6 +79,11 @@ export default function KnowledgeExplorer() {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<Category | 'all'>('all')
   const [difficulty, setDifficulty] = useState<Difficulty | 'all'>('all')
+  const [savedOnly, setSavedOnly] = useState(false)
+
+  const { settings } = useSettings()
+  const bookmarks = settings.bookmarks
+  const savedCount = bookmarks.length
 
   const totalMinutes = useMemo(
     () => KNOWLEDGE_ARTICLES.reduce((sum, a) => sum + readMinutes(a.readTime), 0),
@@ -83,18 +93,19 @@ export default function KnowledgeExplorer() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return KNOWLEDGE_ARTICLES.filter(a => {
+      if (savedOnly && !bookmarks.includes(a.id)) return false
       if (category !== 'all' && a.category !== category) return false
       if (difficulty !== 'all' && a.difficulty !== difficulty) return false
       if (q && !(`${a.title} ${a.subtitle}`.toLowerCase().includes(q))) return false
       return true
     })
-  }, [query, category, difficulty])
+  }, [query, category, difficulty, savedOnly, bookmarks])
 
-  const isFiltering = query.trim() !== '' || category !== 'all' || difficulty !== 'all'
+  const isFiltering = query.trim() !== '' || category !== 'all' || difficulty !== 'all' || savedOnly
   const featured = KNOWLEDGE_ARTICLES.find(a => a.id === FEATURED_ID)
 
   function clearFilters() {
-    setQuery(''); setCategory('all'); setDifficulty('all')
+    setQuery(''); setCategory('all'); setDifficulty('all'); setSavedOnly(false)
   }
 
   return (
@@ -197,6 +208,21 @@ export default function KnowledgeExplorer() {
             )
           })}
 
+          <span className="mx-1 h-5 w-px bg-[#E8E8ED]" aria-hidden />
+
+          <button
+            type="button"
+            onClick={() => setSavedOnly(s => !s)}
+            aria-pressed={savedOnly}
+            className={cn(
+              'inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition',
+              savedOnly ? 'bg-[#0071E3]/10 text-[#0071E3] border-[#0071E3]/20' : 'bg-white text-[#6E6E73] border-[#E8E8ED] hover:border-[#1D1D1F]/30',
+            )}
+          >
+            <Bookmark className={cn('w-3 h-3', savedOnly && 'fill-current')} aria-hidden />
+            Saved{savedCount > 0 ? ` (${savedCount})` : ''}
+          </button>
+
           {isFiltering && (
             <button
               type="button"
@@ -236,10 +262,21 @@ export default function KnowledgeExplorer() {
       {filtered.length === 0 ? (
         <div className="card p-12 text-center">
           <div className="w-12 h-12 rounded-2xl bg-[#F5F5F7] flex items-center justify-center mx-auto mb-3">
-            <Search className="w-5 h-5 text-[#AEAEB2]" aria-hidden />
+            {savedOnly && savedCount === 0
+              ? <Bookmark className="w-5 h-5 text-[#AEAEB2]" aria-hidden />
+              : <Search className="w-5 h-5 text-[#AEAEB2]" aria-hidden />}
           </div>
-          <p className="text-sm font-semibold text-[#1D1D1F]">No articles match your filters</p>
-          <p className="text-xs text-[#6E6E73] mt-1">Try a different search term or clear the filters.</p>
+          {savedOnly && savedCount === 0 ? (
+            <>
+              <p className="text-sm font-semibold text-[#1D1D1F]">No saved articles yet</p>
+              <p className="text-xs text-[#6E6E73] mt-1">Tap the bookmark icon on any article to save it here for quick access.</p>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-semibold text-[#1D1D1F]">No articles match your filters</p>
+              <p className="text-xs text-[#6E6E73] mt-1">Try a different search term or clear the filters.</p>
+            </>
+          )}
           <button type="button" onClick={clearFilters} className="btn-outline text-sm mt-4 inline-flex">Clear filters</button>
         </div>
       ) : isFiltering ? (

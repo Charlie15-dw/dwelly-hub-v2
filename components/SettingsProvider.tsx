@@ -22,6 +22,11 @@ export interface PortalSettings {
     reducedMotion: boolean
     highContrast: boolean
   }
+  // Knowledge Base article ids the user has saved for quick access.
+  bookmarks: string[]
+  onboarding: {
+    welcomeDismissed: boolean
+  }
 }
 
 export const DEFAULT_SETTINGS: PortalSettings = {
@@ -40,6 +45,10 @@ export const DEFAULT_SETTINGS: PortalSettings = {
     textSize: 'medium',
     reducedMotion: false,
     highContrast: false,
+  },
+  bookmarks: [],
+  onboarding: {
+    welcomeDismissed: false,
   },
 }
 
@@ -60,6 +69,9 @@ interface SettingsContextValue {
     key: K,
     value: PortalSettings['accessibility'][K]
   ) => void
+  isBookmarked: (id: string) => boolean
+  toggleBookmark: (id: string) => void
+  dismissWelcome: () => void
 }
 
 const SettingsContext = createContext<SettingsContextValue>({
@@ -68,6 +80,9 @@ const SettingsContext = createContext<SettingsContextValue>({
   setNotification: () => {},
   setLearning: () => {},
   setAccessibility: () => {},
+  isBookmarked: () => false,
+  toggleBookmark: () => {},
+  dismissWelcome: () => {},
 })
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -79,6 +94,8 @@ function mergeSettings(partial: Partial<PortalSettings> | null | undefined): Por
     notifications: { ...DEFAULT_SETTINGS.notifications, ...partial?.notifications },
     learning: { ...DEFAULT_SETTINGS.learning, ...partial?.learning },
     accessibility: { ...DEFAULT_SETTINGS.accessibility, ...partial?.accessibility },
+    bookmarks: Array.isArray(partial?.bookmarks) ? partial!.bookmarks : DEFAULT_SETTINGS.bookmarks,
+    onboarding: { ...DEFAULT_SETTINGS.onboarding, ...partial?.onboarding },
   }
 }
 
@@ -218,9 +235,30 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     []
   )
 
+  const isBookmarked = useCallback(
+    (id: string) => settings.bookmarks.includes(id),
+    [settings.bookmarks]
+  )
+
+  const toggleBookmark = useCallback((id: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      bookmarks: prev.bookmarks.includes(id)
+        ? prev.bookmarks.filter((b) => b !== id)
+        : [...prev.bookmarks, id],
+    }))
+  }, [])
+
+  const dismissWelcome = useCallback(() => {
+    setSettings((prev) => ({
+      ...prev,
+      onboarding: { ...prev.onboarding, welcomeDismissed: true },
+    }))
+  }, [])
+
   return (
     <SettingsContext.Provider
-      value={{ settings, loaded, setNotification, setLearning, setAccessibility }}
+      value={{ settings, loaded, setNotification, setLearning, setAccessibility, isBookmarked, toggleBookmark, dismissWelcome }}
     >
       {children}
     </SettingsContext.Provider>

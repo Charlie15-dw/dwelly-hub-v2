@@ -8,6 +8,7 @@ import { KNOWLEDGE_ARTICLES, getKnowledgeArticle, type ContentBlock } from '@/li
 import KnowledgeTabs from '@/components/roleplay/KnowledgeTabs'
 import ReadingProgress from '@/components/knowledge/ReadingProgress'
 import ArticleTOC from '@/components/knowledge/ArticleTOC'
+import BookmarkButton from '@/components/knowledge/BookmarkButton'
 import { cn } from '@/lib/utils'
 
 export function generateStaticParams() {
@@ -227,6 +228,7 @@ export default function KnowledgeArticlePage({ params }: { params: { id: string 
                     )}
                   </div>
                 </div>
+                <BookmarkButton articleId={article.id} variant="labelled" className="flex-shrink-0 hidden sm:inline-flex" />
               </div>
             </div>
 
