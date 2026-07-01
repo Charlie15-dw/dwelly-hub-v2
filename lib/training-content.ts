@@ -1187,7 +1187,8 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
     difficulty: 'intermediate',
     content: [
       { type: 'heading', level: 1, text: 'Why Deposit Protection Matters' },
-      { type: 'paragraph', text: 'Under the Housing Act 2004, any deposit taken for an assured shorthold tenancy (AST) in England and Wales must be protected in a government-approved tenancy deposit scheme within 30 days of receipt. Failure to comply exposes the landlord to significant financial penalties and restricts their ability to regain possession of the property.' },
+      { type: 'paragraph', text: 'Under the Housing Act 2004, any deposit taken for an assured tenancy in England must be protected in a government-approved tenancy deposit scheme within 30 days of receipt. Failure to comply exposes the landlord to significant financial penalties and restricts their ability to regain possession of the property.' },
+      { type: 'callout', variant: 'info', text: 'The Renters\' Rights Act 2025 abolished assured shorthold tenancies (ASTs) — all tenancies in England are now periodic assured tenancies — but the deposit protection rules below are unchanged and continue to apply in full. Proper deposit protection is also court-critical for any Section 8 possession claim.' },
       { type: 'heading', level: 1, text: 'The Three Approved Schemes' },
       { type: 'table', headers: ['Scheme', 'Type Available', 'Website'], rows: [
         ['Tenancy Deposit Scheme (TDS)', 'Custodial & Insured', 'tenancydepositscheme.com'],
@@ -1381,7 +1382,8 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
       ]},
       { type: 'callout', variant: 'info', text: 'Condensation is by far the most common cause of damp and mould in rented properties. It is often wrongly blamed on tenant behaviour alone — in most cases the property itself has inadequate ventilation, insulation, or heating.' },
       { type: 'heading', level: 1, text: 'Landlord Obligations & Awaab\'s Law' },
-      { type: 'paragraph', text: 'Awaab\'s Law (introduced following the death of two-year-old Awaab Ishak from exposure to mould in his home) imposes strict timescales on landlords for investigating and remedying damp and mould. Under the Social Housing (Regulation) Act 2023, social landlords must investigate hazards within 14 days of a complaint, begin repairs within 7 days of investigation, and complete emergency repairs within 24 hours. The government has signalled that these requirements will be extended to the private rented sector.' },
+      { type: 'paragraph', text: 'Awaab\'s Law (introduced following the death of two-year-old Awaab Ishak from exposure to mould in his home) imposes strict, legally enforceable timescales on landlords for investigating and remedying serious hazards such as damp and mould. It came into force for social landlords on 27 October 2025, requiring emergency hazards to be made safe within 24 hours and setting fixed timescales for investigating and repairing damp and mould.' },
+      { type: 'callout', variant: 'important', text: 'The Renters\' Rights Act 2025 extends Awaab\'s Law to the private rented sector. The detailed PRS timescales are being confirmed through consultation and are expected to take effect from 2027. Even ahead of that, Dwelly applies the process below as best practice — prompt, evidenced action on damp and mould protects tenants and landlords alike.' },
       { type: 'steps', items: [
         'Acknowledge the tenant\'s report within 24 hours and log it in the system.',
         'Arrange an inspection within 14 days to identify the type and cause of damp.',
@@ -1583,8 +1585,10 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
       ]},
       { type: 'heading', level: 1, text: 'Exemptions' },
       { type: 'paragraph', text: 'A landlord can register an exemption if: all relevant improvements have been made and the property still cannot reach band E ("all improvements made" exemption); the cost of improvements exceeds the spending cap (currently £3,500 including VAT); a required improvement would devalue the property by more than 5%; or the tenant has refused consent for works. Exemptions last for 5 years and must be registered on the PRS Exemptions Register.' },
-      { type: 'heading', level: 1, text: 'Future Tightening — Band C by 2028' },
-      { type: 'paragraph', text: 'The government has indicated that the minimum EPC rating for rented properties will be raised to band C by 2028 for new tenancies and 2030 for existing tenancies. While the exact timeline and spending cap are subject to ongoing consultation, landlords should begin planning now. Properties currently rated D or E will need improvement works, and the cost of these works should be factored into landlord advice and financial planning.' },
+      { type: 'heading', level: 1, text: 'Confirmed Tightening — Band C by October 2030' },
+      { type: 'paragraph', text: 'On 21 January 2026 the government confirmed that all privately rented homes in England and Wales must reach EPC band C by 1 October 2030. Unlike the earlier proposals — which suggested 2028 for new tenancies and 2030 for existing ones — this is now a single deadline that applies to new and existing tenancies alike. Properties that already meet band C under the current EPC methodology before 1 October 2029 will remain compliant until that EPC expires or is replaced.' },
+      { type: 'callout', variant: 'important', text: 'The cost cap for the band C requirement is £10,000 per property (including VAT) over a ten-year period — significantly higher than the £3,500 cap that applies to the current band E standard. Where a property cannot reach band C after spending up to the cap, a "cost cap" exemption can be registered. Factor this investment into landlord advice well ahead of the 2030 deadline.' },
+      { type: 'paragraph', text: 'Properties currently rated D or E will need improvement works. The cost of these works should be factored into landlord advice and financial planning now, rather than left until close to the deadline.' },
       { type: 'steps', items: [
         'Review the current EPC for every property in your portfolio.',
         'Identify properties rated D or below that will need improvement.',
