@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { Check, ArrowRight, ChevronRight, Sparkles } from 'lucide-react'
+import { Check, ArrowRight, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import WelcomeTip from '@/components/hub/WelcomeTip'
 import type { JourneyState, JourneyStep } from '@/lib/hub-journey'
 
 // Progress-aware "Your journey" for the Hub home. Pure presentational — all
@@ -50,15 +51,7 @@ export default function HubJourney({
         </div>
       </div>
 
-      {isNewStarter && (
-        <div className="mt-5 flex items-start gap-3 rounded-2xl border border-orange/20 bg-orange/5 px-4 py-3">
-          <Sparkles className="w-4 h-4 text-orange flex-shrink-0 mt-0.5" aria-hidden />
-          <p className="text-sm text-slate-600">
-            New here? Start with your <span className="font-semibold text-navy">Learning Profile</span> —
-            it takes a couple of minutes and tailors the rest of your training to how you learn best.
-          </p>
-        </div>
-      )}
+      {isNewStarter && <WelcomeTip />}
 
       {/* Steps */}
       <ol className="mt-6 space-y-2">
