@@ -110,17 +110,18 @@ export default async function ModulesPage() {
       </div>
 
       {/* Role pathway banner */}
-      <div className="rounded-xl p-4 flex items-center justify-between gap-4" style={{ backgroundColor: '#E0F7F4' }}>
-        <div>
-          <p className="text-xs mb-0.5" style={{ color: '#5AADA8' }}>Your Pathway</p>
-          <p className="font-bold text-[#1D1D1F]">{ROLE_LABELS[CURRENT_USER.role]}</p>
-          <p className="text-xs mt-0.5 text-[#1D1D1F]/60">
+      <div className="relative overflow-hidden rounded-2xl p-4 flex items-center justify-between gap-4 bg-navy text-white">
+        <div className="pointer-events-none absolute -top-16 -right-10 w-48 h-48 rounded-full bg-orange/25 blur-3xl" aria-hidden />
+        <div className="relative">
+          <p className="text-xs mb-0.5 text-white/55">Your Pathway</p>
+          <p className="font-bold text-white">{ROLE_LABELS[CURRENT_USER.role]}</p>
+          <p className="text-xs mt-0.5 text-white/60">
             Showing {modules.filter(m => m.roles.includes(CURRENT_USER.role)).length} relevant modules
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-white/70 border border-white rounded-lg px-3 py-2">
-          <Filter className="w-3.5 h-3.5 text-[#1D1D1F]/50" aria-hidden />
-          <span className="text-xs text-[#1D1D1F]/60 font-medium">Filtered for your role</span>
+        <div className="relative flex items-center gap-2 bg-white/10 border border-white/15 rounded-lg px-3 py-2">
+          <Filter className="w-3.5 h-3.5 text-white/50" aria-hidden />
+          <span className="text-xs text-white/70 font-medium">Filtered for your role</span>
         </div>
       </div>
 

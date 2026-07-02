@@ -184,13 +184,14 @@ export default async function ModulePage({ params }: { params: { id: string } })
 
       {/* Video */}
       {params.id === 'sup-02' ? (
-        <div className="card p-6 flex items-center gap-4 rounded-2xl" style={{ backgroundColor: '#E0F7F4' }}>
-          <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#5AADA8' }}>
+        <div className="relative overflow-hidden p-6 flex items-center gap-4 rounded-2xl bg-navy text-white shadow-panel">
+          <div className="pointer-events-none absolute -top-16 -right-10 w-48 h-48 rounded-full bg-orange/25 blur-3xl" aria-hidden />
+          <div className="relative w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-orange">
             <Play className="w-5 h-5 text-white ml-0.5" aria-hidden />
           </div>
-          <div>
-            <p className="text-sm font-semibold text-[#1D1D1F]">Video Guide</p>
-            <p className="text-sm text-[#1D1D1F]/70 mt-0.5">
+          <div className="relative">
+            <p className="text-sm font-semibold text-white">Video Guide</p>
+            <p className="text-sm text-white/70 mt-0.5">
               Please refer to Support 1/2 for the video guide — it covers the full support task workflow including actioning.
             </p>
           </div>
@@ -209,10 +210,9 @@ export default async function ModulePage({ params }: { params: { id: string } })
         </div>
       ) : (
         <div className="card p-1 overflow-hidden rounded-2xl">
-          <div className="aspect-video rounded-xl flex items-center justify-center relative overflow-hidden" style={{ backgroundColor: '#E0F7F4' }}>
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #D4F3EF 0%, #E8FAF8 100%)' }} />
-            <div className="absolute right-6 top-4 w-28 h-28 rounded-full bg-white/40" />
-            <div className="absolute left-8 bottom-4 w-20 h-20 rounded-full bg-white/30" />
+          <div className="aspect-video rounded-xl flex items-center justify-center relative overflow-hidden bg-navy">
+            <div className="pointer-events-none absolute -top-10 -right-8 w-40 h-40 rounded-full bg-orange/30 blur-3xl" aria-hidden />
+            <div className="pointer-events-none absolute -bottom-10 -left-8 w-40 h-40 rounded-full bg-orange-400/15 blur-3xl" aria-hidden />
             <div className="relative text-center">
               <button
                 className="w-16 h-16 rounded-full bg-orange flex items-center justify-center
@@ -222,8 +222,8 @@ export default async function ModulePage({ params }: { params: { id: string } })
               >
                 <Play className="w-6 h-6 text-white ml-0.5" aria-hidden />
               </button>
-              <p className="font-semibold mt-3 text-sm text-[#1D1D1F]">{module.title}</p>
-              <p className="text-xs mt-1" style={{ color: '#5AADA8' }}>{module.videoLength} · Dwelly Training Video</p>
+              <p className="font-semibold mt-3 text-sm text-white">{module.title}</p>
+              <p className="text-xs mt-1 text-white/60">{module.videoLength} · Dwelly Training Video</p>
             </div>
           </div>
         </div>

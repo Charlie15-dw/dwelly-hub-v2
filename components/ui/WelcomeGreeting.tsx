@@ -28,9 +28,9 @@ export default function WelcomeGreeting({
 
   return (
     <>
-      <p className="text-sm mb-1" style={{ color: '#3A9E98' }}>Welcome back,</p>
-      <h2 className="text-2xl font-bold text-[#1D1D1F]">{firstName || '…'}</h2>
-      <p className="text-sm mt-1" style={{ color: '#5AADA8' }}>{roleLabel}</p>
+      <p className="text-sm mb-1 text-orange">Welcome back,</p>
+      <h2 className="text-2xl font-bold text-navy">{firstName || '…'}</h2>
+      <p className="text-sm mt-1 text-slate-500">{roleLabel}</p>
     </>
   )
 }

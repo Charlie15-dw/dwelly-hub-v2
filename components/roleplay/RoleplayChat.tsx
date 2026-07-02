@@ -141,22 +141,22 @@ export default function RoleplayChat() {
     return (
       <div className="space-y-5">
         {/* Intro card */}
-        <div className="rounded-2xl p-6 relative overflow-hidden" style={{ backgroundColor: '#E0F7F4' }}>
-          <div className="absolute right-4 top-4 w-24 h-24 rounded-full bg-white/40" />
-          <div className="absolute right-14 bottom-2 w-14 h-14 rounded-full bg-white/30" />
+        <div className="rounded-2xl p-6 relative overflow-hidden bg-navy text-white shadow-panel">
+          <div className="pointer-events-none absolute -top-16 -right-10 w-56 h-56 rounded-full bg-orange/30 blur-3xl" aria-hidden />
+          <div className="pointer-events-none absolute -bottom-16 -left-8 w-48 h-48 rounded-full bg-orange-400/10 blur-3xl" aria-hidden />
           <div className="relative">
             <div className="flex items-center gap-2 mb-2">
-              <Mic className="w-4 h-4 text-[#1D1D1F]" aria-hidden />
-              <span className="text-xs font-semibold uppercase tracking-widest text-[#1D1D1F]/60">Roleplay Simulator</span>
+              <Mic className="w-4 h-4 text-white" aria-hidden />
+              <span className="text-xs font-semibold uppercase tracking-widest text-white/60">Roleplay Simulator</span>
             </div>
-            <h3 className="text-xl font-bold text-[#1D1D1F] mb-1.5">Practice Difficult Conversations</h3>
-            <p className="text-sm text-[#1D1D1F]/65 leading-relaxed max-w-xl">
+            <h3 className="text-xl font-bold text-white mb-1.5">Practice Difficult Conversations</h3>
+            <p className="text-sm text-white/65 leading-relaxed max-w-xl">
               A scripted tenant will open the conversation. You respond as the property manager.
               Each scenario is different — the tenant's mood, issue, and outcome depend on how you handle it.
             </p>
             <div className="flex flex-wrap gap-2 mt-4">
               {['Rent arrears', 'Maintenance complaints', 'Deposit disputes', 'Noise issues', 'Early surrender', 'Damp & mould'].map(t => (
-                <span key={t} className="text-xs bg-white/70 border border-white text-[#1D1D1F]/70 px-2.5 py-1 rounded-full">{t}</span>
+                <span key={t} className="text-xs bg-white/10 border border-white/15 text-white/70 px-2.5 py-1 rounded-full">{t}</span>
               ))}
             </div>
           </div>

@@ -60,18 +60,17 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
 
-      {/* Welcome banner */}
-      <div className="rounded-2xl p-6 relative overflow-hidden" style={{ backgroundColor: '#E0F7F4' }}>
-        <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-white/60 rounded-r-2xl" />
-        <div className="absolute right-8 top-3 w-28 h-28 rounded-full bg-white/50" />
-        <div className="absolute right-20 bottom-1 w-16 h-16 rounded-full bg-white/40" />
+      {/* Welcome banner — navy hero, matching the Hub */}
+      <section className="relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
+        <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-orange/30 blur-3xl" aria-hidden />
+        <div className="pointer-events-none absolute -bottom-24 -left-10 w-72 h-72 rounded-full bg-orange-400/10 blur-3xl" aria-hidden />
 
-        <div className="relative">
-          <WelcomeGreeting fallbackRole={ROLE_LABELS[CURRENT_USER.role]} />
+        <div className="relative p-6 sm:p-8">
+          <WelcomeGreeting fallbackRole={ROLE_LABELS[CURRENT_USER.role]} tone="light" />
 
           {/* Learning order pills */}
-          <div className="mt-5 pt-5 border-t border-white/50">
-            <p className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color: '#5AADA8' }}>
+          <div className="mt-5 pt-5 border-t border-white/10">
+            <p className="text-[10px] font-semibold uppercase tracking-widest mb-3 text-white/50">
               Your Journey
             </p>
             <div className="flex items-center gap-2 flex-wrap">
@@ -88,31 +87,31 @@ export default async function DashboardPage() {
                     href={item.href}
                     className={cn(
                       'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all',
-                      item.done   && 'bg-white text-teal border-teal/20 shadow-sm hover:shadow',
-                      item.active && !item.done && 'bg-white text-orange border-orange/25 shadow-sm hover:shadow',
-                      !item.done && !item.active && 'bg-white/40 text-[#5AADA8] border-white/60 hover:bg-white/70',
+                      item.done   && 'bg-white/15 text-white border-white/25 hover:bg-white/20',
+                      item.active && !item.done && 'bg-orange text-white border-orange shadow-sm hover:brightness-110',
+                      !item.done && !item.active && 'bg-white/5 text-white/55 border-white/10 hover:bg-white/10',
                     )}
                   >
                     {item.done && <CheckCircle2 className="w-3 h-3 flex-shrink-0" aria-hidden />}
                     {String(i + 1)}. {item.label}
                   </Link>
-                  {i < 5 && <ChevronRight className="w-3 h-3 flex-shrink-0" style={{ color: '#8ECFCC' }} aria-hidden />}
+                  {i < 5 && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/25" aria-hidden />}
                 </div>
               ))}
             </div>
           </div>
 
           {/* Overall progress */}
-          <div className="mt-4 bg-white/60 backdrop-blur-sm border border-white/80 rounded-2xl px-5 py-4 flex items-center gap-4 flex-wrap shadow-sm">
+          <div className="mt-4 bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl px-5 py-4 flex items-center gap-4 flex-wrap">
             <div className="flex-1 min-w-48">
               <div className="flex justify-between items-center mb-1.5">
-                <span className="text-xs font-medium text-[#6E6E73]">Overall Progress</span>
-                <span className="text-sm font-bold text-[#1D1D1F]">{overallPct}%</span>
+                <span className="text-xs font-medium text-white/70">Overall Progress</span>
+                <span className="text-sm font-bold text-white">{overallPct}%</span>
               </div>
-              <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#C8EDEA' }}>
+              <div className="h-2 rounded-full overflow-hidden bg-white/15">
                 <div className="h-full bg-orange rounded-full transition-all duration-700" style={{ width: `${overallPct}%` }} />
               </div>
-              <p className="text-xs mt-1 text-[#1D1D1F]/60">
+              <p className="text-xs mt-1 text-white/60">
                 {completedCount}/{totalModules} assessments completed
               </p>
             </div>
@@ -125,7 +124,7 @@ export default async function DashboardPage() {
             </Link>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* KPI stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
