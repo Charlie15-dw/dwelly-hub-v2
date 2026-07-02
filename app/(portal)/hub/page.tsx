@@ -177,9 +177,6 @@ export default async function HubPage() {
         <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-orange/30 blur-3xl" aria-hidden />
         <div className="pointer-events-none absolute -bottom-24 -left-10 w-72 h-72 rounded-full bg-teal-400/10 blur-3xl" aria-hidden />
         <div className="relative px-7 py-9 sm:px-10 sm:py-11">
-          <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-white/10 text-white border border-white/20 mb-4">
-            Preview
-          </span>
           <WelcomeGreeting fallbackRole="Property Manager" tone="light" />
           <p className="text-sm sm:text-base text-white/70 mt-4 max-w-2xl leading-relaxed">
             Welcome to the Hub — the home of property management at Dwelly. Everything you need to

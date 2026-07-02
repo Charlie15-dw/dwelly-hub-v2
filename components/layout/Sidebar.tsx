@@ -272,9 +272,6 @@ export default function Sidebar() {
             <Link href="/hub" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
               <LayoutGrid className="w-4 h-4 flex-shrink-0" aria-hidden />
               <span className="flex-1">Hub</span>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange/10 text-orange border border-orange/20">
-                Preview
-              </span>
               {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
             </Link>
           )
@@ -426,9 +423,6 @@ export default function Sidebar() {
                 <Link href="/admin/questions" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
                   <MessageSquareDashed className="w-4 h-4 flex-shrink-0" aria-hidden />
                   <span className="flex-1">Questions</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange/10 text-orange border border-orange/20">
-                    Preview
-                  </span>
                   {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
                 </Link>
               )

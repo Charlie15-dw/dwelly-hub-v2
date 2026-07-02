@@ -185,3 +185,36 @@
   .scrollbar-hide { scrollbar-width: none; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
 }
+
+/* ── Login / Hub welcome animations ─────────────────────────────────────
+   Purely decorative. Disabled automatically under html.reduce-motion,
+   which zeroes all animation durations. */
+@keyframes hubFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(24px, -28px) scale(1.06); }
+}
+@keyframes hubFloatAlt {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-28px, 22px) scale(1.08); }
+}
+@keyframes hubShimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes hubFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hub-orb-a   { animation: hubFloat 16s ease-in-out infinite; }
+.hub-orb-b   { animation: hubFloatAlt 20s ease-in-out infinite; }
+.hub-fade    { animation: hubFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+.hub-shimmer {
+  background: linear-gradient(100deg, #FFFFFF 18%, #66ADFF 42%, #99C8FF 52%, #FFFFFF 74%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: hubShimmer 7s linear infinite;
+}
