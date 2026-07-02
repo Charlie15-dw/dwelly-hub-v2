@@ -3,12 +3,15 @@
 
 import { usePathname } from 'next/navigation'
 import { Search, Menu } from 'lucide-react'
-import SearchBar from '@/components/ui/SearchBar'
-import { useUser } from '@/components/UserProvider'
 import { useSidebar } from '@/components/layout/SidebarContext'
-import { isHubPreview } from '@/lib/preview'
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
+  '/hub':          { title: 'The Hub',              subtitle: 'The home of property management at Dwelly' },
+  '/hub/connect':  { title: 'Connect',              subtitle: 'Updates, Q&A and team communication' },
+  '/hub/updates':  { title: 'Dwelly Updates',       subtitle: 'What\u2019s changing across the product and why' },
+  '/hub/ask':      { title: 'Anonymous Q&A',        subtitle: 'Raise questions and ideas — no name attached' },
+  '/hub/answered': { title: 'You said, we did',      subtitle: 'What the team raised and what we did about it' },
+  '/hub/meet':     { title: 'Monthly PM Meet',       subtitle: 'Agenda, recordings and captured decisions' },
   '/dashboard':    { title: 'Dashboard',            subtitle: 'Your learning overview' },
   '/pre-training': { title: 'Learning Profile',     subtitle: 'Tell us how you learn best before you start the modules' },
   '/training':     { title: 'Training Guide',       subtitle: 'Written guides for every area of the Dwelly platform' },
@@ -27,54 +30,70 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
 
 export default function Header() {
   const pathname = usePathname()
-  const pageInfo = pageTitles[pathname] ?? { title: 'Portal', subtitle: 'Dwelly Training System' }
-  const { email } = useUser()
-  const isPreview = isHubPreview(email)
+  const pageInfo = pageTitles[pathname] ?? { title: 'The Hub', subtitle: 'Dwelly training & knowledge' }
   const { toggle } = useSidebar()
 
   return (
-    <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-30">
-      <div className="flex items-center gap-2 min-w-0">
-        <button
-          type="button"
-          onClick={toggle}
-          className="lg:hidden -ml-1 mr-1 p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-navy transition flex-shrink-0"
-          aria-label="Open navigation menu"
-        >
-          <Menu className="w-5 h-5" aria-hidden />
-        </button>
-        <div className="min-w-0">
-          <h1 className="text-base font-bold text-navy leading-none">{pageInfo.title}</h1>
-          <p className="text-xs text-slate-400 mt-0.5 leading-none hidden sm:block">{pageInfo.subtitle}</p>
-        </div>
+    <header className="relative overflow-hidden bg-navy text-white sticky top-0 z-30">
+      {/* Ambient glow + faint grid — echoes the sign-in screen */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="hub-orb-a absolute -top-24 right-12 w-64 h-64 rounded-full bg-orange-500/25 blur-3xl" />
+        <div className="absolute -bottom-24 left-1/3 w-56 h-56 rounded-full bg-orange-400/10 blur-3xl" />
+        <div
+          className="absolute inset-0 opacity-[0.12]"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.4) 1px, transparent 0)',
+            backgroundSize: '34px 34px',
+            maskImage: 'linear-gradient(90deg, #000 30%, transparent 90%)',
+            WebkitMaskImage: 'linear-gradient(90deg, #000 30%, transparent 90%)',
+          }}
+        />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-white/10" />
       </div>
 
-      <div className="flex items-center gap-3">
-        {/* Search — preview users get the universal Cmd-K palette trigger;
-            everyone else keeps the existing inline search. */}
-        {isPreview ? (
+      <div className="relative flex items-center justify-between gap-3 px-4 sm:px-6 h-16">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <button
+            type="button"
+            onClick={toggle}
+            className="lg:hidden -ml-1 p-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition flex-shrink-0"
+            aria-label="Open navigation menu"
+          >
+            <Menu className="w-5 h-5" aria-hidden />
+          </button>
+          <div className="min-w-0">
+            <h1 className="text-base sm:text-lg font-bold text-white leading-tight tracking-tight truncate">
+              {pageInfo.title}
+            </h1>
+            <p className="text-xs text-white/55 mt-0.5 leading-none hidden sm:block truncate">
+              {pageInfo.subtitle}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Universal ⌘K search trigger */}
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event('hub:open-search'))}
-            className="group flex items-center gap-2 h-9 pl-3 pr-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-slate-300 transition text-slate-400"
+            className="group flex items-center gap-2 h-9 pl-3 pr-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 backdrop-blur-sm transition text-white/70 hover:text-white"
             aria-label="Search the Hub"
           >
             <Search className="w-4 h-4 flex-shrink-0" aria-hidden />
             <span className="text-sm hidden sm:block">Search the Hub…</span>
-            <kbd className="hidden sm:flex items-center gap-0.5 text-[10px] font-sans font-semibold text-slate-400 bg-white border border-slate-200 rounded px-1.5 py-0.5">
+            <kbd className="hidden sm:flex items-center gap-0.5 text-[10px] font-sans font-semibold text-white/70 bg-white/10 border border-white/20 rounded px-1.5 py-0.5">
               ⌘K
             </kbd>
           </button>
-        ) : (
-          <SearchBar />
-        )}
 
-        {/* Date */}
-        <div className="hidden lg:block text-right">
-          <p className="text-xs font-medium text-navy">
-            {new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
-          </p>
-          <p className="text-[10px] text-slate-400">2026–2027 Programme</p>
+          {/* Date */}
+          <div className="hidden lg:block text-right">
+            <p className="text-xs font-medium text-white">
+              {new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
+            </p>
+            <p className="text-[10px] text-white/45">2026–2027 Programme</p>
+          </div>
         </div>
       </div>
     </header>
