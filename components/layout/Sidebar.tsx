@@ -168,7 +168,7 @@ export default function Sidebar() {
               onClick={toggle}
               aria-expanded={open}
               aria-label={`${open ? 'Collapse' : 'Expand'} ${group.label}`}
-              className="flex items-center justify-center px-2 py-2.5 rounded-xl text-[#1D1D1F]/40 hover:bg-white/55 hover:text-[#1D1D1F] transition-all flex-shrink-0"
+              className="flex items-center justify-center px-2 py-2.5 rounded-xl text-white/40 hover:bg-white/10 hover:text-white transition-all flex-shrink-0"
             >
               <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', open && 'rotate-180')} aria-hidden />
             </button>
@@ -182,11 +182,11 @@ export default function Sidebar() {
           >
             <GroupIcon className="w-4 h-4 flex-shrink-0" aria-hidden />
             <span className="flex-1">{group.label}</span>
-            <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-[#1D1D1F]/40 transition-transform', open && 'rotate-180')} aria-hidden />
+            <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-white/40 transition-transform', open && 'rotate-180')} aria-hidden />
           </button>
         )}
         {open && (
-          <div className="ml-3 pl-3 border-l border-white/40 space-y-1 mt-1">
+          <div className="ml-3 pl-3 border-l border-white/15 space-y-1 mt-1">
             {group.items.map((item) => {
               const Icon = item.icon
               if (item.external) {
@@ -194,7 +194,7 @@ export default function Sidebar() {
                   <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="sidebar-link">
                     <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
                     <span className="flex-1">{item.label}</span>
-                    <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40 rotate-45" aria-hidden />
+                    <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40 rotate-45" aria-hidden />
                   </a>
                 )
               }
@@ -204,7 +204,7 @@ export default function Sidebar() {
                   <Link key={item.href} href={item.href} className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
                     <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
                     <span className="flex-1">{item.label}</span>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#1D1D1F]/10 text-[#1D1D1F]/50 border border-[#1D1D1F]/10">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/10 text-white/50 border border-white/10">
                       Soon
                     </span>
                   </Link>
@@ -215,7 +215,7 @@ export default function Sidebar() {
                   {item.step ? (
                     <span className={cn(
                       'w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold leading-none',
-                      active ? 'bg-[#1D1D1F] text-white' : 'bg-[#1D1D1F]/15 text-[#1D1D1F]/60',
+                      active ? 'bg-white text-navy' : 'bg-white/15 text-white/60',
                     )}>
                       {item.step}
                     </span>
@@ -228,7 +228,7 @@ export default function Sidebar() {
                       {item.badge}
                     </span>
                   )}
-                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                 </Link>
               )
             })}
@@ -251,20 +251,36 @@ export default function Sidebar() {
     />
     <aside
       className={cn(
-        'fixed inset-y-0 left-0 z-50 w-64 flex flex-col bg-gradient-navy select-none',
+        'fixed inset-y-0 left-0 z-50 w-64 flex flex-col bg-navy text-white select-none overflow-hidden',
         'transform transition-transform duration-300 lg:translate-x-0',
         open ? 'translate-x-0' : '-translate-x-full',
       )}
     >
+      {/* Ambient glow + faint grid — echoes the sign-in screen */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="hub-orb-a absolute -top-20 -left-10 w-56 h-56 rounded-full bg-orange-500/20 blur-3xl" />
+        <div className="hub-orb-b absolute top-1/2 -right-16 w-56 h-56 rounded-full bg-orange-400/10 blur-3xl" />
+        <div
+          className="absolute inset-0 opacity-[0.10]"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.4) 1px, transparent 0)',
+            backgroundSize: '30px 30px',
+            maskImage: 'linear-gradient(180deg, #000 20%, transparent 80%)',
+            WebkitMaskImage: 'linear-gradient(180deg, #000 20%, transparent 80%)',
+          }}
+        />
+      </div>
+
       {/* Logo */}
-      <div className="flex flex-col gap-1 px-5 py-5 border-b border-white/40">
+      <div className="relative flex flex-col gap-1 px-5 py-5 border-b border-white/10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.svg" alt="Dwelly" width={108} height={29} className="block" />
-        <p className="text-[10px] font-medium text-[#1D1D1F] pl-0.5">{isPreview ? 'The Hub' : 'Training Portal'}</p>
+        <img src="/logo.svg" alt="Dwelly" width={108} height={29} className="block" style={{ filter: 'brightness(0) invert(1)' }} />
+        <p className="text-[10px] font-medium text-white/60 pl-0.5">{isPreview ? 'The Hub' : 'Training Portal'}</p>
       </div>
 
       {/* Main nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-hide" aria-label="Main navigation">
+      <nav className="relative flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-hide" aria-label="Main navigation">
         {/* Hub — the front door (preview only) */}
         {isPreview && (() => {
           const active = pathname === '/hub'
@@ -272,7 +288,7 @@ export default function Sidebar() {
             <Link href="/hub" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
               <LayoutGrid className="w-4 h-4 flex-shrink-0" aria-hidden />
               <span className="flex-1">Hub</span>
-              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
             </Link>
           )
         })()}
@@ -284,7 +300,7 @@ export default function Sidebar() {
             <Link href="/dashboard" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
               <LayoutDashboard className="w-4 h-4 flex-shrink-0" aria-hidden />
               <span className="flex-1">Dashboard</span>
-              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+              {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
             </Link>
           )
         })()}
@@ -301,7 +317,7 @@ export default function Sidebar() {
                 <Link href="/dobby" className={cn('sidebar-link mt-2', active && 'active')} aria-current={active ? 'page' : undefined}>
                   <MessageCircle className="w-4 h-4 flex-shrink-0" aria-hidden />
                   <span className="flex-1">Ask Dobby</span>
-                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                 </Link>
               )
             })()}
@@ -312,7 +328,7 @@ export default function Sidebar() {
         ) : (
           <>
             {/* Your Journey */}
-            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Your Journey</p>
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-white/40">Your Journey</p>
             {journeyItems.map(({ href, label, step }) => {
               const active = pathname === href || pathname.startsWith(href)
               return (
@@ -324,18 +340,18 @@ export default function Sidebar() {
                 >
                   <span className={cn(
                     'w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold leading-none',
-                    active ? 'bg-[#1D1D1F] text-white' : 'bg-[#1D1D1F]/15 text-[#1D1D1F]/60',
+                    active ? 'bg-white text-navy' : 'bg-white/15 text-white/60',
                   )}>
                     {step}
                   </span>
                   <span className="flex-1">{label}</span>
-                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                 </Link>
               )
             })}
 
             {/* References */}
-            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">References</p>
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-white/40">References</p>
             {referenceItems.map(({ href, label, icon: Icon }) => {
               const active = pathname === href || pathname.startsWith(href)
               return (
@@ -347,13 +363,13 @@ export default function Sidebar() {
                 >
                   <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
                   <span className="flex-1">{label}</span>
-                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                 </Link>
               )
             })}
 
             {/* Property Tools */}
-            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Property Tools</p>
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-white/40">Property Tools</p>
             {(() => {
               const active = pathname.startsWith('/recap')
               return (
@@ -363,7 +379,7 @@ export default function Sidebar() {
                   <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
                     Monthly
                   </span>
-                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                 </Link>
               )
             })()}
@@ -373,7 +389,7 @@ export default function Sidebar() {
                 <Link href="/dobby" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
                   <MessageCircle className="w-4 h-4 flex-shrink-0" aria-hidden />
                   <span className="flex-1">Ask Dobby</span>
-                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                 </Link>
               )
             })()}
@@ -385,18 +401,18 @@ export default function Sidebar() {
             >
               <Scale className="w-4 h-4 flex-shrink-0" aria-hidden />
               <span className="flex-1">Deposit Simulator</span>
-              <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40 rotate-45" aria-hidden />
+              <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40 rotate-45" aria-hidden />
             </a>
 
             {/* Your Development */}
-            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Your Development</p>
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-white/40">Your Development</p>
             {(() => {
               const active = pathname.startsWith('/analytics')
               return (
                 <Link href="/analytics" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
                   <BarChart3 className="w-4 h-4 flex-shrink-0" aria-hidden />
                   <span className="flex-1">My Analytics</span>
-                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                 </Link>
               )
             })()}
@@ -406,14 +422,14 @@ export default function Sidebar() {
         {/* Management — managers and admins */}
         {(isManager || isAdmin) && (
           <>
-            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-[#1D1D1F]/40">Management</p>
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-white/40">Management</p>
             {isAdmin && (() => {
               const active = pathname.startsWith('/admin') && !pathname.startsWith('/admin/questions')
               return (
                 <Link href="/admin" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
                   <Building2 className="w-4 h-4 flex-shrink-0" aria-hidden />
                   <span className="flex-1">Admin Overview</span>
-                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                 </Link>
               )
             })()}
@@ -423,7 +439,7 @@ export default function Sidebar() {
                 <Link href="/admin/questions" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
                   <MessageSquareDashed className="w-4 h-4 flex-shrink-0" aria-hidden />
                   <span className="flex-1">Questions</span>
-                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                 </Link>
               )
             })()}
@@ -438,7 +454,7 @@ export default function Sidebar() {
                 >
                   <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
                   <span className="flex-1">{label}</span>
-                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-[#1D1D1F]/40" aria-hidden />}
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                 </Link>
               )
             })}
@@ -448,23 +464,23 @@ export default function Sidebar() {
 
       {/* User identity */}
       {userDisplayName && (
-        <div className="px-4 py-3 border-t border-white/40 flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-[#1D1D1F]/20 flex items-center justify-center flex-shrink-0">
-            <span className="text-[#1D1D1F] text-[10px] font-bold leading-none">
+        <div className="relative px-4 py-3 border-t border-white/10 flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center flex-shrink-0">
+            <span className="text-white text-[10px] font-bold leading-none">
               {userDisplayName.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2)}
             </span>
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[12px] font-semibold text-[#1D1D1F] truncate leading-tight">{userDisplayName}</p>
+            <p className="text-[12px] font-semibold text-white truncate leading-tight">{userDisplayName}</p>
             {userRole && (
-              <p className="text-[10px] text-[#1D1D1F]/50 leading-tight capitalize">{userRole.replace(/-/g, ' ')}</p>
+              <p className="text-[10px] text-white/50 leading-tight capitalize">{userRole.replace(/-/g, ' ')}</p>
             )}
           </div>
         </div>
       )}
 
       {/* Bottom actions */}
-      <div className="px-3 py-3 space-y-1 border-t border-white/40">
+      <div className="relative px-3 py-3 space-y-1 border-t border-white/10">
         <Link href="/settings" className="sidebar-link">
           <Settings className="w-4 h-4 flex-shrink-0" aria-hidden />
           <span>Settings</span>

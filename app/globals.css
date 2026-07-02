@@ -75,15 +75,15 @@
   .sidebar-link {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
            transition-all duration-150;
-    color: rgba(29, 29, 31, 0.55);
+    color: rgba(255, 255, 255, 0.65);
   }
   .sidebar-link:hover {
-    background: rgba(255,255,255,0.55);
-    color: #1D1D1F;
+    background: rgba(255,255,255,0.10);
+    color: #FFFFFF;
   }
   .sidebar-link.active {
-    background: rgba(255,255,255,0.70);
-    color: #1D1D1F;
+    background: rgba(255,255,255,0.15);
+    color: #FFFFFF;
     font-weight: 600;
   }
 
