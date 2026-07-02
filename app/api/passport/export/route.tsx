@@ -121,13 +121,6 @@ const s = StyleSheet.create({
   badgeDesc:   { fontSize: 6.5, color: MID, textAlign: 'center', marginTop: 2, lineHeight: 1.3 },
   badgeState:  { fontSize: 6, fontFamily: 'Helvetica-Bold', letterSpacing: 0.8, marginTop: 3 },
 
-  // Supervision timeline
-  tlRow:   { flexDirection: 'row', alignItems: 'center', paddingVertical: 5, paddingHorizontal: 8, backgroundColor: '#F9FAFB', borderRadius: 5, marginBottom: 3 },
-  tlDot:   { width: 7, height: 7, borderRadius: 4, borderWidth: 1.5, borderColor: '#C7C7CC', backgroundColor: '#FFFFFF', marginRight: 8 },
-  tlLabel: { flex: 1, fontSize: 8, fontFamily: 'Helvetica-Bold', color: NAVY },
-  tlNote:  { fontSize: 7, color: MID, flex: 1 },
-  tlBadge: { fontSize: 6.5, fontFamily: 'Helvetica-Bold', color: GREY, backgroundColor: '#F3F4F6', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 3 },
-
   // Footer
   footer:      { position: 'absolute', bottom: 22, left: 34, right: 34, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#E8E8ED', paddingTop: 6 },
   footerText:  { fontSize: 7, color: GREY },
@@ -257,13 +250,6 @@ function PassportDocument({
   const coreRecord = record.filter(r => r.section !== 'Milestone')
   const milestoneRecord = record.filter(r => r.section === 'Milestone')
 
-  const TC_CHECKPOINTS = [
-    { label: 'Week 1 · Observation', note: 'Shadowing & first supervised tasks' },
-    { label: 'Month 1 · Review',      note: 'Progress check with line manager' },
-    { label: 'Month 2 · Review',      note: 'Independent task competency check' },
-    { label: 'Month 3 · Sign-Off',    note: 'Final supervised-period sign-off' },
-  ]
-
   return (
     <Document title={`Competency Passport — ${name}`} author="The Hub · Dwelly">
       <Page size="A4" style={s.page}>
@@ -380,20 +366,6 @@ function PassportDocument({
               </View>
             ))}
           </View>
-        </View>
-
-        {/* 90-day supervised period */}
-        <View style={s.block} wrap={false}>
-          <Text style={s.sectionTitle}>90-Day Supervised Period</Text>
-          <Text style={s.sectionSub}>Terms &amp; conditions supervision — signed off by your line manager</Text>
-          {TC_CHECKPOINTS.map(cp => (
-            <View key={cp.label} style={s.tlRow}>
-              <View style={s.tlDot} />
-              <Text style={s.tlLabel}>{cp.label}</Text>
-              <Text style={s.tlNote}>{cp.note}</Text>
-              <Text style={s.tlBadge}>Pending manager sign-off</Text>
-            </View>
-          ))}
         </View>
 
         {/* Re-certification */}

@@ -42,15 +42,6 @@ const CERT_PILL: Record<string, { label: string; bg: string; color: string }> = 
   'not-started': { label: 'Not Started',    bg: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.75)' },
 }
 
-// The 90-day supervised period checkpoints. There is no data source for these
-// yet, so they are shown honestly as pending manager sign-off — never faked.
-const TC_CHECKPOINTS = [
-  { label: 'Week 1 · Observation',  note: 'Shadowing & first supervised tasks' },
-  { label: 'Month 1 · Review',       note: 'Progress check with line manager' },
-  { label: 'Month 2 · Review',       note: 'Independent task competency check' },
-  { label: 'Month 3 · Sign-Off',     note: 'Final supervised-period sign-off' },
-]
-
 function scoreColor(score: number | null): string {
   if (score === null) return '#8E8E93'
   if (score >= PASS_MARK) return '#059669'
@@ -276,30 +267,6 @@ export default async function PassportPage() {
             </div>
           )}
         </div>
-      </div>
-
-      {/* ── 90-day T&C supervision ──────────────────────────────── */}
-      <div className="card p-5">
-        <div className="flex items-center gap-2 mb-1">
-          <UserCheck className="w-4 h-4 text-orange" aria-hidden />
-          <h3 className="text-sm font-bold text-navy">90-Day Supervised Period</h3>
-        </div>
-        <p className="text-xs text-slate-500 mb-4">Terms &amp; conditions supervision — signed off by your line manager</p>
-
-        <ol className="relative border-l border-slate-200 ml-2 space-y-4">
-          {TC_CHECKPOINTS.map(cp => (
-            <li key={cp.label} className="ml-4">
-              <span className="absolute -left-[7px] w-3.5 h-3.5 rounded-full bg-white border-2 border-slate-300" aria-hidden />
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                <p className="text-sm font-semibold text-navy">{cp.label}</p>
-                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
-                  Pending manager sign-off
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 mt-0.5">{cp.note}</p>
-            </li>
-          ))}
-        </ol>
       </div>
 
       {/* ── Annual re-certification ─────────────────────────────── */}
