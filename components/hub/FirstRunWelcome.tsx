@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Sparkles, X, BookOpen, Award, Users } from 'lucide-react'
 
 // One-time welcome for a first-time Hub visitor. A warm, values-framed "here's
@@ -34,7 +35,12 @@ export default function FirstRunWelcome({ firstName }: { firstName: string }) {
 
   if (!open) return null
 
-  return (
+  // Portal to <body> so the fixed overlay escapes any transformed/filtered
+  // ancestor in the portal shell — otherwise `inset-0` maps to that ancestor's
+  // box and the modal centres in the tall page content (off-screen), not the
+  // viewport. Guard for SSR: `open` only flips true after mount, so document
+  // is available here.
+  return createPortal(
     <div
       className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-navy/60 backdrop-blur-sm hub-fade"
       role="dialog"
@@ -62,7 +68,7 @@ export default function FirstRunWelcome({ firstName }: { firstName: string }) {
             <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-white/10 border border-white/15">
               <Sparkles className="w-3 h-3" aria-hidden /> Welcome to the Hub
             </span>
-            <h2 id="welcome-title" className="text-2xl font-bold mt-4">
+            <h2 id="welcome-title" className="text-2xl font-bold mt-4 text-white">
               {firstName ? `Welcome, ${firstName}.` : 'Welcome.'}
             </h2>
             <p className="text-sm text-white/70 mt-2 leading-relaxed">
@@ -93,6 +99,7 @@ export default function FirstRunWelcome({ firstName }: { firstName: string }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
