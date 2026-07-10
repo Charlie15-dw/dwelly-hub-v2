@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
   Search, Clock, ArrowRight, BookOpen, Layers, Sparkles,
-  Scale, MessageCircle, BarChart2, Home, Handshake, X, Bookmark, type LucideIcon,
+  Scale, MessageCircle, BarChart2, Home, Handshake, X, Bookmark, CalendarCheck, type LucideIcon,
 } from 'lucide-react'
 import { KNOWLEDGE_ARTICLES, type KnowledgeArticle } from '@/lib/training-content'
 import { useSettings } from '@/components/SettingsProvider'
@@ -40,7 +40,7 @@ function readMinutes(readTime: string): number {
   return m ? parseInt(m[0], 10) : 0
 }
 
-function ArticleCard({ article }: { article: KnowledgeArticle }) {
+function ArticleCard({ article, beta }: { article: KnowledgeArticle; beta?: boolean }) {
   const diff = DIFFICULTY_META[article.difficulty]
   const cat = CATEGORY_META[article.category]
   return (
@@ -61,6 +61,16 @@ function ArticleCard({ article }: { article: KnowledgeArticle }) {
         <h3 className="text-sm font-bold text-[#1D1D1F] leading-snug group-hover:text-[#0071E3] transition-colors">{article.title}</h3>
         <p className="text-xs text-[#6E6E73] mt-1 leading-relaxed line-clamp-2">{article.subtitle}</p>
       </div>
+      {/* Freshness stamp (beta) — reassures learners the content is current, so
+          they can trust what they're reading at a glance (Guru-style). */}
+      {beta && article.lastReviewed && (
+        <span
+          className="inline-flex items-center gap-1.5 text-[10px] font-medium text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full self-start"
+          title="Content checked against current legislation and guidance"
+        >
+          <CalendarCheck className="w-3 h-3" aria-hidden /> Reviewed {article.lastReviewed}
+        </span>
+      )}
       <div className="flex items-center justify-between pt-3 border-t border-[#E8E8ED]">
         <span className={cn('inline-flex items-center gap-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full border', cat.chip)}>
           <cat.icon className="w-3 h-3" aria-hidden />
@@ -75,7 +85,7 @@ function ArticleCard({ article }: { article: KnowledgeArticle }) {
   )
 }
 
-export default function KnowledgeExplorer() {
+export default function KnowledgeExplorer({ beta = false }: { beta?: boolean }) {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<Category | 'all'>('all')
   const [difficulty, setDifficulty] = useState<Difficulty | 'all'>('all')
@@ -283,7 +293,7 @@ export default function KnowledgeExplorer() {
         <div>
           <p className="text-xs text-[#6E6E73] mb-3">{filtered.length} {filtered.length === 1 ? 'article' : 'articles'}</p>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {filtered.map(a => <ArticleCard key={a.id} article={a} />)}
+            {filtered.map(a => <ArticleCard key={a.id} article={a} beta={beta} />)}
           </div>
         </div>
       ) : (
@@ -302,7 +312,7 @@ export default function KnowledgeExplorer() {
                 <div className="flex-1 h-px bg-[#E8E8ED]" />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {articles.map(a => <ArticleCard key={a.id} article={a} />)}
+                {articles.map(a => <ArticleCard key={a.id} article={a} beta={beta} />)}
               </div>
             </div>
           )

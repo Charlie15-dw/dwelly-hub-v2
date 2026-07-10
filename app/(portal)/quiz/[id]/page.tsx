@@ -7,6 +7,7 @@ import {
   PRODUCT_RELEASE_QUESTIONS,
 } from '@/lib/data'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
+import { isHubBeta } from '@/lib/preview'
 import QuizClient, { type QuizCategory } from './QuizClient'
 
 // Video module sections (3 questions each for combined assessments)
@@ -136,6 +137,16 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     ? RECAP_ROUNDS.find(r => r.id === moduleId)?.questionCount ?? questionPool.length
     : ASSESSMENT_QUESTION_COUNTS[moduleId] ?? questionPool.length
 
+  // Beta gate — confidence-based scoring is trialled with a single test account.
+  let beta = false
+  try {
+    const auth = createServerClient()
+    const { data: { user } } = await auth.auth.getUser()
+    beta = isHubBeta(user?.email)
+  } catch {
+    // Non-critical — quiz still loads without the beta confidence UI.
+  }
+
   // Check for a pending manager reset — done server-side so RLS never blocks it
   let wasReset = false
   if (!isRecapQuiz && !isRecallQuiz) {
@@ -183,6 +194,7 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
       backHref={backHref}
       backLabel={backLabel}
       wasReset={wasReset}
+      beta={beta}
       recapLabel={recapLabel}
       recapTheme={recapTheme}
       recapQuestionModuleIds={recapQuestionModuleIds}

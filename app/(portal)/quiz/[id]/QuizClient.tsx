@@ -42,6 +42,16 @@ function SaveErrorBanner() {
 
 export type QuizCategory = 'module' | 'full' | 'master' | 'recap' | 'recall' | 'release'
 
+// Confidence-based scoring (beta). Learners rate how sure they are before
+// seeing the answer. A confident mistake is a hidden gap worth flagging — much
+// more useful to surface than a lucky guess that happened to be right.
+type ConfidenceLevel = 'high' | 'medium' | 'low'
+const CONFIDENCE_OPTIONS: { value: ConfidenceLevel; label: string }[] = [
+  { value: 'high', label: 'Sure' },
+  { value: 'medium', label: 'Fairly sure' },
+  { value: 'low', label: 'Guessing' },
+]
+
 export interface QuizClientProps {
   moduleId: string
   moduleTitle: string
@@ -62,6 +72,8 @@ export interface QuizClientProps {
   recallDays?: number
   // set to true when server detected and consumed a pending manager reset
   wasReset?: boolean
+  // beta-gated features (confidence-based scoring)
+  beta?: boolean
 }
 
 export default function QuizClient({
@@ -80,6 +92,7 @@ export default function QuizClient({
   recallLabel,
   recallModuleTitle,
   wasReset = false,
+  beta = false,
 }: QuizClientProps) {
   const isFullAssessment   = quizCategory === 'full'
   const isMasterAssessment = quizCategory === 'master'
@@ -115,6 +128,9 @@ export default function QuizClient({
   const [currentQ, setCurrentQ]       = useState(0)
   const [selected, setSelected]        = useState<number | null>(null)
   const [submitted, setSubmitted]      = useState(false)
+  // Confidence-based scoring (beta) — captured per question before submitting.
+  const [confidence, setConfidence]    = useState<ConfidenceLevel | null>(null)
+  const [confidences, setConfidences]  = useState<(ConfidenceLevel | null)[]>(new Array(demoQuestions.length).fill(null))
   const [answers, setAnswers]          = useState<(number | null)[]>(new Array(demoQuestions.length).fill(null))
   const [showResults, setShowResults]  = useState(false)
   const [lockedByStorage, setLockedByStorage] = useState(false)
@@ -367,6 +383,11 @@ export default function QuizClient({
     const newAnswers = [...answers]
     newAnswers[currentQ] = selected
     setAnswers(newAnswers)
+    if (beta) {
+      const newConfidences = [...confidences]
+      newConfidences[currentQ] = confidence
+      setConfidences(newConfidences)
+    }
     setSubmitted(true)
     setQuizStarted(true)
     if (!isRecapQuiz) {
@@ -396,6 +417,7 @@ export default function QuizClient({
       setCurrentQ(prev => prev + 1)
       setSelected(null)
       setSubmitted(false)
+      setConfidence(null)
     } else {
       setShowResults(true)
     }
@@ -656,6 +678,34 @@ export default function QuizClient({
             </div>
           </div>
 
+          {beta && (() => {
+            // "Confidently wrong" — questions the learner was sure about but got
+            // wrong. These are the hidden gaps most worth revisiting: the learner
+            // doesn't know they don't know. Lucky guesses that were right are
+            // intentionally not celebrated here.
+            const confidentlyWrong = demoQuestions.filter((q, i) =>
+              confidences[i] === 'high' && answers[i] !== q.correct
+            )
+            if (confidentlyWrong.length === 0) return null
+            return (
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 mb-6 text-left">
+                <p className="text-sm font-bold text-amber-800 mb-1">Worth a closer look</p>
+                <p className="text-xs text-amber-700 leading-relaxed mb-2.5">
+                  You were sure about {confidentlyWrong.length} question{confidentlyWrong.length !== 1 ? 's' : ''} you
+                  didn&apos;t get right. These are the gaps most worth revisiting — read the rationale below carefully.
+                </p>
+                <ul className="space-y-1">
+                  {confidentlyWrong.map(q => (
+                    <li key={q.id} className="text-xs text-amber-700 flex items-start gap-1.5">
+                      <XCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden />
+                      <span className="leading-snug">{q.question}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          })()}
+
           <div className="text-left space-y-3 mb-6">
             {demoQuestions.map((q, i) => {
               const userAns = answers[i]
@@ -818,6 +868,32 @@ export default function QuizClient({
             )
           })}
         </div>
+
+        {beta && !submitted && selected !== null && (
+          <div className="mt-5 pt-5 border-t border-slate-100">
+            <p className="text-xs font-semibold text-slate-500 mb-2.5">How sure are you?</p>
+            <div className="flex items-center gap-2" role="group" aria-label="Confidence level">
+              {CONFIDENCE_OPTIONS.map(({ value, label }) => {
+                const active = confidence === value
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setConfidence(value)}
+                    className={cn(
+                      'flex-1 px-3 py-2 rounded-xl border text-xs font-semibold transition-all',
+                      'focus:outline-none focus:ring-2 focus:ring-navy/20',
+                      active ? 'bg-navy text-white border-navy' : 'bg-white text-slate-500 border-slate-200 hover:border-navy/40',
+                    )}
+                    aria-pressed={active}
+                  >
+                    {label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {submitted && (
           <div className={cn(

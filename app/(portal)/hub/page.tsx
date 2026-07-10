@@ -5,13 +5,18 @@ import {
   BookA, AlertTriangle, RefreshCw, BarChart3, Scale, Sparkles, type LucideIcon,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isHubPreview } from '@/lib/preview'
+import { isHubPreview, isHubBeta } from '@/lib/preview'
 import { hubUpdatesSorted } from '@/lib/updates'
 import { MODULES } from '@/lib/data'
 import WelcomeGreeting from '@/components/ui/WelcomeGreeting'
 import HubSearchPrompt from '@/components/hub/HubSearchPrompt'
 import HubJourney from '@/components/hub/HubJourney'
+import GuidedJourney from '@/components/hub/GuidedJourney'
+import FirstRunWelcome from '@/components/hub/FirstRunWelcome'
+import LearningStreak from '@/components/hub/LearningStreak'
+import SupportNetwork from '@/components/hub/SupportNetwork'
 import { computeJourney } from '@/lib/hub-journey'
+import { computeGuidedJourney } from '@/lib/hub-guided-journey'
 
 // The Hub home — the centre of the Hub and the first place everyone lands.
 // A hero, a progress-aware training journey, the latest Dwelly update, and the
@@ -154,7 +159,7 @@ export default async function HubPage() {
     c => c.content_type === 'knowledge' && c.content_id === SECTION_ID
   )
 
-  const { isNewStarter, continueHref, continueLabel, pct, steps } = computeJourney({
+  const journeyInput = {
     hasLearningProfile: !!learningProfile,
     completedModules,
     totalModules,
@@ -164,7 +169,11 @@ export default async function HubPage() {
     modulesStarted: completedModuleIds.size > 0,
     trainingDone,
     knowledgeDone,
-  })
+  }
+
+  const beta = isHubBeta(user.email)
+  const { isNewStarter, continueHref, continueLabel, pct, steps } = computeJourney(journeyInput)
+  const guided = beta ? computeGuidedJourney(journeyInput) : null
 
   const firstName = (profile?.full_name ?? user.email?.split('@')[0] ?? '').split(' ')[0]
 
@@ -188,15 +197,29 @@ export default async function HubPage() {
         </div>
       </section>
 
-      {/* Your journey — progress-aware */}
-      <HubJourney
-        firstName={firstName}
-        isNewStarter={isNewStarter}
-        pct={pct}
-        continueHref={continueHref}
-        continueLabel={continueLabel}
-        steps={steps}
-      />
+      {/* First-run welcome — beta only, shows once */}
+      {beta && <FirstRunWelcome firstName={firstName} />}
+
+      {/* Gentle private habit loop — beta only */}
+      {beta && <LearningStreak />}
+
+      {/* Your journey — progress-aware. Beta testers get the staged guided
+          journey; everyone else keeps the current flat step list. */}
+      {beta && guided ? (
+        <GuidedJourney firstName={firstName} journey={guided} />
+      ) : (
+        <HubJourney
+          firstName={firstName}
+          isNewStarter={isNewStarter}
+          pct={pct}
+          continueHref={continueHref}
+          continueLabel={continueLabel}
+          steps={steps}
+        />
+      )}
+
+      {/* Support network — beta only */}
+      {beta && <SupportNetwork />}
 
       {/* Latest from Dwelly */}
       {latest && (
