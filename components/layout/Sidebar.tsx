@@ -443,6 +443,27 @@ export default function Sidebar() {
                 </Link>
               )
             })()}
+            {isAdmin && (() => {
+              const active = pathname.startsWith('/admin/training-requests')
+              return (
+                <Link href="/admin/training-requests" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                  <GraduationCap className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Training requests</span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
+                </Link>
+              )
+            })()}
+            {/* Request training — managers and admins only (not property managers) */}
+            {(() => {
+              const active = pathname.startsWith('/hub/request-training')
+              return (
+                <Link href="/hub/request-training" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                  <GraduationCap className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Request training</span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
+                </Link>
+              )
+            })()}
             {isManager && managerItems.map(({ href, label, icon: Icon }) => {
               const active = pathname.startsWith(href)
               return (
