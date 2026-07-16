@@ -53,7 +53,7 @@ const EXPLORE_GROUPS: ExploreGroup[] = [
     items: [
       { href: '/glossary', label: 'Glossary', description: 'A\u2013Z of property management terminology.', icon: BookA },
       { href: '/emergency', label: 'Emergency Procedures', description: 'Quick-reference guides for property emergencies.', icon: AlertTriangle },
-      { href: 'https://deposit-sim.vercel.app/', label: 'Deposit Simulator', description: 'Practise deposit deductions and disputes.', icon: Scale, external: true },
+      { href: '/hub/deposit-simulator', label: 'Deposit Simulator', description: 'Practise deposit deductions and disputes.', icon: Scale },
     ],
   },
   {
