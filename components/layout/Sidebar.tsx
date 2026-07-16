@@ -71,7 +71,7 @@ const HUB_GROUPS: HubNavGroup[] = [
     items: [
       { href: '/glossary', label: 'Glossary', icon: BookA },
       { href: '/emergency', label: 'Emergency Procedures', icon: AlertTriangle },
-      { href: 'https://deposit-sim.vercel.app/', label: 'Deposit Simulator', icon: Scale, external: true },
+      { href: '/hub/deposit-simulator', label: 'Deposit Simulator', icon: Scale },
     ],
   },
   {
@@ -393,16 +393,16 @@ export default function Sidebar() {
                 </Link>
               )
             })()}
-            <a
-              href="https://deposit-sim.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="sidebar-link"
-            >
-              <Scale className="w-4 h-4 flex-shrink-0" aria-hidden />
-              <span className="flex-1">Deposit Simulator</span>
-              <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40 rotate-45" aria-hidden />
-            </a>
+            {(() => {
+              const active = pathname.startsWith('/hub/deposit-simulator')
+              return (
+                <Link href="/hub/deposit-simulator" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
+                  <Scale className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">Deposit Simulator</span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
+                </Link>
+              )
+            })()}
 
             {/* Your Development */}
             <p className="px-3 text-[10px] font-semibold uppercase tracking-widest mt-4 mb-2 text-white/40">Your Development</p>
