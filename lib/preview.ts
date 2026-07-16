@@ -11,16 +11,12 @@ export function isHubPreview(email: string | null | undefined): boolean {
 
 // Beta feature gate.
 //
-// New Hub features (guided new-starter journey, first-run welcome, confidence
-// scoring, habit streak, buddy/mentor, knowledge freshness) are being trialled
-// with a single test account before rolling out to the wider team. Gate every
-// new-feature call site behind this so the rest of the team keeps the current,
-// stable Hub until we're happy.
-const BETA_TESTERS = new Set<string>([
-  'charlie@pennington-online.co.uk',
-])
-
+// The full wave of enhanced Hub features (guided new-starter journey, first-run
+// welcome, confidence scoring, habit streak, buddy/mentor, knowledge freshness,
+// conversation practice, embedded Deposit Simulator, law & legislation feed,
+// smart refreshers and the manager competency heatmap) is now rolled out to the
+// whole team. The function is retained so existing call sites keep working; it
+// now returns true for any authenticated user.
 export function isHubBeta(email: string | null | undefined): boolean {
-  if (!email) return false
-  return BETA_TESTERS.has(email.trim().toLowerCase())
+  return Boolean(email)
 }
