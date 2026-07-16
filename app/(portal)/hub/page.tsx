@@ -143,10 +143,17 @@ export default async function HubPage() {
   const completedAssessments = passedIds.size
   const totalAssessments = ALL_ASSESSMENT_IDS.length // 15
 
-  const completedModuleIds = new Set(
-    (progressRows ?? []).filter(r => r.completed).map(r => r.module_id)
+  // Countable modules exclude locked modules and always-on reference resources
+  // (e.g. the Dobby-linked FAQ), which have no completion path — otherwise the
+  // journey would be permanently stuck one short. Mirrors how the always-on
+  // module is already excluded from ALL_ASSESSMENT_IDS.
+  const countableModuleIds = new Set(
+    MODULES.filter(m => !m.locked && m.duration !== 'Always-on').map(m => m.id)
   )
-  const totalModules = MODULES.filter(m => !m.locked).length
+  const completedModuleIds = new Set(
+    (progressRows ?? []).filter(r => r.completed && countableModuleIds.has(r.module_id)).map(r => r.module_id)
+  )
+  const totalModules = countableModuleIds.size
   const completedModules = Math.min(completedModuleIds.size, totalModules)
 
   // Section-level "worked through this" markers for the Training Guide and

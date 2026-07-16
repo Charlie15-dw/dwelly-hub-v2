@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const securityHeaders = [
-  { key: 'X-Frame-Options', value: 'DENY' },
+  // SAMEORIGIN (not DENY) so the app can embed its own tools (e.g. the
+  // Deposit Simulator served from /public) while still blocking external
+  // sites from framing us for clickjacking.
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'X-XSS-Protection', value: '1; mode=block' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
@@ -18,8 +21,8 @@ const securityHeaders = [
       "img-src 'self' data: blob:",
       "font-src 'self'",
       "connect-src 'self' https://api.anthropic.com https://*.supabase.co wss://*.supabase.co",
-      "frame-src https://drive.google.com",
-      "frame-ancestors 'none'",
+      "frame-src 'self' https://drive.google.com",
+      "frame-ancestors 'self'",
     ].join('; '),
   },
 ]
