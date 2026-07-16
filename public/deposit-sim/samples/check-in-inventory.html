@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Check-in Inventory — Apex Inventory Services</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 24px; color: #1a1a1a; font-size: 13px; }
+  .header { border-bottom: 3px solid #1B3A5C; padding-bottom: 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .company h1 { font-size: 20px; color: #1B3A5C; margin: 0 0 4px; }
+  .company p { margin: 2px 0; color: #555; font-size: 11px; }
+  .report-ref { text-align: right; font-size: 12px; color: #555; }
+  .report-ref strong { font-size: 16px; color: #1B3A5C; display: block; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; background: #F4F6F9; border-radius: 6px; padding: 16px; margin-bottom: 24px; }
+  .info-item .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #888; margin-bottom: 2px; }
+  .info-item .val { font-weight: 600; font-size: 13px; }
+  .section { margin-bottom: 20px; }
+  .section-header { background: #1B3A5C; color: white; padding: 7px 12px; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 4px 4px 0 0; }
+  .room-table { width: 100%; border-collapse: collapse; }
+  .room-table th { background: #EFF6FF; padding: 7px 10px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #1E40AF; border-bottom: 2px solid #BFDBFE; }
+  .room-table td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; font-size: 12px; }
+  .condition { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+  .new { background: #EAF4EE; color: #2D6A4F; }
+  .good { background: #EFF6FF; color: #1E40AF; }
+  .fair { background: #FEF3C7; color: #B45309; }
+  .photo-ref { font-size: 10px; color: #1E40AF; font-style: italic; }
+  .sig-section { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .sig-box { border: 1px solid #ddd; border-radius: 6px; padding: 16px; }
+  .sig-box .sig-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: #888; margin-bottom: 8px; }
+  .sig-box .sig-line { border-bottom: 1px solid #555; margin: 32px 0 6px; }
+  .sig-box .sig-name { font-size: 12px; font-weight: 700; }
+  .sig-box .sig-date { font-size: 11px; color: #555; }
+  .alert-box { background: #EAF4EE; border: 1px solid #86EFAC; border-left: 4px solid #2D6A4F; border-radius: 4px; padding: 12px; margin: 16px 0; font-size: 12px; }
+  .photo-strip { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+  .photo-thumb { width: 80px; height: 60px; background: #E5E7EB; border: 1px solid #D1D5DB; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #6B7280; text-align: center; }
+  .footer { font-size: 10px; color: #888; text-align: center; margin-top: 32px; padding-top: 12px; border-top: 1px solid #eee; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="company">
+    <h1>Apex Inventory Services</h1>
+    <p>Independent Inventory Clerks — AIIC Registered</p>
+    <p>Tel: 0116 987 3210 | reports@apexinventory.co.uk</p>
+  </div>
+  <div class="report-ref">
+    <strong>CHECK-IN INVENTORY</strong>
+    Report Ref: AIS-CI-2022-0094<br>
+    Date of Inspection: 1 February 2022<br>
+    Time: 11:00am<br>
+    Clerk: David Osei (AIIC)
+  </div>
+</div>
+
+<div class="info-grid">
+  <div class="info-item"><div class="lbl">Property Address</div><div class="val">14 Ashbourne Close, Leicester, LE3 8PQ</div></div>
+  <div class="info-item"><div class="lbl">Incoming Tenant</div><div class="val">Ms Rachel Hartley</div></div>
+  <div class="info-item"><div class="lbl">Tenancy Start Date</div><div class="val">1 February 2022</div></div>
+  <div class="info-item"><div class="lbl">Landlord / Agent</div><div class="val">Prospire Property Management</div></div>
+  <div class="info-item"><div class="lbl">Tenant Present</div><div class="val">Yes</div></div>
+  <div class="info-item"><div class="lbl">Keys Issued</div><div class="val">2x front door, 1x rear, 1x mailbox</div></div>
+</div>
+
+<div class="alert-box">
+  <strong>Photographic Schedule:</strong> This inventory is accompanied by a photographic schedule of 47 photographs taken at check-in (Ref: AIS-CI-2022-0094-PHOTOS). Photographs are date-stamped 1 February 2022 and are referenced throughout this report by photo number.
+</div>
+
+<div class="section">
+  <div class="section-header">Kitchen</div>
+  <table class="room-table">
+    <tr><th>Item</th><th>Condition</th><th>Notes</th></tr>
+    <tr><td>Oven</td><td><span class="condition new">Clean</span></td><td>Interior clean throughout, racks present and clean. <span class="photo-ref">Photos 1–4</span></td></tr>
+    <tr><td>Extractor Fan</td><td><span class="condition new">Clean</span></td><td>Filter clean, housing free of grease. <span class="photo-ref">Photo 5</span></td></tr>
+    <tr><td>Hob</td><td><span class="condition new">Clean</span></td><td>All burners clean, no residue. <span class="photo-ref">Photo 6</span></td></tr>
+    <tr><td>Work Surfaces</td><td><span class="condition new">Clean</span></td><td>All surfaces clean, no marks or staining. <span class="photo-ref">Photos 7–8</span></td></tr>
+    <tr><td>Cupboards (inside)</td><td><span class="condition new">Clean</span></td><td>All cupboards clean and empty. Shelves intact. <span class="photo-ref">Photos 9–12</span></td></tr>
+    <tr><td>Sink / Taps</td><td><span class="condition new">Clean</span></td><td>Minimal limescale consistent with supply water. <span class="photo-ref">Photo 13</span></td></tr>
+    <tr><td>Floor</td><td><span class="condition new">Clean</span></td><td>Vinyl floor clean throughout. No damage. <span class="photo-ref">Photo 14</span></td></tr>
+  </table>
+  <div class="photo-strip">
+    <div class="photo-thumb">Photo 1<br>Oven Interior</div>
+    <div class="photo-thumb">Photo 5<br>Extractor</div>
+    <div class="photo-thumb">Photo 7<br>Surfaces</div>
+    <div class="photo-thumb">Photo 13<br>Sink</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">Bathroom</div>
+  <table class="room-table">
+    <tr><th>Item</th><th>Condition</th><th>Notes</th></tr>
+    <tr><td>Bath / Shower</td><td><span class="condition new">Clean</span></td><td>Clean throughout. Grout white and clean. Sealant in good condition. <span class="photo-ref">Photos 15–17</span></td></tr>
+    <tr><td>WC</td><td><span class="condition new">Clean</span></td><td>Clean throughout including under rim. <span class="photo-ref">Photo 18</span></td></tr>
+    <tr><td>Basin</td><td><span class="condition new">Clean</span></td><td>Clean, taps with minimal limescale. <span class="photo-ref">Photo 19</span></td></tr>
+    <tr><td>Tiles</td><td><span class="condition new">Clean</span></td><td>All tiles clean, grout clean and white. <span class="photo-ref">Photos 20–21</span></td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header">Bedroom 1</div>
+  <table class="room-table">
+    <tr><th>Item</th><th>Condition</th><th>Notes</th></tr>
+    <tr><td>Walls / Ceiling</td><td><span class="condition new">Good</span></td><td>Freshly painted. No marks or damage. <span class="photo-ref">Photos 22–24</span></td></tr>
+    <tr><td>Carpet</td><td><span class="condition new">Clean</span></td><td>Carpet clean, no staining. Consistent with new/recently cleaned carpet. <span class="photo-ref">Photos 25–26</span></td></tr>
+    <tr><td>Wardrobe</td><td><span class="condition good">Good</span></td><td>Interior clean and empty. Door hinges working. <span class="photo-ref">Photo 27</span></td></tr>
+    <tr><td>Windows</td><td><span class="condition new">Clean</span></td><td>Clean inside and out. Mechanism working. <span class="photo-ref">Photo 28</span></td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header">Living Room</div>
+  <table class="room-table">
+    <tr><th>Item</th><th>Condition</th><th>Notes</th></tr>
+    <tr><td>Walls / Ceiling</td><td><span class="condition new">Good</span></td><td>Freshly painted. No marks. <span class="photo-ref">Photos 35–37</span></td></tr>
+    <tr><td>Carpet</td><td><span class="condition new">Clean</span></td><td>Clean throughout. No staining. <span class="photo-ref">Photos 38–39</span></td></tr>
+    <tr><td>Skirting Boards</td><td><span class="condition new">Clean</span></td><td>Freshly painted, clean. <span class="photo-ref">Photo 40</span></td></tr>
+  </table>
+</div>
+
+<div class="sig-section">
+  <div class="sig-box">
+    <div class="sig-label">Inventory Clerk</div>
+    <div class="sig-line"></div>
+    <div class="sig-name">David Osei, AIIC</div>
+    <div class="sig-date">Date: 1 February 2022</div>
+  </div>
+  <div class="sig-box">
+    <div class="sig-label">Tenant Signature — I confirm I have read and agree this inventory accurately reflects the condition of the property at the commencement of my tenancy.</div>
+    <div class="sig-line"></div>
+    <div class="sig-name">Rachel Hartley</div>
+    <div class="sig-date">Date: 1 February 2022</div>
+  </div>
+</div>
+
+<div class="footer">
+  Apex Inventory Services | AIIC Registered | This report is prepared for training simulation purposes only.
+</div>
+</body>
+</html>

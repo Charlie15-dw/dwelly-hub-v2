@@ -11,7 +11,9 @@ import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
 import { MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
+import { isHubBeta } from '@/lib/preview'
 import { ragStatus, RAG_DOT, RAG_ROW, RAG_LABEL, RAG_TEXT } from '@/lib/rag'
+import CompetencyHeatmap from '@/components/manager/CompetencyHeatmap'
 
 // All assessable items — matches the assessments page exactly
 const ALL_ASSESSMENT_IDS = [
@@ -39,6 +41,8 @@ export default async function ManagerDashboard() {
     .single()
 
   if (currentProfile?.role !== 'manager') redirect('/dashboard')
+
+  const beta = isHubBeta(user.email)
 
   // Fetch my team members (assigned to me)
   const { data: profiles } = await supabase
@@ -187,6 +191,14 @@ export default async function ManagerDashboard() {
           </div>
         ))}
       </div>
+
+      {/* Competency heatmap — beta only */}
+      {beta && (
+        <CompetencyHeatmap
+          members={memberStats.map(m => ({ id: m.id, displayName: m.displayName, initials: m.initials }))}
+          results={(allResults ?? []).map(r => ({ user_id: r.user_id, assessment_id: r.assessment_id, score: r.score }))}
+        />
+      )}
 
       {/* Team table */}
       <div className="card overflow-hidden">

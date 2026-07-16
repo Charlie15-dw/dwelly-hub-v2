@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cleaning Invoice — CleanPro Services Ltd</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 24px; color: #1a1a1a; font-size: 14px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; border-bottom: 3px solid #1B3A5C; padding-bottom: 20px; }
+  .company h1 { font-size: 22px; color: #1B3A5C; margin: 0 0 4px; }
+  .company p { margin: 2px 0; color: #555; font-size: 12px; }
+  .invoice-meta { text-align: right; }
+  .invoice-meta .inv-number { font-size: 18px; font-weight: 700; color: #1B3A5C; }
+  .invoice-meta p { margin: 2px 0; font-size: 12px; color: #555; }
+  .badge { display: inline-block; background: #EAF4EE; color: #2D6A4F; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 6px; }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin: 24px 0 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+  .address-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .address-block p { margin: 2px 0; }
+  .address-block .label { font-weight: 700; margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  th { background: #1B3A5C; color: white; padding: 8px 12px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  td { padding: 10px 12px; border-bottom: 1px solid #eee; font-size: 13px; }
+  tr:nth-child(even) td { background: #F9FAFB; }
+  .totals-row td { border-bottom: none; padding-top: 16px; }
+  .total-line { display: flex; justify-content: flex-end; margin-top: 4px; }
+  .total-box { width: 260px; }
+  .total-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+  .total-row.grand { font-weight: 700; font-size: 15px; border-top: 2px solid #1B3A5C; border-bottom: none; color: #1B3A5C; padding-top: 10px; }
+  .notes { background: #F4F6F9; border-radius: 6px; padding: 14px; margin: 24px 0; font-size: 12px; color: #555; }
+  .notes strong { color: #1a1a1a; }
+  .footer { font-size: 11px; color: #888; text-align: center; margin-top: 40px; padding-top: 16px; border-top: 1px solid #eee; }
+  .stamp { border: 3px solid #2D6A4F; color: #2D6A4F; display: inline-block; padding: 6px 20px; font-weight: 700; font-size: 14px; border-radius: 4px; transform: rotate(-5deg); margin-top: 16px; }
+  @media print { body { margin: 20px; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="company">
+    <h1>CleanPro Services Ltd</h1>
+    <p>Unit 4, Ashfield Business Park, Leicester, LE1 9WQ</p>
+    <p>Tel: 0116 234 5678 | info@cleanproservices.co.uk</p>
+    <p>Company Reg: 08847321 | VAT No: GB 234 876 012</p>
+  </div>
+  <div class="invoice-meta">
+    <div class="inv-number">INVOICE #CP-2024-0412</div>
+    <p>Invoice Date: 5 February 2024</p>
+    <p>Payment Due: 19 February 2024</p>
+    <span class="badge">End of Tenancy Clean</span>
+  </div>
+</div>
+
+<div class="address-grid">
+  <div class="address-block">
+    <p class="label">Invoiced To:</p>
+    <p>Prospire Property Management</p>
+    <p>12 Granby Street, Leicester</p>
+    <p>LE1 6EH</p>
+  </div>
+  <div class="address-block">
+    <p class="label">Property Cleaned:</p>
+    <p>14 Ashbourne Close</p>
+    <p>Leicester</p>
+    <p>LE3 8PQ</p>
+  </div>
+</div>
+
+<div class="section-title">Services Rendered</div>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Detail</th>
+    <th style="text-align:right">Amount</th>
+  </tr>
+  <tr>
+    <td><strong>Kitchen Deep Clean</strong></td>
+    <td>Oven (inside/outside/racks), extractor fan, hob, all surfaces, cupboards inside and out, sink, taps</td>
+    <td style="text-align:right">£180.00</td>
+  </tr>
+  <tr>
+    <td><strong>Bathroom Deep Clean</strong></td>
+    <td>Descaling of bath, shower, basin, toilet, tiles. Grout cleaning. Mirror and fittings.</td>
+    <td style="text-align:right">£95.00</td>
+  </tr>
+  <tr>
+    <td><strong>Bedroom Cleaning (x2)</strong></td>
+    <td>Full clean including skirting, windowsills, wardrobes inside/out, vacuuming</td>
+    <td style="text-align:right">£75.00</td>
+  </tr>
+  <tr>
+    <td><strong>Living Room & Hallway</strong></td>
+    <td>Full clean including skirting, doors, light fittings, surfaces, vacuuming</td>
+    <td style="text-align:right">£60.00</td>
+  </tr>
+  <tr>
+    <td><strong>Carpet Spot Cleaning</strong></td>
+    <td>Treatment of stained areas in hallway and living room</td>
+    <td style="text-align:right">£40.00</td>
+  </tr>
+</table>
+
+<div class="total-line">
+  <div class="total-box">
+    <div class="total-row"><span>Subtotal</span><span>£450.00</span></div>
+    <div class="total-row"><span>VAT (0% — End of Tenancy Cleaning)</span><span>£0.00</span></div>
+    <div class="total-row grand"><span>TOTAL DUE</span><span>£450.00</span></div>
+  </div>
+</div>
+
+<div class="notes">
+  <strong>Notes:</strong> All works completed on 5 February 2024. Property was vacated by the outgoing tenant on 31 January 2024. Cleaning was required to restore the property to a lettable standard. A checkout report prepared by the letting agent was available on site. Photographs taken before and after cleaning are available on request.
+</div>
+
+<div style="text-align:right">
+  <div class="stamp">PAID</div>
+</div>
+
+<div class="footer">
+  <p>CleanPro Services Ltd | Registered in England &amp; Wales | Company No. 08847321</p>
+  <p>Payment by BACS: Sort Code 20-45-67 | Account No. 34521890 | Ref: CP-2024-0412</p>
+  <p>This invoice is for training simulation purposes only.</p>
+</div>
+
+</body>
+</html>

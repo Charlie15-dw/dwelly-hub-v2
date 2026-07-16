@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Checkout Report — Apex Inventory Services</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 24px; color: #1a1a1a; font-size: 13px; }
+  .header { border-bottom: 3px solid #1B3A5C; padding-bottom: 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .company h1 { font-size: 20px; color: #1B3A5C; margin: 0 0 4px; }
+  .company p { margin: 2px 0; color: #555; font-size: 11px; }
+  .report-ref { text-align: right; font-size: 12px; color: #555; }
+  .report-ref strong { font-size: 16px; color: #1B3A5C; display: block; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; background: #F4F6F9; border-radius: 6px; padding: 16px; margin-bottom: 24px; }
+  .info-item .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #888; margin-bottom: 2px; }
+  .info-item .val { font-weight: 600; font-size: 13px; }
+  .section { margin-bottom: 20px; }
+  .section-header { background: #1B3A5C; color: white; padding: 7px 12px; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 4px 4px 0 0; }
+  .room-table { width: 100%; border-collapse: collapse; }
+  .room-table th { background: #EFF6FF; padding: 7px 10px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #1E40AF; border-bottom: 2px solid #BFDBFE; }
+  .room-table td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; font-size: 12px; }
+  .room-table tr:last-child td { border-bottom: none; }
+  .condition { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+  .clean { background: #EAF4EE; color: #2D6A4F; }
+  .dirty { background: #FEE2E2; color: #991B1B; }
+  .fair { background: #FEF3C7; color: #B45309; }
+  .missing { background: #FEE2E2; color: #991B1B; }
+  .sig-section { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .sig-box { border: 1px solid #ddd; border-radius: 6px; padding: 16px; }
+  .sig-box .sig-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: #888; margin-bottom: 8px; }
+  .sig-box .sig-line { border-bottom: 1px solid #555; margin: 32px 0 6px; }
+  .sig-box .sig-name { font-size: 12px; font-weight: 700; }
+  .sig-box .sig-date { font-size: 11px; color: #555; }
+  .note-box { background: #FFF8F8; border: 1px solid #FCA5A5; border-left: 4px solid #991B1B; border-radius: 4px; padding: 12px; margin: 16px 0; font-size: 12px; }
+  .note-box strong { color: #991B1B; }
+  .footer { font-size: 10px; color: #888; text-align: center; margin-top: 32px; padding-top: 12px; border-top: 1px solid #eee; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="company">
+    <h1>Apex Inventory Services</h1>
+    <p>Independent Inventory Clerks — AIIC Registered</p>
+    <p>Tel: 0116 987 3210 | reports@apexinventory.co.uk</p>
+    <p>AIIC Member No: 4412 | Fully Insured</p>
+  </div>
+  <div class="report-ref">
+    <strong>CHECKOUT REPORT</strong>
+    Report Ref: AIS-CO-2024-0187<br>
+    Date of Inspection: 31 January 2024<br>
+    Time: 10:00am<br>
+    Clerk: Sarah Mitchell (AIIC)
+  </div>
+</div>
+
+<div class="info-grid">
+  <div class="info-item"><div class="lbl">Property Address</div><div class="val">14 Ashbourne Close, Leicester, LE3 8PQ</div></div>
+  <div class="info-item"><div class="lbl">Outgoing Tenant</div><div class="val">Ms Rachel Hartley</div></div>
+  <div class="info-item"><div class="lbl">Tenancy End Date</div><div class="val">31 January 2024</div></div>
+  <div class="info-item"><div class="lbl">Keys Returned</div><div class="val">Yes — 2x front door, 1x rear</div></div>
+  <div class="info-item"><div class="lbl">Tenant Present at Checkout</div><div class="val">No — keys surrendered to agent</div></div>
+  <div class="info-item"><div class="lbl">Agent Representative</div><div class="val">Prospire Property Management</div></div>
+</div>
+
+<div class="section">
+  <div class="section-header">Kitchen</div>
+  <table class="room-table">
+    <tr><th>Item</th><th>Condition at Checkout</th><th>Check-in Comparison</th></tr>
+    <tr><td>Oven</td><td><span class="condition dirty">Heavily Soiled</span> — significant grease and burnt food residue inside oven, racks heavily stained</td><td>Check-in: Clean throughout</td></tr>
+    <tr><td>Extractor Fan</td><td><span class="condition dirty">Heavily Soiled</span> — grease filter completely blocked, housing covered in grease</td><td>Check-in: Clean</td></tr>
+    <tr><td>Hob</td><td><span class="condition dirty">Soiled</span> — burnt residue on all four burners</td><td>Check-in: Clean</td></tr>
+    <tr><td>Work Surfaces</td><td><span class="condition fair">Fair</span> — general marks consistent with use</td><td>Check-in: Clean</td></tr>
+    <tr><td>Cupboards (inside)</td><td><span class="condition dirty">Soiled</span> — food debris and grease marks throughout</td><td>Check-in: Clean</td></tr>
+    <tr><td>Sink</td><td><span class="condition dirty">Limescale</span> — heavy limescale on tap and basin</td><td>Check-in: Clean, minimal limescale</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header">Bathroom</div>
+  <table class="room-table">
+    <tr><th>Item</th><th>Condition at Checkout</th><th>Check-in Comparison</th></tr>
+    <tr><td>Bath/Shower</td><td><span class="condition dirty">Soiled</span> — soap scum and limescale throughout, grout heavily discoloured</td><td>Check-in: Clean</td></tr>
+    <tr><td>WC</td><td><span class="condition dirty">Soiled</span> — limescale under rim, general soiling</td><td>Check-in: Clean</td></tr>
+    <tr><td>Basin</td><td><span class="condition dirty">Soiled</span> — toothpaste residue, limescale on taps</td><td>Check-in: Clean</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header">Bedrooms & Living Areas</div>
+  <table class="room-table">
+    <tr><th>Area</th><th>Condition at Checkout</th><th>Check-in Comparison</th></tr>
+    <tr><td>Bedroom 1</td><td><span class="condition fair">Fair</span> — dust on skirting boards and windowsill, general light cleaning required</td><td>Check-in: Clean</td></tr>
+    <tr><td>Bedroom 2</td><td><span class="condition fair">Fair</span> — light dust, minor mark on wall consistent with furniture</td><td>Check-in: Clean</td></tr>
+    <tr><td>Living Room</td><td><span class="condition fair">Fair</span> — vacuuming required, marks on skirting boards</td><td>Check-in: Clean</td></tr>
+    <tr><td>Hallway/Stairs</td><td><span class="condition fair">Fair</span> — carpet requires vacuuming, fingermarks on banister</td><td>Check-in: Clean</td></tr>
+  </table>
+</div>
+
+<div class="note-box">
+  <strong>Clerk's Summary Note:</strong> The property requires a professional deep clean, particularly in the kitchen and bathroom. The level of soiling in the kitchen (oven, extractor fan, hob, and cupboards) significantly exceeds fair wear and tear for the tenancy length. Bathroom limescale and soiling also exceeds what would be expected. A professional end-of-tenancy clean is recommended before re-letting.
+</div>
+
+<div class="sig-section">
+  <div class="sig-box">
+    <div class="sig-label">Inventory Clerk</div>
+    <div class="sig-line"></div>
+    <div class="sig-name">Sarah Mitchell, AIIC</div>
+    <div class="sig-date">Date: 31 January 2024</div>
+  </div>
+  <div class="sig-box">
+    <div class="sig-label">Tenant Acknowledgement</div>
+    <div class="sig-line"></div>
+    <div class="sig-name">Tenant not present at checkout</div>
+    <div class="sig-date">Keys surrendered to agent prior to inspection</div>
+  </div>
+</div>
+
+<div class="footer">
+  Apex Inventory Services | AIIC Registered | This report is prepared for training simulation purposes only.
+</div>
+
+</body>
+</html>

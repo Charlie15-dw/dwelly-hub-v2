@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
   ArrowRight, Megaphone, MessageSquareDashed, MessageSquareReply, Users,
-  BookA, AlertTriangle, RefreshCw, BarChart3, Scale, Sparkles, type LucideIcon,
+  BookA, AlertTriangle, RefreshCw, BarChart3, Scale, Sparkles,
+  MessagesSquare, Landmark, type LucideIcon,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isHubPreview, isHubBeta } from '@/lib/preview'
@@ -14,6 +15,7 @@ import HubJourney from '@/components/hub/HubJourney'
 import GuidedJourney from '@/components/hub/GuidedJourney'
 import FirstRunWelcome from '@/components/hub/FirstRunWelcome'
 import LearningStreak from '@/components/hub/LearningStreak'
+import RefresherNudge from '@/components/hub/RefresherNudge'
 import SupportNetwork from '@/components/hub/SupportNetwork'
 import { computeJourney } from '@/lib/hub-journey'
 import { computeGuidedJourney } from '@/lib/hub-guided-journey'
@@ -203,6 +205,9 @@ export default async function HubPage() {
       {/* Gentle private habit loop — beta only */}
       {beta && <LearningStreak />}
 
+      {/* Spaced-repetition refreshers due today — beta only */}
+      {beta && <RefresherNudge />}
+
       {/* Your journey — progress-aware. Beta testers get the staged guided
           journey; everyone else keeps the current flat step list. */}
       {beta && guided ? (
@@ -220,6 +225,36 @@ export default async function HubPage() {
 
       {/* Support network — beta only */}
       {beta && <SupportNetwork />}
+
+      {/* Sharpen your skills — beta only tools */}
+      {beta && (
+        <section aria-labelledby="sharpen-heading" className="space-y-3">
+          <h3 id="sharpen-heading" className="text-sm font-bold uppercase tracking-widest text-slate-400">Sharpen your skills</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <Link href="/hub/practice" className="card p-5 group hover:shadow-md transition">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center border bg-orange/10 text-orange border-orange/20">
+                <MessagesSquare className="w-5 h-5" aria-hidden />
+              </div>
+              <p className="text-sm font-bold text-navy mt-3">Conversation practice</p>
+              <p className="text-xs text-slate-500 mt-1">Rehearse tough tenant &amp; landlord conversations with instant coaching.</p>
+            </Link>
+            <Link href="/hub/deposit-simulator" className="card p-5 group hover:shadow-md transition">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center border bg-emerald-100 text-emerald-700 border-emerald-200">
+                <Scale className="w-5 h-5" aria-hidden />
+              </div>
+              <p className="text-sm font-bold text-navy mt-3">Deposit simulator</p>
+              <p className="text-xs text-slate-500 mt-1">Build a deduction case and see how a TDS adjudicator would rule.</p>
+            </Link>
+            <Link href="/hub/law" className="card p-5 group hover:shadow-md transition">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center border bg-indigo-100 text-indigo-700 border-indigo-200">
+                <Landmark className="w-5 h-5" aria-hidden />
+              </div>
+              <p className="text-sm font-bold text-navy mt-3">Law &amp; legislation feed</p>
+              <p className="text-xs text-slate-500 mt-1">The latest UK lettings law changes, in plain English.</p>
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Latest from Dwelly */}
       {latest && (
