@@ -1,11 +1,12 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Users, Building2, Activity } from 'lucide-react'
+import { Building2, Activity } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import InviteUserButton from '@/components/ui/InviteUserButton'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 import { ragStatus, RAG_DOT, RAG_ROW, RAG_LABEL, RAG_TEXT } from '@/lib/rag'
+import PeopleDirectory, { type DirectoryPerson } from '@/components/manager/PeopleDirectory'
 
 const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
@@ -124,6 +125,26 @@ export default async function AdminPage() {
     amber: allLearnerStats.filter(m => m.rag === 'amber').length,
     red: allLearnerStats.filter(m => m.rag === 'red').length,
   }
+
+  // Directory rows — every property manager, searchable and sortable, with the
+  // supervisor they report to shown in the Manager column.
+  const directoryPeople: DirectoryPerson[] = allLearnerStats.map(m => {
+    const mgr = supervisors.find(s => s.id === m.manager_id)
+    return {
+      id: m.id,
+      displayName: m.displayName,
+      email: m.email ?? null,
+      initials: m.initials,
+      roleLabel: m.role?.replace(/-/g, ' ') ?? 'Property Manager',
+      managerName: mgr ? displayName(mgr) : 'Unassigned',
+      completedCount: m.completedCount,
+      progressPct: m.progressPct,
+      avgScore: m.avgScore,
+      rag: m.rag,
+      joinedTs: m.created_at ?? null,
+      href: `/admin/member/${m.id}`,
+    }
+  })
 
   return (
     <div className="space-y-6">
@@ -293,131 +314,13 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      {/* Full all-users table — includes managers and admins */}
-      <div className="card overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-          <Users className="w-4 h-4 text-slate-400" aria-hidden />
-          <h2 className="text-sm font-bold text-navy">All Users</h2>
-          <span className="ml-auto text-xs text-slate-400">{allLearnerStats.length + supervisorSummaries.length} total · sorted by status</span>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full" role="table">
-            <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                {['User', 'Role / Manager', 'Assessments', 'Progress', 'Avg Score', 'Status'].map(h => (
-                  <th key={h} className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {/* Managers and admins first */}
-              {supervisorSummaries.map(mgr => (
-                <tr key={mgr.id} className={cn('transition-colors hover:bg-slate-50/60', mgr.role === 'admin' ? 'bg-purple-50/30 border-purple-100' : 'bg-indigo-50/30 border-indigo-100')}>
-                  <td className="px-5 py-4 whitespace-nowrap">
-                    <Link href={`/admin/member/${mgr.id}`} className="flex items-center gap-3 group/name">
-                      <div className={cn('w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0', mgr.role === 'admin' ? 'bg-purple-600' : 'bg-indigo-600')}>
-                        <span className="text-white text-xs font-bold">{mgr.initials}</span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-navy group-hover/name:text-teal transition-colors">{mgr.displayName}</p>
-                        <p className="text-xs text-slate-400">{mgr.email}</p>
-                      </div>
-                    </Link>
-                  </td>
-                  <td className="px-5 py-4 whitespace-nowrap">
-                    <span className={cn('text-xs font-semibold px-2 py-0.5 rounded-full border', mgr.role === 'admin' ? 'text-purple-700 bg-purple-100 border-purple-200' : 'text-indigo-700 bg-indigo-100 border-indigo-200')}>{mgr.role === 'admin' ? 'Admin' : 'Manager'}</span>
-                  </td>
-                  <td className="px-5 py-4 whitespace-nowrap">
-                    <span className="text-base font-bold tabular-nums text-navy">
-                      {getMemberStats(mgr).completedCount}<span className="text-slate-300 font-normal text-sm">/{TOTAL_ASSESSMENTS}</span>
-                    </span>
-                  </td>
-                  <td className="px-5 py-4">
-                    <div className="w-28">
-                      <div className="flex justify-between text-xs mb-1.5">
-                        <span className="font-bold text-navy">{getMemberStats(mgr).progressPct}%</span>
-                      </div>
-                      <ProgressBar value={getMemberStats(mgr).progressPct} size="sm" color={getMemberStats(mgr).progressPct >= 60 ? 'teal' : getMemberStats(mgr).progressPct >= 20 ? 'gold' : 'red'} />
-                    </div>
-                  </td>
-                  <td className="px-5 py-4 whitespace-nowrap">
-                    {getMemberStats(mgr).avgScore !== null ? (
-                      <span className={cn('text-base font-bold tabular-nums', {
-                        'text-teal': (getMemberStats(mgr).avgScore ?? 0) >= 80,
-                        'text-amber-500': (getMemberStats(mgr).avgScore ?? 0) >= 65 && (getMemberStats(mgr).avgScore ?? 0) < 80,
-                        'text-red-500': (getMemberStats(mgr).avgScore ?? 0) < 65,
-                      })}>{getMemberStats(mgr).avgScore}%</span>
-                    ) : (
-                      <span className="text-sm text-slate-400">No attempts</span>
-                    )}
-                  </td>
-                  <td className="px-5 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <div className={cn('w-2.5 h-2.5 rounded-full flex-shrink-0', RAG_DOT[getMemberStats(mgr).rag])} />
-                      <span className={cn('text-sm font-semibold', RAG_TEXT[getMemberStats(mgr).rag])}>{RAG_LABEL[getMemberStats(mgr).rag]}</span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {/* Learners */}
-              {allLearnerStats.map(member => {
-                const mgr = supervisors.find(m => m.id === member.manager_id)
-                const mgrName = mgr ? displayName(mgr) : '—'
-                return (
-                  <tr key={member.id} className={cn('transition-colors hover:bg-slate-50/60', RAG_ROW[member.rag])}>
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <Link href={`/admin/member/${member.id}`} className="flex items-center gap-3 group/name">
-                        <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-xs font-bold">{member.initials}</span>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-navy group-hover/name:text-teal transition-colors">{member.displayName}</p>
-                          <p className="text-xs text-slate-400">{member.email}</p>
-                        </div>
-                      </Link>
-                    </td>
-                    <td className="px-5 py-4 whitespace-nowrap text-sm text-slate-600">{mgrName}</td>
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <span className="text-base font-bold tabular-nums text-navy">
-                        {member.completedCount}<span className="text-slate-300 font-normal text-sm">/{TOTAL_ASSESSMENTS}</span>
-                      </span>
-                    </td>
-                    <td className="px-5 py-4">
-                      <div className="w-28">
-                        <div className="flex justify-between text-xs mb-1.5">
-                          <span className="font-bold text-navy">{member.progressPct}%</span>
-                        </div>
-                        <ProgressBar
-                          value={member.progressPct}
-                          size="sm"
-                          color={member.progressPct >= 60 ? 'teal' : member.progressPct >= 20 ? 'gold' : 'red'}
-                        />
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      {member.avgScore !== null ? (
-                        <span className={cn('text-base font-bold tabular-nums', {
-                          'text-teal': member.avgScore >= 80,
-                          'text-amber-500': member.avgScore >= 65 && member.avgScore < 80,
-                          'text-red-500': member.avgScore < 65,
-                        })}>{member.avgScore}%</span>
-                      ) : (
-                        <span className="text-sm text-slate-400">No attempts</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <div className={cn('w-2.5 h-2.5 rounded-full flex-shrink-0', RAG_DOT[member.rag])} />
-                        <span className={cn('text-sm font-semibold', RAG_TEXT[member.rag])}>{RAG_LABEL[member.rag]}</span>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* Full property-manager directory — searchable & sortable */}
+      <PeopleDirectory
+        people={directoryPeople}
+        totalAssessments={TOTAL_ASSESSMENTS}
+        title="All Property Managers"
+        secondaryColumn="manager"
+      />
 
     </div>
   )

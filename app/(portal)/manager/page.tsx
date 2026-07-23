@@ -1,10 +1,8 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import {
   Users,
   CheckCircle2, Brain, RefreshCw, CalendarCheck,
 } from 'lucide-react'
-import ProgressBar from '@/components/ui/ProgressBar'
 import TeamAssignmentPanel from '@/components/ui/TeamAssignmentPanel'
 import ReassignButton from '@/components/ui/ReassignButton'
 import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
@@ -12,8 +10,9 @@ import { MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 import { isHubBeta } from '@/lib/preview'
-import { ragStatus, RAG_DOT, RAG_ROW, RAG_LABEL, RAG_TEXT } from '@/lib/rag'
+import { ragStatus, RAG_DOT, RAG_LABEL } from '@/lib/rag'
 import CompetencyHeatmap from '@/components/manager/CompetencyHeatmap'
+import PeopleDirectory, { type DirectoryPerson } from '@/components/manager/PeopleDirectory'
 
 // All assessable items — matches the assessments page exactly
 const ALL_ASSESSMENT_IDS = [
@@ -161,6 +160,24 @@ export default async function ManagerDashboard() {
     return order[a.rag] - order[b.rag]
   })
 
+  // Directory rows for the searchable/sortable team table.
+  const directoryPeople: DirectoryPerson[] = memberStats.map(m => ({
+    id: m.id,
+    displayName: m.displayName,
+    email: m.email ?? null,
+    initials: m.initials,
+    roleLabel: m.role?.replace(/-/g, ' ') ?? 'Property Manager',
+    completedCount: m.completedCount,
+    progressPct: m.progressPct,
+    avgScore: m.avgScore,
+    rag: m.rag,
+    joinedTs: m.created_at ?? null,
+    lastActiveTs: (allResults ?? [])
+      .filter(r => r.user_id === m.id && r.completed_at)
+      .reduce<string | null>((max, r) => (max === null || r.completed_at! > max ? r.completed_at! : max), null),
+    href: `/manager/member/${m.id}`,
+  }))
+
   return (
     <div className="space-y-6">
 
@@ -200,124 +217,27 @@ export default async function ManagerDashboard() {
         />
       )}
 
-      {/* Team table */}
-      <div className="card overflow-hidden">
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-          <div>
+      {/* Team table — searchable & sortable */}
+      {teamCount === 0 ? (
+        <div className="card overflow-hidden">
+          <div className="px-6 py-5 border-b border-slate-100">
             <h2 className="text-base font-bold text-navy">Team Progress</h2>
-            <p className="text-xs text-slate-400 mt-0.5">{teamCount} {teamCount === 1 ? 'member' : 'members'} · {TOTAL_ASSESSMENTS} assessments in programme</p>
           </div>
-        </div>
-
-        {teamCount === 0 ? (
           <div className="px-6 py-16 text-center">
             <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
             <p className="text-sm font-semibold text-slate-500">No team members yet</p>
             <p className="text-xs text-slate-400 mt-1">Add users in Supabase → Authentication → Users</p>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full" role="table">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/80">
-                  {['Team Member', 'Role', 'Assessments', 'Progress', 'Avg Score', 'Status', 'Last Active', 'Joined'].map(h => (
-                    <th
-                      key={h}
-                      className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap"
-                      scope="col"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {sorted.map(member => (
-                  <tr key={member.id} className={cn('transition-colors hover:bg-slate-50/60 cursor-pointer', RAG_ROW[member.rag])}>
-
-                    {/* Name */}
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <Link href={`/manager/member/${member.id}`} className="flex items-center gap-3 group/name">
-                        <div className="w-9 h-9 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-sm font-bold">{member.initials}</span>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-navy group-hover/name:text-teal transition-colors">{member.displayName}</p>
-                          <p className="text-xs text-slate-400 mt-0.5">{member.email ?? '—'}</p>
-                        </div>
-                      </Link>
-                    </td>
-
-                    {/* Role */}
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <span className="text-sm text-slate-600 capitalize">
-                        {member.role?.replace(/-/g, ' ') ?? 'Property Manager'}
-                      </span>
-                    </td>
-
-                    {/* Assessments */}
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <span className="text-base font-bold tabular-nums text-navy">
-                        {member.completedCount}<span className="text-slate-300 font-normal text-sm">/{TOTAL_ASSESSMENTS}</span>
-                      </span>
-                    </td>
-
-                    {/* Progress */}
-                    <td className="px-5 py-4">
-                      <div className="w-32">
-                        <div className="flex justify-between text-xs mb-1.5">
-                          <span className="font-bold text-navy">{member.progressPct}%</span>
-                        </div>
-                        <ProgressBar
-                          value={member.progressPct}
-                          size="sm"
-                          color={member.progressPct >= 60 ? 'teal' : member.progressPct >= 20 ? 'gold' : 'red'}
-                        />
-                      </div>
-                    </td>
-
-                    {/* Avg score */}
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      {member.avgScore !== null ? (
-                        <span className={cn('text-base font-bold tabular-nums', {
-                          'text-teal':      member.avgScore >= 80,
-                          'text-amber-500': member.avgScore >= 65 && member.avgScore < 80,
-                          'text-red-500':   member.avgScore < 65,
-                        })}>
-                          {member.avgScore}%
-                        </span>
-                      ) : (
-                        <span className="text-sm text-slate-400">No attempts</span>
-                      )}
-                    </td>
-
-                    {/* RAG */}
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <div className={cn('w-2.5 h-2.5 rounded-full flex-shrink-0', RAG_DOT[member.rag])} aria-hidden />
-                        <span className={cn('text-sm font-semibold', RAG_TEXT[member.rag])}>
-                          {RAG_LABEL[member.rag]}
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* Last Active */}
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <span className="text-sm text-slate-400">{member.lastActive ?? '—'}</span>
-                    </td>
-
-                    {/* Joined */}
-                    <td className="px-5 py-4 whitespace-nowrap">
-                      <span className="text-sm text-slate-400">{member.joinDate}</span>
-                    </td>
-
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <PeopleDirectory
+          people={directoryPeople}
+          totalAssessments={TOTAL_ASSESSMENTS}
+          title="Team Progress"
+          secondaryColumn="role"
+          showActivity
+        />
+      )}
 
       {/* Reassignment panel — only show when there are failed modules */}
       {sorted.some(m => m.failedModules.length > 0) && (
