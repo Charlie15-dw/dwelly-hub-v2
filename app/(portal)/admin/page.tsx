@@ -185,8 +185,15 @@ export default async function AdminPage() {
         ))}
       </div>
 
+      {/* Search / filter — property managers (at the top for quick lookup) */}
+      <PeopleDirectory
+        people={directoryPeople}
+        totalAssessments={TOTAL_ASSESSMENTS}
+        title="All Property Managers"
+        secondaryColumn="manager"
+      />
 
-      {/* Teams by supervisor (managers + admins) */}
+      {/* Teams by supervisor (managers + admins) — scroll down for the org breakdown */}
       <div>
         <h2 className="text-sm font-bold text-navy mb-3">Teams</h2>
         <div className="space-y-4">
@@ -313,14 +320,6 @@ export default async function AdminPage() {
           )}
         </div>
       </div>
-
-      {/* Full property-manager directory — searchable & sortable */}
-      <PeopleDirectory
-        people={directoryPeople}
-        totalAssessments={TOTAL_ASSESSMENTS}
-        title="All Property Managers"
-        secondaryColumn="manager"
-      />
 
     </div>
   )

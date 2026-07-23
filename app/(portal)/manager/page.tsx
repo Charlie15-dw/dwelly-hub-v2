@@ -189,6 +189,28 @@ export default async function ManagerDashboard() {
         </div>
       </div>
 
+      {/* Search / filter — team members (at the top for quick lookup) */}
+      {teamCount === 0 ? (
+        <div className="card overflow-hidden">
+          <div className="px-6 py-5 border-b border-slate-100">
+            <h2 className="text-base font-bold text-navy">Team Progress</h2>
+          </div>
+          <div className="px-6 py-16 text-center">
+            <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+            <p className="text-sm font-semibold text-slate-500">No team members yet</p>
+            <p className="text-xs text-slate-400 mt-1">Add users in Supabase → Authentication → Users</p>
+          </div>
+        </div>
+      ) : (
+        <PeopleDirectory
+          people={directoryPeople}
+          totalAssessments={TOTAL_ASSESSMENTS}
+          title="Team Progress"
+          secondaryColumn="role"
+          showActivity
+        />
+      )}
+
       {/* RAG summary */}
       <div className="grid grid-cols-3 gap-4">
         {(['green', 'amber', 'red'] as const).map(status => (
@@ -214,28 +236,6 @@ export default async function ManagerDashboard() {
         <CompetencyHeatmap
           members={memberStats.map(m => ({ id: m.id, displayName: m.displayName, initials: m.initials }))}
           results={(allResults ?? []).map(r => ({ user_id: r.user_id, assessment_id: r.assessment_id, score: r.score }))}
-        />
-      )}
-
-      {/* Team table — searchable & sortable */}
-      {teamCount === 0 ? (
-        <div className="card overflow-hidden">
-          <div className="px-6 py-5 border-b border-slate-100">
-            <h2 className="text-base font-bold text-navy">Team Progress</h2>
-          </div>
-          <div className="px-6 py-16 text-center">
-            <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-slate-500">No team members yet</p>
-            <p className="text-xs text-slate-400 mt-1">Add users in Supabase → Authentication → Users</p>
-          </div>
-        </div>
-      ) : (
-        <PeopleDirectory
-          people={directoryPeople}
-          totalAssessments={TOTAL_ASSESSMENTS}
-          title="Team Progress"
-          secondaryColumn="role"
-          showActivity
         />
       )}
 
