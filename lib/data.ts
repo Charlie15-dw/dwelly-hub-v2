@@ -131,14 +131,14 @@ export const MODULES: Module[] = [
     id: 'sys-01', title: 'Move-Outs 1/2 — Initiating the Move-Out Process', section: 'move-outs', phase: 'onboarding',
     duration: '45 min', videoLength: '7 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 5,
     roles: ['property_manager'],
-    description: 'Full end of tenancy workflow in Dwelly — checkout, deposit return, re-marketing.',
+    description: 'Full end of tenancy workflow in Dwelly — checkout, deposit return, and handing the property over to Lettings for re-marketing.',
     tags: ['EOT', 'checkout', 'deposits'], spacedRepetitionDue: null, confidenceRating: null,
   },
   {
     id: 'mvt-02', title: 'Move-Outs 2/2 — Completing the Move-Out', section: 'move-outs', phase: 'onboarding',
     duration: '30 min', videoLength: '5 min', passmark: 80, completed: false, progress: 0, locked: false, quizCount: 8,
     roles: ['property_manager'],
-    description: 'How to action and complete the move-out process in Dwelly — checkout, deposit return, and re-marketing.',
+    description: 'How to action and complete the move-out process in Dwelly — checkout, deposit return, and handing over to Lettings for re-marketing.',
     tags: ['EOT', 'checkout', 'deposits'], spacedRepetitionDue: null, confidenceRating: null,
   },
   {
@@ -2613,12 +2613,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What is the first step when initiating the move-out process in Dwelly?',
     options: [
       'Send the tenant a final rent statement and request they return all keys by the tenancy end date',
-      'Create a move-out job in Dwelly linked to the property, which triggers the structured move-out workflow covering all required steps from notice through to deposit return and re-marketing',
+      'Create a move-out job in Dwelly linked to the property, which triggers the structured move-out workflow covering all required steps from notice through to deposit return and the hand-over to Lettings for re-marketing',
       'Contact the landlord to confirm whether they want to re-let the property or withdraw it from management before any move-out actions are taken',
       'Book the checkout inspection with an external inventory clerk and notify the tenant of the inspection date',
     ],
     correct: 1,
-    rationale: 'The first step is to create a move-out job in Dwelly linked to the property. This triggers the structured move-out workflow, which guides the PM through all required steps — from initial creation through key collection, checkout inspection, deposit negotiation, and re-marketing. Working outside the system creates gaps in the audit trail.',
+    rationale: 'The first step is to create a move-out job in Dwelly linked to the property. This triggers the structured move-out workflow, which guides the PM through all required steps — from initial creation through key collection, checkout inspection, and deposit negotiation, before handing the property over to the Lettings team for re-marketing. Working outside the system creates gaps in the audit trail.',
   },
   {
     id: 'q-sys-01-n2', moduleId: 'sys-01',
