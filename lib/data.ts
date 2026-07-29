@@ -2941,8 +2941,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Re-marketing is solely the Lettings team\'s responsibility — Property Managers should not be involved',
       'Properties can only be re-marketed once the deposit is fully resolved and "Mediation Finished" has been clicked',
     ],
-    correct: 1,
-    rationale: 'Minimising the void period requires early action. As soon as the PM is aware of a forthcoming vacancy, they should discuss re-marketing strategy with the landlord, update the property\'s status in Dwelly, and ensure the Lettings team are informed via the move-out job. Waiting until checkout is complete before starting this process significantly increases the risk of an extended void.',
+    correct: 2,
+    rationale: 'At Dwelly, re-marketing and reletting sit with the Lettings team, not the Property Manager. The PM\'s remit covers the move-out process itself (checkout, deposit, closing down the tenancy) but does not extend to marketing the property or finding new tenants — that is the Lettings team\'s responsibility.',
   },
 
   // ── SUP-02: Actioning the Support Task — extra pool ───────────────────────
