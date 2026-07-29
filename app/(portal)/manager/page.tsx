@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import {
   Users,
-  CheckCircle2, Brain, RefreshCw, CalendarCheck,
+  CheckCircle2, Brain, RefreshCw, CalendarCheck, Activity,
 } from 'lucide-react'
 import TeamAssignmentPanel from '@/components/ui/TeamAssignmentPanel'
 import ReassignButton from '@/components/ui/ReassignButton'
@@ -187,6 +188,10 @@ export default async function ManagerDashboard() {
           <h1 className="text-xl font-bold text-navy">Manager Dashboard</h1>
           <p className="text-sm text-slate-500 mt-0.5">Team progress — 2026–2027 Training Programme</p>
         </div>
+        <Link href="/manager/usage" className="btn-outline text-sm">
+          <Activity className="w-4 h-4" aria-hidden />
+          Usage
+        </Link>
       </div>
 
       {/* Search / filter — team members (at the top for quick lookup) */}
