@@ -25,6 +25,7 @@ export type TrainingSection =
   | 'kb-void-management'
   | 'kb-antisocial'
   | 'kb-energy-mees'
+  | 'kb-contractor-portal'
 
 export interface ContentBlock {
   type: 'heading' | 'subheading' | 'paragraph' | 'steps' | 'bullets' | 'callout' | 'warning' | 'table' | 'divider'
@@ -1628,6 +1629,83 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
       { type: 'heading', level: 1, text: 'Dwelly Compliance Tracking' },
       { type: 'paragraph', text: 'The Dwelly system tracks EPC expiry dates and ratings for all managed properties. Properties approaching EPC expiry or rated below the current minimum are automatically flagged. Use the compliance dashboard to identify at-risk properties, instruct new EPCs before they expire, and record improvement works. This data also feeds into the landlord reporting suite, helping landlords understand their obligations and plan investment accordingly.' },
       { type: 'callout', variant: 'tip', text: 'When a property is being improved, always commission a new EPC after the works are completed — the rating improvement will only be reflected once a new assessment is done by a qualified domestic energy assessor.' },
+    ],
+  },
+  {
+    id: 'kb-contractor-portal',
+    title: 'The Contractor Portal — How It Works',
+    related: ['kb-property-standards', 'kb-disrepair', 'kb-damp-mould'],
+    subtitle: 'How the contractors and providers who carry out our repairs and compliance jobs receive work, book visits, and get paid through the Dwelly provider portal.',
+    icon: '🛠️',
+    category: 'standards',
+    readTime: '7 min read',
+    difficulty: 'foundation',
+    content: [
+      { type: 'heading', level: 1, text: 'Why This Matters to You' },
+      { type: 'paragraph', text: 'When you raise a repair or a compliance job, the contractor or provider who carries it out works from their own portal at provider.dwelly.group — separate from the system you use. Knowing how their side works means you can set the right expectations with tenants, understand where a job has got to, and help a contractor who is stuck rather than guessing.' },
+      { type: 'callout', variant: 'info', text: 'The provider portal lives at provider.dwelly.group. A contractor\'s username is their email address and their password is sent to them separately. If a contractor can\'t log in, point them at the office rather than trying to reset it yourself.' },
+
+      { type: 'heading', level: 1, text: 'How a Contractor Navigates Their Portal' },
+      { type: 'paragraph', text: 'The main navigation gives contractors four places to work from:' },
+      { type: 'bullets', items: [
+        'Active Jobs — jobs that are currently live and in progress.',
+        'Closed Jobs — jobs that have been completed, with the invoice submitted and approved.',
+        'Schedule — all their active jobs in a calendar view, to help them plan the day.',
+        'Earnings — which jobs they\'ve been paid for and when, along with any upcoming payouts.',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Job Statuses — What Each One Means' },
+      { type: 'paragraph', text: 'Within Active Jobs, contractors filter by status. These are the same lifecycle stages a job passes through, so they\'re useful shorthand when you\'re chasing progress:' },
+      { type: 'table', headers: ['Status', 'What it means'], rows: [
+        ['Awaiting Appointment', 'The job doesn\'t yet have a visit date booked in with the tenant.'],
+        ['Awaiting Completion', 'A visit is scheduled and the job is waiting for that visit to take place.'],
+        ['Awaiting Invoice', 'The work is complete and just needs the contractor\'s invoice and any compliance certificates to close out.'],
+        ['Quote Sent', 'A quote from the contractor has gone to the landlord and we\'re waiting on their approval.'],
+      ]},
+
+      { type: 'heading', level: 1, text: 'What a Contractor Sees on a Job' },
+      { type: 'paragraph', text: 'Opening a job shows a status badge at the top and everything needed to carry out the work, spread across three tabs — job information, tenant contact, and file uploads:' },
+      { type: 'bullets', items: [
+        'Address — the property address, with a link to open directions in a maps app.',
+        'Job ID — the unique reference for the job.',
+        'Description — the work requested, as logged from the tenant\'s report.',
+        'Last update — when the job was last changed, so the information can be trusted as current.',
+        'Visit scheduled — the date and time booked in with the tenant.',
+        'Photos — any images attached to the job, so the contractor can see the issue before arriving.',
+        'Contact tenant — the tenant\'s details and the quickest way to reach them.',
+        'Upload files — where the invoice, certificates, and completed-work photos are added to close the job down.',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Contacting the Tenant' },
+      { type: 'paragraph', text: 'From the Contact tenant tab, the easiest option is the Call button, which dials the main number and enters the tenant\'s extension automatically. Tenant numbers use an extension, so a contractor can\'t dial the extension on its own — they always call the main number first, then enter the extension when prompted by the voice message.' },
+      { type: 'callout', variant: 'tip', text: 'If a tenant says a contractor never called, remember the contractor reaches them through the main office number and extension, not a direct line. The tenant should expect the call to come from the main Dwelly number.' },
+
+      { type: 'heading', level: 1, text: 'Closing a Job — Uploading Files & Getting Paid' },
+      { type: 'paragraph', text: 'Once the work is done, the contractor opens the Upload files tab and sends everything needed to close the job and trigger payment:' },
+      { type: 'bullets', items: [
+        'Invoice — their invoice as a PDF or image.',
+        'Certificate — any compliance certificate the job requires, such as a gas safety record (CP12) or an EICR.',
+        'Photos — images of the completed work, added against the job.',
+      ]},
+      { type: 'paragraph', text: 'When everything is attached, the contractor taps Submit documents and the invoice is sent for approval. Documents can also be returned by replying to the original job email.' },
+
+      { type: 'heading', level: 1, text: 'Job Flow — Compliance Visits' },
+      { type: 'paragraph', text: 'For compliance jobs (such as a gas safety check or EICR) the flow is straightforward:' },
+      { type: 'steps', items: [
+        'Get the task and book the visit — the contractor receives a new job email with the task and the tenant\'s contact info, calls the tenant using the main-number-plus-extension method, and agrees a date and time. They don\'t need to notify us of the appointment unless they run into difficulties.',
+        'Visit the tenant and issue the certificate — they attend at the agreed time, complete the work, and issue the new certificate.',
+        'Send documents and get paid — they return two required documents, the new certificate and their invoice, either by replying to the job email or uploading them to the portal.',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Job Flow — Maintenance Visits' },
+      { type: 'paragraph', text: 'Maintenance jobs add a decision point: at the property the contractor either fixes the issue there and then, or submits a quote when the work needs approval first.' },
+      { type: 'steps', items: [
+        'Get the task and book the visit — as with compliance, they receive the job email and arrange a visit with the tenant.',
+        'At the visit, decide: quote or fix? — they can Fix It Now only if the work is within the call-out fee, within an approved budget, or they call the office and get same-day approval. Otherwise they inspect, take notes and photos/video of the problem, and move to a quote.',
+        'Send the quote and wait — they email one PDF quotation plus the supporting photos/video. We seek landlord approval; if approved, a confirmation email goes back to the contractor to arrange the work visit, and if denied the job is cancelled.',
+        'Final documentation and payment — once the repair is complete and approved, the contractor sends all three: their final invoice, proof of works (before-and-after photos or video), and the approved quote. We process this and issue payment according to the approved quote or invoice.',
+      ]},
+      { type: 'callout', variant: 'important', text: 'A contractor should only fix work on the spot when it\'s within the call-out fee, within an approved budget, or specifically approved by the office that day. Anything beyond that needs a quote and landlord approval before the work goes ahead — which is why some jobs sit at "Quote Sent" while the landlord decides.' },
     ],
   },
 ]
