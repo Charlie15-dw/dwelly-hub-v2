@@ -59,6 +59,18 @@ export interface UsageEvent {
   email: string
 }
 
+// Charlie's own accounts — excluded from all usage stats since they're used for
+// testing and content changes, so they'd otherwise skew the numbers.
+const EXCLUDED_USAGE_EMAILS = new Set([
+  'charlie@dwelly.group',
+  'charlie@pennington-online.co.uk',
+])
+
+/** True if this viewer should be left out of usage analytics. */
+export function isExcludedFromUsage(email: string | null | undefined): boolean {
+  return email ? EXCLUDED_USAGE_EMAILS.has(email.trim().toLowerCase()) : false
+}
+
 export interface AreaStat {
   label: string
   count: number
@@ -94,7 +106,9 @@ export interface UsageAggregate {
 
 /** Aggregate a flat list of events into everything the dashboard renders. */
 export function aggregateUsage(events: UsageEvent[], recentLimit = 40): UsageAggregate {
-  const sorted = [...events].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  const sorted = events
+    .filter(e => !isExcludedFromUsage(e.email))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
   const totalViews = sorted.length
 
   // Most viewed areas

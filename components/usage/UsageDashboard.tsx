@@ -41,7 +41,7 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
         </div>
       </div>
 
-      {events.length === 0 ? (
+      {totalViews === 0 ? (
         <div className="card p-10 text-center">
           <Activity className="w-10 h-10 text-slate-300 mx-auto mb-3" aria-hidden />
           <p className="text-sm font-semibold text-slate-500">No activity recorded yet</p>
