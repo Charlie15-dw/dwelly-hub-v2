@@ -430,6 +430,16 @@ export const TRAINING_PAGES: TrainingPage[] = [
         'If the code is valid — the job is completed automatically.',
         'If the code is not valid — the job returns to your queue so you can follow up and verify the situation.',
       ]},
+      { type: 'callout', variant: 'warning', text: 'A failed check is not the end of the task — it must be looked into. We have seen cases where a code fails, is re-input, fails again, and is then left. Never leave a failed check unresolved.' },
+      { type: 'subheading', level: 2, text: 'Why a Valid Code Can Still Fail — Check the Expiry First' },
+      { type: 'paragraph', text: 'Remember that the job opens 2 months before the tenant\'s current right to rent expires. Because of this, the tenant will often send you the share code for the right to rent that is about to expire — so re-inputting the same code will simply fail the check again. The fix is not to keep re-entering it; it is to confirm what the code actually shows.' },
+      { type: 'steps', items: [
+        'Check the tenant\'s share code on the government site at https://www.gov.uk/view-right-to-rent to see when their right to rent actually expires.',
+        'If the expiry date is within the next 2 months, this is the expiring right to rent — it is not the updated status we need.',
+        'Write to the tenant to request that they renew their right to rent, and ask them to send the new share code and date of birth once renewed.',
+        'Enter the renewed details and Send RTR Request again, then continue with the verification steps below.',
+      ]},
+      { type: 'callout', variant: 'important', text: 'We are always after the updated right to rent. If the code the tenant supplies is for the status expiring within the 2-month window, go back to the tenant for the renewal rather than repeatedly submitting the expiring code.' },
       { type: 'heading', level: 1, text: 'Step 3: Visual Likeness Verification' },
       { type: 'paragraph', text: 'Once the RTR results have been returned, you must verify the following via video call:' },
       { type: 'bullets', items: [
