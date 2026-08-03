@@ -83,7 +83,7 @@ export default async function Crm2Page() {
           </span>
 
           {/* Title */}
-          <h1 className="mt-6 text-4xl sm:text-6xl font-bold leading-[1.05] tracking-tight">
+          <h1 className="mt-6 text-4xl sm:text-6xl font-bold leading-[1.05] tracking-tight text-white">
             Everything you need to
             <br className="hidden sm:block" />
             {' '}master{' '}
