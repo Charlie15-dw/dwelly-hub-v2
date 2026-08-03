@@ -28,11 +28,24 @@ export default function ProgressRing({ slugs }: { slugs: string[] }) {
     const update = () => setDone(readCount(slugs))
     update()
     setLoaded(true)
+    // Re-read whenever the page could have gone stale: another tab's change
+    // (storage), a lesson marked complete in this tab (crm2-progress), and —
+    // crucially — coming back to this page via focus, tab switch or the
+    // browser back button (pageshow covers bfcache restores, where the mount
+    // effect does not re-run).
+    const onPageShow = () => update()
+    const onVisibility = () => { if (!document.hidden) update() }
     window.addEventListener('crm2-progress', update)
     window.addEventListener('storage', update)
+    window.addEventListener('focus', update)
+    window.addEventListener('pageshow', onPageShow)
+    document.addEventListener('visibilitychange', onVisibility)
     return () => {
       window.removeEventListener('crm2-progress', update)
       window.removeEventListener('storage', update)
+      window.removeEventListener('focus', update)
+      window.removeEventListener('pageshow', onPageShow)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [slugs])
 

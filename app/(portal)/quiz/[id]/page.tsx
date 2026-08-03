@@ -112,7 +112,7 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   } else if (isCrm2Quiz) {
     const lesson = CRM2_LESSONS.find(l => l.quizModuleId === moduleId)
     if (!lesson) notFound()
-    quizCategory = 'module'
+    quizCategory = 'crm2'
     moduleTitle  = `${lesson.title} — Knowledge Check`
     passmark     = 80
     backHref     = `/hub/crm-2/${lesson.slug}`

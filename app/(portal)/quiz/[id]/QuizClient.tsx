@@ -40,7 +40,7 @@ function SaveErrorBanner() {
   )
 }
 
-export type QuizCategory = 'module' | 'full' | 'master' | 'recap' | 'recall' | 'release'
+export type QuizCategory = 'module' | 'full' | 'master' | 'recap' | 'recall' | 'release' | 'crm2'
 
 // Confidence-based scoring (beta). Learners rate how sure they are before
 // seeing the answer. A confident mistake is a hidden gap worth flagging — much
@@ -99,6 +99,10 @@ export default function QuizClient({
   const isRecapQuiz        = quizCategory === 'recap'
   const isRecallQuiz       = quizCategory === 'recall'
   const isReleaseQuiz      = quizCategory === 'release'
+  // CRM 2.0 lesson quizzes: a private, freely-retakeable practice assessment.
+  // They keep a real pass mark but never lock and never write to the shared
+  // assessment tables the manager dashboard reads.
+  const isCrm2Quiz         = quizCategory === 'crm2'
 
   // Stable question list — computed once on mount so re-renders don't reshuffle
   const [demoQuestions] = useState<QuizQuestion[]>(() => {
@@ -150,7 +154,7 @@ export default function QuizClient({
 
   // Check lock status on mount — reset is already consumed server-side if wasReset=true
   useEffect(() => {
-    if (isRecapQuiz || isRecallQuiz) return
+    if (isRecapQuiz || isRecallQuiz || isCrm2Quiz) return
 
     // Server already consumed the pending reset before this page rendered
     if (wasReset) {
@@ -235,7 +239,7 @@ export default function QuizClient({
 
   // Save attempt to localStorage AND Supabase when the results screen appears
   useEffect(() => {
-    if (!showResults || isRecapQuiz || isRecallQuiz) return
+    if (!showResults || isRecapQuiz || isRecallQuiz || isCrm2Quiz) return
     clearInProgress(moduleId)
     saveAttempt({ moduleId, completedAt: new Date().toISOString(), score, passed })
 
@@ -390,7 +394,7 @@ export default function QuizClient({
     }
     setSubmitted(true)
     setQuizStarted(true)
-    if (!isRecapQuiz) {
+    if (!isRecapQuiz && !isCrm2Quiz) {
       saveInProgress({
         moduleId,
         startedAt: new Date().toISOString(),
@@ -740,7 +744,7 @@ export default function QuizClient({
             })}
           </div>
 
-          {passed && !isReleaseQuiz && (
+          {passed && !isReleaseQuiz && !isCrm2Quiz && (
             <div className="bg-gold/10 border border-gold/30 rounded-xl p-4 mb-6 text-left">
               <p className="text-sm font-bold text-navy mb-1">Recall checks scheduled ✓</p>
               <p className="text-xs text-slate-600 leading-relaxed">
@@ -755,7 +759,7 @@ export default function QuizClient({
             <Link href={backHref} className="btn-secondary flex items-center gap-1.5">
               <ArrowLeft className="w-4 h-4" aria-hidden /> {backLabel}
             </Link>
-            <Link href="/assessments" className="btn-primary flex items-center gap-1.5">
+            <Link href={isCrm2Quiz ? '/hub/crm-2/assessments' : '/assessments'} className="btn-primary flex items-center gap-1.5">
               All Assessments <ArrowRight className="w-4 h-4" aria-hidden />
             </Link>
           </div>

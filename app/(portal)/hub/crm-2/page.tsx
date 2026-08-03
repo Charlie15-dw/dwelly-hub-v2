@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import {
   Sparkles, ArrowRight, Rocket, Compass, GraduationCap, Lightbulb,
-  Wand2, type LucideIcon,
+  Wand2, ClipboardCheck, ChevronRight, type LucideIcon,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isCrm2Preview } from '@/lib/preview'
@@ -82,8 +82,20 @@ export default async function Crm2Page() {
         </div>
       </section>
 
-      {/* Your progress */}
-      <ProgressRing slugs={CRM2_LESSONS.map((l) => l.slug)} />
+      {/* Your progress + a route into the assessments */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <ProgressRing slugs={CRM2_LESSONS.map((l) => l.slug)} />
+        <Link href="/hub/crm-2/assessments" className="card card-hover p-5 flex items-center gap-4 group">
+          <div className="w-16 h-16 rounded-2xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0">
+            <ClipboardCheck className="w-7 h-7" aria-hidden />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-bold text-navy">Assessments</p>
+            <p className="text-sm text-slate-500 mt-0.5">Test yourself on the key lessons — retake any time.</p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-navy transition flex-shrink-0" aria-hidden />
+        </Link>
+      </div>
 
       {/* What you'll find here */}
       <section aria-labelledby="crm2-pillars" className="space-y-4">
