@@ -170,7 +170,7 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
 
   // Check for a pending manager reset — done server-side so RLS never blocks it
   let wasReset = false
-  if (!isRecapQuiz && !isRecallQuiz && !isCrm2Quiz) {
+  if (!isRecapQuiz && !isRecallQuiz) {
     try {
       const auth = createServerClient()
       const { data: { user } } = await auth.auth.getUser()

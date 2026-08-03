@@ -8,12 +8,14 @@ import TeamAssignmentPanel from '@/components/ui/TeamAssignmentPanel'
 import ReassignButton from '@/components/ui/ReassignButton'
 import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
 import { MODULES, RECAP_ROUNDS } from '@/lib/data'
+import { CRM2_LESSONS } from '@/lib/crm2-content'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 import { isHubBeta } from '@/lib/preview'
 import { ragStatus, RAG_DOT, RAG_LABEL } from '@/lib/rag'
 import CompetencyHeatmap from '@/components/manager/CompetencyHeatmap'
 import PeopleDirectory, { type DirectoryPerson } from '@/components/manager/PeopleDirectory'
+import Crm2AssessmentPanel from '@/components/manager/Crm2AssessmentPanel'
 
 // All assessable items — matches the assessments page exactly
 const ALL_ASSESSMENT_IDS = [
@@ -244,6 +246,19 @@ export default async function ManagerDashboard() {
         />
       )}
 
+      {/* CRM 2.0 assessments — private preview, kept separate from the main
+          team-completion metric so it doesn't skew everyone's denominator */}
+      <Crm2AssessmentPanel
+        people={memberStats.map(m => ({ id: m.id, displayName: m.displayName, initials: m.initials }))}
+        results={(allResults ?? []).map(r => ({
+          user_id: r.user_id,
+          assessment_id: r.assessment_id,
+          score: r.score,
+          passed: r.passed,
+          completed_at: r.completed_at,
+        }))}
+      />
+
       {/* Reassignment panel — only show when there are failed modules */}
       {sorted.some(m => m.failedModules.length > 0) && (
         <div className="card overflow-hidden">
@@ -264,7 +279,8 @@ export default async function ManagerDashboard() {
                 <div className="flex flex-wrap gap-2">
                   {member.failedModules.map(f => {
                     const mod = MODULES.find(m => m.id === f.assessment_id)
-                    const label = mod?.title ?? f.assessment_id
+                    const crm2 = CRM2_LESSONS.find(l => l.quizModuleId === f.assessment_id)
+                    const label = mod?.title ?? crm2?.title ?? f.assessment_id
                     return (
                       <div
                         key={f.assessment_id}

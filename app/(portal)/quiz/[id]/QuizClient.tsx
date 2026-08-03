@@ -154,7 +154,7 @@ export default function QuizClient({
 
   // Check lock status on mount — reset is already consumed server-side if wasReset=true
   useEffect(() => {
-    if (isRecapQuiz || isRecallQuiz || isCrm2Quiz) return
+    if (isRecapQuiz || isRecallQuiz) return
 
     // Server already consumed the pending reset before this page rendered
     if (wasReset) {
@@ -239,7 +239,7 @@ export default function QuizClient({
 
   // Save attempt to localStorage AND Supabase when the results screen appears
   useEffect(() => {
-    if (!showResults || isRecapQuiz || isRecallQuiz || isCrm2Quiz) return
+    if (!showResults || isRecapQuiz || isRecallQuiz) return
     clearInProgress(moduleId)
     saveAttempt({ moduleId, completedAt: new Date().toISOString(), score, passed })
 
@@ -278,7 +278,10 @@ export default function QuizClient({
         setSaveError(true)
       }
 
-      if (passed && !isFullAssessment && !isMasterAssessment && !isReleaseQuiz) {
+      // CRM 2.0 quizzes have no backing video module and no recall content, so
+      // skip the module_progress upsert and the recall scheduling — but they do
+      // still lock and save a scored result above, like any other assessment.
+      if (passed && !isFullAssessment && !isMasterAssessment && !isReleaseQuiz && !isCrm2Quiz) {
         const { error: progressError } = await supabase.from('module_progress').upsert({
           user_id: user.id,
           module_id: moduleId,
@@ -292,7 +295,7 @@ export default function QuizClient({
         }
       }
 
-      if (passed && !isFullAssessment && !isMasterAssessment && !isReleaseQuiz) {
+      if (passed && !isFullAssessment && !isMasterAssessment && !isReleaseQuiz && !isCrm2Quiz) {
         void fetch('/api/quiz/schedule-recall', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -394,7 +397,7 @@ export default function QuizClient({
     }
     setSubmitted(true)
     setQuizStarted(true)
-    if (!isRecapQuiz && !isCrm2Quiz) {
+    if (!isRecapQuiz) {
       saveInProgress({
         moduleId,
         startedAt: new Date().toISOString(),

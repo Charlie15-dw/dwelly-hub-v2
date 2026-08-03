@@ -7,6 +7,7 @@ import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 import { ragStatus, RAG_DOT, RAG_ROW, RAG_LABEL, RAG_TEXT } from '@/lib/rag'
 import PeopleDirectory, { type DirectoryPerson } from '@/components/manager/PeopleDirectory'
+import Crm2AssessmentPanel from '@/components/manager/Crm2AssessmentPanel'
 
 const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
@@ -191,6 +192,22 @@ export default async function AdminPage() {
         totalAssessments={TOTAL_ASSESSMENTS}
         title="All Property Managers"
         secondaryColumn="manager"
+      />
+
+      {/* CRM 2.0 assessments — private preview, surfaced separately so it stays
+          out of the org-wide completion metrics above */}
+      <Crm2AssessmentPanel
+        people={profiles.map(p => {
+          const name = displayName(p)
+          return { id: p.id, displayName: name, initials: initials(name) }
+        })}
+        results={results.map(r => ({
+          user_id: r.user_id,
+          assessment_id: r.assessment_id,
+          score: r.score,
+          passed: r.passed,
+          completed_at: r.completed_at,
+        }))}
       />
 
       {/* Teams by supervisor (managers + admins) — scroll down for the org breakdown */}
