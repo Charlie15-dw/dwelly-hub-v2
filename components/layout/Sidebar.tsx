@@ -6,11 +6,11 @@ import {
   LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
   AlertTriangle, BarChart3, BookA, MessageCircle, Building2, Scale, LayoutGrid, ChevronDown,
-  MessageSquareDashed, Megaphone, MessageSquareReply, type LucideIcon,
+  MessageSquareDashed, Megaphone, MessageSquareReply, Sparkles, type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
-import { isHubPreview } from '@/lib/preview'
+import { isHubPreview, isCrm2Preview } from '@/lib/preview'
 import { useSidebar } from '@/components/layout/SidebarContext'
 import { useEffect, useState } from 'react'
 
@@ -99,6 +99,7 @@ export default function Sidebar() {
   const [isManager, setIsManager] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const [isPreview, setIsPreview] = useState(false)
+  const [isCrm2, setIsCrm2] = useState(false)
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<string | null>(null)
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
@@ -109,6 +110,7 @@ export default function Sidebar() {
       if (!user) return
       const preview = isHubPreview(user.email)
       setIsPreview(preview)
+      setIsCrm2(isCrm2Preview(user.email))
       // In the Hub preview, each pillar is a collapsible group; open the one
       // matching the current page automatically.
       if (preview) {
@@ -309,6 +311,21 @@ export default function Sidebar() {
           <>
             {/* Connect — featured above Ask Dobby */}
             {HUB_GROUPS.filter(g => g.id === 'connect').map(renderGroup)}
+
+            {/* CRM 2.0 — private early-access learning space (allow-listed) */}
+            {isCrm2 && (() => {
+              const active = pathname.startsWith('/hub/crm-2')
+              return (
+                <Link href="/hub/crm-2" className={cn('sidebar-link mt-2', active && 'active')} aria-current={active ? 'page' : undefined}>
+                  <Sparkles className="w-4 h-4 flex-shrink-0" aria-hidden />
+                  <span className="flex-1">CRM 2.0</span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
+                    New
+                  </span>
+                  {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
+                </Link>
+              )
+            })()}
 
             {/* Ask Dobby — standalone (kept out of any group) */}
             {(() => {

@@ -20,3 +20,19 @@ export function isHubPreview(email: string | null | undefined): boolean {
 export function isHubBeta(email: string | null | undefined): boolean {
   return Boolean(email)
 }
+
+// CRM 2.0 learning space — private early-access gate.
+//
+// The "2.0" section is a work-in-progress learning area that should only be
+// visible to Charlie while the content is being built. Restricted to the two
+// listed accounts; everyone else neither sees the nav entry nor can reach the
+// page. Widen this set (or replace it with a role/flag) when it's ready to roll
+// out more broadly.
+const CRM2_ALLOWED_EMAILS = new Set([
+  'charlie@dwelly.group',
+  'charlie@pennington-online.co.uk',
+])
+
+export function isCrm2Preview(email: string | null | undefined): boolean {
+  return email ? CRM2_ALLOWED_EMAILS.has(email.trim().toLowerCase()) : false
+}
