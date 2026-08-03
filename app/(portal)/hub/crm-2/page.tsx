@@ -7,6 +7,7 @@ import {
 import { createServerClient } from '@/lib/supabase/server'
 import { isCrm2Preview } from '@/lib/preview'
 import { CRM2_PILLARS, CRM2_LESSONS, type Crm2Pillar } from '@/lib/crm2-content'
+import ProgressRing from '@/components/crm2/ProgressRing'
 
 // CRM 2.0 — the private learning space for Dwelly's next-generation CRM.
 // A premium landing that opens onto the lessons, which live in
@@ -80,6 +81,9 @@ export default async function Crm2Page() {
           </div>
         </div>
       </section>
+
+      {/* Your progress */}
+      <ProgressRing slugs={CRM2_LESSONS.map((l) => l.slug)} />
 
       {/* What you'll find here */}
       <section aria-labelledby="crm2-pillars" className="space-y-4">

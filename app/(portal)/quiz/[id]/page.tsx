@@ -6,8 +6,10 @@ import {
   PRODUCT_RELEASE_QUIZZES,
   PRODUCT_RELEASE_QUESTIONS,
 } from '@/lib/data'
+import { redirect } from 'next/navigation'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
-import { isHubBeta } from '@/lib/preview'
+import { isHubBeta, isCrm2Preview } from '@/lib/preview'
+import { CRM2_LESSONS } from '@/lib/crm2-content'
 import QuizClient, { type QuizCategory } from './QuizClient'
 
 // Video module sections (3 questions each for combined assessments)
@@ -32,6 +34,16 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   const isRecapQuiz        = moduleId.startsWith('recap-')
   const isReleaseQuiz      = moduleId.startsWith('release-')
   const isRecallQuiz       = moduleId.startsWith('recall-')
+  const isCrm2Quiz         = moduleId.startsWith('crm2-')
+
+  // CRM 2.0 quizzes are private — gate them to the same allow-list as the
+  // lessons before doing anything else.
+  if (isCrm2Quiz) {
+    const auth = createServerClient()
+    const { data: { user } } = await auth.auth.getUser()
+    if (!user) redirect('/')
+    if (!isCrm2Preview(user.email)) redirect('/hub')
+  }
 
   // ── Determine quiz category and metadata ────────────────────────────────
 
@@ -97,6 +109,14 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     passmark     = releaseQuiz.passmark
     backHref     = '/recap'
     backLabel    = 'Back to Recap & Refresh'
+  } else if (isCrm2Quiz) {
+    const lesson = CRM2_LESSONS.find(l => l.quizModuleId === moduleId)
+    if (!lesson) notFound()
+    quizCategory = 'module'
+    moduleTitle  = `${lesson.title} — Knowledge Check`
+    passmark     = 80
+    backHref     = `/hub/crm-2/${lesson.slug}`
+    backLabel    = 'Back to lesson'
   } else {
     // Regular module assessment
     const mod = MODULES.find(m => m.id === moduleId)
@@ -130,6 +150,7 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   } else if (isReleaseQuiz) {
     questionPool = PRODUCT_RELEASE_QUESTIONS.filter(q => q.releaseId === moduleId)
   } else {
+    // Covers regular module assessments and CRM 2.0 lesson quizzes.
     questionPool = QUIZ_QUESTIONS.filter(q => q.moduleId === moduleId && !q.tier)
   }
 
@@ -149,7 +170,7 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
 
   // Check for a pending manager reset — done server-side so RLS never blocks it
   let wasReset = false
-  if (!isRecapQuiz && !isRecallQuiz) {
+  if (!isRecapQuiz && !isRecallQuiz && !isCrm2Quiz) {
     try {
       const auth = createServerClient()
       const { data: { user } } = await auth.auth.getUser()

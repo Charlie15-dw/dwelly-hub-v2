@@ -30,7 +30,13 @@ export interface Crm2Lesson {
   pillar: Crm2Pillar
   readTime: string
   content: Crm2Block[]
+  quizModuleId?: string   // e.g. 'crm2-how-it-works' — renders a "Test yourself" card
 }
+
+// Every lesson is checked against the live CRM 2.0 build on this date. Because
+// 2.0 is changing fast, the lesson pages show this as a "freshness" badge so
+// the team can see the material is current. Bump it whenever the set is reviewed.
+export const CRM2_LAST_REVIEWED = '3 Aug 2026'
 
 export const CRM2_PILLARS: { id: Crm2Pillar; label: string; description: string }[] = [
   { id: 'orientate', label: 'Get orientated', description: 'How CRM 2.0 works and how to find your way around it.' },
@@ -47,6 +53,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '🤖',
     pillar: 'orientate',
     readTime: '5 min read',
+    quizModuleId: 'crm2-how-it-works',
     content: [
       { type: 'heading', text: 'An agent that runs the job, and you for the human calls' },
       { type: 'paragraph', text: 'Each request is a single compliance-certificate job — a Gas Safety Certificate (CP12), an EICR, an EPC, and so on. An AI agent runs the routine from end to end; you, the operator, make the decisions that need a human. Understanding that split is the key to working well in 2.0.' },
@@ -231,6 +238,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '🔧',
     pillar: 'features',
     readTime: '5 min read',
+    quizModuleId: 'crm2-remedial-works',
     content: [
       { type: 'paragraph', text: 'At Certificate review you now decide whether remedial works are required for compliance or simply recommended by the engineer. That choice sends the job down the right path.' },
 
@@ -261,6 +269,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '📄',
     pillar: 'features',
     readTime: '5 min read',
+    quizModuleId: 'crm2-certificate-review',
     content: [
       { type: 'heading', text: 'Check on every certificate' },
       { type: 'bullets', items: [
@@ -294,6 +303,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '⚡',
     pillar: 'features',
     readTime: '3 min read',
+    quizModuleId: 'crm2-epc',
     content: [
       { type: 'paragraph', text: 'Unlike an EICR or a Gas Safety Certificate, an EPC does not have to be renewed during a live tenancy. It does have to be valid before you market the property, sign a new agreement with different tenants, formally change the tenancy agreement with existing tenants, or serve notice — so renewing is best practice.' },
 
@@ -311,6 +321,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '🚦',
     pillar: 'operate',
     readTime: '4 min read',
+    quizModuleId: 'crm2-escalations',
     content: [
       { type: 'heading', text: 'Reading the next-action date' },
       { type: 'paragraph', text: 'The date and time at the bottom of a job is the next agent action — not necessarily the next escalation. It may just be an auto reminder. The full list of planned actions sits on the right-hand side of the job.' },
@@ -352,6 +363,182 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Use the Job Notes tab for operational context (why we\u2019re waiting, special agreements) — it\u2019s for context, not communication history.',
         'Some agencies run in manual mode in CRM 1 (for example, British Gas).',
       ]},
+    ],
+  },
+
+  // ─── Added references, synthesised from the lessons above ────────────────────
+  {
+    slug: 'glossary',
+    title: 'Glossary: the language of 2.0',
+    summary: 'Every stage name and control in one place, so the whole team speaks the same language.',
+    icon: '📖',
+    pillar: 'orientate',
+    readTime: '3 min read',
+    content: [
+      { type: 'paragraph', text: 'A quick reference for the terms you\u2019ll see on a job. Bookmark this one — it\u2019s the fastest way to get fluent in how 2.0 describes where a job is and what happens next.' },
+
+      { type: 'heading', text: 'Job stages' },
+      { type: 'table',
+        headers: ['Stage', 'What it means'],
+        rows: [
+          ['Landlord approval', 'The agent asks the landlord to authorise the work. The landlord can also choose to arrange it themselves (Landlord DIY).'],
+          ['Provider selection', 'The agent finds a contractor for the job.'],
+          ['Scheduling', 'The agent brokers a date between the parties.'],
+          ['Visit', 'The appointment is confirmed; the agent sends a reminder the day before.'],
+          ['Result awaiting', 'After the visit, the agent chases the certificate.'],
+          ['Certificate review', 'Your checkpoint — check the document, the dates and whether any remedials are required.'],
+          ['Quotation awaiting', 'On the remedial branch, the agent asks the contractor for a quote.'],
+          ['Quotation review', 'You approve (or query) the remedial quote.'],
+          ['Landlord quote approval', 'The landlord agrees to pay for the remedial works.'],
+          ['Remedial terminated', 'The remedial branch stops without proceeding to works.'],
+          ['Invoice awaiting / review', 'The invoice arrives and is checked against the job.'],
+          ['Completed', 'The job is finished.'],
+        ],
+      },
+
+      { type: 'heading', text: 'Labels & controls' },
+      { type: 'table',
+        headers: ['Term', 'What it means'],
+        rows: [
+          ['Unattended', 'A vacant-property job. With no tenant, the agent goes straight to the provider and books from their availability; keys are collected from the agency.'],
+          ['Wait For SP', 'Pauses the job while waiting on a service provider (or, as an interim workaround, any third party). Lifts the red flag until the job returns to you.'],
+          ['Take Over', 'You step in and take the next action on a job yourself, rather than leaving it to the agent.'],
+          ['Wait for response', 'Holds the job for a provider\u2019s reply — capped at 3 days. Extend it again when the job comes back to your queue.'],
+        ],
+      },
+
+      { type: 'heading', text: 'Certificate types' },
+      { type: 'table',
+        headers: ['Certificate', 'Note'],
+        rows: [
+          ['CP12 (Gas Safety Certificate)', 'Categorises each appliance rather than labelling the whole cert satisfactory/unsatisfactory. Read the \u201CSafe to use\u201D column.'],
+          ['EICR', 'Electrical report; clearly labelled satisfactory or unsatisfactory.'],
+          ['EPC', 'Energy Performance Certificate. Not required to be renewed mid-tenancy, but needed before marketing, a new agreement, a formal change or serving notice.'],
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'worked-example',
+    title: 'Worked example: a gas safety job, start to finish',
+    summary: 'Follow one CP12 through the whole flow — including a remedial branch — to see how the pieces fit.',
+    icon: '🧩',
+    pillar: 'features',
+    readTime: '5 min read',
+    content: [
+      { type: 'paragraph', text: 'The best way to see how the stages, checkpoints and side flows connect is to watch a single job travel through them. Here is a typical Gas Safety Certificate (CP12) job — one where the engineer finds an issue — from open to close. Details are illustrative.' },
+
+      { type: 'heading', text: 'The main path' },
+      { type: 'steps', items: [
+        'Landlord approval — the agent asks the landlord to authorise the CP12. The landlord approves (had they wanted to arrange it themselves, the job would have gone down the Landlord DIY route instead).',
+        'Provider selection & scheduling — the agent finds a Gas Safe contractor and brokers a date. You don\u2019t need to touch this unless it escalates.',
+        'Visit — the appointment is confirmed and the agent sends a reminder the day before.',
+        'Result awaiting — after the visit the agent chases the certificate.',
+        'Certificate review — the job lands in your queue. This is your checkpoint.',
+      ]},
+
+      { type: 'heading', text: 'At Certificate review' },
+      { type: 'bullets', items: [
+        'Check the address — make sure the cert is for this property, not another in the landlord\u2019s portfolio.',
+        'Check the numbers — subtotal, VAT and total.',
+        'Check the dates — issue and expiry present and in the right fields on both the cert and the CRM.',
+        'Read the \u201CSafe to use\u201D column. In this example one appliance is flagged — a missing flame supervision device on an old hob — so there is a remedial to consider.',
+      ]},
+      { type: 'callout', variant: 'info', text: 'Every other appliance is \u201CSafe to use: YES\u201D, so the certificate itself is satisfactory. The flagged item is a remedial that rides alongside it — the cert doesn\u2019t become unsatisfactory just because one optional item was noted.' },
+
+      { type: 'heading', text: 'The remedial branch' },
+      { type: 'paragraph', text: 'You decide the remedial is worth doing, so the job branches:' },
+      { type: 'steps', items: [
+        'Quotation awaiting — the agent asks the contractor for a quote for the remedial work.',
+        'Quotation review — you check the quote.',
+        'Landlord quote approval — the landlord agrees to pay.',
+        'A repeat visit completes the works. (Had the landlord declined, the branch would end at Remedial terminated and the satisfactory cert would still stand.)',
+      ]},
+
+      { type: 'heading', text: 'Closing out' },
+      { type: 'steps', items: [
+        'Invoice awaiting / review — the invoice comes in and is checked against the job. Remember to collect both the certificate and the invoice for the appointment.',
+        'Completed — the job closes.',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'Notice you only stepped in twice — at Certificate review and Quotation review. Everything else was the agent. That two-lane split is the whole model in one job.' },
+    ],
+  },
+  {
+    slug: 'cheatsheet',
+    title: 'Quick-reference cheatsheet',
+    summary: 'The \u201Cwhen X, do Y\u201D calls you\u2019ll make most often, on one screen.',
+    icon: '🗂️',
+    pillar: 'operate',
+    readTime: '3 min read',
+    content: [
+      { type: 'paragraph', text: 'The decisions that come up again and again, boiled down. Bookmark this and keep it open while you work through your queue.' },
+      { type: 'table',
+        headers: ['When you see this…', 'Do this'],
+        rows: [
+          ['A satisfactory cert with optional items noted', 'Follow the optional-remedial flow and send the 7-day wording — don\u2019t redirect it into the mandatory remedial path.'],
+          ['A CP12 where every appliance is \u201CSafe to use: YES\u201D', 'Treat the certificate as satisfactory; any remedials are nice-to-have.'],
+          ['The AI has flagged the address', 'Just a hint to look, not an error to fix. Common trigger: a handwritten certificate.'],
+          ['A cert for the wrong property', 'Two actions: upload it to the property it belongs to (CRM 1 \u2192 File Manager), and request the correct cert for this job.'],
+          ['A landlord going quiet on an EPC', 'Not legally required mid-tenancy — send the EPC wording. (Chase vs cancel on no response is still an open question — check.)'],
+          ['A job blocked by a block manager / other third party', 'Interim: set Wait For SP to pause and clear the flag, then Take Over once the info arrives.'],
+          ['A provider away longer than 3 days', 'Set the 3-day wait, then extend again when the job returns to your queue.'],
+          ['The next-action date at the bottom of a job', 'If it\u2019s an escalation you can action it early; if it\u2019s an auto reminder, leave it.'],
+        ],
+      },
+      { type: 'callout', variant: 'warning', text: 'This is a summary — the full reasoning lives in the feature lessons. When a case doesn\u2019t fit neatly, read the whole job before acting.' },
+    ],
+  },
+  {
+    slug: 'faq',
+    title: 'FAQ & common gotchas',
+    summary: 'The questions new operators ask most, and the traps that catch people out.',
+    icon: '❓',
+    pillar: 'operate',
+    readTime: '4 min read',
+    content: [
+      { type: 'subheading', text: 'Should I take over a job just so I can call the tenant or provider early?' },
+      { type: 'paragraph', text: 'No. If there\u2019s no new urgent information to process, let the agent keep working — it will escalate to you when it needs a human. Taking over early just adds work and can cut across what the agent is doing.' },
+
+      { type: 'subheading', text: 'Do I need to process jobs that haven\u2019t escalated?' },
+      { type: 'paragraph', text: 'Not for now — only handle flags. If a job hasn\u2019t escalated, it doesn\u2019t need you yet.' },
+
+      { type: 'subheading', text: 'The AI flagged the address — do I have to correct it?' },
+      { type: 'paragraph', text: 'No. A flagged address is a hint that it might be wrong and worth a glance, not an error you must fix. A handwritten certificate is a common trigger.' },
+
+      { type: 'subheading', text: 'A CP12 doesn\u2019t say \u201Csatisfactory\u201D anywhere — how do I judge it?' },
+      { type: 'paragraph', text: 'A gas certificate categorises each appliance rather than the whole document. Read the \u201CSafe to use\u201D column: if every appliance is YES, treat the cert as satisfactory and any remedials as nice-to-have.' },
+
+      { type: 'subheading', text: 'The landlord sent a certificate for a different property — do I just reject it?' },
+      { type: 'paragraph', text: 'No — take two actions. Upload the cert to the property it actually belongs to (CRM 1 \u2192 File Manager) so it isn\u2019t wasted, then request the correct cert for this job\u2019s property.' },
+
+      { type: 'subheading', text: 'Is an EPC mandatory to renew during a tenancy?' },
+      { type: 'paragraph', text: 'No. Unlike an EICR or gas cert, an EPC doesn\u2019t have to be renewed mid-tenancy — but it must be valid before you market the property, sign a new agreement with different tenants, formally change the agreement with existing tenants, or serve notice. So renewing is best practice.' },
+
+      { type: 'subheading', text: 'How long can I wait for a provider to respond?' },
+      { type: 'paragraph', text: '\u201CWait for response\u201D caps at 3 days. If a provider is away longer, set the 3 days and extend again when the job comes back to your queue.' },
+
+      { type: 'callout', variant: 'important', text: 'The biggest gotcha overall: acting on the most recent message alone. The agent often suggests an action from the latest activity — read the whole job before you decide.' },
+    ],
+  },
+  {
+    slug: 'whats-new',
+    title: 'What\u2019s new in 2.0 (vs 1.0)',
+    summary: 'The headline changes from the old CRM, so you know what to expect and what\u2019s different.',
+    icon: '📣',
+    pillar: 'operate',
+    readTime: '3 min read',
+    content: [
+      { type: 'paragraph', text: 'If you\u2019ve worked in CRM 1.0, here\u2019s what actually changes in 2.0. These are the differences worth knowing before you pick up your first job.' },
+      { type: 'bullets', items: [
+        'An agent runs the job end to end. Chasing, booking and reminders happen automatically; you step in for the human decisions rather than driving every step.',
+        'Certificate review is now the decision point. It\u2019s where you check the document and decide whether remedials are required for compliance or simply recommended.',
+        'Vacant properties are fully supported. They\u2019re flagged Unattended, the agent books straight with the provider, and you get a key-collection escalation the day before the visit.',
+        'Waiting is time-boxed. \u201CWait for response\u201D caps at 3 days, so jobs come back to you rather than sitting open indefinitely.',
+        'The next-action date is visible on every job — with the full list of planned actions on the right — so you can see what the agent will do next and action escalations early.',
+      ]},
+      { type: 'callout', variant: 'info', text: 'Some things are still being finalised — for example, a dedicated hold state for jobs blocked by a third party, and whether to chase or cancel an unresponsive EPC. Where a lesson flags an \u201Copen question\u201D, check before assuming.' },
+      { type: 'divider' },
+      { type: 'paragraph', text: 'This learning space launched on 3 Aug 2026 and is reviewed against the live 2.0 build. As 2.0 evolves, new lessons and changes will land here first.' },
     ],
   },
 ]

@@ -3244,6 +3244,203 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 2,
     rationale: 'If a PM identifies an incorrect charge, they must flag it to the finance team immediately — adjusting ledger entries independently without authorisation is not permitted. The PM should also proactively notify the landlord rather than waiting for them to discover it. Proactive error correction builds trust and demonstrates integrity.',
   },
+
+  // ─── CRM 2.0 learning space quizzes ───────────────────────────────────────
+  // Questions for the private CRM 2.0 lessons (lib/crm2-content.ts). Module ids
+  // use the `crm2-<slug>` scheme and are surfaced via the quiz route's crm2
+  // branch, which is gated to the same allow-list as the lessons themselves.
+
+  // crm2-how-it-works
+  {
+    id: 'q-crm2-hiw-1', moduleId: 'crm2-how-it-works',
+    question: 'In CRM 2.0, what is the operator\'s role relative to the agent?',
+    options: [
+      'Drive every step of the job manually, as in the old CRM',
+      'Make the decisions that need a human while the agent runs the routine end to end',
+      'Only handle invoicing; the agent does everything else including certificate checks',
+      'Approve the agent\'s work after every single automated step',
+    ],
+    correct: 1,
+    rationale: 'The model is two lanes: the agent runs the routine (chasing, booking, reminding) autonomously, and you step in for the human decisions. Certificate review is the one checkpoint that is always yours.',
+  },
+  {
+    id: 'q-crm2-hiw-2', moduleId: 'crm2-how-it-works',
+    question: 'Which stage on the main path is always the operator\'s checkpoint?',
+    options: ['Provider selection', 'Scheduling', 'Certificate review', 'Landlord approval'],
+    correct: 2,
+    rationale: 'Certificate review is your checkpoint — where you check the document and its dates. The rest of the main path is driven by the agent.',
+  },
+  {
+    id: 'q-crm2-hiw-3', moduleId: 'crm2-how-it-works',
+    question: 'Should you take over a job just so you can call the tenant or provider early?',
+    options: [
+      'Yes — earlier contact is always better',
+      'No — if there is no new urgent information, let the agent work; it will escalate when it needs you',
+      'Only if the landlord has asked you to',
+      'Only on jobs older than 3 days',
+    ],
+    correct: 1,
+    rationale: 'Don\'t take over just to call early. If there is no new urgent information to process, let the agent keep working — it escalates when it needs a human.',
+  },
+  {
+    id: 'q-crm2-hiw-4', moduleId: 'crm2-how-it-works',
+    question: 'What is the safest habit before acting on a job\'s suggested action?',
+    options: [
+      'Act on the most recent activity only, to save time',
+      'Read the whole job — the broader history may point to a different decision',
+      'Always escalate to a manager first',
+      'Close the job and re-open it to refresh the agent',
+    ],
+    correct: 1,
+    rationale: 'The agent often suggests an action based only on the most recent activity. Read the whole job before acting, as the broader history may point to a different decision.',
+  },
+
+  // crm2-certificate-review
+  {
+    id: 'q-crm2-cert-1', moduleId: 'crm2-certificate-review',
+    question: 'Which three things should you check on every certificate?',
+    options: [
+      'Address, numbers (subtotal/VAT/total) and dates',
+      'Tenant name, rent amount and deposit',
+      'Contractor rating, distance and price',
+      'Landlord signature, photos and job notes',
+    ],
+    correct: 0,
+    rationale: 'On every certificate check the address (landlords sometimes send one for another property), the numbers (subtotal, VAT, total) and the dates (issue and expiry, in the right fields on both cert and CRM).',
+  },
+  {
+    id: 'q-crm2-cert-2', moduleId: 'crm2-certificate-review',
+    question: 'The AI has flagged the address on a certificate. What does that mean?',
+    options: [
+      'The certificate is invalid and must be rejected',
+      'It is a hint that the address might be wrong and worth a look — not an error to fix',
+      'You must manually correct the address before continuing',
+      'The landlord has been reported for fraud',
+    ],
+    correct: 1,
+    rationale: 'A flagged address is a hint that it might be wrong and worth a glance — not an error to fix. A handwritten certificate is a common trigger.',
+  },
+  {
+    id: 'q-crm2-cert-3', moduleId: 'crm2-certificate-review',
+    question: 'A landlord sends a certificate that belongs to a different property in their portfolio. What should you do?',
+    options: [
+      'Reject it and ask them to resend',
+      'Upload it to the property it belongs to (CRM 1 → File Manager) AND request the correct cert for this job',
+      'Attach it to this job anyway to close it',
+      'Delete it to avoid confusion',
+    ],
+    correct: 1,
+    rationale: 'Take two actions, not one: upload the cert to the property it actually belongs to so it isn\'t wasted, and request the correct cert for this job\'s property.',
+  },
+  {
+    id: 'q-crm2-cert-4', moduleId: 'crm2-certificate-review',
+    question: 'How do you judge whether a CP12 (gas certificate) is satisfactory?',
+    options: [
+      'Look for a single "satisfactory" stamp like an EICR',
+      'Read the "Safe to use" column — if every appliance is YES, treat the cert as satisfactory',
+      'Check only the issue date',
+      'Assume it is satisfactory unless the contractor says otherwise',
+    ],
+    correct: 1,
+    rationale: 'A CP12 categorises each appliance rather than the whole document. If every appliance is "Safe to use: YES", treat the certificate as satisfactory and any remedials as nice-to-have.',
+  },
+
+  // crm2-remedial-works
+  {
+    id: 'q-crm2-rem-1', moduleId: 'crm2-remedial-works',
+    question: 'Where do you decide whether remedial works are required or just recommended?',
+    options: ['Landlord approval', 'Certificate review', 'Provider selection', 'Invoice review'],
+    correct: 1,
+    rationale: 'At Certificate review you decide whether remedials are required for compliance or simply recommended by the engineer — and that choice sends the job down the right path.',
+  },
+  {
+    id: 'q-crm2-rem-2', moduleId: 'crm2-remedial-works',
+    question: 'A gas certificate is satisfactory but the engineer noted an optional remedial. What is the common mistake to avoid?',
+    options: [
+      'Closing the job immediately',
+      'Redirecting a satisfactory cert into the mandatory remedial flow',
+      'Telling the landlord the cert failed',
+      'Booking a second contractor straight away',
+    ],
+    correct: 1,
+    rationale: 'Don\'t redirect a satisfactory cert into the mandatory remedial flow. If the appliances are safe to use, treat it as satisfactory and handle the optional remedial via the optional flow.',
+  },
+  {
+    id: 'q-crm2-rem-3', moduleId: 'crm2-remedial-works',
+    question: 'On the optional-remedial wording, what happens if the landlord doesn\'t respond in time?',
+    options: [
+      'The job stays open indefinitely',
+      'After 7 days with no response, you proceed with closing the job',
+      'The remedial is booked automatically',
+      'The certificate is voided',
+    ],
+    correct: 1,
+    rationale: 'The optional-remedial wording tells the landlord that if we don\'t hear back within 7 days, we\'ll proceed with closing the job.',
+  },
+
+  // crm2-epc
+  {
+    id: 'q-crm2-epc-1', moduleId: 'crm2-epc',
+    question: 'Does an EPC have to be renewed during a live tenancy?',
+    options: [
+      'Yes — like an EICR or gas cert, it must be kept in date at all times',
+      'No — but it must be valid before marketing, a new agreement, a formal change or serving notice',
+      'Only if the tenant requests it',
+      'Only for properties rated below C',
+    ],
+    correct: 1,
+    rationale: 'Unlike an EICR or gas cert, an EPC does not have to be renewed mid-tenancy — but it must be valid before you market, sign a new agreement with different tenants, formally change the agreement, or serve notice. So renewing is best practice.',
+  },
+  {
+    id: 'q-crm2-epc-2', moduleId: 'crm2-epc',
+    question: 'A landlord hasn\'t responded about renewing the EPC. What is the correct stance?',
+    options: [
+      'Renew it anyway — it\'s always legally required',
+      'Explain it isn\'t a legal requirement mid-tenancy and won\'t be renewed unless they confirm, noting when a valid EPC is needed',
+      'Cancel the tenancy',
+      'Escalate to the deposit scheme',
+    ],
+    correct: 1,
+    rationale: 'The EPC wording explains we won\'t renew unless the landlord confirms, since it isn\'t a legal requirement during a tenancy — while flagging when a valid EPC is needed (marketing, new agreement, formal change, serving notice).',
+  },
+
+  // crm2-escalations
+  {
+    id: 'q-crm2-esc-1', moduleId: 'crm2-escalations',
+    question: 'What does the date and time at the bottom of a job represent?',
+    options: [
+      'The job\'s deadline',
+      'The next agent action — which may just be an auto reminder, not an escalation',
+      'When the certificate expires',
+      'The last time you opened the job',
+    ],
+    correct: 1,
+    rationale: 'That date is the next agent action, not necessarily the next escalation — it may just be an auto reminder. The full list of planned actions sits on the right of the job.',
+  },
+  {
+    id: 'q-crm2-esc-2', moduleId: 'crm2-escalations',
+    question: 'How long does "Wait for response" last, and what do you do if a provider is away longer?',
+    options: [
+      'It lasts 7 days; escalate to a manager after that',
+      'It caps at 3 days; set the 3 days and extend again when the job returns to your queue',
+      'It lasts indefinitely; no action needed',
+      'It caps at 24 hours; cancel the job after that',
+    ],
+    correct: 1,
+    rationale: '"Wait for response" maxes out at 3 days. If a provider is away longer (e.g. annual leave), set the 3 days and extend again when the job comes back to your queue.',
+  },
+  {
+    id: 'q-crm2-esc-3', moduleId: 'crm2-escalations',
+    question: 'A job is blocked by a block manager (not the tenant, landlord or provider). What is the interim workaround?',
+    options: [
+      'Cancel the job',
+      'Set Wait For SP to pause the job and lift the red flag, then Take Over once the information arrives',
+      'Leave it flagged and wait',
+      'Switch it to CRM 1.0 immediately',
+    ],
+    correct: 1,
+    rationale: 'There\'s no dedicated hold state yet for third-party blocks. Interim: set Wait For SP to pause and clear the flag, then Take Over when the information arrives. A proper hold option is on the roadmap.',
+  },
 ]
 
 
