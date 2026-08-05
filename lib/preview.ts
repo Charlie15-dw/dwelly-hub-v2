@@ -31,6 +31,7 @@ export function isHubBeta(email: string | null | undefined): boolean {
 const CRM2_ALLOWED_EMAILS = new Set([
   'charlie@dwelly.group',
   'charlie@pennington-online.co.uk',
+  'walter@dwelly.group',
 ])
 
 export function isCrm2Preview(email: string | null | undefined): boolean {
