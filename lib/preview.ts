@@ -32,6 +32,8 @@ const CRM2_ALLOWED_EMAILS = new Set([
   'charlie@dwelly.group',
   'charlie@pennington-online.co.uk',
   'walter@dwelly.group',
+  'veronica@dwelly.group',
+  'mariia@dwelly.group',
 ])
 
 export function isCrm2Preview(email: string | null | undefined): boolean {
