@@ -158,7 +158,7 @@ export default async function AdminPage() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-navy">Organisation Overview</h1>
-            <p className="text-sm text-slate-500 mt-0.5">All teams · 2026–2027 Training Programme</p>
+            <p className="text-sm text-slate-500 mt-0.5">All teams · Training Programme</p>
           </div>
         </div>
         <div className="flex items-center gap-2">

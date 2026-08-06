@@ -92,7 +92,7 @@ export default function Header() {
             <p className="text-xs font-medium text-white">
               {new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
             </p>
-            <p className="text-[10px] text-white/45">2026–2027 Programme</p>
+            <p className="text-[10px] text-white/45">Training Programme</p>
           </div>
         </div>
       </div>

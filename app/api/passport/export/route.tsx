@@ -382,7 +382,7 @@ function PassportDocument({
 
         {/* Footer */}
         <View style={s.footer} fixed>
-          <Text style={s.footerText}>Issued via The Hub · Dwelly Training Programme 2026–2027 · Generated {generatedAt} · Confidential</Text>
+          <Text style={s.footerText}>Issued via The Hub · Dwelly Training Programme · Generated {generatedAt} · Confidential</Text>
           <Text style={s.footerBrand}>dwelly.co.uk</Text>
         </View>
 

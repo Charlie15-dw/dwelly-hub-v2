@@ -37,7 +37,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
         </main>
         <footer className="px-6 py-4 border-t border-slate-200/70 bg-white/60 backdrop-blur-sm">
           <p className="text-xs text-slate-400">
-            Dwelly Training Portal · 2026–2027 Programme · Built to property industry standards ·{' '}
+            Dwelly Training Portal · Built to property industry standards ·{' '}
             <a href="/governance" className="hover:text-teal transition-colors focus:outline-none focus:underline">
               Governance & Security Policy
             </a>

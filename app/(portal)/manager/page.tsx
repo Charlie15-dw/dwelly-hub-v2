@@ -188,7 +188,7 @@ export default async function ManagerDashboard() {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-xl font-bold text-navy">Manager Dashboard</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Team progress — 2026–2027 Training Programme</p>
+          <p className="text-sm text-slate-500 mt-0.5">Team progress — Training Programme</p>
         </div>
         <Link href="/manager/usage" className="btn-outline text-sm">
           <Activity className="w-4 h-4" aria-hidden />
