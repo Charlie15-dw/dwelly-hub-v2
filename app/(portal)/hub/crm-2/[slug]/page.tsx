@@ -122,6 +122,20 @@ function renderBlock(block: Crm2Block, i: number) {
     case 'divider':
       return <hr key={i} className="border-[#E8E8ED]" />
 
+    case 'image':
+      return block.src ? (
+        <figure key={i} className="my-1">
+          <div className="rounded-xl border border-[#E8E8ED] overflow-hidden bg-[#F5F5F7]">
+            {/* Static screenshot from the playbook; next/image is unnecessary here. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={block.src} alt={block.text ?? ''} className="w-full h-auto block" loading="lazy" />
+          </div>
+          {block.text && (
+            <figcaption className="text-xs text-[#6E6E73] mt-2 text-center leading-relaxed">{block.text}</figcaption>
+          )}
+        </figure>
+      ) : null
+
     default:
       return null
   }
