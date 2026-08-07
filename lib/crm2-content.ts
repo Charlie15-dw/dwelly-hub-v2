@@ -99,6 +99,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '🧭',
     pillar: 'orientate',
     readTime: '5 min read',
+    quizModuleId: 'crm2-navigating',
     content: [
       { type: 'heading', text: 'The requests queue' },
       { type: 'paragraph', text: 'Your landing page lists every CRM 2.0 job, with columns for the job ID, property, agency, certificate type and status. A few controls keep it focused:' },
@@ -144,6 +145,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '⏱️',
     pillar: 'orientate',
     readTime: '5 min read',
+    quizModuleId: 'crm2-touchpoints',
     content: [
       { type: 'heading', text: 'Designed touchpoints — where a human is always needed' },
       { type: 'paragraph', text: 'These are the moments the system is built to hand over to you. They happen on every relevant job, by design.' },
@@ -187,6 +189,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '🎛️',
     pillar: 'features',
     readTime: '6 min read',
+    quizModuleId: 'crm2-buttons',
     content: [
       { type: 'heading', text: 'Landlord approval buttons — by certificate type' },
       { type: 'paragraph', text: 'Every job starts at Landlord approval, where you authorise the works once the landlord says yes. The buttons differ slightly by certificate type. If the landlord approves by phone, use Landlord approved directly — not Add Direct Info.' },
@@ -260,6 +263,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '📅',
     pillar: 'features',
     readTime: '3 min read',
+    quizModuleId: 'crm2-rescheduling',
     content: [
       { type: 'callout', variant: 'info', text: 'New: rescheduling is now built in for jobs already at the Visit or Result Awaiting stage. Previously this needed a manual take-over.' },
       { type: 'image', src: '/crm2/visit-jobcard.png', text: 'A job at the Visit stage.' },
@@ -350,6 +354,15 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       ]},
       { type: 'image', src: '/crm2/cp12-safe-to-use.png', text: 'A CP12 with the \u201CSafe to use\u201D column — worked example: a missing flame supervision device on an old hob, still marked satisfactory (request 248).' },
 
+      { type: 'heading', text: 'Reading an EICR' },
+      { type: 'bullets', items: [
+        'An EICR does carry an overall outcome — Satisfactory or Unsatisfactory — unlike a CP12.',
+        'The observations are coded: C1 (danger present), C2 (potentially dangerous) and FI (further investigation) mean work is required; C3 (improvement recommended) is advisory only.',
+        'An EICR with only C3 items — or none — is satisfactory and needs no remedials.',
+        'C1, C2 or FI codes mean remedial works: send the job down the required-remedial path.',
+      ]},
+      { type: 'callout', variant: 'warning', text: 'Watch for the mixed case: an EICR marked overall Satisfactory that still lists FI (further investigation) items. Don\u2019t take the \u201Csatisfactory\u201D stamp at face value — go back to the service provider for clarification on the FIs before you close it out.' },
+
       { type: 'heading', text: 'The review panel' },
       { type: 'paragraph', text: 'The panel pre-fills the recognised dates for you to check against the document before you approve.' },
       { type: 'image', src: '/crm2/certreview-panel.png', text: 'The Certificate review panel with all the buttons and the pre-filled date fields.' },
@@ -414,6 +427,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '🧯',
     pillar: 'operate',
     readTime: '5 min read',
+    quizModuleId: 'crm2-escalations-reference',
     content: [
       { type: 'paragraph', text: 'These are the exceptions that fall outside the designed flow — the moments the agent stops and raises a flag because something doesn\u2019t fit the happy path. This page is the single catalogue of those triggers and how to handle them. (The designed, every-job checkpoints — Certificate review, Invoice review and the rest — are covered separately in \u201CWhen the system hands over to you\u201D.)' },
 
@@ -469,6 +483,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     icon: '🔗',
     pillar: 'operate',
     readTime: '4 min read',
+    quizModuleId: 'crm2-across-systems',
     content: [
       { type: 'heading', text: 'Switching a job from CRM 2.0 to CRM 1.0' },
       { type: 'steps', items: [

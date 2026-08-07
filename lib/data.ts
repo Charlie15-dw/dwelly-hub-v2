@@ -3294,6 +3294,42 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     rationale: 'The agent often suggests an action based only on the most recent activity. Read the whole job before acting, as the broader history may point to a different decision.',
   },
+  {
+    id: 'q-crm2-hiw-5', moduleId: 'crm2-how-it-works',
+    question: 'At Landlord approval the landlord decides to arrange the work themselves (landlord DIY). Where does the job rejoin the main path?',
+    options: [
+      'It skips straight to Completed once the landlord confirms they\'ll handle it',
+      'The landlord\'s certificate comes back into Certificate review, like any other cert',
+      'It moves to Invoice review so the landlord can be charged for the arrangement',
+      'It stays parked at Landlord approval until an admin closes it manually',
+    ],
+    correct: 1,
+    rationale: 'On the landlord-DIY branch the agent waits for the landlord\'s own certificate, which re-enters Certificate review and is checked exactly like any other.',
+  },
+  {
+    id: 'q-crm2-hiw-6', moduleId: 'crm2-how-it-works',
+    question: 'A landlord asks for a boiler service alongside their gas safety check. How does that affect the job\'s stages?',
+    options: [
+      'It splits the job into two separate jobs that then run in parallel',
+      'It attaches at Landlord approval and rides alongside the CP12 without changing the stages',
+      'It adds a dedicated "boiler service" stage after Scheduling',
+      'It diverts the job onto the remedial branch until the service is done',
+    ],
+    correct: 1,
+    rationale: 'A boiler service can attach at Landlord approval and simply rides along with the CP12 — the job\'s stages are unchanged.',
+  },
+  {
+    id: 'q-crm2-hiw-7', moduleId: 'crm2-how-it-works',
+    question: 'Right now, which jobs in the queue should you actually process?',
+    options: [
+      'Every open job, working top to bottom so nothing is missed',
+      'Only the flagged (escalated) jobs — leave the ones that haven\'t escalated to the agent',
+      'Only jobs older than three days, regardless of whether they\'re flagged',
+      'Any job where the AI summary suggests an action, flagged or not',
+    ],
+    correct: 1,
+    rationale: 'Ground rule: only handle flags for now. Don\'t process jobs that haven\'t escalated — the agent is still working them.',
+  },
 
   // crm2-certificate-review
   {
@@ -3344,6 +3380,42 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     rationale: 'A CP12 categorises each appliance rather than the whole document. If every appliance is "Safe to use: YES", treat the certificate as satisfactory and any remedials as nice-to-have.',
   },
+  {
+    id: 'q-crm2-cert-5', moduleId: 'crm2-certificate-review',
+    question: 'You\'re entering the provider name on a Dwelly provider\'s certificate. Where should the name come from?',
+    options: [
+      'Type it exactly as the agent has pre-filled it in the field',
+      'Copy it from the Contacts tab — the agent sometimes pre-fills it slightly differently',
+      'Read it off the certificate document itself, whatever that shows',
+      'Leave it blank and let the agent resolve the provider automatically',
+    ],
+    correct: 1,
+    rationale: 'For a Dwelly provider, copy and paste the name from the Contacts tab on the right — the agent sometimes pre-fills the field differently from the name shown there. (For a landlord-DIY cert, use the name on the certificate.)',
+  },
+  {
+    id: 'q-crm2-cert-6', moduleId: 'crm2-certificate-review',
+    question: 'When should you use "Invalid" rather than "Upload another" on the review panel?',
+    options: [
+      'Invalid when you spot a problem with a cert (wrong date/address); Upload another when a new cert arrives the agent didn\'t recognise',
+      'Invalid when the file won\'t open; Upload another when the dates are wrong',
+      'They do the same thing — either one rejects the certificate',
+      'Invalid for gas certs; Upload another for electrical certs',
+    ],
+    correct: 0,
+    rationale: 'Invalid is for when you spot an issue with a cert (incorrect date, address, etc.). Upload another is for when you\'ve received a new cert and the agent didn\'t recognise it automatically.',
+  },
+  {
+    id: 'q-crm2-cert-7', moduleId: 'crm2-certificate-review',
+    question: 'An EICR is marked overall Satisfactory but still lists a couple of FI (further investigation) items. What should you do?',
+    options: [
+      'Approve it — the overall "satisfactory" result is what counts',
+      'Reject it as invalid and request a fresh inspection',
+      'Go back to the service provider for clarification on the FIs before closing it out',
+      'Send it straight down the required-remedial path automatically',
+    ],
+    correct: 2,
+    rationale: 'Don\'t take the "satisfactory" stamp at face value when FI items are present — FI means further investigation, so go back to the service provider to clarify before closing.',
+  },
 
   // crm2-remedial-works
   {
@@ -3377,6 +3449,42 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     rationale: 'The optional-remedial wording tells the landlord that if we don\'t hear back within 7 days, we\'ll proceed with closing the job.',
   },
+  {
+    id: 'q-crm2-rem-4', moduleId: 'crm2-remedial-works',
+    question: 'Once you press Need remedial, what\'s the order of the remedial branch?',
+    options: [
+      'Landlord quote approval → Quotation awaiting → Quotation review → repeat visit',
+      'Quotation awaiting → Quotation review → Landlord quote approval → approved re-enters Scheduling / rejected → Remedial terminated',
+      'Quotation review → Landlord quote approval → Quotation awaiting → Completed',
+      'Scheduling → Quotation awaiting → Landlord quote approval → Certificate review',
+    ],
+    correct: 1,
+    rationale: 'The remedial branch runs Quotation awaiting (agent asks for a quote) → Quotation review (your checkpoint) → Landlord quote approval → approved re-enters Scheduling for the repeat visit, or rejected → Remedial terminated.',
+  },
+  {
+    id: 'q-crm2-rem-5', moduleId: 'crm2-remedial-works',
+    question: 'The contractor has given a quote for the extra works but no formal quotation document. What do you do?',
+    options: [
+      'Escalate the job to an admin to force a formal quote',
+      'Reject the works until a formal quotation is issued',
+      'Attach a screenshot of their quote to the job — an informal fix, no escalation needed',
+      'Enter the amount yourself and approve it without any document',
+    ],
+    correct: 2,
+    rationale: 'If the contractor hasn\'t provided a formal quotation document, just attach a screenshot of their quote to the job. It\'s an informal fix — no escalation point needed.',
+  },
+  {
+    id: 'q-crm2-rem-6', moduleId: 'crm2-remedial-works',
+    question: 'At Landlord quote approval the landlord rejects the quote. What\'s the right handling?',
+    options: [
+      'Close the job immediately as Remedial terminated with no further contact',
+      'Book the works anyway since the certificate was satisfactory',
+      'Call to confirm whether they\'ll get their own or other quotes; their own contractor must be vetted first, and if they decline entirely, assert landlord DIY',
+      'Automatically source three alternative quotes and re-present them',
+    ],
+    correct: 2,
+    rationale: 'If the landlord rejects the quote, call them to confirm whether they\'ll seek their own quote or want additional quotes from other agency contractors. Their own contractor must be vetted first; if they decline entirely, assert full landlord DIY.',
+  },
 
   // crm2-epc
   {
@@ -3402,6 +3510,30 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     rationale: 'The EPC wording explains we won\'t renew unless the landlord confirms, since it isn\'t a legal requirement during a tenancy — while flagging when a valid EPC is needed (marketing, new agreement, formal change, serving notice).',
+  },
+  {
+    id: 'q-crm2-epc-3', moduleId: 'crm2-epc',
+    question: 'Which of these does NOT require a valid EPC to be in place?',
+    options: [
+      'Marketing the property to new tenants',
+      'Signing a new agreement with different tenants',
+      'Continuing an existing tenancy that isn\'t changing',
+      'Serving notice on the current tenants',
+    ],
+    correct: 2,
+    rationale: 'A valid EPC is needed before marketing, a new agreement with different tenants, a formal change to the agreement, or serving notice. Simply continuing an unchanged tenancy does not require renewal — which is why it isn\'t mandatory mid-tenancy.',
+  },
+  {
+    id: 'q-crm2-epc-4', moduleId: 'crm2-epc',
+    question: 'A landlord is completely unresponsive about their EPC. What\'s the honest status of how to handle that?',
+    options: [
+      'Cancel the job automatically after 14 days of silence',
+      'It\'s an open question — whether to chase the emergency contact or cancel isn\'t decided yet, so check before assuming',
+      'Always renew the EPC on the landlord\'s behalf to stay compliant',
+      'Escalate it to the tenancy deposit scheme for a ruling',
+    ],
+    correct: 1,
+    rationale: 'This is explicitly an open question in the material: if a landlord is unresponsive on an EPC, whether we chase the emergency contact or cancel the job isn\'t decided yet — check before assuming.',
   },
 
   // crm2-escalations
@@ -3440,6 +3572,414 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     rationale: 'There\'s no dedicated hold state yet for third-party blocks. Interim: set Wait For SP to pause and clear the flag, then Take Over when the information arrives. A proper hold option is on the roadmap.',
+  },
+
+  // crm2-navigating
+  {
+    id: 'q-crm2-nav-1', moduleId: 'crm2-navigating',
+    question: 'On the requests queue, what does an orange flag on a job mean?',
+    options: [
+      'The certificate attached to the job is close to expiry',
+      'The job has escalated and needs a human — for now these are the only ones you action',
+      'The landlord has raised a complaint about the job',
+      'The job has been sitting in the queue longer than three days',
+    ],
+    correct: 1,
+    rationale: 'An orange flag means the job has escalated and needs a human. For now, flagged jobs are the only ones you action.',
+  },
+  {
+    id: 'q-crm2-nav-2', moduleId: 'crm2-navigating',
+    question: 'How much should you rely on the AI Summary on a job?',
+    options: [
+      'Treat it as authoritative — it\'s verified before it\'s shown',
+      'Use it as a quick read, but still read the full job chronology before you act',
+      'Ignore it completely; it\'s never accurate',
+      'Only read it if the job has no activity history yet',
+    ],
+    correct: 1,
+    rationale: 'The AI summary gives a quick read of the current state, but 2.0 is new and summaries are still maturing — always read the job chronology so you\'re fully up to speed before acting.',
+  },
+  {
+    id: 'q-crm2-nav-3', moduleId: 'crm2-navigating',
+    question: 'You open a job and see a grey "No active task — agent is monitoring" bar at the bottom. What does that tell you?',
+    options: [
+      'The job has stalled and you need to Take Over to progress it',
+      'The agent still owns the job and there\'s nothing for you to do on it',
+      'The job is complete and can be hidden from the queue',
+      'The agent has hit an error and the job needs an admin',
+    ],
+    correct: 1,
+    rationale: 'The grey "No active task — agent is monitoring" bar means the agent still has the job. An Action Required panel appears only when the job actually needs you.',
+  },
+  {
+    id: 'q-crm2-nav-4', moduleId: 'crm2-navigating',
+    question: 'What\'s the default way to follow up or progress a job, and what must always follow?',
+    options: [
+      'Email first for a written record; only call if there\'s no reply',
+      'Call first — then always send a follow-up email, including every time you leave a voicemail',
+      'Send an SMS, since it\'s fastest, and log a note',
+      'Wait for the agent to chase again before doing anything yourself',
+    ],
+    correct: 1,
+    rationale: 'Calling is the primary way to follow up or progress a job. Always send a follow-up email afterwards — including every time you leave a voicemail — so the recipient can find the right thread to reply to.',
+  },
+
+  // crm2-touchpoints
+  {
+    id: 'q-crm2-tp-1', moduleId: 'crm2-touchpoints',
+    question: 'Which of these is NOT a designed human touchpoint?',
+    options: [
+      'Certificate review',
+      'Invoice review',
+      'Result awaiting',
+      'Quotation review',
+    ],
+    correct: 2,
+    rationale: 'Result awaiting is the agent chasing the certificate — it only lands with you if it stalls and escalates (at +3 days). Certificate review, Invoice review and Quotation review are the designed, every-relevant-job checkpoints.',
+  },
+  {
+    id: 'q-crm2-tp-2', moduleId: 'crm2-touchpoints',
+    question: 'An ordinary job and an EPC job both sit unanswered at Landlord approval past the reminders. What happens at +4 days?',
+    options: [
+      'Both auto-advance without a human',
+      'Both escalate to you',
+      'The ordinary job auto-advances, but the EPC escalates to you',
+      'Both are cancelled automatically',
+    ],
+    correct: 2,
+    rationale: 'At Landlord approval the reminders are +1 and +3 days; at +4 days ordinary jobs auto-advance, but an EPC escalates to you.',
+  },
+  {
+    id: 'q-crm2-tp-3', moduleId: 'crm2-touchpoints',
+    question: 'At Result awaiting, what\'s the chase cadence before a job reaches you?',
+    options: [
+      'It escalates to you immediately once the visit passes',
+      'Reminders at +1 and +2 days, then it escalates to you at +3',
+      'Reminders at +3 and +7 days',
+      'It never escalates — the agent chases indefinitely',
+    ],
+    correct: 1,
+    rationale: 'Result awaiting sends reminders at +1 and +2 days, then escalates to you at +3.',
+  },
+  {
+    id: 'q-crm2-tp-4', moduleId: 'crm2-touchpoints',
+    question: 'Why does Landlord quote approval get a longer leash (+3, then escalate at +7) than most stages?',
+    options: [
+      'Because landlords are always slow to reply',
+      'Because it\'s a money decision, so it\'s given more time before escalating',
+      'Because the agent can\'t send reminders on that stage',
+      'Because it only applies to EPC jobs',
+    ],
+    correct: 1,
+    rationale: 'Landlord quote approval reminds at +3 days and escalates at +7 — it\'s stretched out because it\'s a money decision.',
+  },
+  {
+    id: 'q-crm2-tp-5', moduleId: 'crm2-touchpoints',
+    question: 'How does the Visit stage behave on timing?',
+    options: [
+      'It chases the tenant daily until the visit is confirmed',
+      'One reminder the day before, then it auto-advances once the date passes',
+      'It escalates to you the moment the job reaches Visit',
+      'It waits three days, then cancels if unconfirmed',
+    ],
+    correct: 1,
+    rationale: 'Visit gets one reminder the day before and auto-advances once the date passes — there\'s no per-day chasing or immediate escalation.',
+  },
+
+  // crm2-buttons
+  {
+    id: 'q-crm2-bt-1', moduleId: 'crm2-buttons',
+    question: 'A landlord phones to approve the works. Which button do you use?',
+    options: [
+      'Add Direct Info, writing it as if from the landlord',
+      'Landlord approved, directly',
+      'Provide Instructions to tell the agent they approved',
+      'Send Communication to email a confirmation first',
+    ],
+    correct: 1,
+    rationale: 'If the landlord approves by phone, use Landlord approved directly — not Add Direct Info.',
+  },
+  {
+    id: 'q-crm2-bt-2', moduleId: 'crm2-buttons',
+    question: 'A provider tells you by phone he can attend on 11 Aug at 2pm. The tenant hasn\'t been asked yet. Which action fits?',
+    options: [
+      'Set Visit Date to 11 Aug at 2pm',
+      'Add Direct Info, source From Provider — you\'re passing on information, not recording an agreed appointment',
+      'Take Over and email the tenant yourself',
+      'Provide Instructions to book the slot',
+    ],
+    correct: 1,
+    rationale: 'Rule of thumb: Add Direct Info = passing on information you received; Set Visit Date = recording an appointment both sides have already agreed. Only once the tenant agrees would you Set Visit Date.',
+  },
+  {
+    id: 'q-crm2-bt-3', moduleId: 'crm2-buttons',
+    question: 'A tenant says they\'re free "in the morning". What do you do?',
+    options: [
+      'Wait for them to give an exact time before booking',
+      'Set the visit date manually, treating morning as 8am–12pm — the AI won\'t accept a relative time as confirmation',
+      'Ask the provider to pick any morning slot',
+      'Add Direct Info with the word "morning" and let the agent resolve it',
+    ],
+    correct: 1,
+    rationale: 'The AI won\'t treat a relative time like "morning" as a confirmation. Set the visit date manually rather than waiting for an exact time — treat morning as 8am–12pm.',
+  },
+  {
+    id: 'q-crm2-bt-4', moduleId: 'crm2-buttons',
+    question: 'When is it appropriate to use Provide Instructions?',
+    options: [
+      'Whenever you want to steer how the agent handles a job',
+      'To reassign or cancel a job yourself',
+      'Only after consulting an admin — it\'s admin-only; the main accepted case is a closed job that gets a thank-you/unrelated email, where the instruction is "do nothing"',
+      'Any time a party sends an email the agent didn\'t expect',
+    ],
+    correct: 2,
+    rationale: 'Provide Instructions is admin-only (along with Reassign Job and Cancel Job). Never use it without consulting an admin. The main accepted case is a closed job receiving a thank-you or unrelated email, where the instruction is simply "do nothing".',
+  },
+  {
+    id: 'q-crm2-bt-5', moduleId: 'crm2-buttons',
+    question: 'You\'re at Landlord approval on a CP12 and see the "Add Boiler Service" button. What\'s the right habit?',
+    options: [
+      'Add it by default — a boiler service always goes with a CP12',
+      'Always double-check the landlord actually wants it; if their response is unclear, ask again before proceeding',
+      'Ignore it unless the tenant requests it',
+      'Only add it if the property has a combi boiler',
+    ],
+    correct: 1,
+    rationale: 'Always double-check whether the landlord wants the boiler service. If it\'s unclear from their response, ask again before proceeding.',
+  },
+  {
+    id: 'q-crm2-bt-6', moduleId: 'crm2-buttons',
+    question: 'The landlord names a provider who isn\'t on the preferred list or the provider panel. What do you do?',
+    options: [
+      'Refuse and use our preferred provider instead',
+      'Onboard them straight away without any checks to avoid delay',
+      'Ask the relevant PMs for feedback, then onboard the provider following the onboarding SOP',
+      'Escalate to an admin to decide',
+    ],
+    correct: 2,
+    rationale: 'If a landlord-named provider isn\'t on the preferred list or the provider panel, ask the relevant PMs for feedback, then onboard them following the onboarding SOP.',
+  },
+  {
+    id: 'q-crm2-bt-7', moduleId: 'crm2-buttons',
+    question: 'A job has two tenants and the first tenant isn\'t answering. Who do you try next?',
+    options: [
+      'The first tenant\'s second number on file',
+      'The second tenant',
+      'The landlord, to get another contact',
+      'The provider, to reschedule instead',
+    ],
+    correct: 1,
+    rationale: 'With two tenants, it\'s better to call the second tenant than the first tenant\'s second number — those secondary numbers were copied across without notes.',
+  },
+  {
+    id: 'q-crm2-bt-8', moduleId: 'crm2-buttons',
+    question: 'A provider asks you for the tenant\'s phone number so they can arrange access directly. What\'s the rule?',
+    options: [
+      'Share it — it speeds up scheduling',
+      'Only ever share masked numbers between tenant, landlord and provider — never direct ones',
+      'Share it only if the tenant agrees on the call',
+      'Give the landlord\'s number instead of the tenant\'s',
+    ],
+    correct: 1,
+    rationale: 'Never give out direct phone numbers between tenant, landlord and provider — we\'re only allowed to share masked ones.',
+  },
+
+  // crm2-rescheduling
+  {
+    id: 'q-crm2-rs-1', moduleId: 'crm2-rescheduling',
+    question: 'Both the tenant and provider have confirmed a new time in the thread. Which action?',
+    options: [
+      'Restart Scheduling',
+      'Reset Visit Date',
+      'Take Over and email both parties',
+      'Cancel and raise a new job',
+    ],
+    correct: 1,
+    rationale: 'Reset Visit Date is for when both parties have already agreed the new time — here both confirmed in the thread. It updates the job and notifies both sides automatically.',
+  },
+  {
+    id: 'q-crm2-rs-2', moduleId: 'crm2-rescheduling',
+    question: 'The original slot fell through and no new time has been agreed. Which action?',
+    options: [
+      'Reset Visit Date to a guess and adjust later',
+      'Restart Scheduling, writing the opening message so the context carries over',
+      'Take Over — rescheduling isn\'t built in at this stage',
+      'Provide Instructions to the agent to find a new slot',
+    ],
+    correct: 1,
+    rationale: 'Restart Scheduling is for when a new appointment hasn\'t been agreed yet. You pick tenant or provider and write the opening message so context carries over.',
+  },
+  {
+    id: 'q-crm2-rs-3', moduleId: 'crm2-rescheduling',
+    question: 'The provider proposed a new date and you phoned the tenant, who agreed. Which action — and why is it easy to get wrong?',
+    options: [
+      'Restart Scheduling, because a phone agreement doesn\'t count',
+      'Reset Visit Date — both sides have agreed (one proposed, you confirmed the other by phone), even though it feels like a restart',
+      'Take Over, because it happened partly off-system',
+      'Cancel and rebook from scratch',
+    ],
+    correct: 1,
+    rationale: 'Reset Visit Date covers both "both confirmed in the thread" and "one proposed it and you confirmed the other by phone". Since both sides have agreed, it\'s a Reset, not a Restart.',
+  },
+  {
+    id: 'q-crm2-rs-4', moduleId: 'crm2-rescheduling',
+    question: 'When you Restart Scheduling and write "can\'t do tomorrow, next Monday works", what does the system do with the date?',
+    options: [
+      'Ignores it — you must set the date separately',
+      'Recognises and uses it through the flow, and quotes it verbatim at the end of the email',
+      'Asks you to confirm the exact date in a separate field',
+      'Treats it as a note only, not a proposed date',
+    ],
+    correct: 1,
+    rationale: 'Dates in your message are recognised and used through the flow — a natural message like "next Monday works" moves things along, and it\'s quoted verbatim at the end of the email too.',
+  },
+  {
+    id: 'q-crm2-rs-5', moduleId: 'crm2-rescheduling',
+    question: 'At which stages is built-in rescheduling now available without a manual take-over?',
+    options: [
+      'Only at Scheduling',
+      'Visit and Result awaiting',
+      'Landlord approval and Provider selection',
+      'Any stage of the job',
+    ],
+    correct: 1,
+    rationale: 'Rescheduling is now built in for jobs already at the Visit or Result awaiting stage — previously this needed a manual take-over.',
+  },
+
+  // crm2-escalations-reference
+  {
+    id: 'q-crm2-er-1', moduleId: 'crm2-escalations-reference',
+    question: 'A single "document problem" escalation can fire at which stages?',
+    options: [
+      'Only at Certificate review',
+      'Certificate review, Invoice review and Quotation review (CR · IR · QR)',
+      'Landlord approval and Scheduling',
+      'Any stage the agent is working',
+    ],
+    correct: 1,
+    rationale: 'Every document and email problem sits under a single "document problem" escalation, which can fire at Certificate review, Invoice review or Quotation review (CR · IR · QR).',
+  },
+  {
+    id: 'q-crm2-er-2', moduleId: 'crm2-escalations-reference',
+    question: 'The agent flags a vague / low-confidence reply from a party. What\'s the first move?',
+    options: [
+      'Guess the most likely intent and proceed',
+      'Call the party to clarify before choosing the next step',
+      'Cancel the job and raise a new one',
+      'Wait for the agent to ask again automatically',
+    ],
+    correct: 1,
+    rationale: 'For a vague / low-confidence reply, call the party and clarify before choosing the next step.',
+  },
+  {
+    id: 'q-crm2-er-3', moduleId: 'crm2-escalations-reference',
+    question: 'A job escalates with "unrecognised intent". How do you handle it?',
+    options: [
+      'Choose whichever next stage looks most likely from the last message',
+      'Read the entire job log, call the relevant parties to clarify, then choose the next stage',
+      'Reassign the job to an admin',
+      'Reply asking the sender to rephrase and wait',
+    ],
+    correct: 1,
+    rationale: 'For an unrecognised intent, read the entire job log, call the relevant parties to clarify, then choose the next stage.',
+  },
+  {
+    id: 'q-crm2-er-4', moduleId: 'crm2-escalations-reference',
+    question: 'A tenant answers the scheduling question but also asks an unrelated question about their deposit. What do you do?',
+    options: [
+      'Answer the deposit question yourself and continue',
+      'Action the job for the scheduling question, then acknowledge the extra question and pass it to the relevant PM',
+      'Ignore the extra question — it\'s out of scope',
+      'Hold the whole job until the deposit query is resolved',
+    ],
+    correct: 1,
+    rationale: 'When a job is answered but unrelated extra questions are asked, action the job for the relevant question, then acknowledge the extra one and pass it to the relevant PM.',
+  },
+  {
+    id: 'q-crm2-er-5', moduleId: 'crm2-escalations-reference',
+    question: 'You hit an external-system error on a job. How do you decide what to do?',
+    options: [
+      'Always escalate every external-system error to support',
+      'Retry if it looks transient; escalate to support if it persists (e.g. missing mandatory data)',
+      'Force the job forward regardless',
+      'Cancel the job and start again in CRM 1.0',
+    ],
+    correct: 1,
+    rationale: 'External-system errors can hit at any stage. If transient, retry; if it persists — for example mandatory data is missing — escalate to support rather than forcing the job forward.',
+  },
+  {
+    id: 'q-crm2-er-6', moduleId: 'crm2-escalations-reference',
+    question: 'The landlord refuses the quote for remedial works. What\'s the correct outcome?',
+    options: [
+      'The whole job fails and the certificate is voided',
+      'Record the response; the remedial branch ends at Remedial terminated and the satisfactory cert still stands',
+      'Book the works anyway to stay compliant',
+      'Escalate to an admin to overrule the landlord',
+    ],
+    correct: 1,
+    rationale: 'If the landlord refuses the quote, record the response. The remedial branch ends at Remedial terminated, and the satisfactory certificate still stands.',
+  },
+
+  // crm2-across-systems
+  {
+    id: 'q-crm2-as-1', moduleId: 'crm2-across-systems',
+    question: 'What\'s the correct order to switch a job from CRM 2.0 to CRM 1.0?',
+    options: [
+      'Cancel in 2.0, create in 1.0, then pause auto-transfer',
+      'Ask ops to pause auto-transfer → cancel in 2.0 → create in 1.0 with full context → ask ops to switch auto-transfer back on',
+      'Create in 1.0 first, then cancel in 2.0',
+      'Just cancel in 2.0 — the job re-creates itself in 1.0',
+    ],
+    correct: 1,
+    rationale: 'Ask the ops team to pause auto-transfer for the agency, cancel the request in 2.0, create it in 1.0 leaving full context on why it moved, then ask ops to switch auto-transfer back on. Pausing first stops the job bouncing straight back.',
+  },
+  {
+    id: 'q-crm2-as-2', moduleId: 'crm2-across-systems',
+    question: 'On a vacant (Unattended) property, what\'s the one human escalation in the flow?',
+    options: [
+      'Approving the provider, since there\'s no tenant to consult',
+      'The day before the visit, verifying the keys are available for collection',
+      'Confirming the tenant\'s availability',
+      'Signing off the certificate on the landlord\'s behalf',
+    ],
+    correct: 1,
+    rationale: 'For vacant properties the agent goes straight to the provider and books from their availability. The day before the visit you get an escalation to verify the keys are available for collection; the rest is unchanged.',
+  },
+  {
+    id: 'q-crm2-as-3', moduleId: 'crm2-across-systems',
+    question: 'A job is at Result awaiting and the certificate is overdue. What should you do before chasing the provider?',
+    options: [
+      'Immediately call the provider to demand the certificate',
+      'Check the last few emails on the job — the document is sometimes already there',
+      'Cancel and rebook the visit',
+      'Take Over and mark the job complete',
+    ],
+    correct: 1,
+    rationale: 'Before requesting a document from a provider, check the last few emails on the job — often the certificate is already there as an attachment or link.',
+  },
+  {
+    id: 'q-crm2-as-4', moduleId: 'crm2-across-systems',
+    question: 'What should you make sure to collect for every appointment?',
+    options: [
+      'Just the certificate — the invoice follows separately',
+      'Both the certificate AND the invoice',
+      'The certificate and a photo of the work',
+      'The invoice only; the certificate is uploaded by the agent',
+    ],
+    correct: 1,
+    rationale: 'Collect the certificate AND the invoice for every appointment.',
+  },
+  {
+    id: 'q-crm2-as-5', moduleId: 'crm2-across-systems',
+    question: 'What is the Job Notes tab for?',
+    options: [
+      'A full record of every message sent to and from the parties',
+      'Operational context — why we\'re waiting, special agreements — not communication history',
+      'The agent\'s internal reasoning log',
+      'Storing certificates and invoices',
+    ],
+    correct: 1,
+    rationale: 'Use the Job Notes tab for operational context (why we\'re waiting, special agreements) — it\'s for context, not communication history. Add your own via Send Communication → Add notes.',
   },
 ]
 
