@@ -10,8 +10,15 @@
 // landing page groups by pillar automatically and the [slug] page renders the
 // blocks. No other wiring needed.
 
+export interface Crm2Hotspot {
+  x: number             // 0–100, percent from the left of the image
+  y: number             // 0–100, percent from the top of the image
+  label: string         // short pin label, e.g. "Add Direct Info"
+  detail: string        // what this control does / when to use it
+}
+
 export interface Crm2Block {
-  type: 'heading' | 'subheading' | 'paragraph' | 'bullets' | 'steps' | 'callout' | 'table' | 'divider' | 'image'
+  type: 'heading' | 'subheading' | 'paragraph' | 'bullets' | 'steps' | 'callout' | 'table' | 'divider' | 'image' | 'widget'
   text?: string
   items?: string[]
   level?: 1 | 2 | 3
@@ -19,6 +26,8 @@ export interface Crm2Block {
   headers?: string[]
   rows?: string[][]
   src?: string          // for type 'image' — path under /public; `text` is the caption
+  hotspots?: Crm2Hotspot[]  // for type 'image' — clickable pins overlaid on the screenshot
+  widget?: 'button-advisor' | 'scenario-drills'  // for type 'widget' — an interactive embed
 }
 
 export type Crm2Pillar = 'orientate' | 'features' | 'operate'
@@ -202,7 +211,16 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'paragraph', text: 'Every job starts at Landlord approval, where you authorise the works once the landlord says yes. The buttons differ slightly by certificate type. If the landlord approves by phone, use Landlord approved directly — not Add Direct Info.' },
       { type: 'subheading', text: 'Gas Safety Certificate (CP12)' },
       { type: 'callout', variant: 'warning', text: 'Note the \u201CAdd Boiler Service\u201D button — always double-check whether the landlord wants this done. If it\u2019s unclear from their response, ask again before proceeding.' },
-      { type: 'image', src: '/crm2/buttons-cp12.png', text: 'Landlord approval buttons for a CP12 job, including Add Boiler Service.' },
+      { type: 'image', src: '/crm2/buttons-cp12.png', text: 'Landlord approval buttons for a CP12 job, including Add Boiler Service.',
+        hotspots: [
+          { x: 7,  y: 50, label: 'Approved, Use Dwelly SP', detail: 'The default approval path — authorises the CP12 using our preferred provider.' },
+          { x: 20.5, y: 50, label: 'Proceed with Another Provider', detail: 'Use when the landlord names a specific provider. If they’re not on the preferred list, check the provider panel before onboarding a new one.' },
+          { x: 33.5, y: 50, label: 'Add Boiler Service', detail: 'An optional extra — always confirm the landlord actually wants it before proceeding. Ask again if their response is unclear.' },
+          { x: 44, y: 50, label: 'Landlord DIY', detail: 'The landlord chooses to arrange the works themselves; the job follows the DIY route.' },
+          { x: 64, y: 50, label: 'Provide Instructions', detail: 'Admin-only. The main accepted case is a closed job that needs a “do nothing” instruction.' },
+          { x: 94.5, y: 50, label: 'Cancel Request', detail: 'Cancels the job — admin-only, so consult an admin first.' },
+        ],
+      },
       { type: 'subheading', text: 'Electrical Installation Condition Report (EICR)' },
       { type: 'image', src: '/crm2/buttons-eicr.png', text: 'Landlord approval buttons for an EICR job.' },
       { type: 'subheading', text: 'Energy Performance Certificate (EPC)' },
@@ -275,7 +293,14 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'callout', variant: 'info', text: 'New: rescheduling is now built in for jobs already at the Visit or Result awaiting stage. Previously this needed a manual take-over.' },
       { type: 'image', src: '/crm2/visit-jobcard.png', text: 'A job at the Visit stage.' },
       { type: 'paragraph', text: 'From Visit (and Result awaiting) you have two direct rescheduling actions — the right one depends on whether a new time has already been agreed.' },
-      { type: 'image', src: '/crm2/buttons-visit.png', text: 'The two rescheduling actions: Reset Visit Date and Restart Scheduling.' },
+      { type: 'image', src: '/crm2/buttons-visit.png', text: 'The two rescheduling actions: Reset Visit Date and Restart Scheduling.',
+        hotspots: [
+          { x: 4.75, y: 50, label: 'Set New Visit Date', detail: 'Use when a new time is already agreed by both sides — it updates the booking and notifies both automatically.' },
+          { x: 30, y: 50, label: 'Wait for Response', detail: 'Holds the job for a reply — capped at 3 days. Extend again when it returns to your queue.' },
+          { x: 39.5, y: 50, label: 'Provide Instructions', detail: 'Admin-only — consult an admin before using it.' },
+          { x: 49, y: 50, label: 'Restart Scheduling', detail: 'Use when no new time is agreed yet — pick tenant or provider and write the opening message so context carries over.' },
+        ],
+      },
 
       { type: 'heading', text: 'Reset Visit Date' },
       { type: 'paragraph', text: 'Use this only when both parties have already agreed the new time — both confirmed in the thread, or one proposed it and you confirmed the other by phone. It updates the job and notifies both sides automatically.' },
@@ -670,6 +695,10 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         ],
       },
       { type: 'callout', variant: 'warning', text: 'This is a summary — the full reasoning lives in the feature lessons. When a case doesn\u2019t fit neatly, read the whole job before acting.' },
+
+      { type: 'heading', text: 'Try it: the button advisor' },
+      { type: 'paragraph', text: 'Not sure which action fits? Answer two quick questions and the advisor points you to the right button, with the reasoning.' },
+      { type: 'widget', widget: 'button-advisor' },
     ],
   },
   {
@@ -726,6 +755,19 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     ],
   },
   {
+    slug: 'practice',
+    title: 'Practice: scenario drills',
+    summary: 'Work through realistic jobs decision-by-decision, with instant feedback on every call.',
+    icon: '🎯',
+    pillar: 'operate',
+    readTime: '10 min',
+    content: [
+      { type: 'paragraph', text: 'Reading is one thing — making the call under pressure is another. These drills drop you into real CRM 2.0 jobs and ask you to pick the next action at each step. You get instant feedback and the reasoning, so you can build the instinct before you’re doing it live.' },
+      { type: 'callout', variant: 'tip', text: 'There’s no score kept and nothing to pass here — it’s pure practice. Run them as many times as you like; the feedback is the point.' },
+      { type: 'widget', widget: 'scenario-drills' },
+    ],
+  },
+  {
     slug: 'capstone',
     title: 'Capstone assessment',
     summary: 'The final sign-off check — a mixed set of questions drawn from every lesson in the space.',
@@ -753,4 +795,22 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
 
 export function getCrm2Lesson(slug: string): Crm2Lesson | undefined {
   return CRM2_LESSONS.find(l => l.slug === slug)
+}
+
+// Build a term → definition dictionary from the glossary lesson's tables. Used
+// to power inline tooltips in the other lessons, so the whole space shares one
+// source of truth for what each term means. Terms are sorted longest-first so a
+// longer phrase ("Landlord approval") wins over a shorter substring.
+export function getCrm2Glossary(): { term: string; definition: string }[] {
+  const glossary = CRM2_LESSONS.find(l => l.slug === 'glossary')
+  if (!glossary) return []
+  const out: { term: string; definition: string }[] = []
+  for (const block of glossary.content) {
+    if (block.type === 'table' && block.rows) {
+      for (const row of block.rows) {
+        if (row[0] && row[1]) out.push({ term: row[0], definition: row[1] })
+      }
+    }
+  }
+  return out.sort((a, b) => b.term.length - a.term.length)
 }

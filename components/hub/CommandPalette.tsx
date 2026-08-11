@@ -3,10 +3,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Search, X, GraduationCap, BookOpen, Library, BookA, AlertTriangle, Megaphone, CornerDownLeft,
+  Search, X, GraduationCap, BookOpen, Library, BookA, AlertTriangle, Megaphone, CornerDownLeft, Sparkles,
 } from 'lucide-react'
 import { useUser } from '@/components/UserProvider'
-import { isHubPreview } from '@/lib/preview'
+import { isHubPreview, isCrm2Preview } from '@/lib/preview'
 import { searchIndex, type SearchKind } from '@/lib/search-index'
 
 const KIND_ICON: Record<SearchKind, typeof Search> = {
@@ -16,6 +16,7 @@ const KIND_ICON: Record<SearchKind, typeof Search> = {
   glossary: BookA,
   emergency: AlertTriangle,
   update: Megaphone,
+  crm2: Sparkles,
 }
 
 const KIND_ACCENT: Record<SearchKind, string> = {
@@ -25,11 +26,13 @@ const KIND_ACCENT: Record<SearchKind, string> = {
   glossary: 'text-blue-700 bg-blue-50',
   emergency: 'text-red-600 bg-red-50',
   update: 'text-indigo-700 bg-indigo-100',
+  crm2: 'text-[#0071E3] bg-[#0071E3]/10',
 }
 
 export default function CommandPalette() {
   const { email } = useUser()
   const isPreview = isHubPreview(email)
+  const canSeeCrm2 = isCrm2Preview(email)
 
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -37,7 +40,7 @@ export default function CommandPalette() {
   const [active, setActive] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const results = useMemo(() => (open ? searchIndex(query, 8) : []), [open, query])
+  const results = useMemo(() => (open ? searchIndex(query, 8, canSeeCrm2) : []), [open, query, canSeeCrm2])
 
   // Open with Cmd/Ctrl-K; allow other components to open via a custom event.
   useEffect(() => {

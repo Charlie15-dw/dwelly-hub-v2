@@ -11,6 +11,7 @@ import { TRAINING_PAGES, KNOWLEDGE_ARTICLES, type ContentBlock } from '@/lib/tra
 import { GLOSSARY_TERMS } from '@/lib/glossary-data'
 import { EMERGENCY_PROCEDURES } from '@/lib/emergency-data'
 import { HUB_UPDATES } from '@/lib/updates'
+import { CRM2_LESSONS } from '@/lib/crm2-content'
 
 export type SearchKind =
   | 'module'
@@ -19,6 +20,7 @@ export type SearchKind =
   | 'glossary'
   | 'emergency'
   | 'update'
+  | 'crm2'
 
 export interface SearchEntry {
   id: string
@@ -38,6 +40,13 @@ const KIND_LABELS: Record<SearchKind, string> = {
   glossary: 'Glossary',
   emergency: 'Emergency',
   update: 'Update',
+  crm2: 'CRM 2.0',
+}
+
+// Stable anchor id from a heading's text — mirrors the lesson page's slugify so
+// heading results deep-link to the right section.
+function headingAnchor(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
 // Pull plain text out of the rich ContentBlock[] used by guides/knowledge so
@@ -132,6 +141,38 @@ export function getSearchIndex(): SearchEntry[] {
     })
   }
 
+  // CRM 2.0 lessons — a private space, so these entries are only ever shown to
+  // allow-listed users (the palette filters by kind). We index the lesson
+  // itself plus each of its section headings (deep-linked) so search reaches
+  // right into the content.
+  for (const lesson of CRM2_LESSONS) {
+    const base = `/hub/crm-2/${lesson.slug}`
+    entries.push({
+      id: `crm2-${lesson.slug}`,
+      kind: 'crm2',
+      kindLabel: KIND_LABELS.crm2,
+      title: lesson.title,
+      description: lesson.summary,
+      href: base,
+      keywords: lesson.content
+        .map(b => [b.text, b.items?.join(' '), b.headers?.join(' '), b.rows?.map(r => r.join(' ')).join(' ')].filter(Boolean).join(' '))
+        .join(' '),
+    })
+    for (const block of lesson.content) {
+      if (block.type === 'heading' && block.text) {
+        entries.push({
+          id: `crm2-${lesson.slug}-${headingAnchor(block.text)}`,
+          kind: 'crm2',
+          kindLabel: `${KIND_LABELS.crm2} · section`,
+          title: block.text,
+          description: lesson.title,
+          href: `${base}#${headingAnchor(block.text)}`,
+          keywords: lesson.title,
+        })
+      }
+    }
+  }
+
   cached = entries
   return entries
 }
@@ -170,10 +211,13 @@ export function scoreEntry(entry: SearchEntry, query: string): number {
   return score
 }
 
-export function searchIndex(query: string, limit = 8): SearchEntry[] {
+// `includeCrm2` gates the private CRM 2.0 entries — the palette passes the
+// caller's allow-list status so those results only surface for permitted users.
+export function searchIndex(query: string, limit = 8, includeCrm2 = false): SearchEntry[] {
   const q = query.trim()
   if (!q) return []
   return getSearchIndex()
+    .filter(entry => includeCrm2 || entry.kind !== 'crm2')
     .map(entry => ({ entry, score: scoreEntry(entry, q) }))
     .filter(r => r.score > 0)
     .sort((a, b) => b.score - a.score)

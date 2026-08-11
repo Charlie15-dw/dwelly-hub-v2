@@ -2,17 +2,21 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import {
   ArrowLeft, Clock, ChevronRight, CalendarCheck, ClipboardCheck,
-  AlertTriangle, Info, Lightbulb,
+  AlertTriangle, Info, Lightbulb, Printer,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isCrm2Preview } from '@/lib/preview'
 import {
-  CRM2_LESSONS, CRM2_PILLARS, CRM2_LAST_REVIEWED, getCrm2Lesson, type Crm2Block,
+  CRM2_LESSONS, CRM2_PILLARS, CRM2_LAST_REVIEWED, getCrm2Lesson, getCrm2Glossary, type Crm2Block,
 } from '@/lib/crm2-content'
 import ReadingProgress from '@/components/knowledge/ReadingProgress'
 import ArticleTOC from '@/components/knowledge/ArticleTOC'
 import BookmarkButton from '@/components/knowledge/BookmarkButton'
 import LessonActions from '@/components/crm2/LessonActions'
+import AnnotatedImage from '@/components/crm2/AnnotatedImage'
+import ButtonAdvisor from '@/components/crm2/ButtonAdvisor'
+import ScenarioDrills from '@/components/crm2/ScenarioDrills'
+import GlossaryText, { type GlossaryEntry } from '@/components/crm2/GlossaryText'
 import { cn } from '@/lib/utils'
 
 export function generateStaticParams() {
@@ -24,7 +28,10 @@ function slugify(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
-function renderBlock(block: Crm2Block, i: number) {
+function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[]) {
+  const withGlossary = (text: string) =>
+    glossary.length > 0 ? <GlossaryText text={text} glossary={glossary} /> : text
+
   switch (block.type) {
 
     case 'heading':
@@ -44,7 +51,7 @@ function renderBlock(block: Crm2Block, i: number) {
     case 'paragraph':
       return (
         <p key={i} className="text-sm text-[#3A3A3C] leading-relaxed">
-          {block.text}
+          {block.text ? withGlossary(block.text) : null}
         </p>
       )
 
@@ -54,7 +61,7 @@ function renderBlock(block: Crm2Block, i: number) {
           {block.items?.map((item, j) => (
             <li key={j} className="flex gap-3">
               <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#1D1D1F] mt-2" />
-              <p className="text-sm text-[#3A3A3C] leading-relaxed">{item}</p>
+              <p className="text-sm text-[#3A3A3C] leading-relaxed">{withGlossary(item)}</p>
             </li>
           ))}
         </ul>
@@ -123,7 +130,12 @@ function renderBlock(block: Crm2Block, i: number) {
       return <hr key={i} className="border-[#E8E8ED]" />
 
     case 'image':
-      return block.src ? (
+      if (!block.src) return null
+      // With hotspots the screenshot becomes an interactive, guided tour.
+      if (block.hotspots && block.hotspots.length > 0) {
+        return <AnnotatedImage key={i} src={block.src} caption={block.text} hotspots={block.hotspots} />
+      }
+      return (
         <figure key={i} className="my-1">
           <div className="rounded-xl border border-[#E8E8ED] overflow-hidden bg-[#F5F5F7]">
             {/* Static screenshot from the playbook; next/image is unnecessary here. */}
@@ -134,7 +146,12 @@ function renderBlock(block: Crm2Block, i: number) {
             <figcaption className="text-xs text-[#6E6E73] mt-2 text-center leading-relaxed">{block.text}</figcaption>
           )}
         </figure>
-      ) : null
+      )
+
+    case 'widget':
+      if (block.widget === 'button-advisor') return <ButtonAdvisor key={i} />
+      if (block.widget === 'scenario-drills') return <ScenarioDrills key={i} />
+      return null
 
     default:
       return null
@@ -151,6 +168,11 @@ export default async function Crm2LessonPage({ params }: { params: { slug: strin
   if (!lesson) notFound()
 
   const pillar = CRM2_PILLARS.find((p) => p.id === lesson.pillar)
+
+  // Inline glossary tooltips — but not on the glossary lesson itself, where the
+  // terms are already the subject, nor the capstone/practice pages.
+  const glossary: GlossaryEntry[] =
+    lesson.slug === 'glossary' ? [] : getCrm2Glossary()
 
   // Top-level headings drive the table of contents.
   const headings = lesson.content
@@ -207,8 +229,28 @@ export default async function Crm2LessonPage({ params }: { params: { slug: strin
 
             {/* Content */}
             <div className="card p-7 space-y-6">
-              {lesson.content.map((block, i) => renderBlock(block, i))}
+              {lesson.content.map((block, i) => renderBlock(block, i, glossary))}
             </div>
+
+            {/* Printable one-pager — cheatsheet only */}
+            {lesson.slug === 'cheatsheet' && (
+              <Link
+                href="/print/crm-2/cheatsheet"
+                target="_blank"
+                className="card card-hover p-5 flex items-center gap-4 group"
+              >
+                <div className="w-11 h-11 rounded-xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0">
+                  <Printer className="w-5 h-5" aria-hidden />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[#1D1D1F]">Print this cheat sheet</p>
+                  <p className="text-xs text-[#6E6E73] mt-0.5">Open a clean one-page version to print or save as PDF.</p>
+                </div>
+                <span className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-[#0071E3] flex-shrink-0 group-hover:gap-2 transition-all">
+                  Open <ChevronRight className="w-4 h-4" aria-hidden />
+                </span>
+              </Link>
+            )}
 
             {/* Mark complete + was this helpful */}
             <LessonActions slug={lesson.slug} />

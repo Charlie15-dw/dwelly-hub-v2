@@ -2,12 +2,14 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import {
   Sparkles, ArrowRight, Rocket, Compass, GraduationCap, Lightbulb,
-  Wand2, ClipboardCheck, ChevronRight, type LucideIcon,
+  Wand2, ClipboardCheck, ChevronRight, Award, type LucideIcon,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isCrm2Preview } from '@/lib/preview'
-import { CRM2_PILLARS, CRM2_LESSONS, type Crm2Pillar } from '@/lib/crm2-content'
+import { CRM2_PILLARS, CRM2_LESSONS, CRM2_CAPSTONE_MODULE_ID, type Crm2Pillar } from '@/lib/crm2-content'
 import ProgressRing from '@/components/crm2/ProgressRing'
+import ResumeCard from '@/components/crm2/ResumeCard'
+import SearchTrigger from '@/components/crm2/SearchTrigger'
 
 // CRM 2.0 — the private learning space for Dwelly's next-generation CRM.
 // A premium landing that opens onto the lessons, which live in
@@ -26,6 +28,16 @@ export default async function Crm2Page() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
   if (!isCrm2Preview(user.email)) redirect('/hub')
+
+  // Has this user passed the capstone? If so, a certificate is available.
+  const { data: capstonePass } = await supabase
+    .from('assessment_results')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('assessment_id', CRM2_CAPSTONE_MODULE_ID)
+    .eq('passed', true)
+    .limit(1)
+  const hasCertificate = (capstonePass?.length ?? 0) > 0
 
   return (
     <div className="space-y-10 hub-fade">
@@ -79,12 +91,22 @@ export default async function Crm2Page() {
               {CRM2_LESSONS.length} guides ready to explore
             </span>
           </div>
+
+          {/* Section search */}
+          <div className="mt-6 max-w-md">
+            <SearchTrigger />
+          </div>
         </div>
       </section>
 
-      {/* Your progress + a route into the assessments */}
+      {/* Pick up where you left off + your progress */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <ResumeCard lessons={CRM2_LESSONS.map((l) => ({ slug: l.slug, title: l.title, icon: l.icon, readTime: l.readTime }))} />
         <ProgressRing slugs={CRM2_LESSONS.map((l) => l.slug)} />
+      </div>
+
+      {/* Assessments + certificate (when earned) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link href="/hub/crm-2/assessments" className="card card-hover p-5 flex items-center gap-4 group">
           <div className="w-16 h-16 rounded-2xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0">
             <ClipboardCheck className="w-7 h-7" aria-hidden />
@@ -95,6 +117,30 @@ export default async function Crm2Page() {
           </div>
           <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-navy transition flex-shrink-0" aria-hidden />
         </Link>
+
+        {hasCertificate ? (
+          <Link href="/print/crm-2/certificate" target="_blank" className="card card-hover p-5 flex items-center gap-4 group border-2 border-[#0071E3]/20">
+            <div className="w-16 h-16 rounded-2xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0">
+              <Award className="w-7 h-7" aria-hidden />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold text-navy">Your certificate is ready</p>
+              <p className="text-sm text-slate-500 mt-0.5">You passed the capstone — view, print or save it as a PDF.</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-navy transition flex-shrink-0" aria-hidden />
+          </Link>
+        ) : (
+          <Link href="/hub/crm-2/capstone" className="card card-hover p-5 flex items-center gap-4 group">
+            <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center flex-shrink-0">
+              <Award className="w-7 h-7" aria-hidden />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold text-navy">Earn your certificate</p>
+              <p className="text-sm text-slate-500 mt-0.5">Pass the capstone assessment to unlock your CRM 2.0 certificate.</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-navy transition flex-shrink-0" aria-hidden />
+          </Link>
+        )}
       </div>
 
       {/* What you'll find here */}
