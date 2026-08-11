@@ -9,7 +9,7 @@ import {
 import { redirect } from 'next/navigation'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { isHubBeta, isCrm2Preview } from '@/lib/preview'
-import { CRM2_LESSONS } from '@/lib/crm2-content'
+import { CRM2_LESSONS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/lib/crm2-content'
 import QuizClient, { type QuizCategory } from './QuizClient'
 
 // Video module sections (3 questions each for combined assessments)
@@ -149,6 +149,15 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     }
   } else if (isReleaseQuiz) {
     questionPool = PRODUCT_RELEASE_QUESTIONS.filter(q => q.releaseId === moduleId)
+  } else if (moduleId === CRM2_CAPSTONE_MODULE_ID) {
+    // Capstone: aggregate the pool from every CRM 2.0 lesson quiz (not the
+    // capstone itself). The client shuffles and samples this down.
+    const crm2ModuleIds = new Set(
+      CRM2_LESSONS
+        .map(l => l.quizModuleId)
+        .filter((m): m is string => Boolean(m) && m !== CRM2_CAPSTONE_MODULE_ID)
+    )
+    questionPool = QUIZ_QUESTIONS.filter(q => crm2ModuleIds.has(q.moduleId) && !q.tier)
   } else {
     // Covers regular module assessments and CRM 2.0 lesson quizzes.
     questionPool = QUIZ_QUESTIONS.filter(q => q.moduleId === moduleId && !q.tier)
@@ -156,7 +165,9 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
 
   const sampleSize = isRecapQuiz
     ? RECAP_ROUNDS.find(r => r.id === moduleId)?.questionCount ?? questionPool.length
-    : ASSESSMENT_QUESTION_COUNTS[moduleId] ?? questionPool.length
+    : moduleId === CRM2_CAPSTONE_MODULE_ID
+      ? CRM2_CAPSTONE_SAMPLE
+      : ASSESSMENT_QUESTION_COUNTS[moduleId] ?? questionPool.length
 
   // Beta gate — confidence-based scoring is trialled with a single test account.
   let beta = false

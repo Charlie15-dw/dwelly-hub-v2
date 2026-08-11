@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { ArrowLeft, ClipboardCheck, ChevronRight, Trophy, CheckCircle2 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isCrm2Preview } from '@/lib/preview'
-import { CRM2_LESSONS, CRM2_PILLARS } from '@/lib/crm2-content'
+import { CRM2_LESSONS, CRM2_PILLARS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/lib/crm2-content'
 import { QUIZ_QUESTIONS } from '@/lib/data'
 
 // A dedicated home for the CRM 2.0 knowledge checks. Lists every lesson that
@@ -20,7 +20,9 @@ export default async function Crm2AssessmentsPage() {
 
   const quizLessons = CRM2_LESSONS.filter((l) => l.quizModuleId)
   const questionCount = (moduleId: string) =>
-    QUIZ_QUESTIONS.filter((q) => q.moduleId === moduleId).length
+    moduleId === CRM2_CAPSTONE_MODULE_ID
+      ? CRM2_CAPSTONE_SAMPLE
+      : QUIZ_QUESTIONS.filter((q) => q.moduleId === moduleId).length
 
   // Pull this user's results so we can show how many they've passed (X of Y) and
   // mark the ones already completed. These are scored, locking assessments — a

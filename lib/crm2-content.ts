@@ -39,6 +39,13 @@ export interface Crm2Lesson {
 // the team can see the material is current. Bump it whenever the set is reviewed.
 export const CRM2_LAST_REVIEWED = '6 Aug 2026'
 
+// The capstone is a single assessment that samples across every lesson quiz —
+// the "you're signed off on 2.0" check. It isn't a normal per-lesson quiz, so
+// its module id and sample size live here and are shared by the quiz route and
+// the assessments page (which otherwise count questions per module).
+export const CRM2_CAPSTONE_MODULE_ID = 'crm2-capstone'
+export const CRM2_CAPSTONE_SAMPLE = 20
+
 export const CRM2_PILLARS: { id: Crm2Pillar; label: string; description: string }[] = [
   { id: 'orientate', label: 'Get orientated', description: 'How CRM 2.0 works and how to find your way around it.' },
   { id: 'features',  label: 'Master the features', description: 'The buttons, actions and workflows that get jobs done.' },
@@ -265,7 +272,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     readTime: '3 min read',
     quizModuleId: 'crm2-rescheduling',
     content: [
-      { type: 'callout', variant: 'info', text: 'New: rescheduling is now built in for jobs already at the Visit or Result Awaiting stage. Previously this needed a manual take-over.' },
+      { type: 'callout', variant: 'info', text: 'New: rescheduling is now built in for jobs already at the Visit or Result awaiting stage. Previously this needed a manual take-over.' },
       { type: 'image', src: '/crm2/visit-jobcard.png', text: 'A job at the Visit stage.' },
       { type: 'paragraph', text: 'From Visit (and Result awaiting) you have two direct rescheduling actions — the right one depends on whether a new time has already been agreed.' },
       { type: 'image', src: '/crm2/buttons-visit.png', text: 'The two rescheduling actions: Reset Visit Date and Restart Scheduling.' },
@@ -514,6 +521,14 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Use the Job Notes tab for operational context (why we\u2019re waiting, special agreements) — it\u2019s for context, not communication history.',
         'Some agencies run in manual mode in CRM 1 (for example, British Gas).',
       ]},
+
+      { type: 'heading', text: 'Tools & resources' },
+      { type: 'bullets', items: [
+        'SOP guide — the full reference for the happy path, the remedial branch (mandatory vs optional) and the landlord-DIY workflow, plus the escalation points. There\u2019s an automated solution for most cases — use it before manually sending emails.',
+        'Price cheat sheet — landlords often ask what a service costs before authorising it. The figures live in the SOP guide (bottom section → Scenario SOPs) and were built from information the team supplied. Give the figure straight from the sheet rather than guessing.',
+        'SOP widget (beta) — a Chrome widget that serves the SOPs relevant to the job\u2019s current stage and certificate type, right inside the job page.',
+      ]},
+      { type: 'callout', variant: 'info', text: 'Access to the SOP guide is password-protected — ask an admin for the current password rather than sharing it around.' },
     ],
   },
 
@@ -636,6 +651,24 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
           ['The next-action date at the bottom of a job', 'If it\u2019s an escalation you can action it early; if it\u2019s an auto reminder, leave it.'],
         ],
       },
+
+      { type: 'heading', text: 'Which button? — the calls people mix up' },
+      { type: 'table',
+        headers: ['Situation', 'Right action'],
+        rows: [
+          ['You\u2019re passing on information you received from one party', 'Add Direct Info — write it as the party you got it from; choose the right source (e.g. From Provider).'],
+          ['Both sides have already agreed the appointment', 'Set Visit Date — it records an agreed slot; it is not for passing on information.'],
+          ['A party gives a relative time like \u201Cmorning\u201D', 'Set Visit Date manually (treat morning as 8am–12pm) — the AI won\u2019t accept a relative time as confirmation.'],
+          ['The landlord approves the works by phone', 'Landlord approved, directly — not Add Direct Info.'],
+          ['A new time is agreed (both in the thread, or one proposed + you confirmed the other by phone)', 'Reset Visit Date.'],
+          ['No new time is agreed yet', 'Restart Scheduling — pick tenant or provider and write the opening message so context carries over.'],
+          ['You spot a problem with a cert (wrong date/address)', 'Invalid certificate.'],
+          ['A new cert arrived that the agent didn\u2019t recognise', 'Upload another certificate.'],
+          ['Faults that must be fixed for compliance', 'Need required remedial (mandatory remedial branch).'],
+          ['A satisfactory cert with C3 / optional items only', 'Optional remedial + send the 7-day wording.'],
+          ['A closed job gets a thank-you or unrelated email', 'Provide Instructions (\u201Cdo nothing\u201D) — but it\u2019s admin-only, so consult an admin first.'],
+        ],
+      },
       { type: 'callout', variant: 'warning', text: 'This is a summary — the full reasoning lives in the feature lessons. When a case doesn\u2019t fit neatly, read the whole job before acting.' },
     ],
   },
@@ -690,6 +723,30 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'callout', variant: 'info', text: 'Some things are still being finalised — for example, a dedicated hold state for jobs blocked by a third party, and whether to chase or cancel an unresponsive EPC. Where a lesson flags an \u201Copen question\u201D, check before assuming.' },
       { type: 'divider' },
       { type: 'paragraph', text: 'This learning space launched on 3 Aug 2026 and is reviewed against the live 2.0 build. As 2.0 evolves, new lessons and changes will land here first.' },
+    ],
+  },
+  {
+    slug: 'capstone',
+    title: 'Capstone assessment',
+    summary: 'The final sign-off check — a mixed set of questions drawn from every lesson in the space.',
+    icon: '🏅',
+    pillar: 'operate',
+    readTime: '15 min',
+    quizModuleId: CRM2_CAPSTONE_MODULE_ID,
+    content: [
+      { type: 'paragraph', text: 'This is the capstone — the one assessment that proves you can operate confidently across the whole of CRM 2.0. Unlike the per-lesson checks, it samples questions from every lesson in the space, so you never know which topics will come up.' },
+
+      { type: 'heading', text: 'What to expect' },
+      { type: 'bullets', items: [
+        `${CRM2_CAPSTONE_SAMPLE} scenario questions, drawn at random from across all the lessons.`,
+        '80% to pass, same as every other assessment here.',
+        'Every question shows the reasoning afterwards, so it doubles as a final revision pass.',
+        'Retake it as many times as you like — the question mix is reshuffled each time.',
+      ]},
+
+      { type: 'callout', variant: 'tip', text: 'Best taken once you\u2019ve worked through the lessons and passed the individual knowledge checks. If a topic trips you up, head back to that lesson — the capstone tells you exactly where your gaps are.' },
+
+      { type: 'callout', variant: 'info', text: 'Everything in the capstone comes straight from the lessons in this space — there\u2019s nothing new to learn here, just the pieces brought together.' },
     ],
   },
 ]
