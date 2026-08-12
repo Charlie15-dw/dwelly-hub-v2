@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import { Trash2, AlertTriangle, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -57,8 +58,8 @@ export default function DeleteUserButton({ userId, userName, userEmail }: Props)
         Delete user
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/40 backdrop-blur-sm" role="dialog" aria-modal="true">
+      {open && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-20 sm:pt-28 bg-navy/40 backdrop-blur-sm overflow-y-auto" role="dialog" aria-modal="true">
           <div className="w-full max-w-md rounded-2xl bg-white shadow-xl overflow-hidden">
             <div className="flex items-start justify-between gap-4 px-5 py-4 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
@@ -115,7 +116,8 @@ export default function DeleteUserButton({ userId, userName, userEmail }: Props)
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   )
