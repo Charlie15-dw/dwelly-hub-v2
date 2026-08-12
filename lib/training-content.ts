@@ -26,6 +26,28 @@ export type TrainingSection =
   | 'kb-antisocial'
   | 'kb-energy-mees'
   | 'kb-contractor-portal'
+  | 'kb-abandonment'
+  | 'kb-tenant-death'
+  | 'kb-illegal-eviction'
+  | 'kb-subletting'
+  | 'kb-vulnerable-tenants'
+  | 'kb-fire-safety'
+  | 'kb-possession-process'
+  | 'kb-data-protection'
+  | 'kb-rent-arrears'
+  | 'kb-leasehold-consent'
+  | 'kb-renters-rights-act'
+  | 'kb-deposit-disputes'
+  | 'kb-gas-electrical-safety'
+  | 'kb-inventories'
+  | 'kb-notice-serving'
+  | 'kb-guarantors'
+  | 'kb-pets'
+  | 'kb-complaints-redress'
+  | 'kb-client-money'
+  | 'kb-service-charges'
+  | 'kb-court-money-claims'
+  | 'kb-overseas-landlords'
 
 export interface ContentBlock {
   type: 'heading' | 'subheading' | 'paragraph' | 'steps' | 'bullets' | 'callout' | 'warning' | 'table' | 'divider'
@@ -1716,6 +1738,899 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
         'Final documentation and payment — once the repair is complete and approved, the contractor sends all three: their final invoice, proof of works (before-and-after photos or video), and the approved quote. We process this and issue payment according to the approved quote or invoice.',
       ]},
       { type: 'callout', variant: 'important', text: 'A contractor should only fix work on the spot when it\'s within the call-out fee, within an approved budget, or specifically approved by the office that day. Anything beyond that needs a quote and landlord approval before the work goes ahead — which is why some jobs sit at "Quote Sent" while the landlord decides.' },
+    ],
+  },
+
+  // ─── Advanced edge-case articles ───────────────────────────────────────────
+  {
+    id: 'kb-abandonment',
+    lastReviewed: 'July 2026',
+    title: 'Abandonment & Goods Left Behind',
+    related: ['kb-illegal-eviction', 'kb-possession-process', 'kb-void-management'],
+    subtitle: 'What to do when a tenant seems to have vanished — and why you must never simply change the locks.',
+    icon: '🚪',
+    category: 'legal',
+    readTime: '9 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'callout', variant: 'important', text: 'Abandonment is one of the highest-risk situations a property manager will face. Getting it wrong is a criminal offence. If you think a property has been abandoned, escalate to your manager before taking any action — do not change the locks or re-let on your own judgement.' },
+
+      { type: 'heading', level: 1, text: 'What Abandonment Actually Means' },
+      { type: 'paragraph', text: 'Abandonment is when a tenant leaves the property permanently before the tenancy has legally ended, with no intention of returning, usually while rent is owed. The problem is that a tenancy does not end just because a tenant appears to have gone. Until the tenancy is legally ended, the tenant keeps the legal right to occupy — even an empty-looking property.' },
+      { type: 'warning', variant: 'warning', text: 'There is no "abandonment notice" procedure that lets a landlord automatically take back a property in England. The provisions that would have allowed this were never brought into force. Treating a property as abandoned and re-letting it, when the tenant has not actually given it up, can amount to unlawful eviction.' },
+
+      { type: 'heading', level: 1, text: 'Signs That May Suggest Abandonment' },
+      { type: 'paragraph', text: 'None of these on their own prove abandonment. They are triggers to investigate, not to act.' },
+      { type: 'bullets', items: [
+        'Rent has stopped and contact has gone quiet',
+        'Neighbours report not having seen the tenant for some time',
+        'Post is piling up, or utilities have been disconnected',
+        'The property looks unoccupied on an inspection (curtains gone, fridge emptied, perishables cleared)',
+        'Keys have been posted back through the door or handed in',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'A tenant on holiday, in hospital, in prison, or staying with family is NOT abandoning the property, even for several weeks. Vulnerability, illness, or a family emergency are common innocent explanations — always consider them first.' },
+
+      { type: 'heading', level: 1, text: 'The Safe Investigation Process' },
+      { type: 'steps', items: [
+        'Log everything from the first suspicion — dates, what was seen, who reported it.',
+        'Attempt contact through every channel you hold: phone, email, text, and any next-of-kin or guarantor on file.',
+        'Carry out an inspection giving at least 24 hours\' written notice, exactly as you would for any visit.',
+        'Check for signs of genuine occupation versus a permanent departure, and photograph the condition and any belongings.',
+        'Check whether rent is still being paid by standing order or Universal Credit — payment strongly suggests the tenancy is not abandoned.',
+        'Report your findings to your manager, who will decide whether to seek possession through the courts.',
+      ]},
+      { type: 'callout', variant: 'important', text: 'The legally safe route to recover a genuinely abandoned property is almost always to serve the correct notice and obtain a possession order through the court, the same as any other possession. It feels slow, but it is the only route that protects the landlord and the agency.' },
+
+      { type: 'heading', level: 1, text: 'Goods Left Behind' },
+      { type: 'paragraph', text: 'When a tenant leaves belongings behind, the landlord does not automatically own them and cannot simply throw them away or sell them. The landlord becomes an "involuntary bailee" and has duties under the Torts (Interference with Goods) Act 1977.' },
+      { type: 'bullets', items: [
+        'You must take reasonable care of the goods and make reasonable efforts to return them to the tenant',
+        'You must serve written notice on the tenant (at their last known address and any forwarding address) stating that you intend to dispose of the goods and giving a reasonable period to collect them',
+        'Only after that notice period expires, and reasonable attempts to trace the tenant have failed, may the goods be sold or disposed of',
+        'If goods are sold, any proceeds (after costs) may be set against arrears, but a record must be kept in case the tenant reappears',
+      ]},
+      { type: 'warning', variant: 'warning', text: 'Disposing of a tenant\'s possessions too quickly is a frequent and expensive mistake. If in doubt, store the goods and take instruction — the cost of storage is far lower than a claim for the value of destroyed belongings.' },
+    ],
+  },
+  {
+    id: 'kb-tenant-death',
+    lastReviewed: 'July 2026',
+    title: 'Death of a Tenant & Succession',
+    related: ['kb-tenancy-law', 'kb-abandonment', 'kb-possession-process'],
+    subtitle: 'A sensitive and legally technical situation — how a tenancy is dealt with when a tenant dies.',
+    icon: '🕊️',
+    category: 'legal',
+    readTime: '8 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'callout', variant: 'important', text: 'This is first and foremost a bereavement. Handle every conversation with care and patience. The legal steps matter, but they never come before treating the family with respect.' },
+
+      { type: 'heading', level: 1, text: 'A Tenancy Does Not Simply End on Death' },
+      { type: 'paragraph', text: 'When a sole tenant dies, the tenancy does not automatically end. It passes into the deceased\'s estate and continues until it is lawfully brought to an end. This means rent remains payable from the estate, and the landlord cannot simply take the property back, clear it, or re-let it.' },
+      { type: 'warning', variant: 'warning', text: 'Never clear or re-let a property after a tenant\'s death until the tenancy has been properly ended and you have authority from the person dealing with the estate. Clearing a deceased tenant\'s home without authority causes enormous distress and legal exposure.' },
+
+      { type: 'heading', level: 1, text: 'Who You Are Now Dealing With' },
+      { type: 'bullets', items: [
+        'If there is a will, the executors named in it have authority to deal with the estate (they may need a grant of probate to act fully)',
+        'If there is no will, the next of kin can apply to become administrators (through letters of administration)',
+        'Until someone has that authority, no individual can legally end the tenancy or give up the property',
+        'The Public Trustee can act where there is no one else — relevant for serving notices on the estate',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'Ask sensitively for a copy of the death certificate and the contact details of the executor or the person handling the estate. Keep everything in writing and route all decisions through them.' },
+
+      { type: 'heading', level: 1, text: 'Ending the Tenancy After a Sole Tenant\'s Death' },
+      { type: 'paragraph', text: 'The tenancy is usually ended in one of two ways: the personal representative of the estate surrenders it by agreement, or the landlord ends it by serving notice on the estate. The right route depends on the tenancy type and the circumstances, so this is always a manager or MD decision.' },
+      { type: 'paragraph', text: 'Rent continues to fall due from the estate until the tenancy ends. In practice, agreeing an orderly surrender with the executors — a date to hand back the keys once the property is cleared — is often the kindest and cleanest outcome for everyone.' },
+
+      { type: 'heading', level: 1, text: 'Succession — When Someone Has the Right to Stay' },
+      { type: 'paragraph', text: 'In some cases another person living in the property has a legal right to take over ("succeed to") the tenancy. Succession rights depend heavily on the tenancy type and who was living there. For assured tenancies, a spouse, civil partner, or someone living with the tenant as a partner who was occupying the property as their only or principal home immediately before the death may have a right to succeed.' },
+      { type: 'bullets', items: [
+        'Succession usually applies once per tenancy — a tenancy that has already been succeeded to normally cannot be succeeded to again',
+        'The person claiming succession must have been living in the property as their main home',
+        'Where there is no right of succession, an occupier who remains has no automatic right to stay and possession may be sought',
+      ]},
+      { type: 'callout', variant: 'important', text: 'Succession claims are legally technical and emotionally charged. If anyone remaining in the property claims a right to stay, do not confirm or deny it — record the claim and escalate to your manager for a proper assessment.' },
+
+      { type: 'heading', level: 1, text: 'Joint Tenants' },
+      { type: 'paragraph', text: 'Where there were joint tenants and one dies, the tenancy usually continues automatically in the name of the surviving joint tenant(s) under the principle of survivorship. The survivor keeps all the rights and responsibilities of the tenancy, including the full rent. This normally counts as the one permitted succession.' },
+    ],
+  },
+  {
+    id: 'kb-illegal-eviction',
+    lastReviewed: 'July 2026',
+    title: 'Illegal Eviction & Harassment — What You Must Never Do',
+    related: ['kb-possession-process', 'kb-abandonment', 'kb-tenancy-law'],
+    subtitle: 'The lines a property manager must never cross, and why they are criminal offences.',
+    icon: '🛑',
+    category: 'legal',
+    readTime: '7 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'callout', variant: 'important', text: 'Illegal eviction and harassment are criminal offences under the Protection from Eviction Act 1977. They can lead to prosecution, an unlimited fine, imprisonment, a rent repayment order, and a substantial civil damages claim. This is the single most important legal boundary in your role.' },
+
+      { type: 'heading', level: 1, text: 'Only a Court Bailiff Can Evict' },
+      { type: 'paragraph', text: 'A tenant with a residential tenancy can only be lawfully removed by court-appointed bailiffs (or High Court enforcement officers) acting on a possession order and a warrant. No landlord or agent may physically remove a tenant, even if they have no tenancy agreement, are in serious arrears, or the fixed period has long passed.' },
+      { type: 'warning', variant: 'warning', text: 'Even if you are certain the tenant has no right to be there, you must still go through the courts. "They stopped paying" or "the tenancy ended months ago" is never a defence to illegal eviction.' },
+
+      { type: 'heading', level: 1, text: 'Things That Are Illegal Eviction' },
+      { type: 'bullets', items: [
+        'Changing the locks while the tenant still lives there',
+        'Removing the tenant\'s belongings to force them out',
+        'Physically preventing the tenant from entering',
+        'Evicting without a court order and bailiff, even after a notice has expired',
+        'Making the tenant leave through threats or intimidation',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Things That Are Harassment' },
+      { type: 'paragraph', text: 'Harassment is any act likely to interfere with the peace or comfort of a tenant, or persistent withdrawal of services, done to make them leave or give up their rights.' },
+      { type: 'bullets', items: [
+        'Cutting off or interfering with gas, electricity, or water',
+        'Entering the property without permission or proper notice',
+        'Turning up repeatedly, or threatening and abusive contact',
+        'Refusing to carry out repairs to pressure a tenant into leaving',
+        'Removing doors, windows, or the tenant\'s possessions',
+        'Anti-social behaviour by the landlord aimed at the tenant',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Access and Repairs — The Common Trap' },
+      { type: 'paragraph', text: 'A tenant is entitled to "quiet enjoyment" of their home. The landlord\'s right to enter for inspections or repairs does not override this. You must give at least 24 hours\' written notice and enter at a reasonable time, and the tenant can refuse a specific time. Letting yourself in without agreement, even for a genuine repair, can be trespass or harassment.' },
+      { type: 'callout', variant: 'tip', text: 'The only time entry without notice is justified is a genuine emergency — for example a serious water leak, gas escape, or fire risk — where there is a real and immediate danger to people or property. Record the emergency and what you found.' },
+
+      { type: 'heading', level: 1, text: 'If a Landlord Asks You to Cross the Line' },
+      { type: 'paragraph', text: 'Landlords under financial pressure sometimes ask agents to "just change the locks" or "turn the water off". You must refuse, explain calmly that it is a criminal offence that would expose them to prosecution and a large claim, and record the request. Then escalate to your manager.' },
+      { type: 'callout', variant: 'important', text: 'Never carry out an instruction you know to be an illegal eviction, whatever the pressure. Document the request, decline it in writing, and hand it to your manager. Protecting the landlord from themselves is part of the job.' },
+    ],
+  },
+  {
+    id: 'kb-subletting',
+    lastReviewed: 'July 2026',
+    title: 'Subletting, Rent-to-Rent & Unauthorised Occupants',
+    related: ['kb-hmo-licensing', 'kb-tenancy-law', 'kb-antisocial'],
+    subtitle: 'Spotting and handling situations where the person paying rent is not the person living there.',
+    icon: '🔑',
+    category: 'legal',
+    readTime: '8 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'heading', level: 1, text: 'Why This Matters' },
+      { type: 'paragraph', text: 'When someone other than your named tenant is living in or profiting from the property, it can breach the tenancy, invalidate insurance, create an unlicensed HMO, and expose the landlord to enforcement. It is often discovered by accident, so knowing the signs is part of protecting your landlord clients.' },
+
+      { type: 'heading', level: 1, text: 'The Difference Between Subletting and Lodgers' },
+      { type: 'bullets', items: [
+        'Subletting is when the tenant grants someone else the right to occupy all or part of the property, usually creating a separate tenancy',
+        'A lodger lives with the tenant and shares living space, and does not have exclusive possession of any part',
+        'Most Dwelly-managed tenancies prohibit subletting or parting with possession without the landlord\'s written consent',
+        'Unauthorised subletting is a breach of tenancy and, in social housing, can be a criminal offence',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'If a tenant asks to take in a lodger or add an occupier, do not agree on the spot. Check the tenancy terms, consider Right to Rent for the new occupier, and get the landlord\'s written consent first.' },
+
+      { type: 'heading', level: 1, text: 'Rent-to-Rent Arrangements' },
+      { type: 'paragraph', text: 'In a rent-to-rent arrangement, a company or individual rents a property from the landlord and then sub-lets it, often room by room, keeping the difference. Some are legitimate and consented to; many are not. The danger is when it happens without the landlord\'s knowledge — the property quietly becomes a sublet HMO with the landlord none the wiser.' },
+      { type: 'warning', variant: 'warning', text: 'Unconsented rent-to-rent can turn a single-family let into an unlicensed HMO overnight, exposing the landlord to fines, a rent repayment order, and invalid insurance — even though the landlord did nothing themselves. Treat any suspicion seriously.' },
+
+      { type: 'heading', level: 1, text: 'Warning Signs to Watch For' },
+      { type: 'bullets', items: [
+        'Rent paid from a company account or a name that does not match the tenant',
+        'Multiple unfamiliar people at the property during inspections',
+        'Extra beds, locks fitted to internal doors, or rooms converted to bedrooms',
+        'The named tenant is never available and communication comes from someone else',
+        'Post arriving for several different names',
+        'Neighbours reporting a high turnover of occupants',
+      ]},
+
+      { type: 'heading', level: 1, text: 'What To Do If You Suspect It' },
+      { type: 'steps', items: [
+        'Do not accuse anyone — gather facts calmly and record what you have seen.',
+        'Carry out an inspection with proper 24 hours\' written notice and photograph the layout and occupancy.',
+        'Check who is actually paying the rent and from what account.',
+        'Review the tenancy agreement for the subletting and occupancy clauses.',
+        'Report your findings to your manager, who will decide on next steps with the landlord.',
+      ]},
+      { type: 'callout', variant: 'important', text: 'Breach of a subletting clause does not entitle anyone to change the locks or remove occupants. If possession is needed, it must go through the correct notice and court process like any other breach.' },
+    ],
+  },
+  {
+    id: 'kb-vulnerable-tenants',
+    lastReviewed: 'July 2026',
+    title: 'Vulnerable Tenants, Safeguarding & Mental Capacity',
+    related: ['kb-difficult-conversations', 'kb-antisocial', 'kb-illegal-eviction'],
+    subtitle: 'Recognising vulnerability, responding to safeguarding concerns, and handling hoarding and domestic abuse.',
+    icon: '🤝',
+    category: 'communication',
+    readTime: '9 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'callout', variant: 'important', text: 'If you ever believe someone is in immediate danger, call 999. Safeguarding always comes before process, rent, or property condition.' },
+
+      { type: 'heading', level: 1, text: 'What Vulnerability Looks Like' },
+      { type: 'paragraph', text: 'A vulnerable tenant is anyone whose age, health, disability, or circumstances mean they may struggle to manage their tenancy or protect themselves. Vulnerability is often hidden and can be temporary — a bereavement, a mental health crisis, or a new diagnosis can all make someone vulnerable for a time.' },
+      { type: 'bullets', items: [
+        'Older tenants living alone, or tenants with physical or learning disabilities',
+        'Tenants with mental ill health, dementia, or a recent hospital discharge',
+        'Tenants experiencing domestic abuse, addiction, or a sudden loss of income',
+        'Tenants for whom English is not a first language and who may not understand notices',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Adjusting How You Work' },
+      { type: 'paragraph', text: 'The Equality Act 2010 requires reasonable adjustments for disabled tenants. In practice, this means adapting your communication and giving people the time and support they need.' },
+      { type: 'bullets', items: [
+        'Offer information in a format the tenant can understand, and check they have understood',
+        'Allow a family member, carer, or advocate to be involved where the tenant wants that',
+        'Be patient with missed appointments and slow responses — they may be a symptom, not avoidance',
+        'Keep clear, factual records of concerns and the adjustments you have made',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Mental Capacity' },
+      { type: 'paragraph', text: 'Under the Mental Capacity Act 2005 you must assume a person can make their own decisions unless it is established otherwise. Capacity is decision-specific — a tenant may manage day-to-day but struggle with a complex notice. If you have real doubts that a tenant understands something important, do not simply push the decision through. Involve their representative and raise it with your manager.' },
+      { type: 'callout', variant: 'warning', text: 'Serving legal notices on a tenant who may lack capacity to understand them is high-risk and can make the notice challengeable. Flag any capacity concern before notices are served.' },
+
+      { type: 'heading', level: 1, text: 'Hoarding' },
+      { type: 'paragraph', text: 'Hoarding is usually a mental health issue, not simply untidiness, and it can create genuine fire and health risks. The instinct to threaten eviction or force a clearance almost always makes things worse.' },
+      { type: 'bullets', items: [
+        'Record the risk factually with photographs, focusing on fire escape routes, heating, and hygiene',
+        'Respond with support first — a safeguarding referral to adult social services is often the right step',
+        'Never arrange a forced clearance of someone\'s possessions without authority and specialist support',
+        'Escalate to your manager, who will coordinate with the landlord and any support agencies',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Domestic Abuse' },
+      { type: 'paragraph', text: 'You may be the first person outside the home to notice signs of domestic abuse. Handle any disclosure with absolute discretion — never share it with the alleged perpetrator, including a joint tenant.' },
+      { type: 'bullets', items: [
+        'Listen, believe, and do not pressure the person to make decisions',
+        'Signpost to specialist support and, if there is immediate danger, call 999',
+        'Never reveal a survivor\'s new address or contact details to the other party',
+        'Record the disclosure securely and share only on a strict need-to-know basis',
+      ]},
+      { type: 'callout', variant: 'important', text: 'Making a safeguarding referral does not require the tenant\'s consent where there is a serious risk of harm. When in doubt about whether to refer, raise it with your manager the same day — never sit on a safeguarding concern.' },
+    ],
+  },
+  {
+    id: 'kb-fire-safety',
+    lastReviewed: 'July 2026',
+    title: 'Fire Safety & Building Safety Obligations',
+    related: ['kb-hmo-licensing', 'kb-property-standards'],
+    subtitle: 'Alarms, fire risk assessments, and the extra duties that apply to HMOs and higher-risk buildings.',
+    icon: '🔥',
+    category: 'standards',
+    readTime: '9 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'callout', variant: 'important', text: 'Fire safety failures cost lives and carry severe penalties. If you ever find a property without working smoke alarms, or a blocked fire escape in an HMO, treat it as urgent and escalate immediately.' },
+
+      { type: 'heading', level: 1, text: 'Smoke and Carbon Monoxide Alarms' },
+      { type: 'paragraph', text: 'Under the Smoke and Carbon Monoxide Alarm (England) Regulations, as amended in 2022, landlords of almost all rented homes must meet minimum alarm standards, and must repair or replace a faulty alarm once told it is not working.' },
+      { type: 'bullets', items: [
+        'At least one smoke alarm on every storey used as living accommodation',
+        'A carbon monoxide alarm in any room used as living accommodation that contains a fixed combustion appliance (such as a gas boiler or a wood burner), excluding gas cookers',
+        'Alarms must be working at the start of every new tenancy',
+        'Once a tenant reports a faulty alarm, the landlord must repair or replace it as soon as reasonably practicable',
+      ]},
+      { type: 'callout', variant: 'warning', text: 'Local authorities can issue a remedial notice and fine landlords up to £5,000 for breaching the alarm regulations. Always confirm alarms are present and tested at check-in and log it.' },
+
+      { type: 'heading', level: 1, text: 'HMOs — Higher Fire Standards' },
+      { type: 'paragraph', text: 'Houses in multiple occupation carry stricter fire safety duties because more, unrelated people share escape routes. Depending on the size and type, these commonly include:' },
+      { type: 'bullets', items: [
+        'A mains-wired, interlinked fire alarm system rather than standalone battery units',
+        'Fire doors with self-closers on rooms and along escape routes',
+        'A clear, protected escape route kept free of obstructions and stored items',
+        'Fire-fighting equipment such as extinguishers or fire blankets where required',
+        'Emergency lighting in larger or higher-risk HMOs',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'A blocked escape route in an HMO — bikes in the hallway, a broken self-closer wedged open — is a serious hazard, not a minor snag. Report it the same day.' },
+
+      { type: 'heading', level: 1, text: 'Fire Risk Assessments' },
+      { type: 'paragraph', text: 'Where there are common parts shared by more than one household (for example the hallway and stairs of a block of flats, or an HMO), the Regulatory Reform (Fire Safety) Order 2005 requires a suitable fire risk assessment of those common parts, kept up to date. The Fire Safety Act 2021 confirmed this extends to the structure, external walls, and flat entrance doors of buildings containing two or more homes.' },
+
+      { type: 'heading', level: 1, text: 'The Building Safety Act 2022 and Higher-Risk Buildings' },
+      { type: 'paragraph', text: 'Following the Grenfell Tower fire, the Building Safety Act 2022 created a stricter regime for "higher-risk buildings" — broadly those at least 18 metres tall or with at least seven storeys and containing two or more residential units. These have a dedicated regulator, an "accountable person", and duties around a safety case and reporting.' },
+      { type: 'callout', variant: 'important', text: 'If you manage a flat in a tall block, cladding, building safety, and fire safety in the common parts are usually the responsibility of the freeholder or building management, not your individual landlord. Know who the accountable person is and route resident concerns to them — but never ignore a fire concern because "it is not our part of the building".' },
+    ],
+  },
+  {
+    id: 'kb-possession-process',
+    lastReviewed: 'July 2026',
+    title: 'The Possession Process, End to End',
+    related: ['kb-section-8', 'kb-illegal-eviction', 'kb-rent-arrears'],
+    subtitle: 'What actually happens from serving notice to a bailiff appointment — and how long each stage takes.',
+    icon: '⚖️',
+    category: 'legal',
+    readTime: '10 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'callout', variant: 'info', text: 'This article reflects the position after the Renters\' Rights Act 2025. Section 21 "no-fault" possession and the accelerated procedure that went with it have been abolished. Every possession now runs on a Section 8 ground.' },
+
+      { type: 'heading', level: 1, text: 'The Five Stages' },
+      { type: 'paragraph', text: 'Possession is a legal process with clear stages. Skipping or rushing a stage is how landlords lose cases and waste months, so understanding the whole journey helps you set honest expectations.' },
+      { type: 'table', headers: ['Stage', 'What happens'], rows: [
+        ['1. Notice', 'A valid Section 8 notice is served on the correct form, citing the correct grounds and giving the correct notice period.'],
+        ['2. Notice expires', 'The notice period runs. Only once it has expired can a claim be issued. If the tenant leaves or pays off arrears, it may end here.'],
+        ['3. Court claim', 'The landlord issues a possession claim at court and pays the court fee. The tenant is served the claim and can defend.'],
+        ['4. Hearing & order', 'At a hearing the judge decides whether to grant possession. A possession order usually gives the tenant a date to leave (commonly 14 days).'],
+        ['5. Enforcement', 'If the tenant still does not leave, the landlord applies for a warrant and county court bailiffs (or, if transferred, High Court enforcement officers) carry out the eviction.'],
+      ]},
+
+      { type: 'heading', level: 1, text: 'Getting the Notice Right' },
+      { type: 'paragraph', text: 'A notice with the wrong grounds, wrong dates, or wrong form is invalid, and an invalid notice means starting again from scratch. Before any notice is served, the compliance basics must be in order.' },
+      { type: 'bullets', items: [
+        'The deposit must be protected and the prescribed information served',
+        'The gas safety certificate, EPC, and the government How to Rent guide must have been provided',
+        'The grounds cited must genuinely apply and be evidenced',
+        'The notice period must match the grounds used',
+      ]},
+      { type: 'callout', variant: 'warning', text: 'Deposit and document failures are the most common reason possession claims collapse. This is why Dwelly runs a compliance audit before any notice is served, and why notices go out under a strict SOP with MD sign-off.' },
+
+      { type: 'heading', level: 1, text: 'Mandatory Versus Discretionary Grounds' },
+      { type: 'paragraph', text: 'On a mandatory ground, if the landlord proves the ground the court must grant possession. On a discretionary ground, the court only grants possession if it also thinks it is reasonable. This is why serious rent arrears (Ground 8, mandatory) are treated differently from persistent late payment (Ground 11, discretionary).' },
+      { type: 'callout', variant: 'important', text: 'For Ground 8, the arrears must still meet the three-month threshold both when the notice is served and at the hearing. Tenants often pay the balance down just below the threshold before the hearing — brief the landlord that this can defeat mandatory possession.' },
+
+      { type: 'heading', level: 1, text: 'Bailiffs, Not Landlords' },
+      { type: 'paragraph', text: 'Even after a possession order, the landlord cannot evict. If the tenant does not leave by the date on the order, the only lawful next step is a warrant of possession and eviction by court-appointed bailiffs. Taking back the property any other way is an illegal eviction.' },
+      { type: 'callout', variant: 'tip', text: 'Set expectations early. From notice to bailiff can realistically take many months, and delays at the court stage are common. A landlord who understands this from day one is far easier to manage than one who expected it done in a fortnight.' },
+    ],
+  },
+  {
+    id: 'kb-data-protection',
+    lastReviewed: 'July 2026',
+    title: 'Data Protection & Confidentiality for Property Managers',
+    related: ['kb-tenant-referencing', 'kb-vulnerable-tenants', 'kb-difficult-conversations'],
+    subtitle: 'Handling tenant and landlord data lawfully under UK GDPR — and what to do with a subject access request.',
+    icon: '🔒',
+    category: 'legal',
+    readTime: '8 min read',
+    difficulty: 'intermediate',
+    content: [
+      { type: 'heading', level: 1, text: 'Why This Applies to You' },
+      { type: 'paragraph', text: 'Property managers handle a lot of personal data: names, contact details, bank details, references, immigration documents, and sometimes sensitive information about health or vulnerability. UK GDPR and the Data Protection Act 2018 govern how that data can be used, and everyone who handles it shares responsibility for keeping it safe.' },
+
+      { type: 'heading', level: 1, text: 'The Core Principles' },
+      { type: 'bullets', items: [
+        'Only collect data you genuinely need for the tenancy, and use it only for the purpose you collected it',
+        'Keep it accurate and up to date',
+        'Do not keep it longer than necessary — old applicant references and ID documents should not linger indefinitely',
+        'Keep it secure, both digitally and on paper',
+        'Be ready to explain what you hold and why',
+      ]},
+      { type: 'callout', variant: 'warning', text: 'Special category data — anything about health, disability, or a safeguarding concern — needs extra care and a stronger justification. Never share it more widely than the task strictly requires.' },
+
+      { type: 'heading', level: 1, text: 'Sharing Data With Landlords' },
+      { type: 'paragraph', text: 'Landlords often want to know everything about their tenants, but you cannot simply pass on whatever you hold. Share what the landlord genuinely needs to make decisions about their property, and hold back detail that is not theirs to see.' },
+      { type: 'bullets', items: [
+        'A landlord can be told a tenant is in arrears and by how much — that affects their property',
+        'A landlord does not need a tenant\'s medical details, safeguarding history, or the reasons behind a vulnerability',
+        'Be especially careful never to reveal a domestic-abuse survivor\'s whereabouts to anyone, including a joint tenant or the landlord',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Everyday Good Habits' },
+      { type: 'bullets', items: [
+        'Check you are emailing the right person before attaching anything with personal data',
+        'Use blind copy (Bcc) when emailing multiple tenants so you do not expose their addresses to each other',
+        'Do not send bank details or ID by insecure channels, and do not store them where they are not needed',
+        'Lock your screen and never leave paperwork with personal data on show',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Subject Access Requests' },
+      { type: 'paragraph', text: 'A tenant, applicant, or landlord has the right to ask for a copy of the personal data you hold about them — a "subject access request" (SAR). It does not have to mention GDPR or use any special wording; a plain email asking for their information counts.' },
+      { type: 'bullets', items: [
+        'The request must usually be answered within one month, free of charge',
+        'You must provide the person\'s own data, but redact information about other people',
+        'A SAR often arrives during a dispute — handle it calmly and by the book, not defensively',
+      ]},
+      { type: 'callout', variant: 'important', text: 'If you receive a subject access request, or if personal data may have been lost, emailed to the wrong person, or otherwise breached, tell your manager the same day. A personal data breach can have to be reported to the Information Commissioner\'s Office within 72 hours, so speed matters.' },
+    ],
+  },
+  {
+    id: 'kb-rent-arrears',
+    lastReviewed: 'July 2026',
+    title: 'Rent Arrears, Universal Credit & Managed Payments',
+    related: ['kb-possession-process', 'kb-section-8', 'kb-financial-literacy'],
+    subtitle: 'Handling arrears early and constructively, and understanding how benefits affect rent.',
+    icon: '💷',
+    category: 'finance',
+    readTime: '9 min read',
+    difficulty: 'intermediate',
+    content: [
+      { type: 'heading', level: 1, text: 'Act Early, Not Angrily' },
+      { type: 'paragraph', text: 'Most arrears are recoverable if they are caught early and handled well. The worst outcomes come from letting arrears drift, then reaching for a notice. A calm, prompt conversation at the first missed payment protects the landlord\'s income and the tenancy far better than a heavy-handed one later.' },
+      { type: 'callout', variant: 'tip', text: 'Contact the tenant the moment a payment is missed. Often it is a changed pay date, a card that expired, or a standing order that lapsed — a two-minute call fixes it before it becomes a debt.' },
+
+      { type: 'heading', level: 1, text: 'A Constructive Arrears Conversation' },
+      { type: 'steps', items: [
+        'Make contact quickly and without accusation — ask what has happened.',
+        'Establish whether this is a one-off or a change in circumstances.',
+        'Where affordability has changed, discuss a realistic repayment plan on top of ongoing rent.',
+        'Confirm any agreement in writing so both sides are clear.',
+        'Keep the landlord informed throughout, and record every step.',
+      ]},
+      { type: 'callout', variant: 'warning', text: 'A repayment plan only works if it is realistic. A plan the tenant cannot actually afford simply delays the problem and can undermine a later possession claim.' },
+
+      { type: 'heading', level: 1, text: 'Universal Credit and the Housing Element' },
+      { type: 'paragraph', text: 'Many tenants receive help with rent through the housing element of Universal Credit. By default this is paid to the tenant, monthly in arrears, and the tenant pays the landlord. This design causes two common problems: the wait for the first payment, and the risk that money paid to the tenant is not passed on.' },
+      { type: 'bullets', items: [
+        'There is a wait of roughly five weeks for a first Universal Credit payment, during which arrears can build through no fault of the tenant',
+        'The amount of help is capped by the Local Housing Allowance rate for the area and household size, which may be less than the actual rent',
+        'Payment cycles rarely line up neatly with the rent due date',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Alternative Payment Arrangements & Managed Payments' },
+      { type: 'paragraph', text: 'Where a tenant is struggling, the rent can sometimes be paid directly to the landlord through an Alternative Payment Arrangement — often called a "managed payment to landlord". This can be requested where the tenant is in rent arrears (commonly two months or more) or is assessed as needing support to manage their money.' },
+      { type: 'bullets', items: [
+        'A managed payment sends the housing element straight to the landlord rather than the tenant',
+        'A separate deduction can also be set up to chip away at existing arrears from ongoing benefit',
+        'It is requested through the DWP, usually via the UC47 route',
+      ]},
+      { type: 'callout', variant: 'important', text: 'When calculating arrears for a Ground 8 possession, any rent unpaid only because a Universal Credit payment had not yet arrived is disregarded. Never treat a benefit-delay arrear the same as a tenant simply not paying — flag it and take instruction.' },
+
+      { type: 'heading', level: 1, text: 'When Arrears Become a Possession Matter' },
+      { type: 'paragraph', text: 'If genuine efforts to recover arrears fail and the debt is serious, possession may be the right step — but only through the correct notice and court process. Serious arrears (three months or more) can support the mandatory Ground 8. This is always a manager decision, following the compliance checks set out in the possession process article.' },
+    ],
+  },
+  {
+    id: 'kb-leasehold-consent',
+    lastReviewed: 'July 2026',
+    title: 'Leasehold Flats & Consent to Let',
+    related: ['kb-landlord-relations', 'kb-fire-safety', 'kb-property-standards'],
+    subtitle: 'The extra layer of rules that applies when the landlord owns a flat on a lease, not the freehold.',
+    icon: '🏢',
+    category: 'landlord',
+    readTime: '7 min read',
+    difficulty: 'intermediate',
+    content: [
+      { type: 'heading', level: 1, text: 'Freehold vs Leasehold' },
+      { type: 'paragraph', text: 'Most houses are freehold — the owner owns the building and the land outright. Most flats are leasehold — the "owner" actually holds a long lease from a freeholder and must follow the rules in that lease. When your landlord owns a leasehold flat, there is a whole extra rulebook sitting above the tenancy.' },
+      { type: 'callout', variant: 'info', text: 'Two separate relationships exist at once: the freeholder and your landlord (governed by the lease), and your landlord and the tenant (governed by the tenancy). Problems arise when one is managed without regard to the other.' },
+
+      { type: 'heading', level: 1, text: 'Consent to Let' },
+      { type: 'paragraph', text: 'Many leases restrict or prohibit sub-letting, or require the freeholder\'s written consent before the flat can be let out. A landlord who lets without the required consent may be in breach of their lease, which can carry a fee, a demand to end the tenancy, or in extreme cases forfeiture of the lease.' },
+      { type: 'callout', variant: 'tip', text: 'Before taking on a leasehold flat to manage, ask the landlord to confirm the lease allows letting and that any required consent is in place. It is far easier to check at the start than to unravel later.' },
+
+      { type: 'heading', level: 1, text: 'Service Charges and Ground Rent' },
+      { type: 'bullets', items: [
+        'The leaseholder (your landlord) usually pays a service charge for maintenance of the building and common parts, and sometimes a ground rent',
+        'These are the landlord\'s costs, not the tenant\'s — do not pass them on to the tenant unless the tenancy specifically and lawfully provides for it',
+        'Major works billed by the freeholder can be large and unexpected; a well-managed landlord budgets for them',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Building Rules That Bind the Tenant' },
+      { type: 'paragraph', text: 'Leases often contain rules the tenant must follow even though the tenant never sees the lease — for example no pets, no subletting rooms, restrictions on noise, flooring, or use of communal areas. The tenancy should reflect these so the tenant is bound by them.' },
+      { type: 'callout', variant: 'warning', text: 'If a tenant breaches a lease rule (for example keeping a pet where the lease forbids it), the freeholder pursues the landlord, and the landlord then has to deal with the tenant. Spotting the conflict early — before a tenant moves a pet in — saves everyone the dispute.' },
+
+      { type: 'heading', level: 1, text: 'Who Fixes What' },
+      { type: 'paragraph', text: 'In a leasehold flat, responsibility for repairs is split. The freeholder or building manager typically looks after the structure, roof, and common parts, while your landlord is responsible inside the flat. When a repair sits in the communal area — a leaking roof, a broken entry door, a failed communal boiler — it usually needs to be reported to the building manager, not fixed by your landlord\'s contractor.' },
+      { type: 'callout', variant: 'important', text: 'When a tenant reports an issue that turns out to be in the common parts or structure, do not simply instruct a contractor. Identify whose responsibility it is, report it to the freeholder or managing agent, and keep the tenant updated while it is chased.' },
+    ],
+  },
+
+  // ─── Expert reference library (batch 2) ───
+  {
+    id: 'kb-renters-rights-act',
+    lastReviewed: 'July 2026',
+    title: 'The Renters\' Rights Act 2025 — What Changed',
+    related: ['kb-tenancy-law', 'kb-section-8', 'kb-possession-process'],
+    subtitle: 'The biggest reform of the private rented sector in a generation — the new rules every property manager must know.',
+    icon: '⚖️',
+    category: 'legal',
+    readTime: '11 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'callout', variant: 'important', text: 'The Renters\' Rights Act received Royal Assent on 27 October 2025. The headline change — the abolition of Section 21 "no-fault" evictions and the move to periodic tenancies — takes effect from 1 May 2026. Treat every new tenancy as if the new regime already applies.' },
+
+      { type: 'heading', level: 1, text: 'The End of Section 21' },
+      { type: 'paragraph', text: 'The Act abolishes Section 21 "no-fault" possession. A landlord can no longer end a tenancy simply by giving two months\' notice with no reason. All possession now runs through Section 8 grounds — the landlord must have, and prove, a valid ground. This is the single most important change: it shifts the whole sector from "notice on demand" to "reason required".' },
+      { type: 'warning', variant: 'warning', text: 'Never tell a landlord they can get their property back "just by serving a Section 21". That route is gone. Possession requires a valid Section 8 ground and, if contested, a court order.' },
+
+      { type: 'heading', level: 1, text: 'Periodic Tenancies by Default' },
+      { type: 'paragraph', text: 'Fixed terms for assured tenancies are abolished. Every assured tenancy becomes periodic (rolling), running month to month. Tenants can leave by giving two months\' notice at any point; landlords can only end the tenancy using a valid ground. There is no more "the fixed term ends in June so they must go" — the tenancy simply continues until lawfully ended.' },
+
+      { type: 'heading', level: 1, text: 'Changes to the Grounds for Possession' },
+      { type: 'bullets', items: [
+        'Ground 8 (serious rent arrears): the threshold rises to three months\' arrears (from two), and the notice period rises to four weeks — making it harder to evict for arrears',
+        'New/expanded grounds for a landlord who genuinely wants to sell or move in a family member, but with longer notice and protected periods early in the tenancy',
+        'A landlord cannot use the "moving in / selling" grounds within the first 12 months of a tenancy, and cannot re-let for 12 months after using them',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Rent Increases' },
+      { type: 'paragraph', text: 'Rent can be increased only once a year, using the statutory Section 13 process (a prescribed form giving at least two months\' notice). Rent-review clauses that bypass this are no longer effective. A tenant who thinks the increase is above market rent can challenge it at the First-tier Tribunal, which cannot set a rent higher than the landlord proposed.' },
+
+      { type: 'heading', level: 1, text: 'Other Key Reforms' },
+      { type: 'bullets', items: [
+        'Tenants gain a right to request a pet, which the landlord cannot unreasonably refuse (see the Pets article)',
+        'A ban on rental bidding — landlords and agents must advertise an asking rent and cannot invite offers above it',
+        'A new Private Rented Sector Ombudsman that all landlords must join, and a Private Rented Sector Database landlords must register on',
+        'A Decent Homes Standard and "Awaab\'s Law" repair timescales extended to the private sector',
+        'It becomes unlawful to discriminate against tenants on benefits ("No DSS") or with children',
+      ]},
+      { type: 'callout', variant: 'important', text: 'When advising a landlord, always frame possession, rent increases, and pet requests through the new rules. If a landlord asks for something the Act now prohibits, explain the position calmly and escalate to your manager or the MD rather than agreeing to a non-compliant approach.' },
+    ],
+  },
+  {
+    id: 'kb-deposit-disputes',
+    lastReviewed: 'July 2026',
+    title: 'Winning (and Losing) Deposit Disputes',
+    related: ['kb-deposit-schemes', 'kb-inventories', 'kb-property-standards'],
+    subtitle: 'How adjudicators actually decide deposit disputes — and how to build a claim that stands up.',
+    icon: '⚖️',
+    category: 'finance',
+    readTime: '9 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'heading', level: 1, text: 'The Burden of Proof Is on the Landlord' },
+      { type: 'paragraph', text: 'In every deposit scheme\'s adjudication, the burden of proof sits with the landlord, not the tenant. It is for the landlord to prove the deductions are justified — the tenant does not have to prove they are not. Adjudicators decide on the papers alone, so a claim is only as strong as the evidence submitted.' },
+      { type: 'callout', variant: 'important', text: 'Adjudication is evidence-only. There is no hearing, no chance to explain later. Everything the adjudicator needs must be in the file: check-in and check-out inventories, dated photos, invoices, and the tenancy agreement.' },
+
+      { type: 'heading', level: 1, text: 'What Adjudicators Will and Won\'t Award' },
+      { type: 'bullets', items: [
+        'Fair wear and tear is NEVER chargeable — an adjudicator will strip out any deduction that is really just normal ageing',
+        'Betterment is not allowed — a landlord cannot charge to replace a worn item with a brand-new one; only the used value can be claimed',
+        'Cleaning can be claimed only to return the property to its check-in standard, evidenced by the check-in and check-out reports',
+        'Damage beyond wear and tear (burns, stains, breakages) can be claimed, but usually apportioned for the age and expected life of the item',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'A carpet with a ten-year life that is stained after eight years has almost no claimable value left — the adjudicator awards the residual value, not a new carpet.' },
+
+      { type: 'heading', level: 1, text: 'The Evidence That Wins' },
+      { type: 'steps', items: [
+        'A detailed, tenant-signed check-in inventory with dated photographs of every room and its condition.',
+        'A check-out report in the same format, so the two can be compared side by side.',
+        'Clear, close-up dated photographs of each specific item of damage or dirt claimed for.',
+        'Invoices or quotes for the actual remedial work — not round-number estimates.',
+        'A short written statement linking each deduction to the evidence and explaining any apportionment.',
+      ]},
+
+      { type: 'heading', level: 1, text: 'The Most Common Reasons Landlords Lose' },
+      { type: 'bullets', items: [
+        'No check-in inventory, or one the tenant never signed — nothing to compare against',
+        'Charging for wear and tear or full replacement instead of apportioned value',
+        'Vague photos with no date, or none at all',
+        'Round-sum "cleaning £150" deductions with no invoice',
+        'Failing to protect the deposit or serve prescribed information — which can sink the whole claim and trigger a penalty',
+      ]},
+      { type: 'callout', variant: 'important', text: 'If a deposit was not protected in time or the prescribed information was not served, do not pursue deductions without escalating first — the tenant may have a counterclaim worth up to three times the deposit.' },
+    ],
+  },
+  {
+    id: 'kb-gas-electrical-safety',
+    lastReviewed: 'July 2026',
+    title: 'Gas & Electrical Safety Compliance',
+    related: ['kb-fire-safety', 'kb-property-standards', 'kb-hmo-licensing'],
+    subtitle: 'The non-negotiable safety certificates — CP12 and EICR — and what happens when they lapse.',
+    icon: '🔌',
+    category: 'standards',
+    readTime: '8 min read',
+    difficulty: 'intermediate',
+    content: [
+      { type: 'callout', variant: 'important', text: 'Gas and electrical safety are life-safety obligations. A lapsed certificate is not an administrative slip — it is a legal breach that can carry criminal liability and, in the worst case, follows a death. These never slide.' },
+
+      { type: 'heading', level: 1, text: 'Gas Safety (the CP12)' },
+      { type: 'bullets', items: [
+        'Every gas appliance and flue must be checked every 12 months by a Gas Safe registered engineer',
+        'The record (the CP12, or Gas Safety Record) must be given to existing tenants within 28 days of the check, and to new tenants before they move in',
+        'Records must be kept for at least two years',
+        'Only a Gas Safe registered engineer may carry out the work — always verify the registration',
+      ]},
+      { type: 'warning', variant: 'warning', text: 'Breaching the Gas Safety (Installation and Use) Regulations 1998 is a criminal offence enforced by the HSE, carrying unlimited fines and, in serious cases, imprisonment. There is no "grace period".' },
+
+      { type: 'heading', level: 1, text: 'Electrical Safety (the EICR)' },
+      { type: 'bullets', items: [
+        'An Electrical Installation Condition Report (EICR) is required at least every five years, carried out by a qualified and competent electrician',
+        'A copy must be supplied to tenants within 28 days and to new tenants before they move in, and to the local authority within 7 days on request',
+        'Any code C1 (danger present) or C2 (potentially dangerous) fault must be remedied within 28 days (or sooner if specified), with written confirmation obtained',
+        'Code FI means further investigation is required and must also be actioned',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'C1 = immediate danger, act now. C2 = potentially dangerous, fix within 28 days. C3 = improvement recommended (not compulsory). FI = further investigation needed. Knowing these codes lets you triage an EICR the moment it lands.' },
+
+      { type: 'heading', level: 1, text: 'Portable Appliances and Smoke/CO Alarms' },
+      { type: 'paragraph', text: 'In furnished lets, portable appliances supplied by the landlord should be maintained and PAT testing is good practice. Separately, a working smoke alarm is required on every storey, and a carbon monoxide alarm in every room with a fixed combustion appliance (excluding gas cookers), tested at the start of each tenancy.' },
+      { type: 'callout', variant: 'important', text: 'If a landlord resists paying for a required certificate, do not let the property or renew without it. Log the instruction, explain the legal exposure in writing, and escalate — the agency shares liability for knowingly managing a non-compliant let.' },
+    ],
+  },
+  {
+    id: 'kb-inventories',
+    lastReviewed: 'July 2026',
+    title: 'Inventories, Check-In & Check-Out',
+    related: ['kb-deposit-disputes', 'kb-property-standards', 'move-outs'],
+    subtitle: 'The single most valuable document in a tenancy — how to build one that protects everyone.',
+    icon: '📋',
+    category: 'standards',
+    readTime: '7 min read',
+    difficulty: 'foundation',
+    content: [
+      { type: 'callout', variant: 'important', text: 'The inventory is the backbone of every deposit claim. A tenancy with a strong check-in report and matching check-out is almost impossible to lose at adjudication; one without is almost impossible to win.' },
+
+      { type: 'heading', level: 1, text: 'What a Good Inventory Contains' },
+      { type: 'bullets', items: [
+        'A room-by-room description of condition, cleanliness, fixtures, fittings and contents',
+        'Dated, high-resolution photographs (and ideally video) of every room and any existing damage',
+        'Meter readings and the number of keys handed over',
+        'Smoke and CO alarm test confirmation',
+        'The tenant\'s signature, or evidence the tenant was given a set period to comment and did not dispute it',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Check-In: Setting the Baseline' },
+      { type: 'paragraph', text: 'The check-in captures the property\'s exact condition at the start of the tenancy. Give the tenant the report at move-in and a reasonable window (typically 7 days) to note anything they disagree with. A signed, un-disputed check-in is the fixed point every future comparison is made against.' },
+
+      { type: 'heading', level: 1, text: 'Check-Out: The Comparison' },
+      { type: 'steps', items: [
+        'Carry out the check-out in the same room-by-room order and format as the check-in.',
+        'Photograph every area again, matching the check-in angles so differences are obvious.',
+        'Take closing meter readings and confirm all keys are returned.',
+        'Identify differences and separate genuine damage from fair wear and tear.',
+        'Only then propose any deductions, each tied to a specific check-in/check-out comparison and a quote.',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'Photos are only useful if they are dated and clearly attributable to the property. A phone with the date stamp on, or a report platform that embeds metadata, turns a "he said / she said" dispute into a decided one.' },
+
+      { type: 'heading', level: 1, text: 'Fair Wear and Tear' },
+      { type: 'paragraph', text: 'Wear and tear is the natural deterioration expected from reasonable use over the length of the tenancy, taking into account the number and age of occupiers. A family of four in a property for five years will reasonably wear carpets and paintwork far more than a single tenant for six months. You cannot charge to put right what is simply ageing.' },
+    ],
+  },
+  {
+    id: 'kb-notice-serving',
+    lastReviewed: 'July 2026',
+    title: 'Serving Notices Correctly',
+    related: ['kb-section-8', 'kb-possession-process', 'kb-tenancy-law'],
+    subtitle: 'A notice served the wrong way is worthless — how to get service right so it stands up in court.',
+    icon: '✉️',
+    category: 'legal',
+    readTime: '7 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'callout', variant: 'important', text: 'The most common reason possession claims collapse is defective service — the right notice, served the wrong way, or with the wrong dates. A judge will throw out a technically defective notice however serious the underlying problem.' },
+
+      { type: 'heading', level: 1, text: 'Right Form, Right Grounds, Right Dates' },
+      { type: 'bullets', items: [
+        'Use the current prescribed form — an out-of-date form can invalidate the notice',
+        'Cite the correct grounds and give the correct minimum notice period for those grounds',
+        'Calculate dates carefully — an expiry date that is even a day short makes the notice invalid',
+        'Name every tenant on the tenancy — a notice that omits a joint tenant may be defective',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Methods of Service and "Deemed Service"' },
+      { type: 'paragraph', text: 'How you serve matters as much as what you serve. The tenancy agreement usually sets out permitted service methods and when service is "deemed" to have happened. Common methods include personal delivery, first-class post, and leaving it at the property — each with different deemed-service timings that affect the notice expiry date.' },
+      { type: 'bullets', items: [
+        'First-class post is usually deemed served two working days after posting — build that into the expiry date',
+        'Hand delivery through the letterbox is usually deemed served the same or next day',
+        'Email is only valid service if the tenancy agreement expressly allows it and the tenant agreed',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'Always keep proof of service — a certificate of service, a free-post proof of posting from the Post Office, a photo of the notice through the door with a date, or a process server\'s statement. Courts want to see how and when service happened.' },
+
+      { type: 'heading', level: 1, text: 'Before You Serve' },
+      { type: 'steps', items: [
+        'Confirm any pre-conditions are met (for example the deposit is protected and prescribed information served, or arrears meet the ground threshold).',
+        'Draft the notice on the current prescribed form with the correct grounds.',
+        'Have your manager or a solicitor check the form and dates before it goes out.',
+        'Serve by a permitted method and record exactly how and when.',
+        'Diarise the expiry date and the earliest date court proceedings can begin.',
+      ]},
+      { type: 'callout', variant: 'important', text: 'Never serve a possession notice on your own initiative. Possession is a legal process with serious consequences — always work under your manager\'s or a solicitor\'s instruction.' },
+    ],
+  },
+  {
+    id: 'kb-guarantors',
+    lastReviewed: 'July 2026',
+    title: 'Guarantors & Guarantee Agreements',
+    related: ['kb-tenant-referencing', 'kb-rent-arrears', 'kb-tenancy-law'],
+    subtitle: 'When and how to use a guarantor — and the drafting traps that make guarantees unenforceable.',
+    icon: '🤝',
+    category: 'legal',
+    readTime: '6 min read',
+    difficulty: 'intermediate',
+    content: [
+      { type: 'heading', level: 1, text: 'What a Guarantor Actually Promises' },
+      { type: 'paragraph', text: 'A guarantor agrees to cover the tenant\'s obligations — usually unpaid rent and the cost of damage — if the tenant fails to. It is a way of accepting a tenant who is a slightly higher risk (a student, someone new to work, or a tenant whose income falls just short on referencing) while protecting the landlord.' },
+      { type: 'callout', variant: 'tip', text: 'A guarantor is only as good as their means and the enforceability of the paperwork. Reference the guarantor too — a guarantee from someone who cannot pay is worthless.' },
+
+      { type: 'heading', level: 1, text: 'Making the Guarantee Enforceable' },
+      { type: 'bullets', items: [
+        'A guarantee must be in writing and signed by the guarantor (a verbal promise is not enforceable)',
+        'The guarantor should receive and acknowledge a copy of the tenancy agreement they are guaranteeing',
+        'The document must be clear on what is guaranteed (rent only, or rent and damage) and for how long',
+        'The guarantor should sign before the tenancy starts, for good consideration',
+      ]},
+
+      { type: 'heading', level: 1, text: 'The Renewal and Periodic Trap' },
+      { type: 'paragraph', text: 'A guarantee written to cover only the fixed term may fall away when the tenancy becomes periodic or is renewed. With tenancies now periodic by default, the guarantee wording must expressly extend to the tenancy "as extended, renewed or continued as a statutory periodic tenancy" — otherwise the landlord loses cover exactly when they may need it most.' },
+      { type: 'callout', variant: 'warning', text: 'Check the guarantee wording covers the periodic continuation. A guarantee that ends when the fixed term ends leaves the landlord exposed for every month afterwards.' },
+
+      { type: 'heading', level: 1, text: 'Joint Tenants and Guarantors' },
+      { type: 'paragraph', text: 'Where several tenants share, be clear whether a guarantor is guaranteeing the whole rent (joint and several) or only "their" tenant\'s share. In a joint and several tenancy the rent is a single obligation, so a guarantor may be liable for the full rent, not a fraction — this must be spelled out and explained so nobody signs up to more than they realise.' },
+    ],
+  },
+  {
+    id: 'kb-pets',
+    lastReviewed: 'July 2026',
+    title: 'Pet Requests Under the New Rules',
+    related: ['kb-renters-rights-act', 'kb-tenancy-law', 'kb-leasehold-consent'],
+    subtitle: 'Tenants now have a right to request a pet — how to handle it fairly and lawfully.',
+    icon: '🐾',
+    category: 'communication',
+    readTime: '6 min read',
+    difficulty: 'intermediate',
+    content: [
+      { type: 'callout', variant: 'important', text: 'Under the Renters\' Rights Act, a tenant has the right to request to keep a pet, and the landlord cannot unreasonably refuse. A blanket "no pets" policy is no longer lawful — each request must be considered on its merits.' },
+
+      { type: 'heading', level: 1, text: 'Handling a Request' },
+      { type: 'steps', items: [
+        'Ask the tenant to put the request in writing with details of the pet (type, breed, size, number).',
+        'Respond within the statutory timescale — a request left unanswered can be treated as consent.',
+        'Consider it genuinely: is refusal actually reasonable for this property and this pet?',
+        'If consenting, confirm in writing and set out any reasonable conditions.',
+        'If refusing, give a clear, specific, lawful reason — not a blanket policy.',
+      ]},
+
+      { type: 'heading', level: 1, text: 'What Counts as a Reasonable Refusal' },
+      { type: 'bullets', items: [
+        'The lease of a flat expressly forbids pets and the freeholder will not consent',
+        'The size or type of animal is genuinely unsuitable for the property (a large dog in a small studio with no outdoor access)',
+        'There is clear evidence a specific request would breach other obligations',
+      ]},
+      { type: 'callout', variant: 'warning', text: '"I just don\'t want pets in my property" is not a reasonable refusal. If a landlord instructs you to refuse without a proper reason, explain the new position and escalate rather than sending an unlawful refusal.' },
+
+      { type: 'heading', level: 1, text: 'Pet Damage and Insurance' },
+      { type: 'paragraph', text: 'The Act allows a landlord to require the tenant to hold pet damage insurance, or to cover the landlord\'s reasonable cost of such insurance, as a condition of consent. A landlord cannot demand a higher deposit for a pet — the deposit cap still applies — so pet insurance is the intended route to manage the risk.' },
+      { type: 'callout', variant: 'tip', text: 'When a landlord worries about pet damage, point them to pet damage insurance as the lawful tool, and make sure the check-in inventory is thorough so any genuine damage can be evidenced at check-out.' },
+    ],
+  },
+  {
+    id: 'kb-complaints-redress',
+    lastReviewed: 'July 2026',
+    title: 'Complaints Handling & Redress Schemes',
+    related: ['kb-difficult-conversations', 'kb-renters-rights-act', 'kb-data-protection'],
+    subtitle: 'How to handle a complaint well — and the ombudsman schemes that sit behind you if you don\'t.',
+    icon: '📣',
+    category: 'communication',
+    readTime: '6 min read',
+    difficulty: 'intermediate',
+    content: [
+      { type: 'heading', level: 1, text: 'Why Complaints Handling Matters' },
+      { type: 'paragraph', text: 'Letting and managing agents in England must belong to a government-approved redress scheme. A tenant or landlord who is unhappy and cannot resolve it with the agent can escalate to the ombudsman, who can direct the agent to apologise, take action, or pay compensation. Handling complaints well keeps disputes out of the ombudsman and out of court.' },
+      { type: 'callout', variant: 'info', text: 'The Renters\' Rights Act extends mandatory redress to private landlords too, through a new Private Rented Sector Ombudsman — so both agents and landlords will be answerable to an independent scheme.' },
+
+      { type: 'heading', level: 1, text: 'A Good Complaints Process' },
+      { type: 'steps', items: [
+        'Acknowledge the complaint promptly and in writing, so the person knows they have been heard.',
+        'Log it centrally with dates and all correspondence.',
+        'Investigate fairly, gathering the facts before responding.',
+        'Respond within your published complaints timescale with a clear outcome and reasons.',
+        'Explain the next step — escalation to a senior manager, then to the redress scheme — if they remain unhappy.',
+      ]},
+
+      { type: 'heading', level: 1, text: 'De-escalation' },
+      { type: 'bullets', items: [
+        'Respond to the emotion first ("I can see how frustrating this has been") before the facts',
+        'Never go silent — most complaints escalate because of no reply, not because of the original issue',
+        'Put agreed actions and timescales in writing so expectations are shared',
+        'Know when to hand a complaint up — a threat of legal action, a safety issue, or an allegation against a colleague should go to your manager immediately',
+      ]},
+      { type: 'callout', variant: 'important', text: 'If a complaint alleges discrimination, harassment, a serious safety failure, or threatens legal or ombudsman action, escalate to your manager or the MD at once — these carry legal and reputational risk beyond a routine complaint.' },
+    ],
+  },
+  {
+    id: 'kb-client-money',
+    lastReviewed: 'July 2026',
+    title: 'Client Money Protection & AML',
+    related: ['kb-financial-literacy', 'kb-landlord-relations', 'kb-data-protection'],
+    subtitle: 'Handling other people\'s money safely — client accounts, CMP, and anti-money-laundering duties.',
+    icon: '🏦',
+    category: 'finance',
+    readTime: '7 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'callout', variant: 'important', text: 'Rent, deposits and float belong to landlords and tenants — never to the agency. Mishandling client money is one of the fastest ways for an agent to lose their business and face prosecution.' },
+
+      { type: 'heading', level: 1, text: 'Client Accounts and CMP' },
+      { type: 'bullets', items: [
+        'Client money must be held in a designated client account, ringfenced and separate from the agency\'s own trading account',
+        'Letting agents in England must belong to a government-approved Client Money Protection (CMP) scheme, which reimburses clients if money is lost or misappropriated',
+        'Proof of CMP membership must be displayed and available to clients on request',
+        'Client money must be reconciled regularly and never used to fund the agency\'s own costs',
+      ]},
+      { type: 'callout', variant: 'warning', text: 'Never move money between a client account and the office account to smooth cashflow, even temporarily. It is a serious breach regardless of intention to repay.' },
+
+      { type: 'heading', level: 1, text: 'Anti-Money-Laundering (AML)' },
+      { type: 'paragraph', text: 'Letting agencies whose lettings meet the high-value threshold, and all sales agencies, fall within the Money Laundering Regulations and must register with HMRC. AML duties mean verifying the identity of the parties — including the landlord and the source of a property — and reporting suspicious activity.' },
+      { type: 'bullets', items: [
+        'Carry out identity checks (Know Your Customer) on landlords and, where required, tenants',
+        'Be alert to red flags: reluctance to provide ID, unusual payment routes, third parties paying, or requests to route money oddly',
+        'Report suspicions to your firm\'s Money Laundering Reporting Officer — never "tip off" the person you have reported',
+      ]},
+      { type: 'callout', variant: 'important', text: 'If something about a payment or a landlord feels wrong, do not confront the person and do not ignore it — report it internally to your MLRO and let the process handle it. Tipping off is itself a criminal offence.' },
+    ],
+  },
+  {
+    id: 'kb-service-charges',
+    lastReviewed: 'July 2026',
+    title: 'Service Charges & Section 20 Consultation',
+    related: ['kb-leasehold-consent', 'kb-financial-literacy', 'kb-property-standards'],
+    subtitle: 'How service charges work in leasehold blocks — and the consultation landlords must not skip.',
+    icon: '🧾',
+    category: 'landlord',
+    readTime: '7 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'heading', level: 1, text: 'What Service Charges Cover' },
+      { type: 'paragraph', text: 'In a leasehold block, leaseholders pay a service charge towards the cost of maintaining the building — communal repairs, cleaning, lighting, buildings insurance, and management. The charge must be reasonable, and leaseholders have statutory rights to challenge charges they believe are unreasonable at the First-tier Tribunal.' },
+      { type: 'callout', variant: 'info', text: 'Where your landlord is a leaseholder letting their flat, the service charge is the landlord\'s cost — not the tenant\'s. Do not pass block service charges to the tenant unless the tenancy lawfully and specifically provides for it.' },
+
+      { type: 'heading', level: 1, text: 'Section 20 Consultation' },
+      { type: 'paragraph', text: 'Before a freeholder or managing agent carries out major works costing any single leaseholder more than £250, or enters a long-term agreement costing a leaseholder more than £100 a year, they must follow the Section 20 consultation procedure under the Landlord and Tenant Act 1985.' },
+      { type: 'bullets', items: [
+        'Serve a Notice of Intention describing the works and inviting observations',
+        'Obtain estimates and serve a Notice of Estimates, again inviting observations',
+        'Have regard to leaseholders\' observations before proceeding',
+        'Failure to consult properly caps recoverable costs at £250 per leaseholder for works, or £100 a year for agreements — a huge shortfall on major works',
+      ]},
+      { type: 'callout', variant: 'warning', text: 'If a landlord client receives a large works bill, check whether the freeholder actually consulted under Section 20. A missed consultation can dramatically reduce what the leaseholder legally has to pay.' },
+
+      { type: 'heading', level: 1, text: 'Reserve Funds and Year-End Accounts' },
+      { type: 'paragraph', text: 'Many leases require contributions to a reserve (sinking) fund to smooth the cost of future major works like a new roof. Leaseholders are entitled to a summary of service charge accounts and to inspect the underlying invoices. A well-advised landlord budgets for both the annual charge and periodic reserve-fund demands.' },
+    ],
+  },
+  {
+    id: 'kb-court-money-claims',
+    lastReviewed: 'July 2026',
+    title: 'Recovering Money Through the Courts',
+    related: ['kb-rent-arrears', 'kb-possession-process', 'kb-financial-literacy'],
+    subtitle: 'When arrears or damage can\'t be recovered any other way — the money-claim route, CCJs and enforcement.',
+    icon: '⚖️',
+    category: 'legal',
+    readTime: '8 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'heading', level: 1, text: 'Possession vs a Money Judgment' },
+      { type: 'paragraph', text: 'Getting the property back and getting the money owed are two different things. A possession order ends the tenant\'s right to occupy; it does not, by itself, make the tenant pay. To recover arrears or damage as a debt you usually need a money judgment — which can be claimed in the possession proceedings or separately.' },
+      { type: 'callout', variant: 'tip', text: 'A money judgment is only worth pursuing if the tenant can actually pay. Chasing a judgment against someone with no income or assets can cost more than it recovers — weigh the prospects before spending on court fees.' },
+
+      { type: 'heading', level: 1, text: 'The Pre-Action Protocol' },
+      { type: 'paragraph', text: 'Before issuing a money claim, the court expects the parties to follow the pre-action protocol for debt claims — sending a clear letter of claim setting out what is owed and how it is calculated, and giving the debtor a reasonable chance to respond or propose payment. Skipping this can lead to costs penalties even if you win.' },
+
+      { type: 'heading', level: 1, text: 'Making the Claim' },
+      { type: 'steps', items: [
+        'Send a compliant letter of claim and allow time to respond.',
+        'Issue the claim (Money Claim Online for straightforward money claims) with the sum, interest and a clear breakdown.',
+        'If the debtor does not respond, apply for judgment in default; if they defend, the claim proceeds to a hearing.',
+        'On success the court makes a County Court Judgment (CCJ) for the amount plus costs and interest.',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Enforcing a Judgment' },
+      { type: 'bullets', items: [
+        'An attachment of earnings order takes deductions directly from the debtor\'s wages',
+        'A warrant of control instructs enforcement agents to seize goods',
+        'A charging order secures the debt against any property the debtor owns',
+        'A third-party debt order freezes and takes money from the debtor\'s bank account',
+      ]},
+      { type: 'callout', variant: 'important', text: 'Court action is a last resort and always runs under your manager\'s or a solicitor\'s instruction. Keep meticulous records of arrears, correspondence and the tenancy from day one — enforcement depends on being able to prove the debt.' },
+    ],
+  },
+  {
+    id: 'kb-overseas-landlords',
+    lastReviewed: 'July 2026',
+    title: 'Overseas Landlords & the NRL Scheme',
+    related: ['kb-landlord-relations', 'kb-financial-literacy', 'kb-client-money'],
+    subtitle: 'The tax obligations that kick in when a landlord lives abroad — and the agent\'s role in them.',
+    icon: '🌍',
+    category: 'finance',
+    readTime: '6 min read',
+    difficulty: 'advanced',
+    content: [
+      { type: 'heading', level: 1, text: 'Who Is a Non-Resident Landlord' },
+      { type: 'paragraph', text: 'A non-resident landlord is one whose usual place of abode is outside the UK for more than six months — regardless of nationality or tax residence. When a landlord who manages their own lettings moves abroad, they can move into the scheme mid-tenancy, so it is not just a new-instruction question.' },
+
+      { type: 'heading', level: 1, text: 'The Agent\'s Withholding Duty' },
+      { type: 'paragraph', text: 'Under the Non-Resident Landlord Scheme, a letting agent collecting rent for a non-resident landlord must deduct basic-rate tax from the rental income (after allowable expenses) and pay it to HMRC quarterly — unless HMRC has authorised the landlord to receive rent gross.' },
+      { type: 'bullets', items: [
+        'The landlord can apply to HMRC for approval to receive rent without tax deducted (usually where their UK tax affairs are up to date)',
+        'Approval is given by HMRC in writing and notified to the agent — do not stop deducting until you hold that notice',
+        'The agent must file quarterly returns and an annual return, and give the landlord an annual certificate of tax deducted',
+        'Where there is no agent, a tenant paying rent above the threshold direct to an overseas landlord can themselves be required to deduct',
+      ]},
+      { type: 'callout', variant: 'warning', text: 'Getting NRL wrong exposes the agency to HMRC penalties for tax that should have been withheld. If a landlord tells you they are moving abroad, flag the NRL scheme and involve your finance team before the next rent run.' },
+
+      { type: 'heading', level: 1, text: 'Practical Steps' },
+      { type: 'steps', items: [
+        'Establish at onboarding — and periodically — whether the landlord\'s usual home is outside the UK.',
+        'If they are non-resident, register the position and deduct tax unless you hold HMRC gross-payment approval.',
+        'Keep clean records of rent, expenses and tax deducted for each quarter.',
+        'Provide the landlord with their annual certificate so they can complete their own tax return.',
+      ]},
+      { type: 'callout', variant: 'important', text: 'Tax is specialist territory. Your job is to spot the trigger (landlord abroad) and route it to finance and, where needed, the landlord\'s accountant — not to give tax advice yourself.' },
     ],
   },
 ]

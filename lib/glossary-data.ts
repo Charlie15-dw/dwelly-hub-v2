@@ -642,4 +642,183 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     category: 'tenant-relations',
     relatedTerms: ['fitness-for-habitation', 'hhsrs', 'mees'],
   },
+
+  // ─── ADVANCED / EDGE-CASE TERMS ─────────────────────────────────────────────
+
+  {
+    id: 'involuntary-bailee',
+    term: 'Involuntary Bailee',
+    definition:
+      "A person who, without agreeing to, ends up in possession of goods belonging to someone else — in lettings, a landlord left holding a departed tenant's belongings. An involuntary bailee owes a limited duty of care and must not deliberately destroy the goods, but the Torts (Interference with Goods) Act 1977 provides a lawful route to dispose of them: serve written notice on the owner at their last known address stating the intention to sell or dispose, give a reasonable period to collect, keep an inventory and photographs, and account for any sale proceeds (net of storage/sale costs) to the former tenant for up to six years. Guessing that a property is abandoned and simply binning the contents exposes the landlord to a conversion claim.",
+    context:
+      "When the tenant vanished leaving furniture behind, Dwelly treated the landlord as an involuntary bailee: photographing and inventorying everything, serving a Torts Act notice, and storing the goods for the notice period before disposal.",
+    category: 'legal',
+    relatedTerms: ['abandonment', 'mesne-profits', 'illegal-eviction'],
+  },
+  {
+    id: 'abandonment',
+    term: 'Abandonment',
+    definition:
+      "Where a tenant appears to have permanently left a property before the tenancy has lawfully ended. There is no safe 'self-help' shortcut: taking the property back on a mere assumption of abandonment risks an unlawful eviction because the tenancy — and the tenant's right to occupy — continues until ended by surrender, a court possession order, or (from the Renters' Rights Act framework) the correct statutory process. Best practice is to gather evidence (unpaid rent, unanswered contact, neighbour reports, utilities disconnected), serve notices to the last known address and any guarantor/emergency contact, and obtain a possession order rather than change the locks.",
+    context:
+      "Faced with a possibly abandoned flat, the PM logged evidence and served notice rather than re-letting, because acting on a wrong abandonment assumption would have been an illegal eviction.",
+    category: 'legal',
+    relatedTerms: ['involuntary-bailee', 'illegal-eviction', 'deed-of-surrender'],
+  },
+  {
+    id: 'succession',
+    term: 'Succession (Tenancy)',
+    definition:
+      "The right of a person to take over (succeed to) a tenancy when the tenant dies. For most assured and assured shorthold tenancies under the Housing Act 1988, a spouse or civil partner (or someone living together as such) who occupied the property as their only or principal home immediately before the death has a statutory right to one succession. Where no one qualifies to succeed, the tenancy passes under the deceased's will or the intestacy rules to their estate, and the landlord deals with the personal representatives (executor or administrator) — rent remains payable by the estate until the tenancy is lawfully ended.",
+    context:
+      "After the sole tenant died, the PM checked whether the partner living there qualified for statutory succession before deciding whether to grant a new tenancy or seek possession from the estate.",
+    category: 'legal',
+    relatedTerms: ['periodic-tenancy', 'ast', 'deed-of-surrender'],
+  },
+  {
+    id: 'rent-to-rent',
+    term: 'Rent-to-Rent',
+    definition:
+      "An arrangement where an intermediary (company or individual) rents a property from the owner and then sub-lets it to occupiers, keeping the margin. It is not unlawful in itself, but it becomes a serious problem when done without the landlord's written consent or in breach of the head lease/mortgage, and it frequently creates unlicensed HMOs. Where an unauthorised rent-to-rent operator sub-lets, the true landlord can face licensing and management liability, and occupiers may pursue a Rent Repayment Order against the intermediary. Unauthorised subletting by a tenant is usually a breach of the tenancy agreement and a ground for possession.",
+    context:
+      "When neighbours reported multiple unrelated occupiers, the PM discovered the tenant was running an unauthorised rent-to-rent operation, creating an unlicensed HMO in breach of the tenancy.",
+    category: 'legal',
+    relatedTerms: ['hmo', 'rent-repayment-order', 'assignment'],
+  },
+  {
+    id: 'subject-access-request',
+    term: 'Subject Access Request (SAR)',
+    definition:
+      "A right under the UK GDPR and Data Protection Act 2018 allowing an individual to ask an organisation for a copy of the personal data it holds about them, together with information about how and why it is processed. A landlord or agent must respond free of charge within one calendar month (extendable to three months for complex requests), verify the requester's identity, and redact third-party personal data. Failure to respond, or improper handling of tenant data, can be reported to the Information Commissioner's Office (ICO).",
+    context:
+      "When a former tenant submitted a subject access request, Dwelly compiled their tenancy file within the one-month deadline, redacting information relating to other people before releasing it.",
+    category: 'compliance',
+    relatedTerms: ['right-to-rent', 'prescribed-information'],
+  },
+  {
+    id: 'local-housing-allowance',
+    term: 'Local Housing Allowance (LHA)',
+    definition:
+      "The rate used to work out the maximum housing support a private tenant on Universal Credit (or Housing Benefit) can receive, based on the number of bedrooms they are entitled to and the Broad Rental Market Area they live in. LHA rates are capped and often fall below market rent, so tenants may have a shortfall to make up themselves. Understanding LHA helps a PM assess affordability at referencing and anticipate arrears risk for benefit-reliant tenants.",
+    context:
+      "Because the applicant relied on Universal Credit, the PM checked the LHA rate for a two-bed in that area and flagged the shortfall against the asking rent before referencing.",
+    category: 'financial',
+    relatedTerms: ['managed-payment', 'arrears', 'holding-deposit'],
+  },
+  {
+    id: 'managed-payment',
+    term: 'Managed Payment to Landlord (APA)',
+    definition:
+      "An Alternative Payment Arrangement under Universal Credit whereby the housing element is paid directly to the landlord instead of the tenant, usually where the tenant is in arrears of two months or more or is assessed as vulnerable or unable to manage monthly payments. The landlord or agent applies to the DWP using form UC47. A managed payment can also recover ongoing arrears through a set deduction from the tenant's award. It is a key arrears-recovery tool that can stabilise a tenancy without possession action.",
+    context:
+      "With the tenant two months in arrears on Universal Credit, the PM submitted a UC47 to set up a managed payment to landlord plus a deduction towards the outstanding balance.",
+    category: 'financial',
+    relatedTerms: ['local-housing-allowance', 'arrears', 'ground-8'],
+  },
+  {
+    id: 'consent-to-let',
+    term: 'Consent to Let',
+    definition:
+      "Formal permission that an owner-occupier must obtain from their mortgage lender before letting out a property bought on a residential (rather than buy-to-let) mortgage. Letting without consent breaches the mortgage terms and can trigger repayment demands or higher interest. Similarly, a leaseholder usually needs the freeholder's consent to sublet, and the head lease may impose conditions or fees. A PM taking on a new instruction should confirm the landlord holds the correct mortgage type or lender consent, and any necessary freeholder consent, before marketing.",
+    context:
+      "Before marketing the flat, the PM confirmed the owner had obtained consent to let from their residential mortgage lender and checked the lease permitted subletting.",
+    category: 'legal',
+    relatedTerms: ['ground-rent', 'service-charge', 'assignment'],
+  },
+
+  // ─── RENTERS' RIGHTS ACT & MODERN REGIME ────────────────────────────────────
+
+  {
+    id: 'renters-rights-act',
+    term: "Renters' Rights Act 2025",
+    definition:
+      "The Act that reformed the private rented sector in England, receiving Royal Assent on 27 October 2025 with the main tenancy changes taking effect from 1 May 2026. It abolishes Section 21 'no-fault' evictions, ends fixed-term assured tenancies in favour of periodic tenancies, limits rent increases to once a year via the Section 13 process, gives tenants a right to request a pet, bans rental bidding and 'No DSS'/no-children discrimination, and creates a Private Rented Sector Ombudsman and Database. Possession now requires a valid Section 8 ground.",
+    context:
+      "When a landlord asked how quickly they could get their property back 'with a Section 21', the PM explained that the Renters' Rights Act had abolished no-fault eviction and possession now needed a valid ground.",
+    category: 'legal',
+    relatedTerms: ['section-8', 'periodic-tenancy', 'ground-8'],
+  },
+  {
+    id: 'section-13-notice',
+    term: 'Section 13 Notice',
+    definition:
+      "The statutory route to increase rent on a periodic assured or assured shorthold tenancy, under Section 13 of the Housing Act 1988. The landlord serves a prescribed-form notice giving at least the required period (a minimum of one month for monthly tenancies, and under the reformed regime at least two months) and can increase rent only once a year. A tenant who considers the proposed rent above market level can refer it to the First-tier Tribunal, which cannot set a rent higher than the landlord proposed.",
+    context:
+      "To raise the rent at the annual review, the PM served a Section 13 notice on the prescribed form giving two months' notice, rather than relying on an old rent-review clause.",
+    category: 'financial',
+    relatedTerms: ['renters-rights-act', 'periodic-tenancy', 'first-tier-tribunal'],
+  },
+  {
+    id: 'first-tier-tribunal',
+    term: 'First-tier Tribunal (Property Chamber)',
+    definition:
+      "The tribunal that decides many residential property disputes in England, including challenges to rent increases, service charge reasonableness, leasehold disputes, and Rent Repayment Order applications. It is generally quicker and less formal than the County Court, and parties often represent themselves. Its decisions are binding and enforceable.",
+    context:
+      "When the leaseholder disputed a large service charge, the matter was referred to the First-tier Tribunal to decide whether the cost was reasonable.",
+    category: 'legal',
+    relatedTerms: ['section-13-notice', 'service-charge', 'rent-repayment-order'],
+  },
+
+  // ─── SAFETY, COMPLIANCE & MONEY ─────────────────────────────────────────────
+
+  {
+    id: 'eicr-codes',
+    term: 'EICR Observation Codes (C1/C2/C3/FI)',
+    definition:
+      "The classification codes an electrician records on an Electrical Installation Condition Report. C1 means 'danger present' — a risk of injury requiring immediate action. C2 means 'potentially dangerous' — urgent remedial work needed, usually within 28 days. FI means 'further investigation' required. C3 means 'improvement recommended' and is not compulsory. A report is only 'satisfactory' if it has no C1, C2 or FI items outstanding.",
+    context:
+      "The EICR came back with a C2 on the consumer unit, so the PM arranged the remedial work within 28 days and obtained written confirmation it was completed.",
+    category: 'compliance',
+    relatedTerms: ['eicr', 'cp12', 'property-compliance-matrix'],
+  },
+  {
+    id: 'client-money-protection',
+    term: 'Client Money Protection (CMP)',
+    definition:
+      "A mandatory scheme that letting and managing agents in England must belong to, which reimburses landlords and tenants if the agent misappropriates or loses client money such as rent or deposits. Agents must hold client money in a separate designated client account, keep it ringfenced from their own trading funds, and display proof of CMP membership. Failure to belong to an approved scheme is a breach that can carry financial penalties.",
+    context:
+      "Because the agency held rent and deposits on behalf of clients, it belonged to a Client Money Protection scheme and kept all client money in a ringfenced client account.",
+    category: 'financial',
+    relatedTerms: ['rent-deposit', 'management-fee', 'anti-money-laundering'],
+  },
+  {
+    id: 'anti-money-laundering',
+    term: 'Anti-Money-Laundering (AML)',
+    definition:
+      "The set of duties under the Money Laundering Regulations requiring in-scope agencies to register with HMRC, verify the identity of clients (Know Your Customer), monitor for suspicious activity, and report suspicions to their Money Laundering Reporting Officer (MLRO) without 'tipping off' the person concerned. High-value lettings and all sales work typically fall within scope. Breaches carry serious civil and criminal penalties.",
+    context:
+      "When a landlord was reluctant to provide ID and wanted rent routed through an unusual third party, the PM followed the agency's AML process and reported the concern to the MLRO.",
+    category: 'compliance',
+    relatedTerms: ['client-money-protection', 'right-to-rent'],
+  },
+  {
+    id: 'section-20-consultation',
+    term: 'Section 20 Consultation',
+    definition:
+      "The statutory consultation a freeholder or managing agent must carry out under Section 20 of the Landlord and Tenant Act 1985 before major works costing any single leaseholder more than £250, or a long-term agreement costing a leaseholder more than £100 a year. It involves serving a Notice of Intention, obtaining and notifying estimates, and having regard to leaseholders' observations. Failing to consult caps recoverable costs at £250 (works) or £100 a year (agreements) per leaseholder.",
+    context:
+      "The freeholder wanted to re-roof the block, so a valid Section 20 consultation had to be completed before the cost could be recovered in full from the leaseholders.",
+    category: 'financial',
+    relatedTerms: ['service-charge', 'ground-rent', 'reserve-fund'],
+  },
+  {
+    id: 'non-resident-landlord-scheme',
+    term: 'Non-Resident Landlord (NRL) Scheme',
+    definition:
+      "An HMRC scheme requiring a letting agent (or, absent an agent, a tenant paying rent above the threshold) to deduct basic-rate tax from the rental income of a landlord whose usual home is outside the UK for more than six months, and pay it to HMRC quarterly — unless HMRC has approved the landlord to receive rent gross. The agent must file quarterly and annual returns and issue the landlord an annual certificate of tax deducted.",
+    context:
+      "When the landlord moved abroad, the agency registered under the Non-Resident Landlord Scheme and began deducting tax from the rent until HMRC approved gross payment.",
+    category: 'financial',
+    relatedTerms: ['client-money-protection', 'management-fee', 'net-rent'],
+  },
+  {
+    id: 'pre-action-protocol',
+    term: 'Pre-Action Protocol (Debt Claims)',
+    definition:
+      "The steps the court expects a creditor to take before issuing a money claim, including sending a clear letter of claim setting out the sum owed and how it is calculated, and giving the debtor a reasonable opportunity to respond or propose repayment. For possession claims based on rent arrears there is a related pre-action protocol. Failing to follow the protocol can result in costs penalties even for a successful claimant.",
+    context:
+      "Before issuing a money claim for the arrears, the PM's solicitor sent a protocol-compliant letter of claim giving the former tenant time to respond.",
+    category: 'legal',
+    relatedTerms: ['arrears', 'possession-order', 'mesne-profits'],
+  },
 ]
