@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Trophy, ChevronRight, ClipboardCheck, BookOpen, Play, Library, ArrowRight, Lock } from 'lucide-react'
-import { isLocked } from '@/lib/assessmentStorage'
+import { clearLegacyLockData } from '@/lib/assessmentStorage'
 import { createClient } from '@/lib/supabase/client'
 
 const VIDEO_MODULE_ASSESSMENTS = [
@@ -42,6 +42,10 @@ export default function AssessmentsPage() {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
+    // One-time removal of the obsolete, non-user-scoped lock cache that used to
+    // leak one user's completions to the next user on the same device.
+    clearLegacyLockData()
+
     async function init() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
@@ -59,11 +63,13 @@ export default function AssessmentsPage() {
           return
         }
 
-        // Fetch passed assessments and pending resets in parallel
+        // Fetch this user's attempts and pending resets in parallel.
+        // The lock is DB-authoritative and scoped to user.id, so it can never
+        // pick up another user's completions (the old localStorage leak).
         const [{ data: results }, { data: resets }] = await Promise.all([
           supabase
             .from('assessment_results')
-            .select('assessment_id, passed')
+            .select('assessment_id')
             .eq('user_id', user.id),
           supabase
             .from('module_resets')
@@ -72,11 +78,13 @@ export default function AssessmentsPage() {
             .is('consumed_at', null),
         ])
 
-        const passedInDb = new Set(
-          (results ?? []).filter(r => r.passed).map(r => r.assessment_id)
+        // Any completed attempt (pass or fail) locks the assessment until a
+        // manager grants a retake.
+        const attemptedInDb = new Set(
+          (results ?? []).map(r => r.assessment_id)
         )
 
-        // Pending resets unlock an assessment even if it was previously passed
+        // Pending resets unlock an assessment even if it was previously done
         const pendingResetIds = new Set((resets ?? []).map(r => r.module_id))
 
         const allIds = [
@@ -86,9 +94,9 @@ export default function AssessmentsPage() {
           ...KNOWLEDGE_ASSESSMENTS.map(a => a.id),
         ] as string[]
 
-        // Locked if passed in Supabase OR locked in localStorage — UNLESS a pending reset exists
+        // Locked if attempted in Supabase — UNLESS a pending reset exists
         setLockedIds(new Set(allIds.filter(id =>
-          (passedInDb.has(id) || isLocked(id)) && !pendingResetIds.has(id)
+          attemptedInDb.has(id) && !pendingResetIds.has(id)
         )))
       }
 

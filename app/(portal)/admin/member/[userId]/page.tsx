@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import ReassignButton from '@/components/ui/ReassignButton'
 import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
 import AssignManagerPanel from '@/components/ui/AssignManagerPanel'
+import DeleteUserButton from '@/components/ui/DeleteUserButton'
 
 const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
@@ -167,6 +168,18 @@ export default async function AdminMemberDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Danger zone — permanently remove this user. Hidden for the admin's
+          own account (they can't delete themselves). */}
+      {params.userId !== user.id && (
+        <div className="flex items-center justify-between gap-4 rounded-2xl border border-red-100 bg-red-50/40 px-5 py-3.5">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-navy">Delete this user</p>
+            <p className="text-xs text-slate-500 mt-0.5">Permanently removes {displayName} and all of their records. This cannot be undone.</p>
+          </div>
+          <DeleteUserButton userId={params.userId} userName={displayName} userEmail={memberProfile.email ?? null} />
+        </div>
+      )}
 
       {/* Assign supervisor — admin only, property-managers only.
           Supervisors can be either managers or admins. */}

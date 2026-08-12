@@ -179,8 +179,12 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     // Non-critical — quiz still loads without the beta confidence UI.
   }
 
-  // Check for a pending manager reset — done server-side so RLS never blocks it
+  // Check for a pending manager reset — done server-side so RLS never blocks it.
+  // While we're here, read this user's last attempt from the DB so the locked
+  // screen is driven by the per-user record rather than shared localStorage.
   let wasReset = false
+  let lockedByDb = false
+  let lastAttempt: { score: number; passed: boolean; completedAt: string } | undefined
   if (!isRecapQuiz && !isRecallQuiz) {
     try {
       const auth = createServerClient()
@@ -209,6 +213,27 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
             .eq('module_id', moduleId)
           wasReset = true
         }
+
+        // A completed attempt (pass or fail) locks the assessment until a
+        // manager grants a retake. A just-consumed reset unlocks it now.
+        if (!wasReset) {
+          const { data: attempts } = await auth
+            .from('assessment_results')
+            .select('score, passed, completed_at')
+            .eq('user_id', user.id)
+            .eq('assessment_id', moduleId)
+            .order('completed_at', { ascending: false })
+            .limit(1)
+          const last = attempts?.[0]
+          if (last) {
+            lockedByDb = true
+            lastAttempt = {
+              score: last.score ?? 0,
+              passed: last.passed ?? false,
+              completedAt: last.completed_at ?? '',
+            }
+          }
+        }
       }
     } catch {
       // Non-critical — quiz will still load, lock check falls through to client
@@ -226,6 +251,8 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
       backHref={backHref}
       backLabel={backLabel}
       wasReset={wasReset}
+      lockedByDb={lockedByDb}
+      lastAttempt={lastAttempt}
       beta={beta}
       recapLabel={recapLabel}
       recapTheme={recapTheme}

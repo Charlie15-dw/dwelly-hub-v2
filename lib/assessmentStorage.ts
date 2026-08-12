@@ -1,56 +1,29 @@
 /**
  * assessmentStorage.ts
- * Persists assessment attempt records to localStorage.
- * Assessments lock on completion (pass or fail); only managers can unlock retakes.
- * Recap quizzes are never stored here — they have no pass mark.
+ * Persists an in-progress assessment session to localStorage so a learner can
+ * resume mid-quiz after a refresh. Lock state and completed results are NOT
+ * stored here — those are DB-authoritative (assessment_results) and scoped to
+ * the signed-in user, so they can never leak between accounts on a shared
+ * device. A one-time cleanup of the old lock key lives in clearLegacyLockData.
  */
 
-const STORAGE_KEY = 'portal_assessment_attempts'
+// ── Legacy cleanup ─────────────────────────────────────────────────────────
 
-export interface AttemptRecord {
-  moduleId: string    // e.g. 'onb-01', 'master-assessment'
-  completedAt: string // ISO timestamp
-  score: number       // 0–100 integer
-  passed: boolean
-  locked: boolean     // true after completion; manager sets false to grant retake
-}
-
-// ── Read ─────────────────────────────────────────────────────────────────────
-
-export function getAttempts(): AttemptRecord[] {
-  if (typeof window === 'undefined') return []
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? (JSON.parse(raw) as AttemptRecord[]) : []
-  } catch {
-    return []
-  }
-}
-
-export function getLastAttempt(moduleId: string): AttemptRecord | null {
-  if (typeof window === 'undefined') return null
-  const all = getAttempts().filter(a => a.moduleId === moduleId)
-  return all.length > 0 ? all[all.length - 1] : null
-}
-
-export function isLocked(moduleId: string): boolean {
-  if (typeof window === 'undefined') return false
-  const last = getLastAttempt(moduleId)
-  return last?.locked ?? false
-}
+const LEGACY_LOCK_KEY = 'portal_assessment_attempts'
 
 /**
- * Returns the most recent locked attempt per moduleId.
- * Used by the manager dashboard to list assessments awaiting unlock.
+ * Removes the old, non-user-scoped lock cache. This key used to drive the
+ * "assessment locked" screen from localStorage, which meant a second user on
+ * the same device inherited the first user's completions. Lock state is now
+ * read per-user from the database, so the key is obsolete and cleared once.
  */
-export function getLockedAttempts(): AttemptRecord[] {
-  if (typeof window === 'undefined') return []
-  const all = getAttempts()
-  const byModule = new Map<string, AttemptRecord>()
-  for (const attempt of all.filter(a => a.locked)) {
-    byModule.set(attempt.moduleId, attempt) // later entries overwrite earlier ones
+export function clearLegacyLockData(): void {
+  if (typeof window === 'undefined') return
+  try {
+    localStorage.removeItem(LEGACY_LOCK_KEY)
+  } catch {
+    // Non-critical — nothing depends on this key any more.
   }
-  return Array.from(byModule.values())
 }
 
 // ── In-progress sessions ──────────────────────────────────────────────────────
@@ -90,30 +63,4 @@ export function clearInProgress(moduleId: string): void {
   if (typeof window === 'undefined') return
   const all = getAllInProgress().filter(s => s.moduleId !== moduleId)
   localStorage.setItem(IN_PROGRESS_KEY, JSON.stringify(all))
-}
-
-// ── Write ────────────────────────────────────────────────────────────────────
-
-/** Saves a completed attempt. Always sets locked: true. */
-export function saveAttempt(record: Omit<AttemptRecord, 'locked'>): void {
-  if (typeof window === 'undefined') return
-  const all = getAttempts()
-  all.push({ ...record, locked: true })
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(all))
-}
-
-// ── Manager actions ───────────────────────────────────────────────────────────
-
-/** Flips the most recent attempt for a moduleId to locked: false. */
-export function unlockAssessment(moduleId: string): void {
-  if (typeof window === 'undefined') return
-  const all = getAttempts()
-  // Find the last record for this moduleId and unlock it
-  for (let i = all.length - 1; i >= 0; i--) {
-    if (all[i].moduleId === moduleId) {
-      all[i] = { ...all[i], locked: false }
-      break
-    }
-  }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(all))
 }

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import type { QuizQuestion } from '@/lib/data'
 import { cn } from '@/lib/utils'
-import { isLocked, getLastAttempt, saveAttempt, unlockAssessment, getInProgress, saveInProgress, clearInProgress, type AttemptRecord } from '@/lib/assessmentStorage'
+import { getInProgress, saveInProgress, clearInProgress } from '@/lib/assessmentStorage'
 import { createClient } from '@/lib/supabase/client'
 import { hashStr, seededShuffle, getBrowserKey } from '@/lib/shuffle'
 import { scoreQuiz } from '@/lib/quiz-scoring'
@@ -72,6 +72,10 @@ export interface QuizClientProps {
   recallDays?: number
   // set to true when server detected and consumed a pending manager reset
   wasReset?: boolean
+  // DB-authoritative lock: computed server-side from this user's own
+  // assessment_results, so it can never pick up another user's completions.
+  lockedByDb?: boolean
+  lastAttempt?: { score: number; passed: boolean; completedAt: string }
   // beta-gated features (confidence-based scoring)
   beta?: boolean
 }
@@ -92,6 +96,8 @@ export default function QuizClient({
   recallLabel,
   recallModuleTitle,
   wasReset = false,
+  lockedByDb = false,
+  lastAttempt,
   beta = false,
 }: QuizClientProps) {
   const isFullAssessment   = quizCategory === 'full'
@@ -137,8 +143,6 @@ export default function QuizClient({
   const [confidences, setConfidences]  = useState<(ConfidenceLevel | null)[]>(new Array(demoQuestions.length).fill(null))
   const [answers, setAnswers]          = useState<(number | null)[]>(new Array(demoQuestions.length).fill(null))
   const [showResults, setShowResults]  = useState(false)
-  const [lockedByStorage, setLockedByStorage] = useState(false)
-  const [lastAttempt, setLastAttempt]  = useState<AttemptRecord | null>(null)
   const [quizStarted, setQuizStarted]  = useState(false)
   const [scheduleId, setScheduleId]    = useState<string | null>(null)
   // True when a critical result/progress write to Supabase failed, so we can
@@ -152,22 +156,19 @@ export default function QuizClient({
     setScheduleId(params.get('schedule'))
   }, [isRecallQuiz])
 
-  // Check lock status on mount — reset is already consumed server-side if wasReset=true
+  // Resume any in-progress session on mount. Lock status is decided
+  // server-side (lockedByDb) and rendered before we get here, so there's
+  // nothing to check locally.
   useEffect(() => {
     if (isRecapQuiz || isRecallQuiz) return
 
     // Server already consumed the pending reset before this page rendered
     if (wasReset) {
-      unlockAssessment(moduleId)
       clearInProgress(moduleId)
       return
     }
 
-    if (isLocked(moduleId)) {
-      setLockedByStorage(true)
-      setLastAttempt(getLastAttempt(moduleId))
-      return
-    }
+    if (lockedByDb) return
 
     const session = getInProgress(moduleId)
     if (session && session.submittedUpTo >= 0) {
@@ -181,7 +182,7 @@ export default function QuizClient({
       }
       setQuizStarted(true)
     }
-  }, [moduleId, wasReset, isRecapQuiz, isRecallQuiz, demoQuestions.length])
+  }, [moduleId, wasReset, lockedByDb, isRecapQuiz, isRecallQuiz, demoQuestions.length])
 
   // Save recall result to Supabase and mark schedule complete
   useEffect(() => {
@@ -237,11 +238,11 @@ export default function QuizClient({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showResults])
 
-  // Save attempt to localStorage AND Supabase when the results screen appears
+  // Save attempt to Supabase when the results screen appears. The DB row is
+  // the single source of truth for both the score record and the lock state.
   useEffect(() => {
     if (!showResults || isRecapQuiz || isRecallQuiz) return
     clearInProgress(moduleId)
-    saveAttempt({ moduleId, completedAt: new Date().toISOString(), score, passed })
 
     async function saveToSupabase() {
       const supabase = createClient()
@@ -308,7 +309,7 @@ export default function QuizClient({
   }, [showResults])
 
   // ── Locked screen ─────────────────────────────────────────────────────────
-  if (lockedByStorage) {
+  if (lockedByDb) {
     return (
       <div className="max-w-2xl mx-auto space-y-5">
         <Link href={backHref} className="text-sm text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
