@@ -109,19 +109,39 @@ function scoreText(text: string, keywords: string[]): number {
   }, 0)
 }
 
+// Reduce a word to a rough stem so query terms match related forms in the
+// content (e.g. "owes"→"owe", "refusing"→"refus", "payments"→"payment"). Crude
+// but effective at improving recall for the keyword search.
+function stem(word: string): string {
+  if (word.length <= 4) return word
+  for (const suffix of ['ing', 'edly', 'edly', 'ies', 'ied', 'ed', 'es', 's']) {
+    if (word.endsWith(suffix) && word.length - suffix.length >= 3) {
+      return word.slice(0, word.length - suffix.length)
+    }
+  }
+  return word
+}
+
 function extractKeywords(query: string): string[] {
-  return query
+  const words = query
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
     .filter(w => w.length > 2 && !STOP_WORDS.has(w))
+  // Include both the original word and its stem to widen matching.
+  const expanded = new Set<string>()
+  for (const w of words) {
+    expanded.add(w)
+    expanded.add(stem(w))
+  }
+  return Array.from(expanded)
 }
 
 // Budgets that keep the injected context well under the model's tokens-per-minute
 // limit no matter how large the knowledge base grows. Groq counts input + output
 // tokens together, so we cap the retrieved context (roughly 4 chars per token).
-const MAX_SECTIONS = 4          // most relevant articles/pages to include
-const MAX_SECTION_CHARS = 1600  // truncate each section so one long article can't dominate
+const MAX_SECTIONS = 5          // most relevant articles/pages to include
+const MAX_SECTION_CHARS = 1500  // truncate each section so one long article can't dominate
 const MAX_GLOSSARY_TERMS = 4    // matching glossary definitions to append
 const MAX_GLOSSARY_CHARS = 300  // truncate each glossary definition
 const MAX_CONTEXT_CHARS = 8000  // hard ceiling on the whole retrieved block
@@ -184,16 +204,17 @@ function findRelevantContent(query: string, topN = MAX_SECTIONS): string {
 }
 
 // ─── System prompt ─────────────────────────────────────────────────────────
-const BASE_SYSTEM_PROMPT = `You are Dobby, an internal assistant for the Dwelly Training Portal. You help property managers at Dwelly and its partner agencies with questions about their work.
+const BASE_SYSTEM_PROMPT = `You are Dobby, the expert assistant for the Dwelly Training Portal. You help property managers at Dwelly and its partner agencies with UK residential lettings (England) and their day-to-day work. Think and answer like an experienced, knowledgeable property professional.
 
-RULES - follow without exception:
-1. Only use the portal knowledge provided below. Do not use outside knowledge or make assumptions.
-2. If the answer is not clearly in the knowledge below, say exactly: "I could not find this in the portal. Please raise this with Charlie Lockwood and we'll get that added to my knowledge base."
-3. Write in plain sentences only. No bold, no bullet points, no numbered lists, no headers, no markdown formatting of any kind.
-4. Keep answers short and clear. Write for someone working in UK residential lettings who is not technical.
-5. Do not suggest seeking legal advice unless the portal documents themselves say to do so.
-6. You are Dobby. Do not say you are an AI or refer to yourself as Claude or Gemini or Groq.
-7. If asked something unrelated to property management or Dwelly, say: "I can only help with questions about Dwelly's processes and training. Please raise anything else with your manager."
+HOW TO ANSWER:
+1. Use the portal knowledge provided below as your primary source, and prefer it whenever it is relevant to the question.
+2. You are a knowledgeable UK residential lettings professional. When the portal content does not fully cover a question, apply well-established general knowledge of UK residential lettings law and best practice (England, under the Renters' Rights Act 2025 framework) to give a practical, accurate and genuinely helpful answer. Never invent Dwelly-specific processes, figures, names, forms or policies that are not in the portal.
+3. Be specific and practical. Give the actual steps the person should take, and reason through the situation even if it is an unusual or edge-case scenario. It is far better to give clear, careful guidance than to refuse.
+4. For legal, financial or high-risk situations, give practical guidance and then recommend escalating to a manager or the MD, or suggest the landlord or tenant take independent legal advice, where that is genuinely warranted.
+5. Only if the question is genuinely outside UK residential lettings and property management, or you truly cannot help, say: "I could not find this in the portal. Please raise this with Charlie Lockwood and we'll get that added to my knowledge base." Use this as a last resort, never for a question you can reasonably help with.
+6. Write in plain sentences only. No bold, no bullet points, no numbered lists, no headers, no markdown formatting of any kind.
+7. Keep answers clear and reasonably concise. Write for someone working in UK residential lettings who is not a lawyer.
+8. You are Dobby. Never say you are an AI, and never refer to yourself as Claude, Gemini or Groq.
 
 RELEVANT PORTAL CONTENT:`
 
@@ -241,7 +262,7 @@ export async function POST(req: NextRequest) {
         { role: 'system', content: systemPrompt },
         ...messages,
       ],
-      max_tokens: 400,
+      max_tokens: 700,
       temperature: 0.2,
     })
 

@@ -48,6 +48,10 @@ export type TrainingSection =
   | 'kb-service-charges'
   | 'kb-court-money-claims'
   | 'kb-overseas-landlords'
+  | 'kb-money-owed-to-tenant'
+  | 'kb-tenancy-agreements'
+  | 'kb-repairs-responsibilities'
+  | 'kb-insurance'
 
 export interface ContentBlock {
   type: 'heading' | 'subheading' | 'paragraph' | 'steps' | 'bullets' | 'callout' | 'warning' | 'table' | 'divider'
@@ -2631,6 +2635,166 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
         'Provide the landlord with their annual certificate so they can complete their own tax return.',
       ]},
       { type: 'callout', variant: 'important', text: 'Tax is specialist territory. Your job is to spot the trigger (landlord abroad) and route it to finance and, where needed, the landlord\'s accountant — not to give tax advice yourself.' },
+    ],
+  },
+
+  // ─── Expert reference library (batch 3) ───
+  {
+    id: 'kb-money-owed-to-tenant',
+    lastReviewed: 'July 2026',
+    title: 'When the Landlord Owes the Tenant Money',
+    related: ['kb-court-money-claims', 'kb-deposit-disputes', 'kb-rent-arrears'],
+    subtitle: 'Refunds, overpaid rent and deposits — how a tenant recovers money a landlord is wrongly holding.',
+    icon: '💷',
+    category: 'finance',
+    readTime: '8 min read',
+    difficulty: 'intermediate',
+    content: [
+      { type: 'callout', variant: 'info', text: 'Money owed runs both ways. Just as a tenant can owe rent, a landlord can owe a tenant — overpaid or advance rent for a period the tenant did not stay, a rent refund after an early move-out, an unreturned deposit, or reimbursement for works the tenant funded. The tenant has the same right to recover it as any other creditor.' },
+
+      { type: 'heading', level: 1, text: 'Common Situations Where a Tenant Is Owed' },
+      { type: 'bullets', items: [
+        'Rent paid in advance for days beyond the date the tenancy actually ended, so part of it must be refunded',
+        'An overpayment or double payment of rent',
+        'A deposit not returned, or deductions the tenant disputes',
+        'Money the tenant spent on repairs that were the landlord\'s responsibility, where this was agreed',
+        'A refund promised on move-out that the landlord is now refusing to pay',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'First check what the money actually is. A deposit is protected in a scheme and has its own free dispute service, so an unreturned deposit is handled differently from overpaid rent, which is a plain debt.' },
+
+      { type: 'heading', level: 1, text: 'The Steps to Advise a Tenant' },
+      { type: 'steps', items: [
+        'Work out exactly what is owed and why, with dates and figures — for example the daily rent multiplied by the number of days overpaid.',
+        'Put the request in writing to the landlord, clearly stating the amount, the reason, and a reasonable deadline to repay.',
+        'Keep copies of the tenancy agreement, rent statements, bank records and all correspondence — these are the evidence if it goes further.',
+        'If it is a deposit, raise a dispute with the deposit scheme, which adjudicates for free.',
+        'If it is overpaid or advance rent and the landlord still refuses, the tenant can make a money claim in the County Court (small claims track for modest sums) after sending a letter of claim.',
+      ]},
+
+      { type: 'heading', level: 1, text: 'The Small Claims Route' },
+      { type: 'paragraph', text: 'For a debt like overpaid rent, the tenant follows the same money-claim process a landlord would use to recover arrears: a pre-action letter of claim, then a claim through Money Claim Online if unresolved. Sums up to £10,000 are dealt with on the small claims track, which is designed to be used without a solicitor and keeps costs low. If the tenant wins, the court makes a judgment the landlord must pay, enforceable in the usual ways.' },
+      { type: 'callout', variant: 'important', text: 'As the agent, be even-handed and factual. If the money is genuinely owed to the tenant, the right thing is to get the landlord to pay it. Explain the position to the landlord, keep everything documented, and escalate to your manager if the landlord refuses to do the right thing — the agency should not be seen to help withhold money that is properly due.' },
+
+      { type: 'heading', level: 1, text: 'What Not to Do' },
+      { type: 'bullets', items: [
+        'Do not simply tell the tenant "that is between you and the landlord" and walk away — help them understand their options',
+        'Do not take sides or withhold information to protect the landlord where money is clearly due',
+        'Do not offset money owed to a tenant against an unrelated dispute without clear agreement and a record',
+      ]},
+    ],
+  },
+  {
+    id: 'kb-tenancy-agreements',
+    lastReviewed: 'July 2026',
+    title: 'Tenancy Agreements & Unfair Terms',
+    related: ['kb-tenancy-law', 'kb-guarantors', 'kb-deposit-schemes'],
+    subtitle: 'What a well-drafted tenancy agreement contains — and the clauses that are unenforceable.',
+    icon: '📝',
+    category: 'legal',
+    readTime: '7 min read',
+    difficulty: 'intermediate',
+    content: [
+      { type: 'heading', level: 1, text: 'What the Agreement Does' },
+      { type: 'paragraph', text: 'The tenancy agreement is the contract between landlord and tenant. It sets out the rent, the parties, the property, and each side\'s obligations. Much of what governs a tenancy comes from statute regardless of what the agreement says, but a clear, compliant agreement prevents disputes and makes obligations enforceable.' },
+
+      { type: 'heading', level: 1, text: 'What a Good Agreement Contains' },
+      { type: 'bullets', items: [
+        'The full names of all parties (and any guarantor) and the property address',
+        'The rent, when and how it is paid, and the deposit amount and scheme',
+        'The type of tenancy and, under the reformed regime, that it is periodic',
+        'Each side\'s repairing and maintenance responsibilities',
+        'Rules on pets, subletting, alterations and use, reflecting any superior lease',
+        'How notices are served and the permitted service methods',
+      ]},
+
+      { type: 'heading', level: 1, text: 'Terms That Are Unfair or Unenforceable' },
+      { type: 'paragraph', text: 'Under the Consumer Rights Act 2015, a term that creates a significant imbalance against the tenant, contrary to good faith, is unfair and not binding. Statute also overrides certain clauses however they are worded.' },
+      { type: 'bullets', items: [
+        'Clauses trying to charge fees banned by the Tenant Fees Act (admin fees, renewal fees, check-out fees) are not enforceable',
+        'Clauses removing the landlord\'s statutory repairing obligations under section 11 of the Landlord and Tenant Act 1985 do not work',
+        'Blanket bans that the law no longer allows (for example an absolute "no pets" or "no children" or "no benefits" clause)',
+        'A clause purporting to let the landlord enter without notice, overriding the tenant\'s right to quiet enjoyment',
+        'Penalty clauses charging disproportionate sums for minor breaches',
+      ]},
+      { type: 'callout', variant: 'warning', text: 'A term buried in the agreement does not become lawful just because the tenant signed it. If a clause conflicts with statute or is plainly one-sided, treat it as unenforceable and flag it rather than relying on it.' },
+
+      { type: 'heading', level: 1, text: 'Practical Points' },
+      { type: 'callout', variant: 'tip', text: 'Use an up-to-date agreement template that reflects current law, make sure the prescribed documents (deposit prescribed information, EPC, gas record, How to Rent guide) are served, and give the tenant a real chance to read the agreement before signing.' },
+    ],
+  },
+  {
+    id: 'kb-repairs-responsibilities',
+    lastReviewed: 'July 2026',
+    title: 'Repairs: Who Is Responsible & How Fast',
+    related: ['kb-disrepair', 'kb-damp-mould', 'kb-property-standards'],
+    subtitle: 'The split of repairing duties, the new statutory timescales, and how to triage a repair report.',
+    icon: '🔧',
+    category: 'standards',
+    readTime: '8 min read',
+    difficulty: 'intermediate',
+    content: [
+      { type: 'heading', level: 1, text: 'The Landlord\'s Core Repairing Duty' },
+      { type: 'paragraph', text: 'Under section 11 of the Landlord and Tenant Act 1985, the landlord must keep in repair the structure and exterior of the property and the installations for water, gas, electricity, sanitation, space heating and hot water. This duty cannot be signed away in the tenancy agreement, and it applies whatever the agreement says.' },
+      { type: 'bullets', items: [
+        'Structure and exterior: walls, roof, windows, external doors, drains and guttering',
+        'Installations: pipes and wiring, boilers, radiators, basins, sinks, baths and toilets',
+        'Anything the landlord supplied and the tenant relies on, kept in working order',
+      ]},
+
+      { type: 'heading', level: 1, text: 'What the Tenant Is Responsible For' },
+      { type: 'bullets', items: [
+        'Using the property in a "tenant-like manner" — minor upkeep such as changing bulbs, keeping it ventilated and reasonably clean',
+        'Not causing damage, and reporting disrepair promptly so it can be fixed',
+        'Any damage they or their guests cause beyond fair wear and tear',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'A landlord\'s repairing duty is usually only triggered once they have notice of the problem. That is exactly why prompt logging of every tenant report matters — the clock and the liability often start when the report comes in.' },
+
+      { type: 'heading', level: 1, text: 'Awaab\'s Law and Repair Timescales' },
+      { type: 'paragraph', text: 'Awaab\'s Law introduces legal timescales for landlords to investigate and fix serious hazards, especially damp and mould, within set periods once reported, and to make emergency repairs quickly. These timescales, first applied to social housing, are being extended to the private rented sector under the Renters\' Rights reforms. Treat any damp, mould or safety hazard report as time-critical.' },
+      { type: 'warning', variant: 'warning', text: 'Ignoring or slow-walking a hazard report is now a legal risk, not just a service failure. If a report involves damp, mould, heating loss in cold weather, or anything affecting health and safety, escalate and act on it immediately.' },
+
+      { type: 'heading', level: 1, text: 'Triaging a Repair Report' },
+      { type: 'steps', items: [
+        'Log the report with the date, what was reported, and any photos.',
+        'Classify urgency: emergency (safety, no heat/water, flooding), urgent, or routine.',
+        'For emergencies, act straight away to make safe, then arrange the full repair.',
+        'Confirm whose responsibility it is — landlord, tenant, or a communal/freeholder issue in a flat.',
+        'Instruct the right contractor, keep the tenant updated, and record when it is completed.',
+      ]},
+    ],
+  },
+  {
+    id: 'kb-insurance',
+    lastReviewed: 'July 2026',
+    title: 'Landlord Insurance & Handling Claims',
+    related: ['kb-repairs-responsibilities', 'kb-landlord-relations', 'kb-property-standards'],
+    subtitle: 'The cover a let property needs and how to handle an incident that becomes a claim.',
+    icon: '🛡️',
+    category: 'landlord',
+    readTime: '6 min read',
+    difficulty: 'foundation',
+    content: [
+      { type: 'heading', level: 1, text: 'Why Ordinary Home Insurance Is Not Enough' },
+      { type: 'paragraph', text: 'A standard owner-occupier home policy usually does not cover a property that is let out. A landlord needs specialist landlord (buildings) insurance, and many policies for let property become invalid if the property is left unoccupied beyond a set period, so voids matter for cover as well as income.' },
+
+      { type: 'heading', level: 1, text: 'Types of Cover' },
+      { type: 'bullets', items: [
+        'Buildings insurance — the structure itself; essential, and for a leasehold flat usually arranged by the freeholder and paid through the service charge',
+        'Contents insurance — only the landlord\'s own contents in a furnished let; the tenant insures their own belongings',
+        'Landlord liability — claims by a tenant or visitor injured due to the property',
+        'Optional extras — rent guarantee, legal expenses, and emergency assistance',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'Remind tenants that the landlord\'s policy does not cover the tenant\'s own possessions. Tenants should arrange their own contents insurance.' },
+
+      { type: 'heading', level: 1, text: 'Handling an Incident or Claim' },
+      { type: 'steps', items: [
+        'Make the situation safe first — a leak, fire or break-in may need emergency works before anything else.',
+        'Record everything: photos, dates, what happened, and any police or crime reference.',
+        'Notify the landlord and their insurer promptly, within any time limit in the policy.',
+        'Get the repair quotes or invoices the insurer will need, and keep the tenant informed throughout.',
+        'Do not admit liability on the landlord\'s behalf — report the facts and let the insurer assess.',
+      ]},
+      { type: 'callout', variant: 'important', text: 'Where a leasehold flat is insured by the freeholder, a claim for damage to the structure usually goes through the building\'s policy, not the landlord\'s own. Check who insures what before starting a claim, and involve your manager for anything large or contested.' },
     ],
   },
 ]
