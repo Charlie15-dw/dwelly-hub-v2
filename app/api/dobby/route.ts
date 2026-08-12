@@ -117,12 +117,26 @@ function extractKeywords(query: string): string[] {
     .filter(w => w.length > 2 && !STOP_WORDS.has(w))
 }
 
-function findRelevantContent(query: string, topN = 5): string {
+// Budgets that keep the injected context well under the model's tokens-per-minute
+// limit no matter how large the knowledge base grows. Groq counts input + output
+// tokens together, so we cap the retrieved context (roughly 4 chars per token).
+const MAX_SECTIONS = 4          // most relevant articles/pages to include
+const MAX_SECTION_CHARS = 1600  // truncate each section so one long article can't dominate
+const MAX_GLOSSARY_TERMS = 4    // matching glossary definitions to append
+const MAX_GLOSSARY_CHARS = 300  // truncate each glossary definition
+const MAX_CONTEXT_CHARS = 8000  // hard ceiling on the whole retrieved block
+
+function truncate(text: string, max: number): string {
+  if (text.length <= max) return text
+  return text.slice(0, max).replace(/\s+\S*$/, '') + '…'
+}
+
+function findRelevantContent(query: string, topN = MAX_SECTIONS): string {
   const keywords = extractKeywords(query)
   if (keywords.length === 0) {
-    // No useful keywords — return first few sections as fallback
-    return TRAINING_PAGES.slice(0, 3)
-      .map(p => `[${p.title}]\n${blocksToText(p.content)}`)
+    // No useful keywords — return a couple of trimmed sections as fallback
+    return TRAINING_PAGES.slice(0, 2)
+      .map(p => `[${p.title}]\n${truncate(blocksToText(p.content), MAX_SECTION_CHARS)}`)
       .join('\n\n')
   }
 
@@ -140,17 +154,29 @@ function findRelevantContent(query: string, topN = 5): string {
     if (score > 0) sections.push({ title: article.title, text, score })
   }
 
-  // Always include matching glossary terms
+  // Matching glossary terms, ranked by score, capped and truncated
   const glossaryMatches = GLOSSARY_TERMS
-    .filter(t => keywords.some(kw => t.term.toLowerCase().includes(kw) || t.definition.toLowerCase().includes(kw)))
-    .map(t => `${t.term}: ${t.definition}`)
+    .map(t => ({ t, score: scoreText(t.term + ' ' + t.definition, keywords) }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, MAX_GLOSSARY_TERMS)
+    .map(({ t }) => `${t.term}: ${truncate(t.definition, MAX_GLOSSARY_CHARS)}`)
     .join('\n')
 
-  const top = sections
-    .sort((a, b) => b.score - a.score)
-    .slice(0, topN)
-    .map(s => `[${s.title}]\n${s.text}`)
-    .join('\n\n')
+  const ranked = sections.sort((a, b) => b.score - a.score).slice(0, topN)
+
+  // Greedily add sections until the overall character budget is reached, so the
+  // request can never exceed the model's tokens-per-minute limit.
+  const parts: string[] = []
+  let used = 0
+  for (const s of ranked) {
+    const block = `[${s.title}]\n${truncate(s.text, MAX_SECTION_CHARS)}`
+    if (used + block.length > MAX_CONTEXT_CHARS) break
+    parts.push(block)
+    used += block.length
+  }
+
+  const top = parts.join('\n\n')
 
   return [top, glossaryMatches ? `GLOSSARY:\n${glossaryMatches}` : '']
     .filter(Boolean)
