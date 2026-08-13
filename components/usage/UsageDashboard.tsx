@@ -1,6 +1,7 @@
-import { Activity, Clock, Eye, Users, Layers, TrendingUp } from 'lucide-react'
-import { aggregateUsage, formatPath, timeAgo, type UsageEvent } from '@/lib/usage'
+import { Activity, Eye, Users, Layers, TrendingUp } from 'lucide-react'
+import { aggregateUsage, timeAgo, type UsageEvent } from '@/lib/usage'
 import { cn } from '@/lib/utils'
+import RecentActivityFeed from './RecentActivityFeed'
 
 // Shared, in-depth Hub usage view. Given a resolved list of page-view events it
 // renders: headline stats, a "most viewed areas" ranking, a 7-day activity
@@ -148,24 +149,7 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
           </div>
 
           {/* Recent activity feed */}
-          <div className="card overflow-hidden">
-            <div className="px-5 py-3 border-b border-slate-100">
-              <h2 className="text-sm font-bold text-navy">Recent activity</h2>
-            </div>
-            <ul className="divide-y divide-slate-50">
-              {recent.map((e, i) => (
-                <li key={i} className="px-5 py-3 flex items-center justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-navy truncate">{formatPath(e.path)}</p>
-                    <p className="text-xs text-slate-400 truncate">{e.name ?? e.email}</p>
-                  </div>
-                  <span className="text-xs text-slate-400 flex items-center gap-1 flex-shrink-0">
-                    <Clock className="w-3 h-3" aria-hidden /> {timeAgo(e.createdAt)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <RecentActivityFeed events={recent} />
         </>
       )}
     </div>
