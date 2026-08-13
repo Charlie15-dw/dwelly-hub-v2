@@ -40,8 +40,6 @@ export interface OverallProgress {
   totalModules: number
   completedAssessments: number
   totalAssessments: number
-  /** Count of items past their due date (drives the red hero/sidebar badge). */
-  overdue: number
 }
 
 export interface HubHome {
@@ -52,17 +50,8 @@ export interface HubHome {
   needsYou: NeedsYouItem[]
 }
 
-function todayISO() {
-  return new Date().toISOString().slice(0, 10)
-}
-
-function fmtDate(iso: string) {
-  return new Date(`${iso}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
-}
-
 export async function getHubHome(userId: string, email: string | null | undefined): Promise<HubHome> {
   const supabase = createServerClient()
-  const today = todayISO()
 
   const [
     { data: profile },
@@ -70,14 +59,12 @@ export async function getHubHome(userId: string, email: string | null | undefine
     { data: progressRows },
     { data: learningProfile },
     { data: completionRows },
-    { data: recallRows },
   ] = await Promise.all([
     supabase.from('user_profiles').select('full_name').eq('id', userId).maybeSingle(),
     supabase.from('assessment_results').select('assessment_id, passed').eq('user_id', userId),
     supabase.from('module_progress').select('module_id, completed').eq('user_id', userId),
     supabase.from('learning_profiles').select('completed_at').eq('user_id', userId).maybeSingle(),
     supabase.from('content_completions').select('content_type, content_id').eq('user_id', userId),
-    supabase.from('recall_schedules').select('id, assessment_id, due_date, completed_at').eq('user_id', userId).is('completed_at', null),
   ])
 
   // ── Progress (identical rules to the old hub page) ──────────────────────
@@ -119,48 +106,11 @@ export async function getHubHome(userId: string, email: string | null | undefine
   const guided = computeGuidedJourney(journeyInput)
 
   // ── Needs you ───────────────────────────────────────────────────────────
+  // Only outstanding assessments surface here for now. The spaced-repetition
+  // refreshers (recall_schedules) are deliberately not used yet, and the
+  // self-paced Learning Profile / Video Modules steps live in the journey card
+  // below rather than the queue.
   const needsYou: NeedsYouItem[] = []
-
-  // Recall & Refresh checks are the only genuinely time-bound source: they
-  // carry a real due_date. Anything before today is overdue; today is due.
-  const recalls = (recallRows ?? [])
-    .filter(r => r.due_date)
-    .sort((a, b) => a.due_date.localeCompare(b.due_date))
-  for (const r of recalls) {
-    const overdue = r.due_date < today
-    if (!overdue && r.due_date > today) continue // future — not yet on the queue
-    needsYou.push({
-      id: `recall-${r.id}`,
-      title: 'Knowledge refresher due',
-      meta: `${overdue ? 'Overdue' : 'Due today'} · ${fmtDate(r.due_date)} · Recap & Refresh`,
-      href: '/recap',
-      stage: overdue ? 'overdue' : 'due',
-      cta: 'Refresh',
-    })
-  }
-
-  // Self-paced training steps have no deadline, so they surface as "due" (never
-  // overdue) to nudge without inventing a deadline that the data doesn't hold.
-  if (!journeyInput.hasLearningProfile) {
-    needsYou.push({
-      id: 'profile',
-      title: 'Complete your Learning Profile',
-      meta: 'Takes a couple of minutes · Learning Profile',
-      href: '/pre-training',
-      stage: 'due',
-      cta: 'Start',
-    })
-  }
-  if (totalModules > 0 && completedModules < totalModules) {
-    needsYou.push({
-      id: 'modules',
-      title: 'Finish your video modules',
-      meta: `${completedModules} of ${totalModules} complete · Video Modules`,
-      href: '/modules',
-      stage: 'due',
-      cta: 'Continue',
-    })
-  }
   if (completedAssessments < totalAssessments) {
     needsYou.push({
       id: 'assessments',
@@ -171,11 +121,6 @@ export async function getHubHome(userId: string, email: string | null | undefine
       cta: 'Open',
     })
   }
-
-  const stageRank: Record<NeedsStage, number> = { overdue: 0, due: 1, resolved: 2 }
-  needsYou.sort((a, b) => stageRank[a.stage] - stageRank[b.stage])
-
-  const overdue = needsYou.filter(i => i.stage === 'overdue').length
 
   const firstName = (profile?.full_name ?? email?.split('@')[0] ?? '').split(' ')[0]
 
@@ -189,7 +134,6 @@ export async function getHubHome(userId: string, email: string | null | undefine
       totalModules,
       completedAssessments,
       totalAssessments,
-      overdue,
     },
     needsYou,
   }

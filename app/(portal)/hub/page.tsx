@@ -37,11 +37,10 @@ export default async function HubPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
 
-  const { firstName, journey, guided, progress, needsYou } = await getHubHome(user.id, user.email)
+  const { firstName, journey, guided, needsYou } = await getHubHome(user.id, user.email)
   const beta = isHubBeta(user.email)
 
   const latest = hubUpdatesSorted()[0]
-  const recapDue = needsYou.filter(i => i.id.startsWith('recall-')).length
 
   const now = new Date()
   const dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
@@ -49,7 +48,7 @@ export default async function HubPage() {
   const statusLine =
     n === 0
       ? `${dateStr} · You’re all caught up`
-      : `${dateStr} · ${n} ${n === 1 ? 'thing needs' : 'things need'} you${progress.overdue > 0 ? `, ${progress.overdue} overdue` : ''}`
+      : `${dateStr} · ${n} ${n === 1 ? 'thing needs' : 'things need'} you`
 
   return (
     <div className="space-y-6 max-w-[860px]">
@@ -121,9 +120,6 @@ export default async function HubPage() {
               <p className="text-[15px] font-semibold text-navy">Recap &amp; Refresh</p>
               <p className="text-[13px] text-slate-500 truncate">Spaced refreshers that keep knowledge sharp</p>
             </div>
-            {recapDue > 0 && (
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full rag-amber flex-shrink-0">{recapDue} due</span>
-            )}
             <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" aria-hidden />
           </Link>
 

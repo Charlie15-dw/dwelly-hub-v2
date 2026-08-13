@@ -110,7 +110,6 @@ export default function Sidebar() {
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<string | null>(null)
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
-  const [overdueCount, setOverdueCount] = useState(0)
   const [trainingLeft, setTrainingLeft] = useState(0)
 
   useEffect(() => {
@@ -149,21 +148,16 @@ export default function Sidebar() {
   useEffect(() => { close() }, [pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Nav counts — fetched once, not per navigation, so they don't add a query to
-  // every page change. The overdue count is the same number the Hub hero and
-  // Needs-you card show, so the three always agree.
+  // every page change. "N left" on Training mirrors the assessments still to
+  // pass, the same figure the Hub home works from.
   useEffect(() => {
     const supabase = createClient()
     let active = true
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) return
-      const today = new Date().toISOString().slice(0, 10)
-      const [{ count: overdue }, { data: results }] = await Promise.all([
-        supabase.from('recall_schedules').select('id', { count: 'exact', head: true })
-          .eq('user_id', user.id).is('completed_at', null).lt('due_date', today),
-        supabase.from('assessment_results').select('assessment_id, passed').eq('user_id', user.id),
-      ])
+      const { data: results } = await supabase
+        .from('assessment_results').select('assessment_id, passed').eq('user_id', user.id)
       if (!active) return
-      setOverdueCount(overdue ?? 0)
       const passed = new Set(
         (results ?? []).filter(r => r.passed && ASSESSMENT_IDS.includes(r.assessment_id)).map(r => r.assessment_id),
       )
@@ -328,11 +322,6 @@ export default function Sidebar() {
             <Link href="/hub" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
               <LayoutGrid className="w-4 h-4 flex-shrink-0" aria-hidden />
               <span className="flex-1">Hub</span>
-              {overdueCount > 0 && (
-                <span className="text-[10px] font-semibold px-1.5 rounded-full bg-[#CC0000] text-white min-w-[19px] h-[19px] flex items-center justify-center leading-none flex-shrink-0">
-                  {overdueCount}
-                </span>
-              )}
               {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
             </Link>
           )
