@@ -236,16 +236,11 @@ export default function DobbyPage() {
   return (
     <div className="flex h-[calc(100vh-4rem)]">
 
-      {/* History sidebar — desktop */}
-      <aside className="hidden md:flex md:flex-col w-64 flex-shrink-0 border-r border-slate-200 bg-white">
-        {historyList}
-      </aside>
-
       {/* History drawer — mobile */}
       {showHistory && (
         <>
           <div className="md:hidden fixed inset-0 z-40 bg-navy/30" onClick={() => setShowHistory(false)} />
-          <aside className="md:hidden fixed inset-y-0 left-0 z-50 w-72 flex flex-col bg-white shadow-xl">
+          <aside className="md:hidden fixed inset-y-0 right-0 z-50 w-72 flex flex-col bg-white shadow-xl">
             <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100">
               <span className="text-sm font-bold text-navy">Chats</span>
               <button onClick={() => setShowHistory(false)} aria-label="Close history" className="text-slate-400 hover:text-navy">
@@ -388,6 +383,11 @@ export default function DobbyPage() {
           </p>
         </div>
       </div>
+
+      {/* History sidebar — desktop (right) */}
+      <aside className="hidden md:flex md:flex-col w-64 flex-shrink-0 border-l border-slate-200 bg-white">
+        {historyList}
+      </aside>
     </div>
   )
 }
