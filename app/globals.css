@@ -157,6 +157,14 @@
   .rag-amber { background:#FFFBF0; color:#995500; border:1px solid #FFE4B0; }
   .rag-green { background:#F0FFF4; color:#1A7F37; border:1px solid #B0EACC; }
 
+  /* Lifecycle status of something raised (a question, a request, an item in
+     the Needs-you queue). One definition, shared by every badge that names a
+     stage — replaces the ad-hoc colour maps that had drifted apart. */
+  .status-received { background:#F5F5F7; color:#6E6E73; border:1px solid #D2D2D7; }
+  .status-review   { background:#FFFBF0; color:#995500; border:1px solid #FFE4B0; }
+  .status-progress { background:#F0F7FF; color:#0071E3; border:1px solid #CCE4FF; }
+  .status-done     { background:#F0FFF4; color:#1A7F37; border:1px solid #B0EACC; }
+
   /* ── Phase badges (grayscale Apple style) ─────────────────────────── */
   .phase-foundation { background:#F5F5F7; color:#1D1D1F; border:1px solid #D2D2D7; }
   .phase-onboarding { background:#F0F7FF; color:#0071E3; border:1px solid #CCE4FF; }

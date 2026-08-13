@@ -32,6 +32,14 @@ const managerItems = [
   { href: '/manager', label: 'Manager Dashboard', icon: Users },
 ]
 
+// Mirrors ALL_ASSESSMENT_IDS on the Hub home. Defined locally so this client
+// component doesn't pull in the server-only progress module.
+const ASSESSMENT_IDS = [
+  'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
+  'sys-01', 'mvt-02', 'sys-02', 'sup-02',
+  'kno-01', 'kno-02', 'kno-03', 'full-assessment', 'master-assessment',
+]
+
 // Hub preview navigation, organised into collapsible groups. Training is kept
 // as one cohesive journey (the numbered steps, including assessments and the
 // competency passport); the remaining areas group into tools, development and
@@ -57,7 +65,6 @@ const HUB_GROUPS: HubNavGroup[] = [
   {
     id: 'training', label: 'Training', icon: GraduationCap,
     items: [
-      { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { href: '/pre-training', label: 'Learning Profile', icon: Brain, step: 1 },
       { href: '/training', label: 'Training Guide', icon: GraduationCap, step: 2 },
       { href: '/modules', label: 'Video Modules', icon: BookOpen, step: 3 },
@@ -103,6 +110,8 @@ export default function Sidebar() {
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<string | null>(null)
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
+  const [overdueCount, setOverdueCount] = useState(0)
+  const [trainingLeft, setTrainingLeft] = useState(0)
 
   useEffect(() => {
     const supabase = createClient()
@@ -138,6 +147,30 @@ export default function Sidebar() {
   // Close the mobile drawer whenever the route changes (i.e. a nav link was
   // tapped). No-op on desktop where the sidebar is always visible.
   useEffect(() => { close() }, [pathname]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Nav counts — fetched once, not per navigation, so they don't add a query to
+  // every page change. The overdue count is the same number the Hub hero and
+  // Needs-you card show, so the three always agree.
+  useEffect(() => {
+    const supabase = createClient()
+    let active = true
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return
+      const today = new Date().toISOString().slice(0, 10)
+      const [{ count: overdue }, { data: results }] = await Promise.all([
+        supabase.from('recall_schedules').select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id).is('completed_at', null).lt('due_date', today),
+        supabase.from('assessment_results').select('assessment_id, passed').eq('user_id', user.id),
+      ])
+      if (!active) return
+      setOverdueCount(overdue ?? 0)
+      const passed = new Set(
+        (results ?? []).filter(r => r.passed && ASSESSMENT_IDS.includes(r.assessment_id)).map(r => r.assessment_id),
+      )
+      setTrainingLeft(Math.max(0, ASSESSMENT_IDS.length - passed.size))
+    })
+    return () => { active = false }
+  }, [])
 
   async function handleSignOut() {
     const supabase = createClient()
@@ -184,6 +217,11 @@ export default function Sidebar() {
           >
             <GroupIcon className="w-4 h-4 flex-shrink-0" aria-hidden />
             <span className="flex-1">{group.label}</span>
+            {group.id === 'training' && trainingLeft > 0 && (
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/15 text-white flex-shrink-0">
+                {trainingLeft} left
+              </span>
+            )}
             <ChevronDown className={cn('w-3.5 h-3.5 flex-shrink-0 text-white/40 transition-transform', open && 'rotate-180')} aria-hidden />
           </button>
         )}
@@ -226,7 +264,7 @@ export default function Sidebar() {
                   )}
                   <span className="flex-1">{item.label}</span>
                   {item.badge && (
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/15 text-white">
                       {item.badge}
                     </span>
                   )}
@@ -290,6 +328,11 @@ export default function Sidebar() {
             <Link href="/hub" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
               <LayoutGrid className="w-4 h-4 flex-shrink-0" aria-hidden />
               <span className="flex-1">Hub</span>
+              {overdueCount > 0 && (
+                <span className="text-[10px] font-semibold px-1.5 rounded-full bg-[#CC0000] text-white min-w-[19px] h-[19px] flex items-center justify-center leading-none flex-shrink-0">
+                  {overdueCount}
+                </span>
+              )}
               {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
             </Link>
           )

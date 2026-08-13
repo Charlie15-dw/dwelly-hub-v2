@@ -3,21 +3,32 @@ import { type ReactNode } from 'react'
 
 interface BadgeProps {
   children: ReactNode
-  variant?: 'default' | 'teal' | 'orange' | 'gold' | 'navy' | 'red' | 'amber' | 'green' | 'outline'
+  variant?:
+    | 'default' | 'teal' | 'orange' | 'gold' | 'navy' | 'outline'
+    // RAG — the single source of truth lives in globals.css (.rag-*)
+    | 'red' | 'amber' | 'green'
+    // Lifecycle stage of something raised (.status-*)
+    | 'received' | 'review' | 'progress' | 'done'
   size?: 'sm' | 'md'
   className?: string
 }
 
+// Structural variants stay inline; the colour-carrying ones defer to the
+// shared globals.css classes so status colour is defined exactly once.
 const variantMap: Record<string, string> = {
-  default: 'bg-slate-100 text-slate-600 border-slate-200',
-  teal:    'bg-teal/10 text-teal border-teal/20',
-  orange:  'bg-orange/10 text-orange border-orange/20',
-  gold:    'bg-gold/20 text-yellow-700 border-gold/30',
-  navy:    'bg-navy/10 text-navy border-navy/20',
-  red:     'bg-red-100 text-red-700 border-red-200',
-  amber:   'bg-amber-100 text-amber-700 border-amber-200',
-  green:   'bg-green-100 text-green-700 border-green-200',
-  outline: 'bg-transparent text-slate-600 border-slate-200',
+  default:  'bg-slate-100 text-slate-600 border-slate-200',
+  teal:     'bg-teal/10 text-teal border-teal/20',
+  orange:   'bg-orange/10 text-orange border-orange/20',
+  gold:     'bg-gold/20 text-yellow-700 border-gold/30',
+  navy:     'bg-navy/10 text-navy border-navy/20',
+  outline:  'bg-transparent text-slate-600 border-slate-200',
+  red:      'rag-red',
+  amber:    'rag-amber',
+  green:    'rag-green',
+  received: 'status-received',
+  review:   'status-review',
+  progress: 'status-progress',
+  done:     'status-done',
 }
 
 const sizeMap: Record<string, string> = {
