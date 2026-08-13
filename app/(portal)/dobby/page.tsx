@@ -234,7 +234,7 @@ export default function DobbyPage() {
   )
 
   return (
-    <div className="flex h-[calc(100vh-4rem)]">
+    <div className="flex h-full">
 
       {/* History drawer — mobile */}
       {showHistory && (

@@ -5,6 +5,7 @@ import { SettingsProvider } from '@/components/SettingsProvider'
 import { SidebarProvider } from '@/components/layout/SidebarContext'
 import CommandPalette from '@/components/hub/CommandPalette'
 import ActivityTracker from '@/components/hub/ActivityTracker'
+import ScrollReset from '@/components/layout/ScrollReset'
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,7 +14,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
     <SidebarProvider>
     <CommandPalette />
     <ActivityTracker />
-    <div className="relative min-h-screen bg-[#F5F5F7]">
+    <div className="relative h-[100dvh] overflow-hidden bg-[#F5F5F7]">
       {/* Ambient backdrop — a whisper of the sign-in / Hub vibe behind every page */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="hub-orb-a absolute -top-32 -right-24 w-[32rem] h-[32rem] rounded-full bg-orange-500/[0.06] blur-3xl" />
@@ -30,9 +31,10 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
         />
       </div>
       <Sidebar />
-      <div className="lg:pl-64 flex flex-col min-h-screen">
+      <div className="lg:pl-64 flex flex-col h-[100dvh]">
         <Header />
-        <main id="main-content" className="hub-fade flex-1 p-6 max-w-[1400px]">
+        <main id="main-content" className="hub-fade flex-1 min-h-0 overflow-y-auto p-6 w-full max-w-[1400px]">
+          <ScrollReset />
           {children}
         </main>
         <footer className="px-6 py-4 border-t border-slate-200/70 bg-white/60 backdrop-blur-sm">
