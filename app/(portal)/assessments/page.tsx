@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { Trophy, ChevronRight, ClipboardCheck, BookOpen, Play, Library, ArrowRight, Lock } from 'lucide-react'
 import { clearLegacyLockData } from '@/lib/assessmentStorage'
 import { createClient } from '@/lib/supabase/client'
+import { isHubElevated } from '@/lib/preview'
+import ElevatedAssessments from '@/components/assessments/ElevatedAssessments'
 
 const VIDEO_MODULE_ASSESSMENTS = [
   { label: 'Maintenance 1/2 — Creating a Repair Request',    icon: '🔧', id: 'mnt-01', questions: 6  },
@@ -37,7 +39,23 @@ function SectionHeader({ icon: Icon, label }: { icon: React.ElementType; label: 
   )
 }
 
+// Gate: the two review accounts get the elevated (state-grouped) page; everyone
+// else keeps the current taxonomy-grouped one until it's signed off.
 export default function AssessmentsPage() {
+  const [mode, setMode] = useState<'loading' | 'elevated' | 'classic'>('loading')
+
+  useEffect(() => {
+    createClient().auth.getUser().then(({ data }) =>
+      setMode(isHubElevated(data.user?.email) ? 'elevated' : 'classic'),
+    )
+  }, [])
+
+  if (mode === 'loading') return null
+  if (mode === 'elevated') return <ElevatedAssessments />
+  return <ClassicAssessments />
+}
+
+function ClassicAssessments() {
   const [lockedIds, setLockedIds] = useState<Set<string>>(new Set())
   const [ready, setReady] = useState(false)
 
