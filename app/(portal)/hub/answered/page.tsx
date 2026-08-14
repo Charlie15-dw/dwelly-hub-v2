@@ -2,13 +2,17 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowLeft, MessageSquareReply } from 'lucide-react'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
-import { isHubPreview } from '@/lib/preview'
+import { isHubPreview, isHubElevated } from '@/lib/preview'
+import ElevatedAnswered from '@/components/hub/ElevatedAnswered'
 
 export default async function AnsweredPage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
   if (!isHubPreview(user.email)) redirect('/dashboard')
+
+  // Gated elevated variant for the two review accounts.
+  if (isHubElevated(user.email)) return <ElevatedAnswered userId={user.id} />
 
   // Public feed: only published items. Never select submitted_by.
   const service = createServiceClient()
