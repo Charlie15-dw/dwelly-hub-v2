@@ -1,12 +1,20 @@
 import Link from 'next/link'
-import { ChevronRight, Clock, BookOpen, ExternalLink } from 'lucide-react'
+import { ChevronRight, Clock, BookOpen } from 'lucide-react'
 import { TRAINING_PAGES } from '@/lib/training-content'
 import ContentCompletionButton from '@/components/hub/ContentCompletionButton'
+import { createServerClient } from '@/lib/supabase/server'
+import { isHubElevated } from '@/lib/preview'
+import ElevatedTrainingIndex from '@/components/training/ElevatedTrainingIndex'
 import { cn } from '@/lib/utils'
 
 const COMPLIANCE_IDS = ['compliance', 'auto-vs-hold-compliance']
 
-export default function TrainingHubPage() {
+export default async function TrainingHubPage() {
+  // Redesigned readability pass is review-gated to the two elevated accounts.
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (isHubElevated(user?.email)) return <ElevatedTrainingIndex />
+
   const sorted = [...TRAINING_PAGES].sort((a, b) => a.order - b.order)
 
   return (

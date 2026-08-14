@@ -2803,6 +2803,11 @@ export function getKnowledgeArticle(id: string): KnowledgeArticle | undefined {
   return KNOWLEDGE_ARTICLES.find(a => a.id === id)
 }
 
+// The two guides whose subject is compliance — they carry a "Required" badge.
+// Exported so the index and the guide page share one source of truth instead
+// of maintaining two lists that had drifted apart.
+export const COMPLIANCE_IDS: string[] = ['compliance', 'auto-vs-hold-compliance']
+
 export function getTrainingPage(id: string): TrainingPage | undefined {
   return TRAINING_PAGES.find(p => p.id === id)
 }

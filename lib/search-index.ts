@@ -45,7 +45,7 @@ const KIND_LABELS: Record<SearchKind, string> = {
 
 // Stable anchor id from a heading's text — mirrors the lesson page's slugify so
 // heading results deep-link to the right section.
-function headingAnchor(text: string): string {
+export function headingAnchor(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 

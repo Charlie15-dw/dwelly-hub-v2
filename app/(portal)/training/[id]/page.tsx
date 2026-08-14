@@ -5,15 +5,23 @@ import {
   ChevronLeft, BookOpen, AlertTriangle, Info, Lightbulb,
 } from 'lucide-react'
 import { getTrainingPage, getAdjacentPages, TRAINING_PAGES } from '@/lib/training-content'
+import { createServerClient } from '@/lib/supabase/server'
+import { isHubElevated } from '@/lib/preview'
+import ElevatedTrainingGuide from '@/components/training/ElevatedTrainingGuide'
 import { cn } from '@/lib/utils'
 
 export function generateStaticParams() {
   return TRAINING_PAGES.map(p => ({ id: p.id }))
 }
 
-export default function TrainingSectionPage({ params }: { params: { id: string } }) {
+export default async function TrainingSectionPage({ params }: { params: { id: string } }) {
   const page = getTrainingPage(params.id)
   if (!page) notFound()
+
+  // Redesigned readability pass is review-gated to the two elevated accounts.
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (isHubElevated(user?.email)) return <ElevatedTrainingGuide id={params.id} />
 
   const { prev, next } = getAdjacentPages(params.id)
   const isCompliance = ['compliance'].includes(page.id)
