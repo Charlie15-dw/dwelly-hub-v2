@@ -122,6 +122,15 @@ export default function DobbyPage() {
     if (!convId) convId = await createConversation(trimmed)
     if (convId) persistMessage(convId, 'user', trimmed)
 
+    // Log the question for Hub usage analytics — measures real engagement
+    // (how much Dobby is asked), not just page opens. Best-effort and
+    // fire-and-forget, mirroring the page-view ActivityTracker. The sub-path
+    // keeps it distinct from a plain /dobby open in the recent-activity feed
+    // while still rolling up under the "Ask Dobby" area.
+    if (userId) {
+      void supabase.from('activity_events').insert({ user_id: userId, path: '/dobby/question' })
+    }
+
     try {
       const res = await fetch('/api/dobby', {
         method: 'POST',

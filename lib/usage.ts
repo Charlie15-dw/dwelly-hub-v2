@@ -6,6 +6,7 @@
 /** Top-level path segment → friendly area name. */
 const AREA_LABELS: Record<string, string> = {
   hub: 'Hub',
+  dobby: 'Ask Dobby',
   dashboard: 'Dashboard',
   training: 'Training Guide',
   knowledge: 'Knowledge Base',
