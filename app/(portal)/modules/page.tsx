@@ -9,6 +9,8 @@ import Badge from '@/components/ui/Badge'
 import { MODULES, SECTION_LABELS, ROLE_LABELS, CURRENT_USER, type Module } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
+import { isHubElevated } from '@/lib/preview'
+import ElevatedModules from '@/components/modules/ElevatedModules'
 
 const sections = [
   'maintenance',
@@ -58,6 +60,25 @@ export default async function ModulesPage() {
 
   const completedCount = modules.filter(m => m.completed).length
   const totalCount = modules.length
+
+  // Gated elevated variant for the two review accounts.
+  if (isHubElevated(user.email)) {
+    return (
+      <ElevatedModules
+        modules={modules.map(m => ({
+          id: m.id,
+          title: m.title,
+          section: m.section,
+          duration: m.duration,
+          videoLength: m.videoLength,
+          passmark: m.passmark,
+          quizCount: m.quizCount,
+          completed: m.completed,
+          progress: m.progress,
+        }))}
+      />
+    )
+  }
 
   return (
     <div className="space-y-6">
