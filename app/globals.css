@@ -226,3 +226,22 @@
   color: transparent;
   animation: hubShimmer 7s linear infinite;
 }
+
+/* ── Elevated Hub home (gated) ──────────────────────────────────────────
+   Recognition, not ranking: purely decorative reveal + drift, all zeroed
+   by html.reduce-motion above. */
+@keyframes arcDraw   { from { stroke-dashoffset: 402; } to { stroke-dashoffset: var(--arc-offset, 52); } }
+@keyframes barFill   { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes sheenSweep { 0% { transform: translateX(-120%); } 100% { transform: translateX(320%); } }
+@keyframes medalPop  { 0% { opacity: 0; transform: scale(0.7); } 60% { transform: scale(1.06); } 100% { opacity: 1; transform: scale(1); } }
+
+/* Staggered entrance for the elevated home sections. */
+.hub-fade-1 { animation: hubFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+.hub-fade-2 { animation: hubFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both; }
+.hub-fade-3 { animation: hubFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both; }
+.hub-fade-4 { animation: hubFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both; }
+
+.hub-arc   { animation: arcDraw 1.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hub-bar   { transform-origin: left; animation: barFill 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both; }
+.hub-sheen { animation: sheenSweep 4.5s ease-in-out infinite; }
+.hub-medal { animation: medalPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }

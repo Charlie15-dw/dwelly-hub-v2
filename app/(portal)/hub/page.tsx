@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ChevronRight, Megaphone, MessageCircle, RefreshCw } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isHubBeta } from '@/lib/preview'
+import { isHubBeta, isHubElevated } from '@/lib/preview'
 import { hubUpdatesSorted } from '@/lib/updates'
 import WelcomeGreeting from '@/components/ui/WelcomeGreeting'
 import HubSearchPrompt from '@/components/hub/HubSearchPrompt'
@@ -10,6 +10,7 @@ import HubJourney from '@/components/hub/HubJourney'
 import GuidedJourney from '@/components/hub/GuidedJourney'
 import FirstRunWelcome from '@/components/hub/FirstRunWelcome'
 import NeedsYou from '@/components/hub/NeedsYou'
+import ElevatedHome from '@/components/hub/ElevatedHome'
 import { getHubHome } from '@/lib/hub-progress'
 
 // The Hub home — "Today first". Order: what needs you today → how far through
@@ -37,7 +38,14 @@ export default async function HubPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
 
-  const { firstName, journey, guided, needsYou } = await getHubHome(user.id, user.email)
+  const { firstName, journey, guided, needsYou, elevated } = await getHubHome(user.id, user.email)
+
+  // Gated "Today first" elevated home — only the two review accounts see this
+  // while it's being signed off. Everyone else falls through to the current home.
+  if (isHubElevated(user.email)) {
+    return <ElevatedHome firstName={firstName} needsYou={needsYou} data={elevated} />
+  }
+
   const beta = isHubBeta(user.email)
 
   const latest = hubUpdatesSorted()[0]

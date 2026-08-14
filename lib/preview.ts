@@ -39,3 +39,20 @@ const CRM2_ALLOWED_EMAILS = new Set([
 export function isCrm2Preview(email: string | null | undefined): boolean {
   return email ? CRM2_ALLOWED_EMAILS.has(email.trim().toLowerCase()) : false
 }
+
+// Elevated Hub home — private review gate.
+//
+// The "Today first" elevated home (shimmer hero + progress ring, Needs you,
+// the gold Passport-progress card, the achievement shelf and the Passport
+// preview) is a redesign of the Hub landing page. It is restricted to the two
+// listed accounts so it can be reviewed before rolling out to everyone; every
+// other account continues to see the current Hub home. Widen this set (or drop
+// the gate entirely) once it's approved.
+const HUB_ELEVATED_ALLOWED_EMAILS = new Set([
+  'charlie@dwelly.group',
+  'walter@dwelly.group',
+])
+
+export function isHubElevated(email: string | null | undefined): boolean {
+  return email ? HUB_ELEVATED_ALLOWED_EMAILS.has(email.trim().toLowerCase()) : false
+}

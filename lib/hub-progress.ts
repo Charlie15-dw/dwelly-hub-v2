@@ -2,6 +2,17 @@ import { createServerClient } from '@/lib/supabase/server'
 import { MODULES } from '@/lib/data'
 import { computeJourney, type JourneyResult } from '@/lib/hub-journey'
 import { computeGuidedJourney, type GuidedJourneyResult } from '@/lib/hub-guided-journey'
+import {
+  computeSummary,
+  computeSectionCompetency,
+  certificationStatus,
+  PASSPORT_MILESTONES,
+  type PassportSummary,
+  type SectionCompetency,
+  type CertificationStatus,
+  type ResultRow,
+} from '@/lib/passport'
+import { computeAchievements, type Achievement } from '@/lib/achievements-data'
 
 // The single place Hub-home progress and the "Needs you" queue are computed.
 // There used to be two "Overall progress" numbers (here and on the old
@@ -42,12 +53,31 @@ export interface OverallProgress {
   totalAssessments: number
 }
 
+/** Everything the elevated (gated) Hub home renders, derived from the same
+ *  assessment data as the rest of this helper so no number can drift. */
+export interface MilestoneStatus {
+  id: string
+  label: string
+  passed: boolean
+}
+
+export interface ElevatedHome {
+  fullName: string
+  summary: PassportSummary
+  sections: SectionCompetency[]
+  achievements: Achievement[]
+  milestones: MilestoneStatus[]
+  certification: CertificationStatus
+  avgScore: number | null
+}
+
 export interface HubHome {
   firstName: string
   journey: JourneyResult
   guided: GuidedJourneyResult
   progress: OverallProgress
   needsYou: NeedsYouItem[]
+  elevated: ElevatedHome
 }
 
 export async function getHubHome(userId: string, email: string | null | undefined): Promise<HubHome> {
@@ -61,7 +91,7 @@ export async function getHubHome(userId: string, email: string | null | undefine
     { data: completionRows },
   ] = await Promise.all([
     supabase.from('user_profiles').select('full_name').eq('id', userId).maybeSingle(),
-    supabase.from('assessment_results').select('assessment_id, passed').eq('user_id', userId),
+    supabase.from('assessment_results').select('assessment_id, passed, score, completed_at').eq('user_id', userId),
     supabase.from('module_progress').select('module_id, completed').eq('user_id', userId),
     supabase.from('learning_profiles').select('completed_at').eq('user_id', userId).maybeSingle(),
     supabase.from('content_completions').select('content_type, content_id').eq('user_id', userId),
@@ -124,6 +154,39 @@ export async function getHubHome(userId: string, email: string | null | undefine
 
   const firstName = (profile?.full_name ?? email?.split('@')[0] ?? '').split(' ')[0]
 
+  // ── Elevated home ─────────────────────────────────────────────────────────
+  // Passport competency, achievements and milestone status for the gated
+  // "Today first" home. All derived from the same assessment_results already
+  // fetched above, so these numbers can never diverge from the journey/progress.
+  const passportResults: ResultRow[] = (resultRows ?? []).map(r => ({
+    assessment_id: r.assessment_id,
+    score: r.score ?? 0,
+    passed: !!r.passed,
+    completed_at: r.completed_at ?? null,
+  }))
+  const summary = computeSummary(passportResults)
+  const sections = computeSectionCompetency(passportResults)
+  const achievements = computeAchievements(passportResults, userId)
+  const milestones: MilestoneStatus[] = PASSPORT_MILESTONES.map(m => ({
+    id: m.id,
+    label: m.label,
+    passed: passedIds.has(m.id),
+  }))
+  // Recert window is only known on the full Passport page; treat as not-yet-due
+  // here so a certified user reads "Certified" rather than "Recert due".
+  const certification = certificationStatus(summary, 1)
+  const fullName = profile?.full_name?.trim() || firstName
+
+  const elevated: ElevatedHome = {
+    fullName,
+    summary,
+    sections,
+    achievements,
+    milestones,
+    certification,
+    avgScore: summary.avgScore,
+  }
+
   return {
     firstName,
     journey,
@@ -136,5 +199,6 @@ export async function getHubHome(userId: string, email: string | null | undefine
       totalAssessments,
     },
     needsYou,
+    elevated,
   }
 }
