@@ -2,9 +2,10 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowLeft, Megaphone } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isHubPreview } from '@/lib/preview'
+import { isHubPreview, isHubElevated } from '@/lib/preview'
 import { hubUpdatesSorted } from '@/lib/updates'
 import UpdatesCarousel from '@/components/hub/UpdatesCarousel'
+import ElevatedUpdates from '@/components/hub/ElevatedUpdates'
 
 export default async function UpdatesPage() {
   const supabase = createServerClient()
@@ -13,6 +14,9 @@ export default async function UpdatesPage() {
   if (!isHubPreview(user.email)) redirect('/dashboard')
 
   const updates = hubUpdatesSorted()
+
+  // Gated elevated variant for the two review accounts.
+  if (isHubElevated(user.email)) return <ElevatedUpdates updates={updates} />
 
   return (
     <div className="max-w-2xl space-y-6">
