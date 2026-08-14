@@ -78,6 +78,9 @@ export interface QuizClientProps {
   lastAttempt?: { score: number; passed: boolean; completedAt: string }
   // beta-gated features (confidence-based scoring)
   beta?: boolean
+  // elevated review variant (gated to the two review accounts) — turns on the
+  // redesigned brief screen, mistakes-first results, and always-on confidence.
+  elevated?: boolean
 }
 
 export default function QuizClient({
@@ -99,6 +102,7 @@ export default function QuizClient({
   lockedByDb = false,
   lastAttempt,
   beta = false,
+  elevated = false,
 }: QuizClientProps) {
   const isFullAssessment   = quizCategory === 'full'
   const isMasterAssessment = quizCategory === 'master'
@@ -109,6 +113,13 @@ export default function QuizClient({
   // They keep a real pass mark but never lock and never write to the shared
   // assessment tables the manager dashboard reads.
   const isCrm2Quiz         = quizCategory === 'crm2'
+
+  // Confidence-based scoring is a beta trial; the elevated review variant turns
+  // it on for everyone in the allow-list so it can be signed off.
+  const showConfidence = beta || elevated
+  // The redesigned brief only fronts real graded assessments — not the
+  // no-pass-mark recap/recall knowledge checks.
+  const briefEligible = elevated && !isRecapQuiz && !isRecallQuiz
 
   // Stable question list — computed once on mount so re-renders don't reshuffle
   const [demoQuestions] = useState<QuizQuestion[]>(() => {
@@ -144,6 +155,9 @@ export default function QuizClient({
   const [answers, setAnswers]          = useState<(number | null)[]>(new Array(demoQuestions.length).fill(null))
   const [showResults, setShowResults]  = useState(false)
   const [quizStarted, setQuizStarted]  = useState(false)
+  // Elevated brief screen shown before the first question. Dismissed once the
+  // learner begins; never shown when resuming an in-progress attempt.
+  const [briefDismissed, setBriefDismissed] = useState(false)
   const [scheduleId, setScheduleId]    = useState<string | null>(null)
   // True when a critical result/progress write to Supabase failed, so we can
   // warn the user rather than silently losing their result.
@@ -391,7 +405,7 @@ export default function QuizClient({
     const newAnswers = [...answers]
     newAnswers[currentQ] = selected
     setAnswers(newAnswers)
-    if (beta) {
+    if (showConfidence) {
       const newConfidences = [...confidences]
       newConfidences[currentQ] = confidence
       setConfidences(newConfidences)
@@ -643,6 +657,118 @@ export default function QuizClient({
     )
   }
 
+  // ── Elevated standard results screen ──────────────────────────────────────
+  // Mistakes first (that's what you act on), the rest of the rationale wall
+  // collapsed behind a disclosure. Uses design tokens throughout — no teal /
+  // orange / hardcoded hex like the classic screen below.
+  if (showResults && elevated && !isRecapQuiz && !isRecallQuiz) {
+    const wrong = demoQuestions.filter((q, i) => answers[i] !== q.correct)
+    const right = demoQuestions.filter((q, i) => answers[i] === q.correct)
+    const confidentlyWrong = demoQuestions.filter((q, i) => confidences[i] === 'high' && answers[i] !== q.correct)
+
+    return (
+      <div className="max-w-[720px] mx-auto space-y-6">
+        {/* Verdict hero */}
+        <section className="relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel px-8 py-7">
+          <div className="hub-orb-a pointer-events-none absolute -top-24 -right-16 w-60 h-60 rounded-full bg-[#0071E3]/25 blur-3xl" aria-hidden />
+          <div className="relative space-y-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50">{moduleTitle}</p>
+            <div className="flex items-center gap-4">
+              <span className={`flex items-center justify-center w-14 h-14 rounded-2xl flex-shrink-0 ${passed ? 'bg-[#1A7F37]' : 'bg-[#B42318]'}`}>
+                {passed ? <Trophy className="w-7 h-7 text-white" aria-hidden /> : <XCircle className="w-7 h-7 text-white" aria-hidden />}
+              </span>
+              <div>
+                <h2 className="text-2xl font-semibold leading-tight">{passed ? 'Passed' : 'Not quite there yet'}</h2>
+                <p className="text-[14px] text-white/70 mt-0.5">
+                  Scored {score}% · pass mark {passmark}% · {correctCount}/{demoQuestions.length} correct
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {saveError && <SaveErrorBanner />}
+
+        {/* Confidently wrong — the hidden gaps */}
+        {confidentlyWrong.length > 0 && (
+          <div className="rag-amber rounded-2xl px-5 py-4 border">
+            <p className="text-sm font-semibold mb-1">Worth a closer look</p>
+            <p className="text-[13px] leading-relaxed">
+              You were sure about {confidentlyWrong.length} answer{confidentlyWrong.length !== 1 ? 's' : ''} you didn&apos;t get right. These are the gaps most worth revisiting.
+            </p>
+          </div>
+        )}
+
+        {/* Mistakes first */}
+        {wrong.length > 0 && (
+          <div className="space-y-3">
+            <h3 className="text-[13px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]">
+              What to review ({wrong.length})
+            </h3>
+            <div className="space-y-3">
+              {wrong.map(q => {
+                const i = demoQuestions.indexOf(q)
+                const userAns = answers[i]
+                return (
+                  <div key={q.id} className="card p-5 space-y-2.5 border-l-4 border-l-[#B42318]">
+                    <p className="text-sm font-semibold text-navy leading-snug">{q.question}</p>
+                    <p className="text-[13px] text-[#B42318]">Your answer: {userAns !== null ? q.options[userAns] : 'No answer'}</p>
+                    <p className="text-[13px] font-medium text-[#1A7F37]">Correct: {q.options[q.correct]}</p>
+                    <div className="rag-green rounded-xl px-3.5 py-2.5 border">
+                      <p className="text-[10px] font-bold uppercase tracking-widest mb-1">Why</p>
+                      <p className="text-[13px] leading-relaxed">{q.rationale}</p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Correct answers — collapsed */}
+        {right.length > 0 && (
+          <details className="group">
+            <summary className="flex items-center gap-2 cursor-pointer list-none text-[13px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]">
+              <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90" aria-hidden />
+              Got right ({right.length})
+            </summary>
+            <div className="space-y-3 mt-3">
+              {right.map(q => (
+                <div key={q.id} className="card p-5 space-y-2 border-l-4 border-l-[#1A7F37]">
+                  <div className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#1A7F37] flex-shrink-0 mt-0.5" aria-hidden />
+                    <p className="text-sm font-medium text-navy leading-snug">{q.question}</p>
+                  </div>
+                  <p className="text-[13px] text-[var(--text-secondary)] ml-6 leading-relaxed">
+                    <span className="font-semibold">Why: </span>{q.rationale}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </details>
+        )}
+
+        {passed && !isReleaseQuiz && !isCrm2Quiz && (
+          <div className="rounded-2xl border border-[#0071E3]/20 bg-[#0071E3]/6 px-5 py-4">
+            <p className="text-sm font-semibold text-navy mb-1">Recall checks scheduled</p>
+            <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+              To beat the forgetting curve, you&apos;ll get a 3-question email recall check in 3, 7 and 30 days. Each takes under 2 minutes and won&apos;t affect your score.
+            </p>
+          </div>
+        )}
+
+        <div className="flex items-center gap-3 flex-wrap">
+          <Link href={backHref} className="btn-outline flex items-center gap-1.5">
+            <ArrowLeft className="w-4 h-4" aria-hidden /> {backLabel}
+          </Link>
+          <Link href={isCrm2Quiz ? '/hub/crm-2/assessments' : '/assessments'} className="btn-primary flex items-center gap-1.5">
+            All Assessments <ArrowRight className="w-4 h-4" aria-hidden />
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   // ── Standard results screen ───────────────────────────────────────────────
   if (showResults) {
     return (
@@ -772,6 +898,60 @@ export default function QuizClient({
     )
   }
 
+  // ── Elevated brief screen ─────────────────────────────────────────────────
+  // A calm intro before the first question: what this covers, how it's marked,
+  // and the one-attempt rule stated up front (rule 05 — say why, say what next).
+  if (briefEligible && !briefDismissed && !quizStarted && !showResults) {
+    const mins = Math.max(1, Math.round(demoQuestions.length * 1.5))
+    return (
+      <div className="max-w-[640px] mx-auto space-y-6">
+        <Link href={backHref} className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-navy transition">
+          <ArrowLeft className="w-4 h-4" aria-hidden /> {backLabel}
+        </Link>
+
+        <div className="hub-fade card p-7 space-y-6">
+          <div className="space-y-1.5">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-tertiary)]">Assessment</p>
+            <h1 className="text-[22px] font-semibold text-navy tracking-tight">{moduleTitle}</h1>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { n: demoQuestions.length, l: 'Questions' },
+              { n: `${passmark}%`, l: 'Pass mark' },
+              { n: `~${mins} min`, l: 'To complete' },
+            ].map(s => (
+              <div key={s.l} className="rounded-2xl bg-[#F5F5F7] px-4 py-3.5 text-center">
+                <p className="text-xl font-semibold text-navy tabular-nums">{s.n}</p>
+                <p className="text-[12px] text-[var(--text-secondary)] mt-0.5">{s.l}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="rag-amber rounded-2xl px-4 py-3.5 border flex items-start gap-3">
+            <Lock className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden />
+            <p className="text-[13px] leading-relaxed">
+              One attempt. Your score is recorded either way, and it locks afterwards — your manager can grant a retake if you need one.
+            </p>
+          </div>
+
+          <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+            You&apos;ll get the rationale after each answer, and a review of anything worth a second look at the end.
+          </p>
+
+          <button
+            type="button"
+            onClick={() => setBriefDismissed(true)}
+            className="btn-primary w-full justify-center"
+          >
+            Begin assessment
+            <ArrowRight className="w-4 h-4" aria-hidden />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   // ── Active quiz ───────────────────────────────────────────────────────────
   return (
     <div className="max-w-2xl mx-auto space-y-5">
@@ -877,7 +1057,7 @@ export default function QuizClient({
           })}
         </div>
 
-        {beta && !submitted && selected !== null && (
+        {showConfidence && !submitted && selected !== null && (
           <div className="mt-5 pt-5 border-t border-slate-100">
             <p className="text-xs font-semibold text-slate-500 mb-2.5">How sure are you?</p>
             <div className="flex items-center gap-2" role="group" aria-label="Confidence level">

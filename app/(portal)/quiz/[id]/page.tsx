@@ -8,7 +8,7 @@ import {
 } from '@/lib/data'
 import { redirect } from 'next/navigation'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
-import { isHubBeta, isCrm2Preview } from '@/lib/preview'
+import { isHubBeta, isCrm2Preview, isHubElevated } from '@/lib/preview'
 import { CRM2_LESSONS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/lib/crm2-content'
 import QuizClient, { type QuizCategory } from './QuizClient'
 
@@ -170,11 +170,14 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
       : ASSESSMENT_QUESTION_COUNTS[moduleId] ?? questionPool.length
 
   // Beta gate — confidence-based scoring is trialled with a single test account.
+  // Elevated gate — the two review accounts see the redesigned quiz flow.
   let beta = false
+  let elevated = false
   try {
     const auth = createServerClient()
     const { data: { user } } = await auth.auth.getUser()
     beta = isHubBeta(user?.email)
+    elevated = isHubElevated(user?.email)
   } catch {
     // Non-critical — quiz still loads without the beta confidence UI.
   }
@@ -254,6 +257,7 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
       lockedByDb={lockedByDb}
       lastAttempt={lastAttempt}
       beta={beta}
+      elevated={elevated}
       recapLabel={recapLabel}
       recapTheme={recapTheme}
       recapQuestionModuleIds={recapQuestionModuleIds}
