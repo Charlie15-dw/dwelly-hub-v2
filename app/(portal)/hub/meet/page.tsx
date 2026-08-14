@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowLeft, Users, CalendarClock, FileText, ListChecks } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isHubPreview } from '@/lib/preview'
+import { isHubPreview, isHubElevated } from '@/lib/preview'
+import ElevatedMeet from '@/components/hub/ElevatedMeet'
 
 // Monthly PM Meet — placeholder for the monthly conference-style forum.
 // Honest "coming soon" landing page: describes intent, no fabricated dates,
@@ -13,6 +14,9 @@ export default async function MeetPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
   if (!isHubPreview(user.email)) redirect('/dashboard')
+
+  // Gated elevated variant for the two review accounts.
+  if (isHubElevated(user.email)) return <ElevatedMeet />
 
   return (
     <div className="max-w-2xl space-y-6">
