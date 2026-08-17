@@ -26,6 +26,16 @@ export function generateStaticParams() {
   return CRM2_LESSONS.map((l) => ({ slug: l.slug }))
 }
 
+// A two-column table whose second column is long prose reads far better as
+// stacked definition rows than as cramped cells. Decide per block on cell
+// length — matches the Training Guide's treatment so the two feel like one app.
+function isProseTable(block: Crm2Block): boolean {
+  return (
+    block.headers?.length === 2 &&
+    !!block.rows?.some((r) => (r[1]?.length ?? 0) > 120)
+  )
+}
+
 function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[]) {
   const withGlossary = (text: string) =>
     glossary.length > 0 ? <GlossaryText text={text} glossary={glossary} /> : text
@@ -106,8 +116,34 @@ function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[]) {
         </Callout>
       )
 
-    case 'table':
-      return block.headers && block.rows ? (
+    case 'table': {
+      if (!block.headers || !block.rows) return null
+      // Long-prose two-column tables → stacked definition rows.
+      if (isProseTable(block)) {
+        return (
+          <div key={i} className="mt-6 rounded-2xl border border-navy-100 overflow-hidden">
+            <div className="grid grid-cols-[200px_minmax(0,1fr)] gap-6 bg-navy-50 border-b border-navy-100 px-5 py-3">
+              {block.headers.map((h, j) => (
+                <span key={j} className="text-[12px] font-semibold uppercase tracking-wide text-[var(--text-secondary)]">{h}</span>
+              ))}
+            </div>
+            {block.rows.map((row, j) => (
+              <div
+                key={j}
+                className={cn(
+                  'grid grid-cols-[200px_minmax(0,1fr)] gap-6 px-5 py-4',
+                  j > 0 && 'border-t border-navy-100',
+                )}
+              >
+                <span className="text-[16px] font-semibold text-navy">{row[0]}</span>
+                <p className="text-[16px] leading-[1.65] text-navy-800">{row[1]}</p>
+              </div>
+            ))}
+          </div>
+        )
+      }
+      // Genuinely tabular data keeps a real table, at 16px.
+      return (
         <div key={i} className="mt-6 overflow-x-auto rounded-2xl border border-navy-100">
           <table className="w-full text-[16px]">
             <thead>
@@ -132,7 +168,8 @@ function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[]) {
             </tbody>
           </table>
         </div>
-      ) : null
+      )
+    }
 
     case 'divider':
       return <hr key={i} className="mt-8 border-navy-100" />

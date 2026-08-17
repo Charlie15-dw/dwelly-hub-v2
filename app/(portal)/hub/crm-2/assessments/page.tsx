@@ -51,10 +51,10 @@ export default async function Crm2AssessmentsPage() {
     <div className="space-y-8 hub-fade">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm">
-        <Link href="/hub/crm-2" className="text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
+        <Link href="/hub/crm-2" className="text-[var(--text-secondary)] hover:text-navy flex items-center gap-1.5 transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" /> CRM 2.0
         </Link>
-        <span className="text-slate-300">/</span>
+        <span className="text-navy-200">/</span>
         <span className="text-navy font-medium">Assessments</span>
       </div>
 
@@ -62,7 +62,7 @@ export default async function Crm2AssessmentsPage() {
       <section className="relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
           <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-orange/30 blur-3xl" />
-          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-indigo-500/20 blur-3xl" />
+          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-orange/12 blur-3xl" />
         </div>
         <div className="relative px-7 py-10 sm:px-10 sm:py-12">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-white/80 backdrop-blur-sm">
@@ -81,24 +81,24 @@ export default async function Crm2AssessmentsPage() {
       <div className="card p-5">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-11 h-11 rounded-xl bg-teal/10 text-teal flex items-center justify-center flex-shrink-0">
+            <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${passedCount === totalQuizzes && totalQuizzes > 0 ? 'rag-green' : 'bg-orange/10 text-orange'}`}>
               <CheckCircle2 className="w-5 h-5" aria-hidden />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-bold text-navy">Your assessment progress</p>
-              <p className="text-sm text-slate-500 mt-0.5">
+              <p className="text-[15px] font-bold text-navy">Your assessment progress</p>
+              <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">
                 {passedCount === totalQuizzes && totalQuizzes > 0
                   ? 'All assessments passed — nice work.'
                   : `${passedCount} of ${totalQuizzes} assessments passed`}
               </p>
             </div>
           </div>
-          <span className="text-2xl font-black text-navy tabular-nums flex-shrink-0">{passedPct}%</span>
+          <span className="text-2xl font-bold text-navy tabular-nums flex-shrink-0">{passedPct}%</span>
         </div>
-        <div className="mt-4 h-2 bg-slate-100 rounded-full overflow-hidden">
+        <div className="progress-track mt-4">
           <div
-            className="h-full bg-teal rounded-full transition-all"
-            style={{ width: `${passedPct}%` }}
+            className="progress-fill"
+            style={{ width: `${passedPct}%`, background: passedPct === 100 ? '#1A7F37' : '#0071E3' }}
           />
         </div>
       </div>
@@ -109,7 +109,7 @@ export default async function Crm2AssessmentsPage() {
         if (lessons.length === 0) return null
         return (
           <section key={id} className="space-y-3">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400">{label}</h2>
+            <h2 className="text-[12px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]">{label}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {lessons.map((lesson) => {
                 const isPassed = passed.has(lesson.quizModuleId!)
@@ -120,24 +120,24 @@ export default async function Crm2AssessmentsPage() {
                     href={`/quiz/${lesson.quizModuleId}`}
                     className="card card-hover p-5 flex items-center gap-4 group"
                   >
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${isPassed ? 'bg-teal/10 text-teal' : 'bg-[#0071E3]/10 text-[#0071E3]'}`}>
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${isPassed ? 'rag-green' : 'bg-orange/10 text-orange'}`}>
                       {isPassed
                         ? <CheckCircle2 className="w-5 h-5" aria-hidden />
                         : <ClipboardCheck className="w-5 h-5" aria-hidden />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-navy truncate">{lesson.title}</p>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-[15px] font-bold text-navy truncate">{lesson.title}</p>
+                      <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">
                         {questionCount(lesson.quizModuleId!)} questions · 80% to pass
                       </p>
                     </div>
                     {isPassed ? (
-                      <span className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-teal bg-teal/10 border border-teal/20 rounded-full px-2.5 py-1 flex-shrink-0">
+                      <span className="hidden sm:inline-flex items-center gap-1 text-[12px] font-semibold rag-green rounded-full px-2.5 py-1 flex-shrink-0">
                         <CheckCircle2 className="w-3.5 h-3.5" aria-hidden />
                         Passed{score !== undefined ? ` · ${score}%` : ''}
                       </span>
                     ) : (
-                      <span className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-[#0071E3] flex-shrink-0 group-hover:gap-2 transition-all">
+                      <span className="hidden sm:inline-flex items-center gap-1 text-[14px] font-semibold text-orange flex-shrink-0 group-hover:gap-2 transition-all">
                         Start <ChevronRight className="w-4 h-4" aria-hidden />
                       </span>
                     )}
