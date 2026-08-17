@@ -15,6 +15,10 @@ import QuizClient, { type QuizCategory } from './QuizClient'
 // Video module sections (3 questions each for combined assessments)
 const VIDEO_MODULE_IDS = ['mnt-02', 'cmp-02', 'mvt-02', 'ins-02', 'sup-02']
 const KNOWLEDGE_IDS    = ['kno-01', 'kno-02', 'kno-03']
+// The combined Knowledge Base assessment draws from the three knowledge modules
+// plus the portal content (Tenant, Landlord & Maintenance Provider portals).
+const KNOWLEDGE_ASSESSMENT_IDS = ['kno-01', 'kno-02', 'kno-03', 'kno-portals']
+const KNOWLEDGE_ASSESSMENT_SAMPLE = 24
 const PER_SECTION = 3
 
 // How many questions to show per module assessment (samples from the full pool)
@@ -29,8 +33,9 @@ const ASSESSMENT_QUESTION_COUNTS: Record<string, number> = {
 export default async function QuizPage({ params }: { params: { id: string } }) {
   const moduleId = params.id
 
-  const isFullAssessment   = moduleId === 'full-assessment'
-  const isMasterAssessment = moduleId === 'master-assessment'
+  const isFullAssessment      = moduleId === 'full-assessment'
+  const isMasterAssessment    = moduleId === 'master-assessment'
+  const isKnowledgeAssessment = moduleId === 'knowledge-assessment'
   const isRecapQuiz        = moduleId.startsWith('recap-')
   const isReleaseQuiz      = moduleId.startsWith('release-')
   const isRecallQuiz       = moduleId.startsWith('recall-')
@@ -72,6 +77,12 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   } else if (isFullAssessment) {
     quizCategory = 'full'
     moduleTitle  = 'Full Assessment — Video Modules'
+    passmark     = 80
+    backHref     = '/assessments'
+    backLabel    = 'Back to Assessments'
+  } else if (isKnowledgeAssessment) {
+    quizCategory = 'knowledge'
+    moduleTitle  = 'Knowledge Base Assessment — All Sections'
     passmark     = 80
     backHref     = '/assessments'
     backLabel    = 'Back to Assessments'
@@ -137,6 +148,12 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     questionPool = VIDEO_MODULE_IDS.flatMap(mid =>
       QUIZ_QUESTIONS.filter(q => q.moduleId === mid && !q.tier).slice(0, PER_SECTION)
     )
+  } else if (isKnowledgeAssessment) {
+    // Combined Knowledge Base assessment — the three knowledge modules plus the
+    // portal content. The client shuffles and samples this down per learner.
+    questionPool = KNOWLEDGE_ASSESSMENT_IDS.flatMap(mid =>
+      QUIZ_QUESTIONS.filter(q => q.moduleId === mid && !q.tier)
+    )
   } else if (isRecapQuiz && recapQuestionModuleIds) {
     // Pass the full recap-tier pool — client will shuffle and sample down
     questionPool = recapQuestionModuleIds.flatMap(mid =>
@@ -167,7 +184,9 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     ? RECAP_ROUNDS.find(r => r.id === moduleId)?.questionCount ?? questionPool.length
     : moduleId === CRM2_CAPSTONE_MODULE_ID
       ? CRM2_CAPSTONE_SAMPLE
-      : ASSESSMENT_QUESTION_COUNTS[moduleId] ?? questionPool.length
+      : isKnowledgeAssessment
+        ? Math.min(KNOWLEDGE_ASSESSMENT_SAMPLE, questionPool.length)
+        : ASSESSMENT_QUESTION_COUNTS[moduleId] ?? questionPool.length
 
   // Beta gate — confidence-based scoring is trialled with a single test account.
   // Elevated gate — the two review accounts see the redesigned quiz flow.

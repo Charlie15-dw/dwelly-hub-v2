@@ -1110,6 +1110,125 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'The Ledger is the definitive source for all financial transactions in Dwelly. When explaining a landlord\'s statement, always refer to the Ledger to verify figures and provide an accurate explanation.',
   },
 
+  // ── PORTALS — Tenant, Landlord & Maintenance Provider portals (kno-portals) ──
+  // Tests knowledge of how the three external-facing portals work, so PMs can
+  // set the right expectations with tenants, landlords and contractors.
+  {
+    id: 'q-kno-portals-1', moduleId: 'kno-portals',
+    question: 'When does a tenant first get access to the Tenant Portal?',
+    options: [
+      'As soon as they enquire about the property',
+      'Once first monies are paid',
+      'When the tenancy agreement is signed but before any payment',
+      'Only after they have physically moved in',
+    ],
+    correct: 1,
+    rationale: 'Tenants receive access to the Tenant Portal once first monies are paid. Access is then authorised via the tenant\'s registered phone number, and only the main tenant receives the email containing the portal link.',
+  },
+  {
+    id: 'q-kno-portals-2', moduleId: 'kno-portals',
+    question: 'On which management type can a moved-in tenant submit a maintenance request through the Tenant Portal?',
+    options: [
+      'Fully Managed only',
+      'Rent Collection only',
+      'Let Only only',
+      'All management types',
+    ],
+    correct: 0,
+    rationale: 'Submitting a maintenance request through the portal is only available on Fully Managed properties, because maintenance is only handled by Dwelly under that arrangement. On Rent Collection or Let Only, repairs are the landlord\'s responsibility.',
+  },
+  {
+    id: 'q-kno-portals-3', moduleId: 'kno-portals',
+    question: 'Which Tenant Portal action is available to tenants regardless of how the property is managed?',
+    options: [
+      'Submitting a maintenance request',
+      'Submitting a move-out request',
+      'Approving contractor quotes',
+      'Viewing the landlord\'s statements',
+    ],
+    correct: 1,
+    rationale: 'Submitting a move-out request is available on Fully Managed, Rent Collection and Let Only. Submitting a maintenance request, by contrast, is Fully Managed only.',
+  },
+  {
+    id: 'q-kno-portals-4', moduleId: 'kno-portals',
+    question: 'A tenant reports a fault through the Tenant Portal. What happens in Dwelly?',
+    options: [
+      'The report sits in the portal until a PM manually copies it across',
+      'Dwelly automatically creates a maintenance job and assigns it to the responsible Property Manager',
+      'The landlord is emailed directly and the PM is not involved',
+      'Nothing until the tenant also phones the office to confirm',
+    ],
+    correct: 1,
+    rationale: 'When a tenant reports a fault in the portal, Dwelly automatically creates a maintenance job and assigns it to the responsible PM — a portal request is the same as a job landing in your queue.',
+  },
+  {
+    id: 'q-kno-portals-5', moduleId: 'kno-portals',
+    question: 'In the Landlord Portal, which of the three navigation buttons holds rental income statements and payment records?',
+    options: ['Documents', 'Statements', 'Maintenance Requests', 'Portfolio'],
+    correct: 1,
+    rationale: 'The three blue buttons are Documents (guides, invoices, lease agreements), Statements (rental income statements, payment records and financial summaries) and Maintenance Requests (current jobs, statuses and past activity).',
+  },
+  {
+    id: 'q-kno-portals-6', moduleId: 'kno-portals',
+    question: 'A landlord asks you why they can\'t see the full detailed history of a maintenance job in their portal. What is the correct explanation?',
+    options: [
+      'Their portal access must be broken — raise a support ticket to fix it',
+      'The portal only shows current jobs, their statuses and past activity; the detailed job history comes from you, not the portal',
+      'Detailed history is hidden until the job is fully closed and invoiced',
+      'Only managers can view job history, so they need to upgrade their account',
+    ],
+    correct: 1,
+    rationale: 'Landlords cannot see the full job history through their portal — only current jobs, their statuses, and past activity. If a landlord wants the detailed history of a job, that comes from the PM, not the portal.',
+  },
+  {
+    id: 'q-kno-portals-7', moduleId: 'kno-portals',
+    question: 'Who can open a maintenance provider\'s portal from inside the Dwelly system, and where?',
+    options: [
+      'Any PM, from the job chat',
+      'Only Team Coordinators, via Property Management → Service Providers',
+      'Only admins, from the Settings page',
+      'The provider themselves, by inviting a PM',
+    ],
+    correct: 1,
+    rationale: 'Only Team Coordinators can open a provider\'s portal from inside Dwelly, via Property Management → Service Providers at the top of the page. If a contractor can\'t log in, point them at the office rather than resetting it yourself.',
+  },
+  {
+    id: 'q-kno-portals-8', moduleId: 'kno-portals',
+    question: 'In the provider portal, what does the job status "Quote Sent" mean?',
+    options: [
+      'The contractor has sent their final invoice and is awaiting payment',
+      'A quote has gone to the landlord and we are waiting on their approval',
+      'The visit has been booked and is waiting to take place',
+      'The job is complete and just needs a compliance certificate',
+    ],
+    correct: 1,
+    rationale: '"Quote Sent" means a quote from the contractor has gone to the landlord and Dwelly is waiting on their approval. This is why some jobs sit at this status while the landlord decides.',
+  },
+  {
+    id: 'q-kno-portals-9', moduleId: 'kno-portals',
+    question: 'At a maintenance visit, when can a contractor "Fix It Now" rather than submitting a quote?',
+    options: [
+      'Whenever they judge the repair to be urgent',
+      'Only if the work is within the call-out fee, within an approved budget, or specifically approved by the office that day',
+      'Any time the tenant is present and agrees to the work',
+      'Never — all maintenance work requires a quote first',
+    ],
+    correct: 1,
+    rationale: 'A contractor should only fix work on the spot when it\'s within the call-out fee, within an approved budget, or specifically approved by the office that day. Anything beyond that needs a quote and landlord approval before the work goes ahead.',
+  },
+  {
+    id: 'q-kno-portals-10', moduleId: 'kno-portals',
+    question: 'A tenant complains that a contractor "never called". Knowing how the provider portal works, what is the likely explanation?',
+    options: [
+      'The contractor forgot to call and should be reported',
+      'The contractor reaches the tenant through the main office number plus an extension, not a direct line — so the call comes from the main Dwelly number',
+      'The tenant\'s number is wrong and must be re-collected',
+      'Contractors are not allowed to call tenants directly at all',
+    ],
+    correct: 1,
+    rationale: 'Contractors call tenants via the main office number and the tenant\'s extension, not a direct line. The tenant should expect the call to come from the main Dwelly number, so a call they didn\'t recognise may well have been the contractor.',
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   // MASTER ASSESSMENT — Harder scenario-based questions (tier: 'master')
   // These do NOT appear in the video modules or per-section assessments.

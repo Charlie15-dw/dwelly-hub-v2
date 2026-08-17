@@ -21,15 +21,19 @@ interface AssessmentMeta {
   passmark: number
 }
 
-// The 15 canonical assessments: 13 module assessments (excluding the Always-on
-// FAQ reference, which has no quiz) + the two programme milestones.
+// The canonical assessments: the system/video module assessments, then one
+// combined Knowledge Base assessment (the three knowledge modules + the Tenant,
+// Landlord and Maintenance Provider portal content rolled into one), then the
+// two programme milestones. Knowledge modules are excluded above because they
+// are represented by the combined assessment that sits just before the finals.
 const ASSESSMENTS: AssessmentMeta[] = [
-  ...MODULES.filter(m => m.quizCount > 0 && m.passmark > 0).map(m => ({
+  ...MODULES.filter(m => m.quizCount > 0 && m.passmark > 0 && m.section !== 'knowledge').map(m => ({
     id: m.id,
     title: m.title,
     questions: m.quizCount,
     passmark: m.passmark,
   })),
+  { id: 'knowledge-assessment', title: 'Knowledge Base Assessment — All Sections', questions: 24, passmark: 80 },
   { id: 'full-assessment', title: 'Full Assessment — All Sections', questions: 24, passmark: 80 },
   { id: 'master-assessment', title: 'Master Assessment', questions: 33, passmark: 80 },
 ]
@@ -89,9 +93,9 @@ export default function ElevatedAssessments() {
   if (!rows) {
     return (
       <div className="space-y-6 max-w-[880px] animate-pulse">
-        <div className="h-8 w-56 bg-slate-100 rounded-full" />
-        <div className="h-24 bg-slate-100 rounded-2xl" />
-        <div className="h-64 bg-slate-100 rounded-2xl" />
+        <div className="h-8 w-56 bg-navy-100 rounded-full" />
+        <div className="h-24 bg-navy-100 rounded-2xl" />
+        <div className="h-64 bg-navy-100 rounded-2xl" />
       </div>
     )
   }
@@ -157,7 +161,7 @@ export default function ElevatedAssessments() {
           </div>
           <div className="card overflow-hidden">
             {locked.map(r => (
-              <div key={r.id} className="flex items-center gap-4 px-6 py-[18px] border-t border-slate-100 first:border-t-0">
+              <div key={r.id} className="flex items-center gap-4 px-6 py-[18px] border-t border-navy-100 first:border-t-0">
                 <span className="w-2 h-2 rounded-full bg-[#995500] flex-shrink-0" aria-hidden />
                 <div className="min-w-0 flex-1">
                   <p className="text-[15.5px] font-semibold text-navy truncate">{r.title}</p>
@@ -175,7 +179,7 @@ export default function ElevatedAssessments() {
       {passed.length > 0 && (
         <Group title="Passed" fade="hub-fade-3">
           {passed.map(r => (
-            <Link key={r.id} href={`/quiz/${r.id}`} className="group flex items-center gap-4 px-6 py-[18px] border-t border-slate-100 first:border-t-0 hover:bg-slate-50 transition-colors">
+            <Link key={r.id} href={`/quiz/${r.id}`} className="group flex items-center gap-4 px-6 py-[18px] border-t border-navy-100 first:border-t-0 hover:bg-navy-50 transition-colors">
               <span className="w-5 h-5 rounded-full bg-[#F0FFF4] border border-[#B0EACC] flex items-center justify-center flex-shrink-0">
                 <Check className="w-3 h-3 text-[#1A7F37]" strokeWidth={3} aria-hidden />
               </span>
@@ -183,7 +187,7 @@ export default function ElevatedAssessments() {
                 <p className="text-[15.5px] font-semibold text-navy truncate">{r.title}</p>
                 <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">Passed{r.score != null ? ` · scored ${r.score}%` : ''} · pass mark {r.passmark}%</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
+              <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
             </Link>
           ))}
         </Group>
@@ -207,7 +211,7 @@ function Group({ title, children, fade = 'hub-fade-2' }: { title: string; childr
 
 function RowLink({ row, primary }: { row: Row; primary: boolean }) {
   return (
-    <Link href={`/quiz/${row.id}`} className="group flex items-center gap-4 px-6 py-[18px] border-t border-slate-100 first:border-t-0 hover:bg-slate-50 transition-colors">
+    <Link href={`/quiz/${row.id}`} className="group flex items-center gap-4 px-6 py-[18px] border-t border-navy-100 first:border-t-0 hover:bg-navy-50 transition-colors">
       <span className="w-2 h-2 rounded-full bg-[#0071E3] flex-shrink-0" aria-hidden />
       <div className="min-w-0 flex-1">
         <p className="text-[15.5px] font-semibold text-navy truncate">{row.title}</p>

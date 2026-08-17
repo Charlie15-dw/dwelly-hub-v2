@@ -40,7 +40,7 @@ function SaveErrorBanner() {
   )
 }
 
-export type QuizCategory = 'module' | 'full' | 'master' | 'recap' | 'recall' | 'release' | 'crm2'
+export type QuizCategory = 'module' | 'full' | 'master' | 'knowledge' | 'recap' | 'recall' | 'release' | 'crm2'
 
 // Confidence-based scoring (beta). Learners rate how sure they are before
 // seeing the answer. A confident mistake is a hidden gap worth flagging — much
@@ -106,6 +106,10 @@ export default function QuizClient({
 }: QuizClientProps) {
   const isFullAssessment   = quizCategory === 'full'
   const isMasterAssessment = quizCategory === 'master'
+  // Combined Knowledge Base assessment — samples like a module quiz, but has no
+  // single backing video module, so it skips the module_progress upsert and
+  // recall scheduling (like the full/master milestones).
+  const isKnowledgeAssessment = quizCategory === 'knowledge'
   const isRecapQuiz        = quizCategory === 'recap'
   const isRecallQuiz       = quizCategory === 'recall'
   const isReleaseQuiz      = quizCategory === 'release'
@@ -296,7 +300,7 @@ export default function QuizClient({
       // CRM 2.0 quizzes have no backing video module and no recall content, so
       // skip the module_progress upsert and the recall scheduling — but they do
       // still lock and save a scored result above, like any other assessment.
-      if (passed && !isFullAssessment && !isMasterAssessment && !isReleaseQuiz && !isCrm2Quiz) {
+      if (passed && !isFullAssessment && !isMasterAssessment && !isKnowledgeAssessment && !isReleaseQuiz && !isCrm2Quiz) {
         const { error: progressError } = await supabase.from('module_progress').upsert({
           user_id: user.id,
           module_id: moduleId,
@@ -310,7 +314,7 @@ export default function QuizClient({
         }
       }
 
-      if (passed && !isFullAssessment && !isMasterAssessment && !isReleaseQuiz && !isCrm2Quiz) {
+      if (passed && !isFullAssessment && !isMasterAssessment && !isKnowledgeAssessment && !isReleaseQuiz && !isCrm2Quiz) {
         void fetch('/api/quiz/schedule-recall', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
