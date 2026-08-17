@@ -1,109 +1,84 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { PlayCircle, CheckCircle2, Clock, ArrowRight } from 'lucide-react'
-import { COMPLETED_KEY } from './LessonActions'
+import { Clock, ArrowRight, CheckCircle2 } from 'lucide-react'
 
-// "Pick up where you left off" for the CRM 2.0 landing page. Reads the same
-// completion state the progress ring uses and points the reader at the next
-// lesson they haven't finished, with an estimate of the reading time left
-// across everything still outstanding. Re-reads on the same events as the ring
-// so it stays in sync when a lesson is completed or another tab changes state.
+// "Pick up where you left off" for the CRM 2.0 landing page. Answers a returning
+// PM's first question — where was I — and points them straight back in with a
+// primary action. Completion state is resolved on the server from
+// content_completions and passed in, so this is a plain, flash-free component.
 
-export interface ResumeLesson { slug: string; title: string; icon: string; readTime: string }
-
-function parseMinutes(readTime: string): number {
-  const m = readTime.match(/\d+/)
-  return m ? parseInt(m[0], 10) : 0
+export interface ResumeNext {
+  slug: string
+  title: string
+  minutes: number
 }
 
-function readCompleted(): string[] {
-  try {
-    const raw = localStorage.getItem(COMPLETED_KEY)
-    const parsed = raw ? JSON.parse(raw) : []
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
-}
+export default function ResumeCard({
+  next,
+  guidesDone,
+  guidesTotal,
+  minutesLeft,
+  outstanding,
+}: {
+  next: ResumeNext | null
+  guidesDone: number
+  guidesTotal: number
+  minutesLeft: number
+  outstanding: number
+}) {
+  const pct = guidesTotal > 0 ? Math.round((guidesDone / guidesTotal) * 100) : 0
 
-export default function ResumeCard({ lessons }: { lessons: ResumeLesson[] }) {
-  const [completed, setCompleted] = useState<string[]>([])
-  const [loaded, setLoaded] = useState(false)
-
-  useEffect(() => {
-    const update = () => setCompleted(readCompleted())
-    update()
-    setLoaded(true)
-    const onVisibility = () => { if (!document.hidden) update() }
-    window.addEventListener('crm2-progress', update)
-    window.addEventListener('storage', update)
-    window.addEventListener('focus', update)
-    window.addEventListener('pageshow', update)
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => {
-      window.removeEventListener('crm2-progress', update)
-      window.removeEventListener('storage', update)
-      window.removeEventListener('focus', update)
-      window.removeEventListener('pageshow', update)
-      document.removeEventListener('visibilitychange', onVisibility)
-    }
-  }, [])
-
-  const done = new Set(completed)
-  const outstanding = lessons.filter((l) => !done.has(l.slug))
-  const next = outstanding[0] ?? null
-  const minutesLeft = outstanding.reduce((sum, l) => sum + parseMinutes(l.readTime), 0)
-  const allDone = loaded && outstanding.length === 0 && lessons.length > 0
-
-  // Until we've read localStorage, show a neutral shell to avoid a flash of the
-  // wrong lesson.
-  if (!loaded) {
+  // Every guide read — celebrate and point at the sign-off.
+  if (!next) {
     return (
-      <div className="card p-5 flex items-center gap-4">
-        <div className="w-16 h-16 rounded-2xl bg-[#F5F5F7] flex-shrink-0" />
-        <div className="min-w-0">
-          <p className="text-sm font-bold text-navy">Your learning path</p>
-          <p className="text-sm text-slate-500 mt-0.5">Loading your progress…</p>
+      <div className="card p-6 flex flex-col justify-between">
+        <div className="flex items-start gap-4">
+          <span className="w-12 h-12 rounded-2xl bg-[#F0FFF4] text-[#1A7F37] flex items-center justify-center flex-shrink-0">
+            <CheckCircle2 className="w-6 h-6" aria-hidden />
+          </span>
+          <div className="min-w-0">
+            <p className="text-[18px] font-bold text-navy leading-snug">You&rsquo;ve read every guide</p>
+            <p className="text-[14px] text-[var(--text-secondary)] mt-1 leading-relaxed">
+              Nice work. The capstone is the last step to your Certified Operator badge.
+            </p>
+          </div>
         </div>
+        <Link href="/hub/crm-2/capstone" className="btn-primary mt-5 self-start">
+          Take the capstone <ArrowRight className="w-4 h-4" aria-hidden />
+        </Link>
       </div>
     )
   }
 
-  if (allDone) {
-    return (
-      <div className="card p-5 flex items-center gap-4">
-        <div className="w-16 h-16 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0">
-          <CheckCircle2 className="w-7 h-7" aria-hidden />
-        </div>
-        <div className="min-w-0">
-          <p className="text-sm font-bold text-navy">You’ve completed every lesson</p>
-          <p className="text-sm text-slate-500 mt-0.5">Nice work — try the capstone to prove it all stuck.</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!next) return null
+  const isStart = guidesDone === 0
 
   return (
-    <Link href={`/hub/crm-2/${next.slug}`} className="card card-hover p-5 flex items-center gap-4 group">
-      <div className="w-16 h-16 rounded-2xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0 relative">
-        <PlayCircle className="w-7 h-7" aria-hidden />
-        <span className="absolute -bottom-1 -right-1 text-lg" aria-hidden>{next.icon}</span>
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-[#0071E3]">
-          {completed.length === 0 ? 'Start here' : 'Pick up where you left off'}
+    <div className="card p-6 flex flex-col justify-between">
+      <div>
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-orange">
+          {isStart ? 'Start here' : 'Pick up where you left off'}
         </p>
-        <p className="text-sm font-bold text-navy truncate mt-0.5">{next.title}</p>
-        <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+        <p className="mt-1.5 text-[19px] font-bold text-navy leading-snug">{next.title}</p>
+        <p className="mt-1.5 text-[13px] text-[var(--text-secondary)] flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5" aria-hidden />
-          {minutesLeft > 0 ? `~${minutesLeft} min left across ${outstanding.length} ${outstanding.length === 1 ? 'lesson' : 'lessons'}` : 'Almost there'}
+          {minutesLeft > 0
+            ? `~${minutesLeft} min left across ${outstanding} ${outstanding === 1 ? 'guide' : 'guides'}`
+            : 'Almost there'}
         </p>
+
+        {/* Within-guide progress across the twelve. */}
+        <div className="mt-4 flex items-center gap-3">
+          <div className="progress-track flex-1">
+            <div className="progress-fill" style={{ width: `${pct}%`, background: '#0071E3' }} />
+          </div>
+          <span className="text-[12.5px] font-medium text-[var(--text-secondary)] tabular-nums flex-shrink-0">
+            {guidesDone}/{guidesTotal}
+          </span>
+        </div>
       </div>
-      <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-navy transition flex-shrink-0" aria-hidden />
-    </Link>
+
+      <Link href={`/hub/crm-2/${next.slug}`} className="btn-primary mt-5 self-start">
+        {isStart ? 'Start reading' : 'Resume'} <ArrowRight className="w-4 h-4" aria-hidden />
+      </Link>
+    </div>
   )
 }

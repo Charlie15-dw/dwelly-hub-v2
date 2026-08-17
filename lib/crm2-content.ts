@@ -28,17 +28,25 @@ export interface Crm2Block {
   src?: string          // for type 'image' — path under /public; `text` is the caption
   hotspots?: Crm2Hotspot[]  // for type 'image' — clickable pins overlaid on the screenshot
   widget?: 'button-advisor' | 'scenario-drills'  // for type 'widget' — an interactive embed
+  emphasisIndex?: number    // for type 'steps' — accent this item (e.g. the operator's checkpoint)
 }
 
 export type Crm2Pillar = 'orientate' | 'features' | 'operate'
+
+// A lesson is one of three kinds. Only 'guide' lessons count towards progress
+// and the certificate; 'reference' sheets are look-ups you keep to hand, and
+// 'practice' items are drills / the capstone assessment. Every count, the
+// progress denominator and the pillar grouping key off `kind === 'guide'`.
+export type Crm2Kind = 'guide' | 'reference' | 'practice'
 
 export interface Crm2Lesson {
   slug: string
   title: string
   summary: string
-  icon: string          // emoji, shown on cards and the lesson header
+  icon: string          // emoji, retained for the print pages; the app UI uses number chips / Lucide
   pillar: Crm2Pillar
-  readTime: string
+  kind: Crm2Kind
+  minutes: number       // reading/working time in minutes; the view appends "read"
   content: Crm2Block[]
   quizModuleId?: string   // e.g. 'crm2-how-it-works' — renders a "Test yourself" card
 }
@@ -69,7 +77,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'The agent-first model — what runs automatically, and the decisions that are always yours.',
     icon: '🤖',
     pillar: 'orientate',
-    readTime: '5 min read',
+    kind: 'guide',
+    minutes: 5,
     quizModuleId: 'crm2-how-it-works',
     content: [
       { type: 'heading', text: 'An agent that runs the job, and you for the human calls' },
@@ -79,7 +88,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
 
       { type: 'heading', text: 'The main path' },
       { type: 'paragraph', text: 'Most jobs travel through these stages, driven by the agent, with one checkpoint that is always yours (Certificate review):' },
-      { type: 'steps', items: [
+      { type: 'steps', emphasisIndex: 5, items: [
         'Landlord approval — the agent asks the landlord to authorise the work.',
         'Provider selection — the agent finds a contractor.',
         'Scheduling — the agent brokers a date between the parties.',
@@ -114,7 +123,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'The requests queue, the job screen, and how to read a job at a glance.',
     icon: '🧭',
     pillar: 'orientate',
-    readTime: '5 min read',
+    kind: 'guide',
+    minutes: 5,
     quizModuleId: 'crm2-navigating',
     content: [
       { type: 'heading', text: 'The requests queue' },
@@ -160,7 +170,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'The designed human checkpoints, and how long the agent chases before it escalates.',
     icon: '⏱️',
     pillar: 'orientate',
-    readTime: '5 min read',
+    kind: 'guide',
+    minutes: 5,
     quizModuleId: 'crm2-touchpoints',
     content: [
       { type: 'heading', text: 'Designed touchpoints — where a human is always needed' },
@@ -204,7 +215,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'Send Communication, Add Direct Info, Set Visit Date, Provide Instructions and Take Over — what each is for.',
     icon: '🎛️',
     pillar: 'features',
-    readTime: '6 min read',
+    kind: 'guide',
+    minutes: 6,
     quizModuleId: 'crm2-buttons',
     content: [
       { type: 'heading', text: 'Landlord approval buttons — by certificate type' },
@@ -287,7 +299,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'Restart scheduling without a manual take-over — and let the system read the dates in your message.',
     icon: '📅',
     pillar: 'features',
-    readTime: '3 min read',
+    kind: 'guide',
+    minutes: 3,
     quizModuleId: 'crm2-rescheduling',
     content: [
       { type: 'callout', variant: 'info', text: 'New: rescheduling is now built in for jobs already at the Visit or Result awaiting stage. Previously this needed a manual take-over.' },
@@ -317,7 +330,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'Deciding at Certificate review whether remedials are required for compliance or just recommended.',
     icon: '🔧',
     pillar: 'features',
-    readTime: '5 min read',
+    kind: 'guide',
+    minutes: 5,
     quizModuleId: 'crm2-remedial-works',
     content: [
       { type: 'paragraph', text: 'At Certificate review you now decide whether remedial works are required for compliance or simply recommended by the engineer. That choice sends the job down the right path.' },
@@ -358,7 +372,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'What to check on every certificate, AI address flags, wrong-property certs, and reading a CP12.',
     icon: '📄',
     pillar: 'features',
-    readTime: '5 min read',
+    kind: 'guide',
+    minutes: 5,
     quizModuleId: 'crm2-certificate-review',
     content: [
       { type: 'heading', text: 'Check on every certificate' },
@@ -416,7 +431,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'Why an EPC differs from an EICR or gas cert, and the wording when a landlord goes quiet.',
     icon: '⚡',
     pillar: 'features',
-    readTime: '3 min read',
+    kind: 'guide',
+    minutes: 3,
     quizModuleId: 'crm2-epc',
     content: [
       { type: 'paragraph', text: 'Unlike an EICR or a Gas Safety Certificate, an EPC does not have to be renewed during a live tenancy. It does have to be valid before you market the property, sign a new agreement with different tenants, formally change the tenancy agreement with existing tenants, or serve notice — so renewing is best practice.' },
@@ -434,7 +450,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'Reading the next-action date, third-party blocks, and the 3-day wait cap.',
     icon: '🚦',
     pillar: 'operate',
-    readTime: '4 min read',
+    kind: 'guide',
+    minutes: 4,
     quizModuleId: 'crm2-escalations',
     content: [
       { type: 'heading', text: 'Reading the next-action date' },
@@ -458,7 +475,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'The exceptions the agent raises outside the happy path — what each one means, and how to handle the document & email cases.',
     icon: '🧯',
     pillar: 'operate',
-    readTime: '5 min read',
+    kind: 'guide',
+    minutes: 5,
     quizModuleId: 'crm2-escalations-reference',
     content: [
       { type: 'paragraph', text: 'These are the exceptions that fall outside the designed flow — the moments the agent stops and raises a flag because something doesn\u2019t fit the happy path. This page is the single catalogue of those triggers and how to handle them. (The designed, every-job checkpoints — Certificate review, Invoice review and the rest — are covered separately in \u201CWhen the system hands over to you\u201D.)' },
@@ -514,7 +532,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'Switching a job to CRM 1.0, vacant-property jobs, and the habits that keep jobs clean.',
     icon: '🔗',
     pillar: 'operate',
-    readTime: '4 min read',
+    kind: 'guide',
+    minutes: 4,
     quizModuleId: 'crm2-across-systems',
     content: [
       { type: 'heading', text: 'Switching a job from CRM 2.0 to CRM 1.0' },
@@ -564,7 +583,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'Every stage name and control in one place, so the whole team speaks the same language.',
     icon: '📖',
     pillar: 'orientate',
-    readTime: '3 min read',
+    kind: 'reference',
+    minutes: 3,
     content: [
       { type: 'paragraph', text: 'A quick reference for the terms you\u2019ll see on a job. Bookmark this one — it\u2019s the fastest way to get fluent in how 2.0 describes where a job is and what happens next.' },
 
@@ -615,7 +635,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'Follow one CP12 through the whole flow — including a remedial branch — to see how the pieces fit.',
     icon: '🧩',
     pillar: 'features',
-    readTime: '5 min read',
+    kind: 'guide',
+    minutes: 5,
     content: [
       { type: 'paragraph', text: 'The best way to see how the stages, checkpoints and side flows connect is to watch a single job travel through them. Here is a typical Gas Safety Certificate (CP12) job — one where the engineer finds an issue — from open to close. Details are illustrative.' },
 
@@ -660,7 +681,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'The \u201Cwhen X, do Y\u201D calls you\u2019ll make most often, on one screen.',
     icon: '🗂️',
     pillar: 'operate',
-    readTime: '3 min read',
+    kind: 'reference',
+    minutes: 3,
     content: [
       { type: 'paragraph', text: 'The decisions that come up again and again, boiled down. Bookmark this and keep it open while you work through your queue.' },
       { type: 'table',
@@ -707,7 +729,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'The questions new operators ask most, and the traps that catch people out.',
     icon: '❓',
     pillar: 'operate',
-    readTime: '4 min read',
+    kind: 'reference',
+    minutes: 4,
     content: [
       { type: 'subheading', text: 'Should I take over a job just so I can call the tenant or provider early?' },
       { type: 'paragraph', text: 'No. If there\u2019s no new urgent information to process, let the agent keep working — it will escalate to you when it needs a human. Taking over early just adds work and can cut across what the agent is doing.' },
@@ -739,7 +762,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'The headline changes from the old CRM, so you know what to expect and what\u2019s different.',
     icon: '📣',
     pillar: 'operate',
-    readTime: '3 min read',
+    kind: 'reference',
+    minutes: 3,
     content: [
       { type: 'paragraph', text: 'If you\u2019ve worked in CRM 1.0, here\u2019s what actually changes in 2.0. These are the differences worth knowing before you pick up your first job.' },
       { type: 'bullets', items: [
@@ -760,7 +784,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'Work through realistic jobs decision-by-decision, with instant feedback on every call.',
     icon: '🎯',
     pillar: 'operate',
-    readTime: '10 min',
+    kind: 'practice',
+    minutes: 10,
     content: [
       { type: 'paragraph', text: 'Reading is one thing — making the call under pressure is another. These drills drop you into real CRM 2.0 jobs and ask you to pick the next action at each step. You get instant feedback and the reasoning, so you can build the instinct before you’re doing it live.' },
       { type: 'callout', variant: 'tip', text: 'There’s no score kept and nothing to pass here — it’s pure practice. Run them as many times as you like; the feedback is the point.' },
@@ -773,7 +798,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     summary: 'The final sign-off check — a mixed set of questions drawn from every lesson in the space.',
     icon: '🏅',
     pillar: 'operate',
-    readTime: '15 min',
+    kind: 'practice',
+    minutes: 15,
     quizModuleId: CRM2_CAPSTONE_MODULE_ID,
     content: [
       { type: 'paragraph', text: 'This is the capstone — the one assessment that proves you can operate confidently across the whole of CRM 2.0. Unlike the per-lesson checks, it samples questions from every lesson in the space, so you never know which topics will come up.' },
@@ -795,6 +821,24 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
 
 export function getCrm2Lesson(slug: string): Crm2Lesson | undefined {
   return CRM2_LESSONS.find(l => l.slug === slug)
+}
+
+// The guides, in reading order — the only lessons that count towards progress
+// and the certificate. Everything on the landing page that shows a count, a
+// denominator or a pillar group derives from this, so the numbers stay honest.
+export const CRM2_GUIDES: Crm2Lesson[] = CRM2_LESSONS.filter(l => l.kind === 'guide')
+export const CRM2_GUIDE_COUNT = CRM2_GUIDES.length
+export const CRM2_GUIDE_MINUTES = CRM2_GUIDES.reduce((sum, l) => sum + l.minutes, 0)
+
+// 1-based position of a guide within the reading order (01–12), or null if the
+// slug isn't a guide. Used for the number chips and the "Guide nn of 12" pill.
+export function getCrm2GuideNumber(slug: string): number | null {
+  const idx = CRM2_GUIDES.findIndex(l => l.slug === slug)
+  return idx === -1 ? null : idx + 1
+}
+
+export function getCrm2Guides(pillar: Crm2Pillar): Crm2Lesson[] {
+  return CRM2_GUIDES.filter(l => l.pillar === pillar)
 }
 
 // Build a term → definition dictionary from the glossary lesson's tables. Used

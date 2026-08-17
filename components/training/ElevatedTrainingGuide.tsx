@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import {
-  ArrowLeft, Clock, ExternalLink, ChevronRight, ChevronLeft,
-  BookOpen, AlertTriangle, Info, Lightbulb,
+  ArrowLeft, Clock, ExternalLink, ChevronRight, ChevronLeft, BookOpen,
 } from 'lucide-react'
 import {
   getTrainingPage, getAdjacentPages, TRAINING_PAGES, COMPLIANCE_IDS,
@@ -10,6 +9,7 @@ import {
 import { headingAnchor } from '@/lib/search-index'
 import GuideContents from '@/components/training/GuideContents'
 import MarkGuideRead from '@/components/training/MarkGuideRead'
+import Callout, { type CalloutVariant } from '@/components/ui/Callout'
 import { cn } from '@/lib/utils'
 
 // Redesigned Training Guide page — readability pass (17px body, contents
@@ -156,24 +156,15 @@ export default function ElevatedTrainingGuide({ id }: { id: string }) {
 
                   case 'callout':
                   case 'warning': {
-                    // Three variants only, all on real RAG / phase tokens. The
-                    // old red "important" panel folds into amber "warning"; the
-                    // standalone `warning` block renders the same amber callout.
-                    const variant =
-                      block.type === 'warning' ? 'warning'
-                      : block.variant === 'important' ? 'warning'
-                      : block.variant ?? 'info'
-                    const styles = {
-                      info:    { klass: 'phase-onboarding', Icon: Info },
-                      tip:     { klass: 'rag-green',        Icon: Lightbulb },
-                      warning: { klass: 'rag-amber',        Icon: AlertTriangle },
-                    }[variant as 'info' | 'tip' | 'warning'] ?? { klass: 'phase-onboarding', Icon: Info }
-                    const { klass, Icon } = styles
+                    // A standalone `warning` block is always amber; otherwise the
+                    // block's variant drives it (important folds into warning
+                    // inside the shared Callout).
+                    const variant: CalloutVariant =
+                      block.type === 'warning' ? 'warning' : block.variant ?? 'info'
                     return (
-                      <div key={i} className={cn('mt-6 rounded-2xl p-5 flex gap-3.5 items-start', klass)}>
-                        <Icon className="w-[18px] h-[18px] flex-shrink-0 mt-0.5" aria-hidden />
-                        <p className="text-[16.5px] leading-[1.65] max-w-[64ch]">{block.text}</p>
-                      </div>
+                      <Callout key={i} variant={variant} className="mt-6">
+                        {block.text}
+                      </Callout>
                     )
                   }
 

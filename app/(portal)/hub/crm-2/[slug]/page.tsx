@@ -1,14 +1,16 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import {
-  ArrowLeft, Clock, ChevronRight, CalendarCheck, ClipboardCheck,
-  AlertTriangle, Info, Lightbulb, Printer,
+  ArrowLeft, Clock, ChevronRight, ChevronLeft, CalendarCheck, ClipboardCheck, Printer,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isCrm2Preview } from '@/lib/preview'
 import {
-  CRM2_LESSONS, CRM2_PILLARS, CRM2_LAST_REVIEWED, getCrm2Lesson, getCrm2Glossary, type Crm2Block,
+  CRM2_LESSONS, CRM2_PILLARS, CRM2_LAST_REVIEWED, CRM2_GUIDES, CRM2_GUIDE_COUNT,
+  getCrm2Lesson, getCrm2Glossary, getCrm2GuideNumber, getCrm2Guides, type Crm2Block,
 } from '@/lib/crm2-content'
+import { QUIZ_QUESTIONS } from '@/lib/data'
+import { headingAnchor } from '@/lib/search-index'
 import ReadingProgress from '@/components/knowledge/ReadingProgress'
 import ArticleTOC from '@/components/knowledge/ArticleTOC'
 import BookmarkButton from '@/components/knowledge/BookmarkButton'
@@ -17,15 +19,11 @@ import AnnotatedImage from '@/components/crm2/AnnotatedImage'
 import ButtonAdvisor from '@/components/crm2/ButtonAdvisor'
 import ScenarioDrills from '@/components/crm2/ScenarioDrills'
 import GlossaryText, { type GlossaryEntry } from '@/components/crm2/GlossaryText'
+import Callout, { type CalloutVariant } from '@/components/ui/Callout'
 import { cn } from '@/lib/utils'
 
 export function generateStaticParams() {
   return CRM2_LESSONS.map((l) => ({ slug: l.slug }))
-}
-
-// Stable anchor id from a heading's text.
-function slugify(text: string) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
 function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[]) {
@@ -36,32 +34,36 @@ function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[]) {
 
     case 'heading':
       return (
-        <h2 key={i} id={slugify(block.text ?? '')} className="text-xl font-bold text-[#1D1D1F] tracking-tight pt-2 first:pt-0 scroll-mt-24">
+        <h2
+          key={i}
+          id={headingAnchor(block.text ?? '')}
+          className="scroll-mt-8 text-[24px] font-semibold tracking-tight text-navy leading-[1.25] mt-10 mb-3.5"
+        >
           {block.text}
         </h2>
       )
 
     case 'subheading':
       return (
-        <h3 key={i} className="text-base font-semibold text-[#1D1D1F] mt-4">
+        <h3 key={i} className="text-[19px] font-semibold text-navy leading-[1.3] mt-7 mb-3">
           {block.text}
         </h3>
       )
 
     case 'paragraph':
       return (
-        <p key={i} className="text-sm text-[#3A3A3C] leading-relaxed">
+        <p key={i} className="text-[17px] leading-[1.7] text-navy-800 max-w-[68ch] mt-4">
           {block.text ? withGlossary(block.text) : null}
         </p>
       )
 
     case 'bullets':
       return (
-        <ul key={i} className="space-y-2">
+        <ul key={i} className="mt-5 flex flex-col gap-3">
           {block.items?.map((item, j) => (
-            <li key={j} className="flex gap-3">
-              <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#1D1D1F] mt-2" />
-              <p className="text-sm text-[#3A3A3C] leading-relaxed">{withGlossary(item)}</p>
+            <li key={j} className="flex gap-3.5 items-start">
+              <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-navy mt-[11px]" />
+              <p className="text-[17px] leading-[1.7] text-navy-800 max-w-[64ch]">{withGlossary(item)}</p>
             </li>
           ))}
         </ul>
@@ -69,53 +71,59 @@ function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[]) {
 
     case 'steps':
       return (
-        <ol key={i} className="space-y-3">
-          {block.items?.map((item, j) => (
-            <li key={j} className="flex gap-3.5">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#1D1D1F] text-white text-xs font-bold flex items-center justify-center mt-0.5">
-                {j + 1}
-              </span>
-              <p className="text-sm text-[#3A3A3C] leading-relaxed flex-1">{item}</p>
-            </li>
-          ))}
+        <ol key={i} className="mt-5 flex flex-col gap-4">
+          {block.items?.map((item, j) => {
+            const emphasised = block.emphasisIndex === j
+            return (
+              <li
+                key={j}
+                className={cn(
+                  'flex gap-4 items-start',
+                  emphasised && 'rounded-xl bg-[#F0F7FF]/60 border border-[#CCE4FF] -mx-3.5 px-3.5 py-3',
+                )}
+              >
+                <span
+                  className={cn(
+                    'flex-shrink-0 w-7 h-7 rounded-full text-white text-[14px] font-semibold flex items-center justify-center mt-0.5',
+                    emphasised ? 'bg-orange' : 'bg-navy',
+                  )}
+                >
+                  {j + 1}
+                </span>
+                <p className={cn('text-[17px] leading-[1.7] max-w-[64ch] flex-1', emphasised ? 'text-navy font-medium' : 'text-navy-800')}>
+                  {withGlossary(item)}
+                </p>
+              </li>
+            )
+          })}
         </ol>
       )
 
-    case 'callout': {
-      const calloutStyles: Record<string, { bg: string; border: string; icon: React.ElementType; iconColor: string }> = {
-        info:      { bg: 'bg-[#F0F7FF]', border: 'border-[#CCE4FF]', icon: Info,          iconColor: 'text-[#0071E3]' },
-        tip:       { bg: 'bg-[#F0FFF4]', border: 'border-[#B0EACC]', icon: Lightbulb,     iconColor: 'text-green-600' },
-        warning:   { bg: 'bg-[#FFFBF0]', border: 'border-[#FFE4B0]', icon: AlertTriangle, iconColor: 'text-amber-500' },
-        important: { bg: 'bg-red-50',    border: 'border-red-200',    icon: AlertTriangle, iconColor: 'text-red-500' },
-      }
-      const style = calloutStyles[block.variant ?? 'info']
-      const Icon = style.icon
+    case 'callout':
       return (
-        <div key={i} className={cn('rounded-2xl p-4 border flex gap-3', style.bg, style.border)}>
-          <Icon className={cn('w-4 h-4 flex-shrink-0 mt-0.5', style.iconColor)} aria-hidden />
-          <p className="text-sm leading-relaxed text-[#3A3A3C]">{block.text}</p>
-        </div>
+        <Callout key={i} variant={(block.variant ?? 'info') as CalloutVariant} className="mt-6">
+          {block.text ? withGlossary(block.text) : null}
+        </Callout>
       )
-    }
 
     case 'table':
       return block.headers && block.rows ? (
-        <div key={i} className="overflow-x-auto rounded-xl border border-[#E8E8ED]">
-          <table className="w-full text-sm">
+        <div key={i} className="mt-6 overflow-x-auto rounded-2xl border border-navy-100">
+          <table className="w-full text-[16px]">
             <thead>
-              <tr className="bg-[#F5F5F7] border-b border-[#E8E8ED]">
+              <tr className="bg-navy-50 border-b border-navy-100">
                 {block.headers.map((h, j) => (
-                  <th key={j} className="px-4 py-3 text-left text-xs font-semibold text-[#6E6E73] uppercase tracking-wide">
+                  <th key={j} className="px-5 py-3 text-left text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-wide">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F5F5F7]">
+            <tbody className="divide-y divide-navy-100">
               {block.rows.map((row, j) => (
-                <tr key={j} className="hover:bg-[#F5F5F7]/60 transition-colors">
+                <tr key={j}>
                   {row.map((cell, k) => (
-                    <td key={k} className="px-4 py-3 text-[#3A3A3C] leading-relaxed">
+                    <td key={k} className="px-5 py-4 text-navy-800 leading-[1.6] align-top">
                       {cell}
                     </td>
                   ))}
@@ -127,23 +135,22 @@ function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[]) {
       ) : null
 
     case 'divider':
-      return <hr key={i} className="border-[#E8E8ED]" />
+      return <hr key={i} className="mt-8 border-navy-100" />
 
     case 'image':
       if (!block.src) return null
-      // With hotspots the screenshot becomes an interactive, guided tour.
       if (block.hotspots && block.hotspots.length > 0) {
         return <AnnotatedImage key={i} src={block.src} caption={block.text} hotspots={block.hotspots} />
       }
       return (
-        <figure key={i} className="my-1">
-          <div className="rounded-xl border border-[#E8E8ED] overflow-hidden bg-[#F5F5F7]">
+        <figure key={i} className="mt-6">
+          <div className="rounded-2xl border border-navy-100 overflow-hidden bg-navy-50">
             {/* Static screenshot from the playbook; next/image is unnecessary here. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={block.src} alt={block.text ?? ''} className="w-full h-auto block" loading="lazy" />
           </div>
           {block.text && (
-            <figcaption className="text-xs text-[#6E6E73] mt-2 text-center leading-relaxed">{block.text}</figcaption>
+            <figcaption className="text-[13px] text-[var(--text-secondary)] mt-2 text-center leading-relaxed">{block.text}</figcaption>
           )}
         </figure>
       )
@@ -168,69 +175,101 @@ export default async function Crm2LessonPage({ params }: { params: { slug: strin
   if (!lesson) notFound()
 
   const pillar = CRM2_PILLARS.find((p) => p.id === lesson.pillar)
+  const isGuide = lesson.kind === 'guide'
+  const guideNumber = getCrm2GuideNumber(lesson.slug)
+  const guideSlugs = CRM2_GUIDES.map((l) => l.slug)
+  const quizCount = lesson.quizModuleId
+    ? QUIZ_QUESTIONS.filter((q) => q.moduleId === lesson.quizModuleId).length
+    : undefined
 
   // Inline glossary tooltips — but not on the glossary lesson itself, where the
-  // terms are already the subject, nor the capstone/practice pages.
-  const glossary: GlossaryEntry[] =
-    lesson.slug === 'glossary' ? [] : getCrm2Glossary()
+  // terms are already the subject.
+  const glossary: GlossaryEntry[] = lesson.slug === 'glossary' ? [] : getCrm2Glossary()
 
   // Top-level headings drive the table of contents.
   const headings = lesson.content
     .filter((b): b is Crm2Block & { text: string } => b.type === 'heading' && !!b.text)
-    .map((b) => ({ id: slugify(b.text), text: b.text }))
+    .map((b) => ({ id: headingAnchor(b.text), text: b.text }))
 
-  // Adjacent lessons, following the CRM2_LESSONS order.
+  // Adjacent lessons for the bottom nav, following the reading order.
   const idx = CRM2_LESSONS.findIndex((l) => l.slug === lesson.slug)
   const prev = idx > 0 ? CRM2_LESSONS[idx - 1] : null
   const next = idx < CRM2_LESSONS.length - 1 ? CRM2_LESSONS[idx + 1] : null
 
+  // "Next in this pillar" — the following guides in the same pillar (guides only).
+  const nextInPillar =
+    isGuide && guideNumber
+      ? getCrm2Guides(lesson.pillar)
+          .filter((g) => (getCrm2GuideNumber(g.slug) ?? 0) > guideNumber)
+          .slice(0, 2)
+      : []
+
+  const kindLabel = isGuide
+    ? `Guide ${String(guideNumber ?? 0).padStart(2, '0')} of ${CRM2_GUIDE_COUNT}`
+    : lesson.kind === 'reference' ? 'Reference sheet' : 'Practice'
+
   return (
     <>
       <ReadingProgress />
-      <div className="mx-auto max-w-5xl">
-        <div className="flex gap-10">
-          {/* Main column */}
-          <div className="flex-1 min-w-0 max-w-3xl space-y-6 hub-fade">
+      <div className="mx-auto max-w-[1000px] space-y-6">
 
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm">
-              <Link href="/hub/crm-2" className="text-[#6E6E73] hover:text-[#1D1D1F] flex items-center gap-1.5 transition-colors">
-                <ArrowLeft className="w-3.5 h-3.5" /> CRM 2.0
-              </Link>
-              <span className="text-[#D2D2D7]">/</span>
-              <span className="text-[#1D1D1F] font-medium">{lesson.title}</span>
-            </div>
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-[14px]">
+          <Link href="/hub/crm-2" className="text-[var(--text-secondary)] hover:text-navy flex items-center gap-1.5 transition-colors">
+            <ArrowLeft className="w-4 h-4" aria-hidden /> CRM 2.0
+          </Link>
+          <span className="text-navy-200">/</span>
+          <span className="text-navy font-medium">{lesson.title}</span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_236px] gap-9 items-start">
+
+          {/* ── Main column ─────────────────────────────────────────────── */}
+          <div className="min-w-0 space-y-6 hub-fade">
 
             {/* Header card */}
-            <div className="card p-7">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#F5F5F7] flex items-center justify-center text-2xl flex-shrink-0">
-                  <span aria-hidden>{lesson.icon}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h1 className="text-2xl font-bold tracking-tight text-[#1D1D1F]">{lesson.title}</h1>
-                  <p className="text-[#6E6E73] text-sm leading-relaxed max-w-xl mt-1.5">{lesson.summary}</p>
-                  <div className="flex items-center gap-4 mt-3 flex-wrap">
-                    {pillar && <span className="text-xs font-medium text-[#6E6E73]">{pillar.label}</span>}
-                    <span className="flex items-center gap-1.5 text-xs text-[#AEAEB2]">
-                      <Clock className="w-3.5 h-3.5" aria-hidden /> {lesson.readTime}
+            <div className="card p-8">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <span className="text-[11.5px] font-semibold px-2.5 py-0.5 rounded-full phase-onboarding">
+                      {kindLabel}
                     </span>
-                    <span
-                      className="flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full"
-                      title="Checked against the live CRM 2.0 build"
-                    >
-                      <CalendarCheck className="w-3.5 h-3.5" aria-hidden /> Reviewed {CRM2_LAST_REVIEWED}
-                    </span>
+                    {pillar && (
+                      <span className="text-[12px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]">
+                        {pillar.label}
+                      </span>
+                    )}
                   </div>
+                  <h1 className="text-[34px] font-semibold tracking-tight text-navy leading-[1.15] mt-3">
+                    {lesson.title}
+                  </h1>
+                  <p className="text-[18px] leading-[1.6] text-[var(--text-secondary)] max-w-[58ch] mt-2">
+                    {lesson.summary}
+                  </p>
                 </div>
                 <BookmarkButton articleId={`crm2-${lesson.slug}`} variant="labelled" className="flex-shrink-0 hidden sm:inline-flex" />
+              </div>
+
+              <div className="flex items-center gap-x-6 gap-y-2 flex-wrap border-t border-navy-100 mt-5 pt-4">
+                <span className="flex items-center gap-2 text-[14.5px] text-[var(--text-secondary)]">
+                  <Clock className="w-4 h-4" aria-hidden /> {lesson.minutes} min read
+                </span>
+                <span className="flex items-center gap-2 text-[14.5px] text-[var(--text-secondary)]" title="Checked against the live CRM 2.0 build">
+                  <CalendarCheck className="w-4 h-4" aria-hidden /> Reviewed {CRM2_LAST_REVIEWED}
+                </span>
+                {quizCount !== undefined && quizCount > 0 && (
+                  <span className="flex items-center gap-2 text-[14.5px] text-[var(--text-secondary)]">
+                    <ClipboardCheck className="w-4 h-4" aria-hidden /> Test yourself · {quizCount} questions
+                  </span>
+                )}
               </div>
             </div>
 
             {/* Content */}
-            <div className="card p-7 space-y-6">
+            <article className="card p-9 [&>*:first-child]:mt-0">
               {lesson.content.map((block, i) => renderBlock(block, i, glossary))}
-            </div>
+            </article>
 
             {/* Printable one-pager — cheatsheet only */}
             {lesson.slug === 'cheatsheet' && (
@@ -239,49 +278,37 @@ export default async function Crm2LessonPage({ params }: { params: { slug: strin
                 target="_blank"
                 className="card card-hover p-5 flex items-center gap-4 group"
               >
-                <div className="w-11 h-11 rounded-xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0">
+                <div className="w-11 h-11 rounded-xl bg-orange/10 text-orange flex items-center justify-center flex-shrink-0">
                   <Printer className="w-5 h-5" aria-hidden />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#1D1D1F]">Print this cheat sheet</p>
-                  <p className="text-xs text-[#6E6E73] mt-0.5">Open a clean one-page version to print or save as PDF.</p>
+                  <p className="text-[15px] font-bold text-navy">Print this cheat sheet</p>
+                  <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">Open a clean one-page version to print or save as PDF.</p>
                 </div>
-                <span className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-[#0071E3] flex-shrink-0 group-hover:gap-2 transition-all">
+                <span className="hidden sm:inline-flex items-center gap-1 text-[14px] font-semibold text-orange flex-shrink-0 group-hover:gap-2 transition-all">
                   Open <ChevronRight className="w-4 h-4" aria-hidden />
                 </span>
               </Link>
             )}
 
-            {/* Mark complete + was this helpful */}
-            <LessonActions slug={lesson.slug} />
-
-            {/* Test yourself — links to the lesson's quiz */}
-            {lesson.quizModuleId && (
-              <Link
-                href={`/quiz/${lesson.quizModuleId}`}
-                className="card card-hover p-5 flex items-center gap-4 group"
-              >
-                <div className="w-11 h-11 rounded-xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0">
-                  <ClipboardCheck className="w-5 h-5" aria-hidden />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#1D1D1F]">Test yourself on this lesson</p>
-                  <p className="text-xs text-[#6E6E73] mt-0.5">Take a short quiz to check what you&apos;ve taken in.</p>
-                </div>
-                <span className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-[#0071E3] flex-shrink-0 group-hover:gap-2 transition-all">
-                  Start quiz <ChevronRight className="w-4 h-4" aria-hidden />
-                </span>
-              </Link>
-            )}
+            {/* Mark as read + test yourself + was this helpful */}
+            <LessonActions
+              slug={lesson.slug}
+              isGuide={isGuide}
+              guideCount={CRM2_GUIDE_COUNT}
+              guideSlugs={guideSlugs}
+              quizModuleId={lesson.quizModuleId}
+              quizCount={quizCount}
+            />
 
             {/* Lesson navigation */}
             <div className="grid grid-cols-2 gap-3">
               {prev ? (
                 <Link href={`/hub/crm-2/${prev.slug}`} className="card card-hover p-4 flex items-center gap-3 group">
-                  <ArrowLeft className="w-4 h-4 text-[#AEAEB2] flex-shrink-0 group-hover:text-[#0071E3] transition-colors" />
+                  <ChevronLeft className="w-4 h-4 text-[var(--text-tertiary)] flex-shrink-0 group-hover:text-orange transition-colors" aria-hidden />
                   <div className="min-w-0">
-                    <p className="text-[10px] text-[#AEAEB2] uppercase tracking-wide font-medium">Previous</p>
-                    <p className="text-sm font-semibold text-[#1D1D1F] truncate mt-0.5">{prev.title}</p>
+                    <p className="text-[13px] text-[var(--text-secondary)]">Previous</p>
+                    <p className="text-[16px] font-semibold text-navy truncate mt-0.5">{prev.title}</p>
                   </div>
                 </Link>
               ) : <div />}
@@ -289,17 +316,39 @@ export default async function Crm2LessonPage({ params }: { params: { slug: strin
               {next ? (
                 <Link href={`/hub/crm-2/${next.slug}`} className="card card-hover p-4 flex items-center justify-end gap-3 text-right group">
                   <div className="min-w-0">
-                    <p className="text-[10px] text-[#AEAEB2] uppercase tracking-wide font-medium">Next</p>
-                    <p className="text-sm font-semibold text-[#1D1D1F] truncate mt-0.5">{next.title}</p>
+                    <p className="text-[13px] text-[var(--text-secondary)]">Next</p>
+                    <p className="text-[16px] font-semibold text-navy truncate mt-0.5">{next.title}</p>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-[#AEAEB2] flex-shrink-0 group-hover:text-[#0071E3] transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)] flex-shrink-0 group-hover:text-orange transition-colors" aria-hidden />
                 </Link>
               ) : <div />}
             </div>
           </div>
 
-          {/* Table of contents */}
-          <ArticleTOC headings={headings} />
+          {/* ── Sidebar ─────────────────────────────────────────────────── */}
+          <aside className="hidden lg:flex flex-col gap-4 sticky top-6 self-start">
+            <ArticleTOC headings={headings} inline />
+
+            {nextInPillar.length > 0 && (
+              <div className="card p-5">
+                <p className="text-[12px] font-semibold uppercase tracking-widest text-[var(--text-secondary)] mb-3">
+                  Next in this pillar
+                </p>
+                <div className="flex flex-col gap-2.5">
+                  {nextInPillar.map((g) => (
+                    <Link key={g.slug} href={`/hub/crm-2/${g.slug}`} className="flex items-center gap-3 group">
+                      <span className="w-7 h-7 rounded-lg bg-navy-50 text-navy text-[12px] font-bold tabular-nums flex items-center justify-center flex-shrink-0">
+                        {String(getCrm2GuideNumber(g.slug) ?? 0).padStart(2, '0')}
+                      </span>
+                      <span className="text-[14px] font-medium text-navy leading-snug group-hover:text-orange transition-colors">
+                        {g.title}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </aside>
         </div>
       </div>
     </>

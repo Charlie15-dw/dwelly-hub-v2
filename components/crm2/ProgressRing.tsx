@@ -1,85 +1,66 @@
-'use client'
+import { cn } from '@/lib/utils'
 
-import { useEffect, useState } from 'react'
-import { COMPLETED_KEY } from './LessonActions'
+// "Your progress" for the CRM 2.0 landing page. Progress is now measured only
+// across the twelve guides (references and the capstone don't count), and it's
+// broken out per pillar — the level people actually think in — rather than one
+// blended percentage across eighteen unlike things. State is passed in from the
+// server (read from content_completions), so there's no client fetch or flash.
 
-// Landing-page progress indicator for CRM 2.0. Reads the same localStorage key
-// that LessonActions writes, and re-reads when a lesson is marked complete
-// (via the 'crm2-progress' event) or another tab changes it (via 'storage').
-
-function readCount(slugs: string[]): number {
-  try {
-    const raw = localStorage.getItem(COMPLETED_KEY)
-    const parsed = raw ? JSON.parse(raw) : []
-    if (!Array.isArray(parsed)) return 0
-    // Only count slugs that still exist, so removed lessons don't inflate it.
-    return parsed.filter((s) => slugs.includes(s)).length
-  } catch {
-    return 0
-  }
+export interface PillarProgress {
+  label: string
+  done: number
+  total: number
 }
 
-export default function ProgressRing({ slugs }: { slugs: string[] }) {
-  const total = slugs.length
-  const [done, setDone] = useState(0)
-  const [loaded, setLoaded] = useState(false)
-
-  useEffect(() => {
-    const update = () => setDone(readCount(slugs))
-    update()
-    setLoaded(true)
-    // Re-read whenever the page could have gone stale: another tab's change
-    // (storage), a lesson marked complete in this tab (crm2-progress), and —
-    // crucially — coming back to this page via focus, tab switch or the
-    // browser back button (pageshow covers bfcache restores, where the mount
-    // effect does not re-run).
-    const onPageShow = () => update()
-    const onVisibility = () => { if (!document.hidden) update() }
-    window.addEventListener('crm2-progress', update)
-    window.addEventListener('storage', update)
-    window.addEventListener('focus', update)
-    window.addEventListener('pageshow', onPageShow)
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => {
-      window.removeEventListener('crm2-progress', update)
-      window.removeEventListener('storage', update)
-      window.removeEventListener('focus', update)
-      window.removeEventListener('pageshow', onPageShow)
-      document.removeEventListener('visibilitychange', onVisibility)
-    }
-  }, [slugs])
-
-  const pct = total > 0 ? Math.round((done / total) * 100) : 0
-  const r = 26
-  const circ = 2 * Math.PI * r
-  const offset = circ - (pct / 100) * circ
-
+export default function ProgressRing({
+  done,
+  total,
+  pillars,
+}: {
+  done: number
+  total: number
+  pillars: PillarProgress[]
+}) {
   return (
-    <div className="card p-5 flex items-center gap-4">
-      <div className="relative w-16 h-16 flex-shrink-0">
-        <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64" aria-hidden>
-          <circle cx="32" cy="32" r={r} fill="none" stroke="#E8E8ED" strokeWidth="6" />
-          <circle
-            cx="32" cy="32" r={r} fill="none" stroke="#0071E3" strokeWidth="6" strokeLinecap="round"
-            strokeDasharray={circ}
-            strokeDashoffset={loaded ? offset : circ}
-            style={{ transition: 'stroke-dashoffset 500ms ease-out' }}
-          />
-        </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-[#1D1D1F]">
-          {loaded ? `${pct}%` : ''}
-        </span>
+    <div className="card p-6 flex flex-col">
+      <p className="text-[13px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+        Your progress
+      </p>
+      <p className="mt-1 text-navy">
+        <span className="text-[40px] font-bold tabular-nums leading-none">{done}</span>
+        <span className="text-[15px] font-medium text-[var(--text-secondary)]"> of {total} guides read</span>
+      </p>
+
+      <div className="mt-5 space-y-3.5">
+        {pillars.map((p) => {
+          const complete = p.total > 0 && p.done === p.total
+          const started = p.done > 0
+          const pct = p.total > 0 ? Math.round((p.done / p.total) * 100) : 0
+          return (
+            <div key={p.label}>
+              <div className="flex items-center justify-between text-[13px] mb-1.5">
+                <span className="font-medium text-navy">{p.label}</span>
+                <span className={cn(started ? 'text-[var(--text-secondary)]' : 'text-[var(--text-secondary)]')}>
+                  {started ? `${p.done} of ${p.total}` : 'Not started'}
+                </span>
+              </div>
+              <div className="progress-track">
+                <div
+                  className="progress-fill"
+                  style={{
+                    width: `${pct}%`,
+                    background: complete ? '#1A7F37' : started ? '#0071E3' : 'transparent',
+                  }}
+                />
+              </div>
+            </div>
+          )
+        })}
       </div>
-      <div className="min-w-0">
-        <p className="text-sm font-bold text-[#1D1D1F]">Your progress</p>
-        <p className="text-sm text-[#6E6E73] mt-0.5">
-          {loaded ? (
-            done === total && total > 0
-              ? 'All lessons complete — nice work.'
-              : `${done} of ${total} lessons complete`
-          ) : `${total} lessons`}
-        </p>
-      </div>
+
+      <p className="mt-5 text-[12.5px] text-[var(--text-secondary)] leading-relaxed">
+        Saved to your account, so it follows you between devices.
+      </p>
     </div>
   )
 }
