@@ -306,7 +306,7 @@ function ClassicAssessments() {
           <div className="relative mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
               { label: 'Sections',  value: '11'     },
-              { label: 'Questions', value: '33'     },
+              { label: 'Questions', value: '27'     },
               { label: 'Est. time', value: '~50 min'},
               { label: 'Pass mark', value: '80%'    },
             ].map(({ label, value }) => (

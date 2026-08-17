@@ -35,7 +35,7 @@ const ASSESSMENTS: AssessmentMeta[] = [
   })),
   { id: 'knowledge-assessment', title: 'Knowledge Base Assessment — All Sections', questions: 24, passmark: 80 },
   { id: 'full-assessment', title: 'Full Assessment — All Sections', questions: 24, passmark: 80 },
-  { id: 'master-assessment', title: 'Master Assessment', questions: 33, passmark: 80 },
+  { id: 'master-assessment', title: 'Master Assessment', questions: 27, passmark: 80 },
 ]
 
 type Stage = 'ready' | 'locked' | 'passed'
