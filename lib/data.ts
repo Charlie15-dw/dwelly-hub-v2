@@ -178,13 +178,6 @@ export const MODULES: Module[] = [
     description: 'Basic financial literacy — service charges, deductions, and explaining costs to landlords.',
     tags: ['finance', 'P&L', 'landlords'], spacedRepetitionDue: null, confidenceRating: null,
   },
-  {
-    id: 'kno-04', title: 'Property Manager FAQs (Dobby-linked)', section: 'knowledge', phase: 'foundation',
-    duration: 'Always-on', videoLength: 'Various', passmark: 0, completed: false, progress: 0, locked: false, quizCount: 0,
-    roles: ['property_manager', 'maintenance_coordinator', 'lettings_negotiator'],
-    description: 'Live knowledge base powered by Dobby. Ask anything, get instant answers with video links.',
-    tags: ['FAQ', 'Dobby', 'knowledge-base'], spacedRepetitionDue: null, confidenceRating: null,
-  },
 ]
 
 // ─── Team Members ─────────────────────────────────────────────────────────────
