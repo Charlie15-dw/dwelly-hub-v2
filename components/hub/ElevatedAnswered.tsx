@@ -1,5 +1,5 @@
 import { createServiceClient } from '@/lib/supabase/server'
-import { Check } from 'lucide-react'
+import { Check, MessageSquareReply } from 'lucide-react'
 
 // Elevated "You said, we did". The old page only showed published items, so a
 // suggestion in flight was indistinguishable from one being ignored — the thing
@@ -63,15 +63,30 @@ export default async function ElevatedAnswered({ userId }: { userId: string }) {
   return (
     <div className="space-y-6 max-w-[880px]">
       {/* Hero — count shipped this year */}
-      <section className="hub-fade relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel px-9 py-8">
-        <div className="hub-orb-a pointer-events-none absolute -top-24 -right-16 w-60 h-60 rounded-full bg-[#0071E3]/25 blur-3xl" aria-hidden />
-        <div className="relative space-y-2">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50">You said, we did</p>
-          <div className="flex items-baseline gap-3">
+      <section className="hub-fade relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#0071E3]/30 blur-3xl" />
+          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#0071E3]/12 blur-3xl" />
+          <div
+            className="absolute inset-0 opacity-[0.12]"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0)',
+              backgroundSize: '30px 30px',
+              maskImage: 'radial-gradient(ellipse at 75% 0%, #000 0%, transparent 70%)',
+              WebkitMaskImage: 'radial-gradient(ellipse at 75% 0%, #000 0%, transparent 70%)',
+            }}
+          />
+        </div>
+        <div className="relative px-7 py-9 sm:px-10 sm:py-10 space-y-3">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-white/80 backdrop-blur-sm">
+            <MessageSquareReply className="w-3.5 h-3.5 text-orange-200" aria-hidden />
+            You said, we did
+          </span>
+          <div className="flex items-baseline gap-3 pt-1">
             <span className="text-[44px] font-bold leading-none tabular-nums">{shipped}</span>
             <span className="text-[15px] text-white/70">shipped in {year}</span>
           </div>
-          <p className="text-[15px] text-white/70 max-w-[440px] pt-1">Questions and ideas the team raised — and what we actually did about them. Nothing hidden while it&apos;s in flight.</p>
+          <p className="text-[15px] text-white/70 max-w-[440px]">Questions and ideas the team raised — and what we actually did about them. Nothing hidden while it&apos;s in flight.</p>
         </div>
       </section>
 
@@ -143,7 +158,7 @@ export default async function ElevatedAnswered({ userId }: { userId: string }) {
         ) : (
           <div className="card overflow-hidden">
             {team.map(q => (
-              <div key={q.id} className="flex items-center gap-4 px-6 py-[18px] border-t border-slate-100 first:border-t-0">
+              <div key={q.id} className="flex items-center gap-4 px-6 py-[18px] border-t border-navy-100 first:border-t-0">
                 <div className="min-w-0 flex-1">
                   <p className="text-[15px] font-medium text-navy truncate">{q.body}</p>
                   <p className="text-[12.5px] text-[var(--text-secondary)] mt-0.5">{q.category ?? 'General'} · {fmt(q.published_at ?? q.created_at)}</p>

@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowLeft, Scale } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isHubPreview, isHubBeta } from '@/lib/preview'
+import { isHubPreview, isHubBeta, isHubElevated } from '@/lib/preview'
+import HubHero from '@/components/hub/HubHero'
 
 export default async function DepositSimulatorPage() {
   const supabase = createServerClient()
@@ -10,6 +11,27 @@ export default async function DepositSimulatorPage() {
   if (!user) redirect('/')
   if (!isHubPreview(user.email)) redirect('/dashboard')
   if (!isHubBeta(user.email)) redirect('/hub')
+
+  if (isHubElevated(user.email)) {
+    return (
+      <div className="space-y-6">
+        <HubHero
+          eyebrow="Deposit Dispute Simulator"
+          title="Rule like an adjudicator"
+          subtitle="Build a deduction case, choose your evidence, and see how a TDS adjudicator would rule — a safe place to practise before it matters for real."
+          icon={Scale}
+        />
+        <div className="hub-fade-1 card p-0 overflow-hidden">
+          <iframe
+            src="/deposit-sim/index.html"
+            title="Deposit Dispute Simulator"
+            className="w-full border-0"
+            style={{ height: 'calc(100vh - 220px)', minHeight: '640px' }}
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-5">

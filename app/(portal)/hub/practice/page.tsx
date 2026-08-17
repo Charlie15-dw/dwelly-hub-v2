@@ -2,8 +2,9 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowLeft, MessagesSquare } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isHubPreview, isHubBeta } from '@/lib/preview'
+import { isHubPreview, isHubBeta, isHubElevated } from '@/lib/preview'
 import PracticeStudio from '@/components/hub/PracticeStudio'
+import HubHero from '@/components/hub/HubHero'
 
 export default async function PracticePage() {
   const supabase = createServerClient()
@@ -11,6 +12,22 @@ export default async function PracticePage() {
   if (!user) redirect('/')
   if (!isHubPreview(user.email)) redirect('/dashboard')
   if (!isHubBeta(user.email)) redirect('/hub')
+
+  if (isHubElevated(user.email)) {
+    return (
+      <div className="max-w-[880px] space-y-6">
+        <HubHero
+          eyebrow="Conversation practice"
+          title="Rehearse the tough ones"
+          subtitle="Pick a scenario, handle it in your own words, then get instant coaching on how you did — a safe space to practise before it matters for real."
+          icon={MessagesSquare}
+        />
+        <div className="hub-fade-1">
+          <PracticeStudio />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-2xl space-y-6">

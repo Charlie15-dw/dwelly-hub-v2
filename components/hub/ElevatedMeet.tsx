@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowLeft, Check, Sparkles, MessageSquarePlus, ArrowRight } from 'lucide-react'
+import { ArrowLeft, Check, Sparkles, MessageSquarePlus, ArrowRight, Users } from 'lucide-react'
 
 // Elevated Monthly PM Meet — the handoff replaces a flat "Coming soon" with an
 // agenda-collection lifecycle. We show the honest current stage: the first meet
@@ -29,12 +29,33 @@ export default function ElevatedMeet() {
         Back to Connect
       </Link>
 
-      <div className="hub-fade space-y-1.5">
-        <h1 className="text-[26px] font-semibold text-navy tracking-tight">Monthly PM Meet</h1>
-        <p className="text-[15px] text-[var(--text-secondary)]">
-          A monthly forum for the whole property management team — share what&apos;s working, raise what isn&apos;t, and align on how we manage properties.
-        </p>
-      </div>
+      <section className="hub-fade relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#0071E3]/30 blur-3xl" />
+          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#0071E3]/12 blur-3xl" />
+          <div
+            className="absolute inset-0 opacity-[0.12]"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0)',
+              backgroundSize: '30px 30px',
+              maskImage: 'radial-gradient(ellipse at 75% 0%, #000 0%, transparent 70%)',
+              WebkitMaskImage: 'radial-gradient(ellipse at 75% 0%, #000 0%, transparent 70%)',
+            }}
+          />
+        </div>
+        <div className="relative px-7 py-9 sm:px-10 sm:py-10 space-y-3">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-white/80 backdrop-blur-sm">
+            <Users className="w-3.5 h-3.5 text-orange-200" aria-hidden />
+            Monthly PM Meet
+          </span>
+          <h1 className="text-[34px] leading-[1.1] font-bold tracking-tight text-white">
+            The whole team, once a month
+          </h1>
+          <p className="text-[15px] text-white/70 max-w-[440px]">
+            A monthly forum for the property management team — share what&rsquo;s working, raise what isn&rsquo;t, and align on how we manage properties.
+          </p>
+        </div>
+      </section>
 
       {/* Gold "first ever" card — this genuinely hasn't happened before */}
       <div className="hub-fade-1 relative overflow-hidden rounded-3xl px-7 py-6 text-[#3D2E00] shadow-panel" style={{ background: 'linear-gradient(135deg, #C9A84C 0%, #E9C767 100%)' }}>
@@ -87,7 +108,7 @@ export default function ElevatedMeet() {
           <p className="text-[15px] font-semibold text-navy">Add a topic for the first meet</p>
           <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">Goes in anonymously through Q&amp;A — no name attached.</p>
         </div>
-        <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
+        <ArrowRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
       </Link>
 
       <p className="text-[13px] text-[var(--text-tertiary)]">

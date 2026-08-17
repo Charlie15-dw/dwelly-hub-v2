@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { ArrowLeft, ExternalLink, Check, CheckCheck } from 'lucide-react'
+import { ArrowLeft, ExternalLink, Check, CheckCheck, Megaphone } from 'lucide-react'
 import Link from 'next/link'
 import type { HubUpdate } from '@/lib/updates'
 
@@ -99,8 +99,8 @@ export default function ElevatedUpdates({ updates }: { updates: HubUpdate[] }) {
                     type="button"
                     onClick={() => setActiveId(u.id)}
                     className={
-                      'w-full text-left flex items-start gap-3 px-4 py-3.5 border-t border-slate-100 first:border-t-0 transition-colors ' +
-                      (on ? 'bg-[#0071E3]/6' : 'hover:bg-slate-50')
+                      'w-full text-left flex items-start gap-3 px-4 py-3.5 border-t border-navy-100 first:border-t-0 transition-colors ' +
+                      (on ? 'bg-[#0071E3]/6' : 'hover:bg-navy-50')
                     }
                   >
                     <span className="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full" aria-hidden>
@@ -135,20 +135,48 @@ function Header({ unread, onMarkAll, showMarkAll }: { unread: number; onMarkAll:
         <ArrowLeft className="w-4 h-4" aria-hidden />
         Back to Hub
       </Link>
-      <div className="flex items-start justify-between gap-6 flex-wrap">
-        <div className="space-y-1.5">
-          <h1 className="text-[26px] font-semibold text-navy tracking-tight">Dwelly Updates</h1>
-          <p className="text-[15px] text-[var(--text-secondary)]">
-            {unread > 0 ? `${unread} new ${unread === 1 ? 'update' : 'updates'} since you last looked.` : 'What\u2019s changing across Dwelly \u2014 newest first.'}
-          </p>
+
+      <section className="hub-fade relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#0071E3]/30 blur-3xl" />
+          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#0071E3]/12 blur-3xl" />
+          <div
+            className="absolute inset-0 opacity-[0.12]"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0)',
+              backgroundSize: '30px 30px',
+              maskImage: 'radial-gradient(ellipse at 75% 0%, #000 0%, transparent 70%)',
+              WebkitMaskImage: 'radial-gradient(ellipse at 75% 0%, #000 0%, transparent 70%)',
+            }}
+          />
         </div>
-        {showMarkAll && (
-          <button type="button" onClick={onMarkAll} className="btn-outline text-[13px] flex-shrink-0">
-            <CheckCheck className="w-4 h-4" aria-hidden />
-            Mark all as read
-          </button>
-        )}
-      </div>
+        <div className="relative px-7 py-9 sm:px-10 sm:py-10">
+          <div className="flex items-start justify-between gap-6 flex-wrap">
+            <div className="space-y-3">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-white/80 backdrop-blur-sm">
+                <Megaphone className="w-3.5 h-3.5 text-orange-200" aria-hidden />
+                Dwelly Updates
+              </span>
+              <h1 className="text-[34px] leading-[1.1] font-bold tracking-tight text-white">
+                What&rsquo;s new across Dwelly
+              </h1>
+              <p className="text-[15px] text-white/70 max-w-[440px]">
+                {unread > 0 ? `${unread} new ${unread === 1 ? 'update' : 'updates'} since you last looked.` : 'Every release and improvement \u2014 newest first.'}
+              </p>
+            </div>
+            {showMarkAll && (
+              <button
+                type="button"
+                onClick={onMarkAll}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3.5 py-2 text-[13px] font-medium text-white/90 backdrop-blur-sm transition-colors hover:bg-white/15 flex-shrink-0"
+              >
+                <CheckCheck className="w-4 h-4" aria-hidden />
+                Mark all as read
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
@@ -188,7 +216,7 @@ function UpdateDetail({ update }: { update: HubUpdate }) {
                     <ul className="mt-1.5 ml-5 space-y-1">
                       {item.children.map((child, j) => (
                         <li key={j} className="flex gap-2 text-[var(--text-tertiary)]">
-                          <span className="mt-1.5 w-1 h-1 rounded-full bg-slate-300 flex-shrink-0" aria-hidden />
+                          <span className="mt-1.5 w-1 h-1 rounded-full bg-navy-200 flex-shrink-0" aria-hidden />
                           <span>{child}</span>
                         </li>
                       ))}
@@ -200,7 +228,7 @@ function UpdateDetail({ update }: { update: HubUpdate }) {
             {section.image && (
               <figure className="mt-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={section.image.src} alt={section.image.alt} className="w-full rounded-xl border border-slate-200" />
+                <img src={section.image.src} alt={section.image.alt} className="w-full rounded-xl border border-navy-100" />
               </figure>
             )}
           </div>
@@ -222,14 +250,14 @@ function UpdateDetail({ update }: { update: HubUpdate }) {
         <div className="space-y-3 pt-1">
           {update.videos.map(video => (
             <figure key={video.src} className="space-y-1.5">
-              <video src={video.src} controls preload="metadata" className="w-full rounded-xl border border-slate-200 bg-black" />
+              <video src={video.src} controls preload="metadata" className="w-full rounded-xl border border-navy-100 bg-black" />
               {video.label && <figcaption className="text-xs text-[var(--text-tertiary)]">{video.label}</figcaption>}
             </figure>
           ))}
         </div>
       )}
 
-      <div className="flex items-center gap-1.5 text-[12px] text-[var(--text-tertiary)] pt-2 border-t border-slate-100">
+      <div className="flex items-center gap-1.5 text-[12px] text-[var(--text-tertiary)] pt-2 border-t border-navy-100">
         <Check className="w-3.5 h-3.5 text-[#1A7F37]" aria-hidden />
         Read
       </div>

@@ -2,9 +2,10 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowLeft, Landmark, CircleCheck, Clock, Lightbulb, BookOpen } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isHubPreview, isHubBeta } from '@/lib/preview'
+import { isHubPreview, isHubBeta, isHubElevated } from '@/lib/preview'
 import { lawFeedSorted, LAW_STATUS_LABELS, type LawStatus } from '@/lib/law-feed'
 import { getKnowledgeArticle } from '@/lib/training-content'
+import ElevatedLawFeed from '@/components/hub/ElevatedLawFeed'
 
 const STATUS_STYLES: Record<LawStatus, string> = {
   'in-force': 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -22,6 +23,8 @@ export default async function LawFeedPage() {
   if (!user) redirect('/')
   if (!isHubPreview(user.email)) redirect('/dashboard')
   if (!isHubBeta(user.email)) redirect('/hub')
+
+  if (isHubElevated(user.email)) return <ElevatedLawFeed />
 
   const items = lawFeedSorted()
 

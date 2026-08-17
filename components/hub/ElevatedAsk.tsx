@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Send, ShieldCheck, ArrowRight, Check } from 'lucide-react'
+import { Send, ShieldCheck, ArrowRight, Check, MessageSquareDashed } from 'lucide-react'
 import { HUB_QUESTION_CATEGORIES, HUB_QUESTION_MAX_LENGTH } from '@/lib/hub'
+import HubHero from '@/components/hub/HubHero'
 
 // Elevated Anonymous Q&A — "composer-first" (handoff). The box you type in is
 // the first thing on the page, with the anonymity promise sitting right where
@@ -69,17 +70,12 @@ export default function ElevatedAsk({ yours }: { yours: YourQuestion[] }) {
 
   return (
     <div className="max-w-[880px] space-y-6">
-      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-navy transition">
-        <ArrowLeft className="w-4 h-4" aria-hidden />
-        Back to Hub
-      </Link>
-
-      <div className="hub-fade space-y-1.5">
-        <h1 className="text-[26px] font-semibold text-navy tracking-tight">Anonymous Q&amp;A</h1>
-        <p className="text-[15px] text-[var(--text-secondary)]">
-          Raise a question, an idea, or something that feels broken. No name attached.
-        </p>
-      </div>
+      <HubHero
+        eyebrow="Anonymous Q&A"
+        title="Say it, no name attached"
+        subtitle="Raise a question, an idea, or something that feels broken. Reviewers see the text, never who wrote it."
+        icon={MessageSquareDashed}
+      />
 
       {/* Composer-first */}
       <div className="hub-fade-1 card p-6 space-y-4">
@@ -155,7 +151,7 @@ export default function ElevatedAsk({ yours }: { yours: YourQuestion[] }) {
             {yours.map(q => {
               const meta = STAGE_META[q.stage]
               return (
-                <div key={q.id} className="px-6 py-[18px] border-t border-slate-100 first:border-t-0 space-y-2">
+                <div key={q.id} className="px-6 py-[18px] border-t border-navy-100 first:border-t-0 space-y-2">
                   <div className="flex items-start gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="text-[15px] text-navy whitespace-pre-wrap">{q.body}</p>
@@ -183,7 +179,7 @@ export default function ElevatedAsk({ yours }: { yours: YourQuestion[] }) {
           <p className="text-[15px] font-semibold text-navy">You said, we did</p>
           <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">See what the team raised — and what we actually did about it.</p>
         </div>
-        <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
+        <ArrowRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
       </Link>
     </div>
   )

@@ -4,8 +4,9 @@ import {
   Megaphone, MessageSquareDashed, MessageSquareReply, Users, ArrowRight, type LucideIcon,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isHubPreview } from '@/lib/preview'
+import { isHubPreview, isHubElevated } from '@/lib/preview'
 import { hubUpdatesSorted } from '@/lib/updates'
+import ElevatedConnect from '@/components/hub/ElevatedConnect'
 
 // The Connect area — the Hub's connective features as a dedicated page of
 // boxes. Mirrors the sidebar's Connect group (which also drops down for quick
@@ -60,6 +61,10 @@ export default async function HubConnectPage() {
   if (!isHubPreview(user.email)) redirect('/dashboard')
 
   const latest = hubUpdatesSorted()[0]
+
+  if (isHubElevated(user.email)) {
+    return <ElevatedConnect latest={latest ? { title: latest.title, date: latest.date } : null} />
+  }
 
   return (
     <div className="space-y-8">

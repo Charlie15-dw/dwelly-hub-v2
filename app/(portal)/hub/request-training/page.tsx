@@ -2,9 +2,10 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowLeft, GraduationCap } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isHubPreview } from '@/lib/preview'
+import { isHubPreview, isHubElevated } from '@/lib/preview'
 import { canAccessTrainingRequests } from '@/lib/training-requests'
 import RequestTrainingForm from '@/components/hub/RequestTrainingForm'
+import HubHero from '@/components/hub/HubHero'
 
 export default async function RequestTrainingPage() {
   const supabase = createServerClient()
@@ -16,6 +17,22 @@ export default async function RequestTrainingPage() {
   const { data: profile } = await supabase
     .from('user_profiles').select('role').eq('id', user.id).single()
   if (!canAccessTrainingRequests(profile?.role)) redirect('/hub')
+
+  if (isHubElevated(user.email)) {
+    return (
+      <div className="max-w-[880px] space-y-6">
+        <HubHero
+          eyebrow="Request training"
+          title="Set up the next PM"
+          subtitle="Ask for further training for an existing team member, or set up training for a new starter. Requests go straight to the Dwelly team."
+          icon={GraduationCap}
+        />
+        <div className="hub-fade-1">
+          <RequestTrainingForm />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-2xl space-y-6">
