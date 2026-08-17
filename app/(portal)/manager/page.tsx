@@ -1,21 +1,11 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
-import {
-  Users,
-  CheckCircle2, Brain, RefreshCw, CalendarCheck, Activity,
-} from 'lucide-react'
-import TeamAssignmentPanel from '@/components/ui/TeamAssignmentPanel'
-import ReassignButton from '@/components/ui/ReassignButton'
-import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
 import { MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { CRM2_LESSONS } from '@/lib/crm2-content'
-import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 import { isHubBeta } from '@/lib/preview'
-import { ragStatus, RAG_DOT, RAG_LABEL } from '@/lib/rag'
-import CompetencyHeatmap from '@/components/manager/CompetencyHeatmap'
-import PeopleDirectory, { type DirectoryPerson } from '@/components/manager/PeopleDirectory'
-import Crm2AssessmentPanel from '@/components/manager/Crm2AssessmentPanel'
+import { ragStatus } from '@/lib/rag'
+import { type DirectoryPerson } from '@/components/manager/PeopleDirectory'
+import ManagerDashboard from '@/components/manager/ManagerDashboard'
 
 // All assessable items — matches the assessments page exactly
 const ALL_ASSESSMENT_IDS = [
@@ -31,7 +21,7 @@ const ALL_ASSESSMENT_IDS = [
 ]
 const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length // 16
 
-export default async function ManagerDashboard() {
+export default async function ManagerPage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
@@ -128,19 +118,7 @@ export default async function ManagerDashboard() {
       || 'Unknown'
     const initials = displayName.split(' ').map((p: string) => p[0]).join('').toUpperCase().slice(0, 2)
 
-    const joinDate = member.created_at
-      ? new Date(member.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-      : '—'
-
-    const lastActiveTs = memberResults.reduce<string | null>((max, r) => {
-      if (!r.completed_at) return max
-      return max === null || r.completed_at > max ? r.completed_at : max
-    }, null)
-    const lastActive = lastActiveTs
-      ? new Date(lastActiveTs).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-      : null
-
-    return { ...member, displayName, initials, completedCount, progressPct, avgScore, rag, joinDate, lastActive, failedModules }
+    return { ...member, displayName, initials, completedCount, progressPct, avgScore, rag, failedModules }
   })
 
   // Summary stats
@@ -148,10 +126,6 @@ export default async function ManagerDashboard() {
   const avgProgress = teamCount > 0
     ? Math.round(memberStats.reduce((s, m) => s + m.progressPct, 0) / teamCount)
     : 0
-  const scoredMembers = memberStats.filter(m => m.avgScore !== null)
-  const avgScore = scoredMembers.length > 0
-    ? Math.round(scoredMembers.reduce((s, m) => s + (m.avgScore ?? 0), 0) / scoredMembers.length)
-    : null
   const ragCounts = {
     green: memberStats.filter(m => m.rag === 'green').length,
     amber: memberStats.filter(m => m.rag === 'amber').length,
@@ -181,288 +155,101 @@ export default async function ManagerDashboard() {
     href: `/manager/member/${m.id}`,
   }))
 
+  // ── Map computed stats into the serializable props the client shell needs ──
+
+  const heatmapMembers = memberStats.map(m => ({ id: m.id, displayName: m.displayName, initials: m.initials }))
+  const heatmapResults = (allResults ?? []).map(r => ({
+    user_id: r.user_id, assessment_id: r.assessment_id, score: r.score,
+  }))
+
+  const crm2People = memberStats.map(m => ({ id: m.id, displayName: m.displayName, initials: m.initials }))
+  const crm2Results = (allResults ?? []).map(r => ({
+    user_id: r.user_id,
+    assessment_id: r.assessment_id,
+    score: r.score,
+    passed: r.passed,
+    completed_at: r.completed_at,
+  }))
+
+  // Reassignment — resolve module labels server-side (via MODULES / CRM2_LESSONS).
+  const reassignMembers = sorted
+    .filter(m => m.failedModules.length > 0)
+    .map(m => ({
+      id: m.id,
+      displayName: m.displayName,
+      initials: m.initials,
+      failedModules: m.failedModules.map(f => {
+        const mod = MODULES.find(x => x.id === f.assessment_id)
+        const crm2 = CRM2_LESSONS.find(l => l.quizModuleId === f.assessment_id)
+        return {
+          assessmentId: f.assessment_id,
+          label: mod?.title ?? crm2?.title ?? f.assessment_id,
+          score: f.score,
+        }
+      }),
+    }))
+
+  const assignMyTeam = memberStats.map(m => ({
+    id: m.id,
+    displayName: m.displayName,
+    email: m.email ?? null,
+    manager_id: user.id,
+  }))
+
+  const learningCards = sorted.map(m => {
+    const lp = (learningProfiles ?? []).find(p => p.user_id === m.id)
+    return {
+      id: m.id,
+      displayName: m.displayName,
+      initials: m.initials,
+      lp: lp
+        ? {
+            style_label: lp.style_label ?? null,
+            style_icon: lp.style_icon ?? null,
+            confidence_label: lp.confidence_label ?? null,
+            confidence_pct: lp.confidence_pct ?? null,
+            manager_note: lp.manager_note ?? null,
+            completed_at: lp.completed_at ?? null,
+          }
+        : null,
+    }
+  })
+
+  const recapMonths = RECAP_ROUNDS.map(r => ({ id: r.id, month: r.month }))
+  const recapRows = sorted.map(m => {
+    const memberResults = (allResults ?? []).filter(r => r.user_id === m.id)
+    return {
+      id: m.id,
+      displayName: m.displayName,
+      initials: m.initials,
+      cells: RECAP_ROUNDS.map(round => {
+        const attempt = memberResults
+          .filter(r => r.assessment_id === round.id)
+          .sort((a, b) => new Date(b.completed_at ?? 0).getTime() - new Date(a.completed_at ?? 0).getTime())[0]
+        return { roundId: round.id, month: round.month, score: attempt ? attempt.score : null }
+      }),
+    }
+  })
+
   return (
-    <div className="space-y-6">
-
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-xl font-bold text-navy">Manager Dashboard</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Team progress — Training Programme</p>
-        </div>
-        <Link href="/manager/usage" className="btn-outline text-sm">
-          <Activity className="w-4 h-4" aria-hidden />
-          Usage
-        </Link>
-      </div>
-
-      {/* Search / filter — team members (at the top for quick lookup) */}
-      {teamCount === 0 ? (
-        <div className="card overflow-hidden">
-          <div className="px-6 py-5 border-b border-slate-100">
-            <h2 className="text-base font-bold text-navy">Team Progress</h2>
-          </div>
-          <div className="px-6 py-16 text-center">
-            <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-slate-500">No team members yet</p>
-            <p className="text-xs text-slate-400 mt-1">Add users in Supabase → Authentication → Users</p>
-          </div>
-        </div>
-      ) : (
-        <PeopleDirectory
-          people={directoryPeople}
-          totalAssessments={TOTAL_ASSESSMENTS}
-          title="Team Progress"
-          secondaryColumn="role"
-          showActivity
-        />
-      )}
-
-      {/* RAG summary */}
-      <div className="grid grid-cols-3 gap-4">
-        {(['green', 'amber', 'red'] as const).map(status => (
-          <div key={status} className={cn('card p-5 border-l-4', {
-            'border-l-green-500': status === 'green',
-            'border-l-amber-400': status === 'amber',
-            'border-l-red-500':   status === 'red',
-          })}>
-            <div className="flex items-center gap-2 mb-1">
-              <div className={cn('w-3 h-3 rounded-full', RAG_DOT[status])} aria-hidden />
-              <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                {RAG_LABEL[status]}
-              </span>
-            </div>
-            <p className="text-3xl font-black text-navy tabular-nums">{ragCounts[status]}</p>
-            <p className="text-xs text-slate-400 mt-0.5">team members</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Competency heatmap — beta only */}
-      {beta && (
-        <CompetencyHeatmap
-          members={memberStats.map(m => ({ id: m.id, displayName: m.displayName, initials: m.initials }))}
-          results={(allResults ?? []).map(r => ({ user_id: r.user_id, assessment_id: r.assessment_id, score: r.score }))}
-        />
-      )}
-
-      {/* CRM 2.0 assessments — private preview, kept separate from the main
-          team-completion metric so it doesn't skew everyone's denominator */}
-      <Crm2AssessmentPanel
-        people={memberStats.map(m => ({ id: m.id, displayName: m.displayName, initials: m.initials }))}
-        results={(allResults ?? []).map(r => ({
-          user_id: r.user_id,
-          assessment_id: r.assessment_id,
-          score: r.score,
-          passed: r.passed,
-          completed_at: r.completed_at,
-        }))}
-      />
-
-      {/* Reassignment panel — only show when there are failed modules */}
-      {sorted.some(m => m.failedModules.length > 0) && (
-        <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-            <RefreshCw className="w-4 h-4 text-amber-500" aria-hidden />
-            <h2 className="text-sm font-bold text-navy">Reassignment Actions</h2>
-            <span className="ml-auto text-xs text-slate-400">Modules scored below 80% — grant a retake</span>
-          </div>
-          <div className="divide-y divide-slate-50">
-            {sorted.filter(m => m.failedModules.length > 0).map(member => (
-              <div key={member.id} className="px-5 py-4">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-[11px] font-bold">{member.initials}</span>
-                  </div>
-                  <p className="text-sm font-semibold text-navy">{member.displayName}</p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {member.failedModules.map(f => {
-                    const mod = MODULES.find(m => m.id === f.assessment_id)
-                    const crm2 = CRM2_LESSONS.find(l => l.quizModuleId === f.assessment_id)
-                    const label = mod?.title ?? crm2?.title ?? f.assessment_id
-                    return (
-                      <div
-                        key={f.assessment_id}
-                        className="rounded-xl border border-red-100 bg-red-50/50 px-3 py-3 w-full"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className="min-w-0 flex-1">
-                            <p className="text-xs font-semibold text-navy truncate max-w-[200px]">{label}</p>
-                            <p className="text-[11px] text-red-500">Score: {f.score}% · Failed</p>
-                          </div>
-                          <ReassignButton
-                            userId={member.id}
-                            moduleId={f.assessment_id}
-                            moduleName={label}
-                          />
-                        </div>
-                        <WrongAnswersPanel
-                          userId={member.id}
-                          moduleId={f.assessment_id}
-                          moduleName={label}
-                          score={f.score}
-                        />
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Team assignment */}
-      <TeamAssignmentPanel
-        unassigned={unassigned}
-        myTeam={memberStats.map(m => ({
-          id: m.id,
-          displayName: m.displayName,
-          email: m.email ?? null,
-          manager_id: user.id,
-        }))}
-        managerId={user.id}
-      />
-
-      {/* Team Learning Profiles */}
-      {teamCount > 0 && (
-        <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-            <Brain className="w-4 h-4 text-[#0071E3]" aria-hidden />
-            <h2 className="text-sm font-bold text-navy">Team Learning Profiles</h2>
-          </div>
-          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            {sorted.map(member => {
-              const lp = (learningProfiles ?? []).find(p => p.user_id === member.id)
-              return (
-                <div key={member.id} className="rounded-xl border border-slate-100 bg-slate-50/50 p-4">
-                  <div className="flex items-center gap-2.5 mb-3">
-                    <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-                      <span className="text-white text-xs font-bold">{member.initials}</span>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-navy truncate">{member.displayName}</p>
-                    </div>
-                  </div>
-                  {lp ? (
-                    <div className="space-y-2.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg leading-none">{lp.style_icon}</span>
-                        <div>
-                          <p className="text-xs font-semibold text-navy">{lp.style_label}</p>
-                          <p className="text-[11px] text-slate-400">Learning style</p>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <p className="text-[11px] text-slate-500">Starting confidence</p>
-                          <p className="text-[11px] font-semibold text-navy">{lp.confidence_label}</p>
-                        </div>
-                        <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-[#0071E3] rounded-full"
-                            style={{ width: `${lp.confidence_pct}%` }}
-                          />
-                        </div>
-                      </div>
-                      {lp.manager_note && (
-                        <div className="rounded-lg bg-white border border-slate-100 px-3 py-2">
-                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">Manager note</p>
-                          <p className="text-xs text-slate-600 leading-relaxed">{lp.manager_note}</p>
-                        </div>
-                      )}
-                      <p className="text-[10px] text-slate-300">
-                        Completed {lp.completed_at ? new Date(lp.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="text-center py-3">
-                      <p className="text-xs text-slate-400">Learning profile not yet completed</p>
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Recap & Refresh tracker */}
-      {teamCount > 0 && (
-        <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-            <CalendarCheck className="w-4 h-4 text-indigo-500" aria-hidden />
-            <h2 className="text-sm font-bold text-navy">Recap &amp; Refresh</h2>
-            <span className="ml-auto text-xs text-slate-400">Monthly knowledge checks</span>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm" role="table">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/80">
-                  <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">
-                    Team Member
-                  </th>
-                  {RECAP_ROUNDS.map(round => (
-                    <th key={round.id} className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">
-                      {round.month}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-50">
-                {sorted.map(member => {
-                  const memberResults = (allResults ?? []).filter(r => r.user_id === member.id)
-                  return (
-                    <tr key={member.id} className="hover:bg-slate-50/60 transition-colors">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-                            <span className="text-white text-[11px] font-bold">{member.initials}</span>
-                          </div>
-                          <p className="text-sm font-medium text-navy">{member.displayName}</p>
-                        </div>
-                      </td>
-                      {RECAP_ROUNDS.map(round => {
-                        const attempt = memberResults
-                          .filter(r => r.assessment_id === round.id)
-                          .sort((a, b) => new Date(b.completed_at ?? 0).getTime() - new Date(a.completed_at ?? 0).getTime())[0]
-                        return (
-                          <td key={round.id} className="px-4 py-3 whitespace-nowrap">
-                            {attempt ? (
-                              <div>
-                                <span className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-full px-2.5 py-0.5">
-                                  <CheckCircle2 className="w-3 h-3" aria-hidden />
-                                  {attempt.score}%
-                                </span>
-                              </div>
-                            ) : (
-                              <span className="text-xs text-slate-300">Not completed</span>
-                            )}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Info note */}
-      <div className="rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 flex items-start gap-3">
-        <CheckCircle2 className="w-4 h-4 text-teal mt-0.5 flex-shrink-0" />
-        <div>
-          <p className="text-sm font-semibold text-navy">Live data from Supabase</p>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Progress and scores update in real time as team members complete modules and assessments.
-            To add a new team member, go to Supabase → Authentication → Users → Add User, then assign them here.
-          </p>
-        </div>
-      </div>
-
-    </div>
+    <ManagerDashboard
+      teamCount={teamCount}
+      avgProgress={avgProgress}
+      ragCounts={ragCounts}
+      directoryPeople={directoryPeople}
+      beta={beta}
+      heatmapMembers={heatmapMembers}
+      heatmapResults={heatmapResults}
+      crm2People={crm2People}
+      crm2Results={crm2Results}
+      reassignMembers={reassignMembers}
+      assignUnassigned={unassigned}
+      assignMyTeam={assignMyTeam}
+      managerId={user.id}
+      learningCards={learningCards}
+      recapRows={recapRows}
+      recapMonths={recapMonths}
+      totalAssessments={TOTAL_ASSESSMENTS}
+    />
   )
 }
