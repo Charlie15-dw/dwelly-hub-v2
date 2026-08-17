@@ -246,8 +246,8 @@ function ClassicAssessments() {
           <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[#E8E8ED] border-t border-[#E8E8ED]">
             {[
               { label: 'Sections', value: '5' },
-              { label: 'Questions', value: '24' },
-              { label: 'Est. time', value: '~30 min' },
+              { label: 'Questions', value: '15' },
+              { label: 'Est. time', value: '~20 min' },
               { label: 'Pass mark', value: '80%' },
             ].map(({ label, value }) => (
               <div key={label} className="px-5 py-4 text-center">

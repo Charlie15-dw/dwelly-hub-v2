@@ -34,7 +34,7 @@ const ASSESSMENTS: AssessmentMeta[] = [
     passmark: m.passmark,
   })),
   { id: 'knowledge-assessment', title: 'Knowledge Base Assessment — All Sections', questions: 24, passmark: 80 },
-  { id: 'full-assessment', title: 'Full Assessment — All Sections', questions: 24, passmark: 80 },
+  { id: 'full-assessment', title: 'Full Assessment — All Sections', questions: 15, passmark: 80 },
   { id: 'master-assessment', title: 'Master Assessment', questions: 27, passmark: 80 },
 ]
 
