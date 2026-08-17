@@ -1664,6 +1664,44 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     rationale: 'Every maintenance payment should have a documented authorisation trail in the Dwelly job chat. Pull up the relevant job, review the records, and determine whether authorisation was correctly obtained. If authorisation was not recorded or was insufficient, escalate immediately. This is both a financial and operational failure that must be addressed transparently.',
   },
 
+  // ── MASTER: Portals (kno-portals) ─────────────────────────────────────────
+  {
+    id: 'q-m-kno-portals-1', moduleId: 'kno-portals', tier: 'master',
+    question: 'A tenant on a Rent Collection property phones, frustrated that the maintenance option is missing from their Tenant Portal and insisting Dwelly must fix "their broken boiler". What is the correct response?',
+    options: [
+      'Explain that maintenance is only handled by Dwelly on Fully Managed properties, so the missing option is expected on Rent Collection — direct the tenant to the landlord for the repair, and record the contact',
+      'Raise a maintenance job on their behalf in Dwelly so the repair is captured, since a boiler fault is an emergency that overrides the management-type restriction on all arrangements',
+      'Tell the tenant their portal access is faulty and log a support ticket to have the maintenance option re-enabled for their account as a priority fix',
+      'Advise the tenant to submit a move-out request instead, as that is the only portal action available to them and it will prompt the landlord to act on the boiler',
+    ],
+    correct: 0,
+    rationale: 'On Rent Collection and Let Only, submitting a maintenance request through the portal is deliberately unavailable — maintenance is only handled by Dwelly on Fully Managed properties. The missing option is expected, not a fault. The tenant should be directed to the landlord for repairs, and the contact recorded.',
+  },
+  {
+    id: 'q-m-kno-portals-2', moduleId: 'kno-portals', tier: 'master',
+    question: 'A landlord is angry that a repair "has had no progress for a week" and demands the full job history, which they say the Landlord Portal does not show. What is the best-practice handling?',
+    options: [
+      'Explain the portal only shows current jobs, their statuses and past activity — not the full detailed history — then pull the authorisation and communication trail from the job in Dwelly and talk the landlord through it yourself',
+      'Tell the landlord the portal is the single source of truth, so if it shows no progress then no progress has been made, and open a complaint against the contractor',
+      'Grant the landlord temporary elevated portal access so they can view the complete job history directly and reach their own conclusions',
+      'Advise the landlord that detailed job history is confidential to Dwelly and the contractor, and cannot be shared with landlords under data protection rules',
+    ],
+    correct: 0,
+    rationale: 'Landlords cannot see the full job history in their portal — only current jobs, statuses and past activity. The detailed history comes from the PM, not the portal. The right move is to explain that limit and then use the job record in Dwelly to talk the landlord through exactly what has happened.',
+  },
+  {
+    id: 'q-m-kno-portals-3', moduleId: 'kno-portals', tier: 'master',
+    question: 'A contractor says they attended a maintenance visit, found the work would exceed the call-out fee, and "just got on with it" to save time — now they have submitted an invoice far above the call-out fee. What went wrong and what happens next?',
+    options: [
+      'The contractor should only "Fix It Now" within the call-out fee, an approved budget, or with same-day office approval — without that, the work needed a quote and landlord approval first, so the excess cannot simply be paid and must be escalated and reviewed against the authorisation rules',
+      'Nothing went wrong — contractors are trusted to use their judgement on the day, so the invoice should be processed in full to maintain the working relationship',
+      'The contractor breached the rules, so the job should be closed with no payment at all and the contractor removed from the panel immediately',
+      'The tenant authorised the work by letting the contractor in, so the tenant is liable for the portion of the invoice above the call-out fee',
+    ],
+    correct: 0,
+    rationale: 'A contractor may only fix on the spot when the work is within the call-out fee, within an approved budget, or specifically approved by the office that day. Beyond that, a quote and landlord approval are required before work proceeds. An invoice above the call-out fee with no prior approval breaches that process and must be escalated and reviewed — not paid automatically.',
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   // RECAP QUIZ — Advanced scenario-based questions for experienced PMs (tier: 'recap')
   // These do NOT appear in standard module or master assessments.

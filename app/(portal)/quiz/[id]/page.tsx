@@ -14,9 +14,9 @@ import QuizClient, { type QuizCategory } from './QuizClient'
 
 // Video module sections (3 questions each for combined assessments)
 const VIDEO_MODULE_IDS = ['mnt-02', 'cmp-02', 'mvt-02', 'ins-02', 'sup-02']
-const KNOWLEDGE_IDS    = ['kno-01', 'kno-02', 'kno-03']
-// The combined Knowledge Base assessment draws from the three knowledge modules
-// plus the portal content (Tenant, Landlord & Maintenance Provider portals).
+// The knowledge base — the three knowledge modules plus the portal content
+// (Tenant, Landlord & Maintenance Provider portals). Used both for the combined
+// Knowledge Base assessment and for the knowledge half of the Master assessment.
 const KNOWLEDGE_ASSESSMENT_IDS = ['kno-01', 'kno-02', 'kno-03', 'kno-portals']
 const KNOWLEDGE_ASSESSMENT_SAMPLE = 24
 const PER_SECTION = 3
@@ -141,7 +141,9 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   let questionPool = QUIZ_QUESTIONS.filter(() => false) // typed empty default
 
   if (isMasterAssessment) {
-    questionPool = [...VIDEO_MODULE_IDS, ...KNOWLEDGE_IDS].flatMap(mid =>
+    // Master spans every video module and the full knowledge base, including the
+    // portal content (kno-portals), at the harder 'master' tier.
+    questionPool = [...VIDEO_MODULE_IDS, ...KNOWLEDGE_ASSESSMENT_IDS].flatMap(mid =>
       QUIZ_QUESTIONS.filter(q => q.moduleId === mid && q.tier === 'master')
     )
   } else if (isFullAssessment) {
