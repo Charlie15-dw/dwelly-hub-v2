@@ -52,6 +52,8 @@ export type TrainingSection =
   | 'kb-tenancy-agreements'
   | 'kb-repairs-responsibilities'
   | 'kb-insurance'
+  | 'kb-tenant-portal'
+  | 'kb-landlord-portal'
 
 export interface ContentBlock {
   type: 'heading' | 'subheading' | 'paragraph' | 'steps' | 'bullets' | 'callout' | 'warning' | 'table' | 'divider'
@@ -739,7 +741,7 @@ export interface KnowledgeArticle {
   title: string
   subtitle: string
   icon: string
-  category: 'legal' | 'communication' | 'finance' | 'standards' | 'landlord'
+  category: 'legal' | 'communication' | 'finance' | 'standards' | 'landlord' | 'portals'
   readTime: string
   quizModuleId?: string   // links to QUIZ_QUESTIONS in data.ts
   difficulty: 'foundation' | 'intermediate' | 'advanced'
@@ -1667,19 +1669,102 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
       { type: 'callout', variant: 'tip', text: 'When a property is being improved, always commission a new EPC after the works are completed — the rating improvement will only be reflected once a new assessment is done by a qualified domestic energy assessor.' },
     ],
   },
+  // ─── Portals ───────────────────────────────────────────────────────────────
+  {
+    id: 'kb-tenant-portal',
+    title: 'The Tenant Portal — How It Works',
+    related: ['kb-landlord-portal', 'kb-contractor-portal', 'kb-repairs-responsibilities'],
+    subtitle: 'How tenants manage their tenancy through the Dwelly Tenant Portal — access, the two views, and what each management type can do.',
+    icon: '📱',
+    category: 'portals',
+    readTime: '4 min read',
+    difficulty: 'foundation',
+    content: [
+      { type: 'heading', level: 1, text: 'What the Tenant Portal Is' },
+      { type: 'paragraph', text: 'The Tenant Portal lets tenants manage the key actions of their tenancy themselves — what they can do depends on where they are in the tenancy and how the property is managed. It is one of Dwelly\'s three portals, alongside the Landlord Portal and the Maintenance Provider Portal.' },
+      { type: 'callout', variant: 'info', text: 'The Tenant Portal lives at tenant.dwelly.group. When a tenant reports a fault here, Dwelly automatically creates a maintenance job and assigns it to the responsible Property Manager — so a portal request is the same as a job landing in your queue.' },
+
+      { type: 'heading', level: 1, text: 'Getting Access' },
+      { type: 'bullets', items: [
+        'Tenants receive access to the portal once first monies are paid.',
+        'Access is authorised via the tenant\'s registered phone number.',
+        'Only the main tenant receives the email containing the portal link.',
+        'Additional tenants can still get in via phone-number verification.',
+      ]},
+
+      { type: 'heading', level: 1, text: 'The Two Views' },
+      { type: 'paragraph', text: 'What a tenant sees changes with their tenancy stage:' },
+      { type: 'table', headers: ['Stage', 'What the portal shows'], rows: [
+        ['Let Agreed', 'The move-in payment is requested when the tenant sets up their Direct Debit.'],
+        ['Moved In', 'The portal shows the rent amount, and the tenancy actions become available.'],
+      ]},
+
+      { type: 'heading', level: 1, text: 'What Tenants Can Do — by Management Type' },
+      { type: 'paragraph', text: 'The functions available to a moved-in tenant depend on how the property is managed — Fully Managed, Rent Collection, or Let Only:' },
+      { type: 'table', headers: ['Action', 'Fully Managed', 'Rent Collection', 'Let Only'], rows: [
+        ['Submit maintenance request', 'Yes', 'No', 'No'],
+        ['Submit move-out request', 'Yes', 'Yes', 'Yes'],
+      ]},
+      { type: 'callout', variant: 'tip', text: 'If a Rent Collection or Let Only tenant asks why they can\'t raise a repair in the portal, that\'s expected — maintenance is only handled by Dwelly on Fully Managed properties. Point them to the landlord for repairs on those arrangements.' },
+    ],
+  },
+  {
+    id: 'kb-landlord-portal',
+    title: 'The Landlord Portal — How It Works',
+    related: ['kb-tenant-portal', 'kb-contractor-portal', 'kb-landlord-relations'],
+    subtitle: 'How landlords see their portfolio, finances, documents and maintenance activity through the Dwelly Landlord Portal — and what they can\'t see.',
+    icon: '🏦',
+    category: 'portals',
+    readTime: '4 min read',
+    difficulty: 'foundation',
+    content: [
+      { type: 'heading', level: 1, text: 'What the Landlord Portal Is' },
+      { type: 'paragraph', text: 'The Landlord Portal gives landlords visibility over their portfolio, finances, documents and maintenance activity in one place. Knowing what it shows means you can point a landlord to it rather than pulling reports by hand — and set the right expectations about what they can and can\'t see.' },
+      { type: 'callout', variant: 'info', text: 'The Landlord Portal lives at landlord.dwelly.group.' },
+
+      { type: 'heading', level: 1, text: 'Portfolio Overview' },
+      { type: 'paragraph', text: 'When landlords open the portal, they land on an overview of all their properties — those with several properties scroll down to see the full portfolio. Each property card shows:' },
+      { type: 'bullets', items: [
+        'Property photos',
+        'Monthly rental price',
+        'Current status — for example Tenanted, Let Agreed, or Listed',
+        'Full property address',
+        'Number of rooms and property type',
+      ]},
+      { type: 'subheading', level: 2, text: 'Property Details' },
+      { type: 'paragraph', text: 'Selecting Property Details opens the deeper view of a single property:' },
+      { type: 'bullets', items: [
+        'Number of rooms',
+        'Lease terms',
+        'Move-in and move-out dates',
+        'Security deposit information',
+      ]},
+
+      { type: 'heading', level: 1, text: 'The Three Navigation Buttons' },
+      { type: 'paragraph', text: 'At the bottom of the Landlord Portal are three blue buttons:' },
+      { type: 'table', headers: ['Button', 'What it holds'], rows: [
+        ['Documents', 'Important files — property guides and supporting documents, invoices, and lease agreements.'],
+        ['Statements', 'Financial information — rental income statements, payment records, and financial summaries.'],
+        ['Maintenance Requests', 'All current maintenance jobs and their statuses, plus past maintenance activity.'],
+      ]},
+      { type: 'callout', variant: 'warning', text: 'Landlords cannot see the full job history through their portal — only current jobs, their statuses, and past activity. If a landlord wants the detailed history of a job, that comes from you, not the portal.' },
+    ],
+  },
+
   {
     id: 'kb-contractor-portal',
-    title: 'The Contractor Portal — How It Works',
-    related: ['kb-property-standards', 'kb-disrepair', 'kb-damp-mould'],
+    title: 'The Maintenance Provider Portal — How It Works',
+    related: ['kb-tenant-portal', 'kb-landlord-portal', 'kb-property-standards'],
     subtitle: 'How the contractors and providers who carry out our repairs and compliance jobs receive work, book visits, and get paid through the Dwelly provider portal.',
     icon: '🛠️',
-    category: 'standards',
+    category: 'portals',
     readTime: '7 min read',
     difficulty: 'foundation',
     content: [
       { type: 'heading', level: 1, text: 'Why This Matters to You' },
       { type: 'paragraph', text: 'When you raise a repair or a compliance job, the contractor or provider who carries it out works from their own portal at provider.dwelly.group — separate from the system you use. Knowing how their side works means you can set the right expectations with tenants, understand where a job has got to, and help a contractor who is stuck rather than guessing.' },
-      { type: 'callout', variant: 'info', text: 'The provider portal lives at provider.dwelly.group. A contractor\'s username is their email address and their password is sent to them separately. If a contractor can\'t log in, point them at the office rather than trying to reset it yourself.' },
+      { type: 'callout', variant: 'info', text: 'The provider portal lives at provider.dwelly.group. Before go-live and migration, each maintenance provider is issued their own unique portal login. A contractor\'s username is their email address and their password is sent to them separately. If a contractor can\'t log in, point them at the office rather than trying to reset it yourself.' },
+      { type: 'callout', variant: 'tip', text: 'Only Team Coordinators can open a provider\'s portal from inside the Dwelly system — go to Property Management → Service Providers at the top of the page.' },
 
       { type: 'heading', level: 1, text: 'How a Contractor Navigates Their Portal' },
       { type: 'paragraph', text: 'The main navigation gives contractors four places to work from:' },
@@ -1742,6 +1827,15 @@ export const KNOWLEDGE_ARTICLES: KnowledgeArticle[] = [
         'Final documentation and payment — once the repair is complete and approved, the contractor sends all three: their final invoice, proof of works (before-and-after photos or video), and the approved quote. We process this and issue payment according to the approved quote or invoice.',
       ]},
       { type: 'callout', variant: 'important', text: 'A contractor should only fix work on the spot when it\'s within the call-out fee, within an approved budget, or specifically approved by the office that day. Anything beyond that needs a quote and landlord approval before the work goes ahead — which is why some jobs sit at "Quote Sent" while the landlord decides.' },
+
+      { type: 'heading', level: 1, text: 'How Dwelly Uses the Portal for Oversight' },
+      { type: 'paragraph', text: 'Because the provider works through the portal rather than off-system, Dwelly keeps full visibility over communication and job progress. That oversight is what lets you answer a tenant\'s or landlord\'s questions with confidence.' },
+      { type: 'bullets', items: [
+        'Masked calls are logged — we can see when a provider has called a tenant through the masked number, so contact is never a case of taking someone\'s word for it.',
+        'Call attempts are counted — the system shows the number of calls a provider has made to the tenant.',
+        'Appointments confirm automatically — once a time slot is agreed, it updates in the system as a confirmed appointment time, with no manual step.',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'This tracking means clearer contractor–tenant communication, fewer misunderstandings, and a full audit trail — so if a tenant says "nobody called me", you can check what actually happened.' },
     ],
   },
 

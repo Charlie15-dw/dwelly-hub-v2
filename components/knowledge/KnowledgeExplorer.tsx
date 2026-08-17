@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
   Search, Clock, ArrowRight, BookOpen, Layers, Sparkles,
-  Scale, MessageCircle, BarChart2, Home, Handshake, X, Bookmark, CalendarCheck, type LucideIcon,
+  Scale, MessageCircle, BarChart2, Home, Handshake, MonitorSmartphone, X, Bookmark, CalendarCheck, type LucideIcon,
 } from 'lucide-react'
 import { KNOWLEDGE_ARTICLES, type KnowledgeArticle } from '@/lib/training-content'
 import { useSettings } from '@/components/SettingsProvider'
@@ -20,9 +20,10 @@ const CATEGORY_META: Record<Category, { label: string; icon: LucideIcon; chip: s
   finance:       { label: 'Finance',            icon: BarChart2,     chip: 'bg-amber-50 text-amber-700 border-amber-200',      dot: 'bg-amber-500' },
   standards:     { label: 'Property Standards', icon: Home,          chip: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500' },
   landlord:      { label: 'Landlord Relations', icon: Handshake,     chip: 'bg-violet-50 text-violet-700 border-violet-200',   dot: 'bg-violet-500' },
+  portals:       { label: 'Portals',            icon: MonitorSmartphone, chip: 'bg-cyan-50 text-cyan-700 border-cyan-200',     dot: 'bg-cyan-500' },
 }
 
-const CATEGORY_ORDER: Category[] = ['legal', 'communication', 'finance', 'standards', 'landlord']
+const CATEGORY_ORDER: Category[] = ['legal', 'communication', 'finance', 'standards', 'landlord', 'portals']
 
 const DIFFICULTY_META: Record<Difficulty, { label: string; colour: string }> = {
   foundation:   { label: 'Foundation',   colour: 'bg-[#F5F5F7] text-[#6E6E73] border-[#D2D2D7]' },

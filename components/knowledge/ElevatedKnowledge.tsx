@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
   Search, X, ChevronRight, Bookmark, Sparkles, ArrowRight, Clock,
-  Scale, MessageCircle, BarChart2, Home, Handshake, type LucideIcon,
+  Scale, MessageCircle, BarChart2, Home, Handshake, MonitorSmartphone, type LucideIcon,
 } from 'lucide-react'
 import { KNOWLEDGE_ARTICLES, type KnowledgeArticle } from '@/lib/training-content'
 import { useSettings } from '@/components/SettingsProvider'
@@ -24,10 +24,11 @@ const CATEGORY_META: Record<Category, { label: string; icon: LucideIcon; dot: st
   finance:       { label: 'Finance',            icon: BarChart2,     dot: 'bg-amber-500' },
   communication: { label: 'Communication',      icon: MessageCircle, dot: 'bg-[#0071E3]' },
   landlord:      { label: 'Landlord Relations', icon: Handshake,     dot: 'bg-violet-500' },
+  portals:       { label: 'Portals',            icon: MonitorSmartphone, dot: 'bg-cyan-500' },
 }
 
 // Ordered by how much of the library each covers — legal is the bulk of it.
-const CATEGORY_ORDER: Category[] = ['legal', 'standards', 'finance', 'communication', 'landlord']
+const CATEGORY_ORDER: Category[] = ['legal', 'standards', 'finance', 'communication', 'landlord', 'portals']
 
 // The cornerstone article surfaced as "Start here" when nothing is filtered.
 const FEATURED_ID = 'kb-tenancy-law'
