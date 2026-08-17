@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { ragStatus, RAG_DOT, RAG_ROW, RAG_LABEL, RAG_TEXT } from '@/lib/rag'
 import PeopleDirectory, { type DirectoryPerson } from '@/components/manager/PeopleDirectory'
 import Crm2AssessmentPanel from '@/components/manager/Crm2AssessmentPanel'
+import { isMd } from '@/lib/md'
 
 const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
@@ -147,6 +148,11 @@ export default async function AdminPage() {
     }
   })
 
+  // Managing Directors — learners flagged in the MD allowlist, surfaced in their
+  // own section for at-a-glance individual progress. They remain in the org
+  // stats and their team above; this is an additional lens, not a filter.
+  const mdDirectoryPeople = directoryPeople.filter(p => isMd(p.email))
+
   return (
     <div className="space-y-6">
 
@@ -185,6 +191,17 @@ export default async function AdminPage() {
           </div>
         ))}
       </div>
+
+      {/* Managing Directors — their own section for individual progress. Only
+          shown when at least one MD (per the lib/md allowlist) is present. */}
+      {mdDirectoryPeople.length > 0 && (
+        <PeopleDirectory
+          people={mdDirectoryPeople}
+          totalAssessments={TOTAL_ASSESSMENTS}
+          title="Managing Directors"
+          secondaryColumn="manager"
+        />
+      )}
 
       {/* Search / filter — property managers (at the top for quick lookup) */}
       <PeopleDirectory
