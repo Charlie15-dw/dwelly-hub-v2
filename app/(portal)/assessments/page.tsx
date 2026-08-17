@@ -21,11 +21,10 @@ const VIDEO_MODULE_ASSESSMENTS = [
   { label: 'Support 2/2 — Actioning the Support Task',       icon: '🤝', id: 'sup-02', questions: 6  },
 ] as const
 
-const KNOWLEDGE_ASSESSMENTS = [
-  { label: 'Dwelly Best Practice',             icon: '💬', id: 'kno-01', questions: 5 },
-  { label: 'Repairs & Legal Responsibilities', icon: '🔨', id: 'kno-02', questions: 7 },
-  { label: 'Property Finances & the Ledger',   icon: '📊', id: 'kno-03', questions: 5 },
-] as const
+// The knowledge base is assessed as one combined assessment — the three
+// knowledge modules plus the Tenant, Landlord and Maintenance Provider portal
+// content — rather than three separate quizzes.
+const KNOWLEDGE_ASSESSMENT_ID = 'knowledge-assessment'
 
 function SectionHeader({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
@@ -108,8 +107,8 @@ function ClassicAssessments() {
         const allIds = [
           'master-assessment',
           'full-assessment',
+          KNOWLEDGE_ASSESSMENT_ID,
           ...VIDEO_MODULE_ASSESSMENTS.map(a => a.id),
-          ...KNOWLEDGE_ASSESSMENTS.map(a => a.id),
         ] as string[]
 
         // Locked if attempted in Supabase — UNLESS a pending reset exists
@@ -195,7 +194,25 @@ function ClassicAssessments() {
         </div>
       </div>
 
-      {/* ── 2. Full Assessment ──────────────────────────────────────────── */}
+      {/* ── 2. Knowledge Base Assessment (combined) ─────────────────────── */}
+      <div>
+        <SectionHeader icon={Library} label="Knowledge Base Assessment" />
+        <p className="text-xs text-[#6E6E73] mb-4">
+          One combined assessment across the whole knowledge base — Dwelly best practice,
+          repairs &amp; legal responsibilities, property finances, and the Tenant, Landlord
+          &amp; Maintenance Provider portals.
+        </p>
+        <div className="card overflow-hidden">
+          <AssessmentRow
+            icon="📚"
+            label="Knowledge Base Assessment — All Sections"
+            id={KNOWLEDGE_ASSESSMENT_ID}
+            questions={24}
+          />
+        </div>
+      </div>
+
+      {/* ── 3. Full Assessment ──────────────────────────────────────────── */}
       <div>
         <SectionHeader icon={ClipboardCheck} label="Full Video Module Assessment" />
         <p className="text-xs text-[#6E6E73] mb-4">
@@ -239,19 +256,6 @@ function ClassicAssessments() {
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* ── 3. Knowledge Base Assessments ───────────────────────────────── */}
-      <div>
-        <SectionHeader icon={Library} label="Knowledge Base Assessments" />
-        <p className="text-xs text-[#6E6E73] mb-4">
-          Read the knowledge article first, then test your understanding with the linked assessment.
-        </p>
-        <div className="card divide-y divide-[#F5F5F7]">
-          {KNOWLEDGE_ASSESSMENTS.map((a) => (
-            <AssessmentRow key={a.id} {...a} />
-          ))}
         </div>
       </div>
 
