@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import {
-  Sparkles, Search, Printer, ChevronRight, Target,
+  Sparkles, Search, Printer, ChevronRight, Target, Check,
   BookOpen, LayoutGrid, HelpCircle, Megaphone, type LucideIcon,
 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 import { isCrm2Preview } from '@/lib/preview'
 import {
@@ -128,19 +129,31 @@ export default async function Crm2Page() {
       </div>
 
       {/* The guides, as one row group per pillar */}
-      {CRM2_PILLARS.map(({ id, label, description }) => {
+      {CRM2_PILLARS.map(({ id, label, description }, pillarIndex) => {
         const guides = getCrm2Guides(id)
         if (guides.length === 0) return null
         const done = guides.filter((g) => completed.has(g.slug)).length
         const minutes = guides.reduce((s, g) => s + g.minutes, 0)
+        const complete = done === guides.length
         return (
           <section key={id} className="card overflow-hidden">
-            <div className="px-5 py-4 border-b border-navy-100 flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <h2 className="text-[15px] font-bold text-navy">{label}</h2>
-                <p className="text-[13px] text-[var(--text-secondary)] mt-0.5 leading-snug">{description}</p>
+            <div className="px-5 py-4 border-b border-navy-100 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5 min-w-0">
+                {/* Numbered badge — the three pillars read as a 1·2·3 journey. */}
+                <span
+                  className={cn(
+                    'w-9 h-9 rounded-xl flex items-center justify-center text-[15px] font-bold tabular-nums flex-shrink-0',
+                    complete ? 'rag-green' : 'bg-navy text-white',
+                  )}
+                >
+                  {complete ? <Check className="w-4 h-4" strokeWidth={2.5} aria-hidden /> : pillarIndex + 1}
+                </span>
+                <div className="min-w-0">
+                  <h2 className="text-[16px] font-bold text-navy leading-tight">{label}</h2>
+                  <p className="text-[13px] text-[var(--text-secondary)] mt-0.5 leading-snug">{description}</p>
+                </div>
               </div>
-              <span className="text-[12.5px] font-medium text-[var(--text-secondary)] tabular-nums whitespace-nowrap flex-shrink-0 mt-0.5">
+              <span className="text-[12.5px] font-medium text-[var(--text-secondary)] tabular-nums whitespace-nowrap flex-shrink-0">
                 {minutes} min · {done} of {guides.length} read
               </span>
             </div>

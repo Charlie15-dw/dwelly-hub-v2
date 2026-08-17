@@ -36,33 +36,43 @@ function isProseTable(block: Crm2Block): boolean {
   )
 }
 
-function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[]) {
+function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[], ledeIndex: number) {
   const withGlossary = (text: string) =>
     glossary.length > 0 ? <GlossaryText text={text} glossary={glossary} /> : text
 
   switch (block.type) {
 
     case 'heading':
+      // A slim accent bar turns a long guide into clearly scannable sections.
       return (
         <h2
           key={i}
           id={headingAnchor(block.text ?? '')}
-          className="scroll-mt-8 text-[24px] font-semibold tracking-tight text-navy leading-[1.25] mt-10 mb-3.5"
+          className="scroll-mt-24 flex items-center gap-3 text-[25px] font-bold tracking-tight text-navy leading-[1.2] mt-14 mb-4"
         >
+          <span className="h-[26px] w-[3.5px] rounded-full bg-orange flex-shrink-0" aria-hidden />
           {block.text}
         </h2>
       )
 
     case 'subheading':
       return (
-        <h3 key={i} className="text-[19px] font-semibold text-navy leading-[1.3] mt-7 mb-3">
+        <h3 key={i} className="text-[19px] font-semibold text-navy leading-[1.3] mt-8 mb-3">
           {block.text}
         </h3>
       )
 
     case 'paragraph':
+      // The first paragraph reads as a lede — a touch larger and lighter.
+      if (i === ledeIndex) {
+        return (
+          <p key={i} className="text-[19.5px] leading-[1.6] text-navy-700 max-w-[68ch] mt-5">
+            {block.text ? withGlossary(block.text) : null}
+          </p>
+        )
+      }
       return (
-        <p key={i} className="text-[17px] leading-[1.7] text-navy-800 max-w-[68ch] mt-4">
+        <p key={i} className="text-[17px] leading-[1.75] text-navy-800 max-w-[68ch] mt-5">
           {block.text ? withGlossary(block.text) : null}
         </p>
       )
@@ -228,6 +238,9 @@ export default async function Crm2LessonPage({ params }: { params: { slug: strin
     .filter((b): b is Crm2Block & { text: string } => b.type === 'heading' && !!b.text)
     .map((b) => ({ id: headingAnchor(b.text), text: b.text }))
 
+  // The first paragraph is styled as a lede.
+  const ledeIndex = lesson.content.findIndex((b) => b.type === 'paragraph')
+
   // Adjacent lessons for the bottom nav, following the reading order.
   const idx = CRM2_LESSONS.findIndex((l) => l.slug === lesson.slug)
   const prev = idx > 0 ? CRM2_LESSONS[idx - 1] : null
@@ -250,13 +263,16 @@ export default async function Crm2LessonPage({ params }: { params: { slug: strin
       <ReadingProgress />
       <div className="mx-auto max-w-[1000px] space-y-6">
 
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-[14px]">
-          <Link href="/hub/crm-2" className="text-[var(--text-secondary)] hover:text-navy flex items-center gap-1.5 transition-colors">
-            <ArrowLeft className="w-4 h-4" aria-hidden /> CRM 2.0
-          </Link>
-          <span className="text-navy-200">/</span>
-          <span className="text-navy font-medium">{lesson.title}</span>
+        {/* Breadcrumb + bookmark */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-[14px] min-w-0">
+            <Link href="/hub/crm-2" className="text-[var(--text-secondary)] hover:text-navy flex items-center gap-1.5 transition-colors flex-shrink-0">
+              <ArrowLeft className="w-4 h-4" aria-hidden /> CRM 2.0
+            </Link>
+            <span className="text-navy-200 flex-shrink-0">/</span>
+            <span className="text-navy font-medium truncate">{lesson.title}</span>
+          </div>
+          <BookmarkButton articleId={`crm2-${lesson.slug}`} variant="labelled" className="flex-shrink-0 hidden sm:inline-flex" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_236px] gap-9 items-start">
@@ -264,48 +280,63 @@ export default async function Crm2LessonPage({ params }: { params: { slug: strin
           {/* ── Main column ─────────────────────────────────────────────── */}
           <div className="min-w-0 space-y-6 hub-fade">
 
-            {/* Header card */}
-            <div className="card p-8">
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2.5 flex-wrap">
-                    <span className="text-[11.5px] font-semibold px-2.5 py-0.5 rounded-full phase-onboarding">
-                      {kindLabel}
-                    </span>
-                    {pillar && (
-                      <span className="text-[12px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]">
-                        {pillar.label}
-                      </span>
-                    )}
-                  </div>
-                  <h1 className="text-[34px] font-semibold tracking-tight text-navy leading-[1.15] mt-3">
-                    {lesson.title}
-                  </h1>
-                  <p className="text-[18px] leading-[1.6] text-[var(--text-secondary)] max-w-[58ch] mt-2">
-                    {lesson.summary}
-                  </p>
-                </div>
-                <BookmarkButton articleId={`crm2-${lesson.slug}`} variant="labelled" className="flex-shrink-0 hidden sm:inline-flex" />
+            {/* Header — a compact hero, matching the section's landing page */}
+            <section className="relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
+              <div className="pointer-events-none absolute inset-0" aria-hidden>
+                <div className="hub-orb-a absolute -top-20 -right-16 w-[22rem] h-[22rem] rounded-full bg-orange/25 blur-3xl" />
+                <div className="hub-orb-b absolute -bottom-24 -left-16 w-[18rem] h-[18rem] rounded-full bg-orange/10 blur-3xl" />
+                <div
+                  className="absolute inset-0 opacity-[0.1]"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0)',
+                    backgroundSize: '30px 30px',
+                    maskImage: 'radial-gradient(ellipse at 80% 0%, #000 0%, transparent 70%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at 80% 0%, #000 0%, transparent 70%)',
+                  }}
+                />
               </div>
 
-              <div className="flex items-center gap-x-6 gap-y-2 flex-wrap border-t border-navy-100 mt-5 pt-4">
-                <span className="flex items-center gap-2 text-[14.5px] text-[var(--text-secondary)]">
-                  <Clock className="w-4 h-4" aria-hidden /> {lesson.minutes} min read
-                </span>
-                <span className="flex items-center gap-2 text-[14.5px] text-[var(--text-secondary)]" title="Checked against the live CRM 2.0 build">
-                  <CalendarCheck className="w-4 h-4" aria-hidden /> Reviewed {CRM2_LAST_REVIEWED}
-                </span>
-                {quizCount !== undefined && quizCount > 0 && (
-                  <span className="flex items-center gap-2 text-[14.5px] text-[var(--text-secondary)]">
-                    <ClipboardCheck className="w-4 h-4" aria-hidden /> Test yourself · {quizCount} questions
+              <div className="relative px-7 py-8 sm:px-9 sm:py-9">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-white/80 backdrop-blur-sm">
+                    {kindLabel}
                   </span>
-                )}
+                  {pillar && (
+                    <span className="text-[12px] font-semibold uppercase tracking-widest text-white/55">
+                      {pillar.label}
+                    </span>
+                  )}
+                </div>
+                <h1 className="mt-3.5 text-[34px] leading-[1.12] font-bold tracking-tight text-white">
+                  {lesson.title}
+                </h1>
+                <p className="mt-3 max-w-[60ch] text-[16.5px] leading-[1.6] text-white/70">
+                  {lesson.summary}
+                </p>
+
+                <div className="mt-6 flex items-center gap-x-5 gap-y-2 flex-wrap border-t border-white/10 pt-4 text-[13.5px] text-white/65">
+                  <span className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" aria-hidden /> {lesson.minutes} min read
+                  </span>
+                  <span className="hidden sm:block w-px h-3.5 bg-white/15" aria-hidden />
+                  <span className="flex items-center gap-2" title="Checked against the live CRM 2.0 build">
+                    <CalendarCheck className="w-4 h-4" aria-hidden /> Reviewed {CRM2_LAST_REVIEWED}
+                  </span>
+                  {quizCount !== undefined && quizCount > 0 && (
+                    <>
+                      <span className="hidden sm:block w-px h-3.5 bg-white/15" aria-hidden />
+                      <span className="flex items-center gap-2">
+                        <ClipboardCheck className="w-4 h-4" aria-hidden /> Test yourself · {quizCount} questions
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
+            </section>
 
             {/* Content */}
-            <article className="card p-9 [&>*:first-child]:mt-0">
-              {lesson.content.map((block, i) => renderBlock(block, i, glossary))}
+            <article className="card p-6 sm:p-9 [&>*:first-child]:mt-0">
+              {lesson.content.map((block, i) => renderBlock(block, i, glossary, ledeIndex))}
             </article>
 
             {/* Printable one-pager — cheatsheet only */}
