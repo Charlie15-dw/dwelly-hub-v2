@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import {
-  ArrowLeft, Clock, ChevronRight, ChevronLeft, CalendarCheck, ClipboardCheck, Printer,
+  ArrowLeft, Clock, ChevronRight, ChevronLeft, ChevronDown, CalendarCheck, ClipboardCheck, Printer,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isCrm2Preview } from '@/lib/preview'
@@ -180,6 +180,32 @@ function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry[], led
         </div>
       )
     }
+
+    case 'faq':
+      // A themed group of questions as native disclosure rows — scannable at a
+      // glance, one open at a time by the reader, no client JS required.
+      if (!block.faqs || block.faqs.length === 0) return null
+      return (
+        <div key={i} className="mt-5 flex flex-col gap-2.5">
+          {block.faqs.map((f, j) => (
+            <details
+              key={j}
+              className="group rounded-2xl border border-navy-100 bg-white overflow-hidden [&_summary::-webkit-details-marker]:hidden"
+            >
+              <summary className="cursor-pointer list-none flex items-start gap-3 px-5 py-4 hover:bg-navy-50/40 transition-colors">
+                <span className="flex-1 text-[16.5px] font-semibold text-navy leading-snug">{f.q}</span>
+                <ChevronDown
+                  className="w-4 h-4 text-[var(--text-tertiary)] flex-shrink-0 mt-1 transition-transform duration-200 group-[[open]]:rotate-180"
+                  aria-hidden
+                />
+              </summary>
+              <div className="px-5 pb-4 -mt-0.5">
+                <p className="text-[16px] leading-[1.7] text-navy-800 max-w-[68ch]">{withGlossary(f.a)}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+      )
 
     case 'divider':
       return <hr key={i} className="mt-8 border-navy-100" />

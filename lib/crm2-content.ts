@@ -18,7 +18,7 @@ export interface Crm2Hotspot {
 }
 
 export interface Crm2Block {
-  type: 'heading' | 'subheading' | 'paragraph' | 'bullets' | 'steps' | 'callout' | 'table' | 'divider' | 'image' | 'widget'
+  type: 'heading' | 'subheading' | 'paragraph' | 'bullets' | 'steps' | 'callout' | 'table' | 'divider' | 'image' | 'widget' | 'faq'
   text?: string
   items?: string[]
   level?: 1 | 2 | 3
@@ -29,6 +29,7 @@ export interface Crm2Block {
   hotspots?: Crm2Hotspot[]  // for type 'image' — clickable pins overlaid on the screenshot
   widget?: 'button-advisor' | 'scenario-drills'  // for type 'widget' — an interactive embed
   emphasisIndex?: number    // for type 'steps' — accent this item (e.g. the operator's checkpoint)
+  faqs?: { q: string; a: string }[]  // for type 'faq' — a group of collapsible question/answer pairs
 }
 
 export type Crm2Pillar = 'orientate' | 'features' | 'operate'
@@ -726,34 +727,99 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
   {
     slug: 'faq',
     title: 'FAQ & common gotchas',
-    summary: 'The questions new operators ask most, and the traps that catch people out.',
+    summary: 'Straight answers to the questions that come up most in the 2.0 trial — certificates, scheduling, cancellations, invoices and where to get help. Use the section list on the right to jump.',
     icon: '❓',
     pillar: 'operate',
     kind: 'reference',
-    minutes: 4,
+    minutes: 12,
     content: [
-      { type: 'subheading', text: 'Should I take over a job just so I can call the tenant or provider early?' },
-      { type: 'paragraph', text: 'No. If there\u2019s no new urgent information to process, let the agent keep working — it will escalate to you when it needs a human. Taking over early just adds work and can cut across what the agent is doing.' },
-
-      { type: 'subheading', text: 'Do I need to process jobs that haven\u2019t escalated?' },
-      { type: 'paragraph', text: 'Not for now — only handle flags. If a job hasn\u2019t escalated, it doesn\u2019t need you yet.' },
-
-      { type: 'subheading', text: 'The AI flagged the address — do I have to correct it?' },
-      { type: 'paragraph', text: 'No. A flagged address is a hint that it might be wrong and worth a glance, not an error you must fix. A handwritten certificate is a common trigger.' },
-
-      { type: 'subheading', text: 'A CP12 doesn\u2019t say \u201Csatisfactory\u201D anywhere — how do I judge it?' },
-      { type: 'paragraph', text: 'A gas certificate categorises each appliance rather than the whole document. Read the \u201CSafe to use\u201D column: if every appliance is YES, treat the cert as satisfactory and any remedials as nice-to-have.' },
-
-      { type: 'subheading', text: 'The landlord sent a certificate for a different property — do I just reject it?' },
-      { type: 'paragraph', text: 'No — take two actions. Upload the cert to the property it actually belongs to (CRM 1 \u2192 File Manager) so it isn\u2019t wasted, then request the correct cert for this job\u2019s property.' },
-
-      { type: 'subheading', text: 'Is an EPC mandatory to renew during a tenancy?' },
-      { type: 'paragraph', text: 'No. Unlike an EICR or gas cert, an EPC doesn\u2019t have to be renewed mid-tenancy — but it must be valid before you market the property, sign a new agreement with different tenants, formally change the agreement with existing tenants, or serve notice. So renewing is best practice.' },
-
-      { type: 'subheading', text: 'How long can I wait for a provider to respond?' },
-      { type: 'paragraph', text: '\u201CWait for response\u201D caps at 3 days. If a provider is away longer, set the 3 days and extend again when the job comes back to your queue.' },
-
+      { type: 'paragraph', text: 'These are the real questions operators have asked during the 2.0 trial, grouped by theme. Tap any question to open the answer.' },
       { type: 'callout', variant: 'important', text: 'The biggest gotcha overall: acting on the most recent message alone. The agent often suggests an action from the latest activity — read the whole job before you decide.' },
+
+      { type: 'heading', text: 'Certificates & remedials' },
+      { type: 'faq', faqs: [
+        { q: 'How do I judge a CP12 that never says \u201Csatisfactory\u201D?', a: 'A gas certificate categorises each appliance rather than the whole document. Read the \u201CSafe to use\u201D column: if every appliance is YES, treat the cert as satisfactory and any remedials as nice-to-have.' },
+        { q: 'Which remedial type do I choose on a certificate?', a: 'When a cert carries remedials, pick the right type \u2014 required vs optional (C3) \u2014 before moving the job on. The type drives which comms go out and which downstream workflow the job follows, so the wrong choice sends the landlord the wrong message. Read the cert in full before you select.' },
+        { q: 'Confirming optional remedials (C3) created a maintenance job in CRM 1.0 \u2014 is that right?', a: 'Yes. Confirming optional remedials on a satisfactory cert automatically raises a maintenance job in CRM 1.0 \u2014 the optional-remedial workflow lives in 1.0, so seeing the job appear there is expected, not a bug.' },
+        { q: 'The recommended-remedial button \u2014 who emails the landlord?', a: 'That button closes the compliance job and hands all comms to maintenance; that\u2019s what it\u2019s designed to do. Maintenance sends the landlord the permission email at the start of the maintenance job, so don\u2019t send your own version \u2014 otherwise the landlord gets two emails asking for the same permission.' },
+        { q: 'Can I undo remedials I\u2019ve already marked as necessary?', a: 'Not in-product \u2014 once remedials are marked necessary and the job moves to quotation stage there\u2019s no route back, and Take Over won\u2019t reverse it. As an interim fix, raise the maintenance request in CRM 1.0 yourself from the optional remedials on the uploaded cert, then ask the product team to close the 2.0 job. Get the required-vs-optional call right up front, as it\u2019s currently one-way.' },
+        { q: 'I pressed the wrong remedial button \u2014 how do I recover?', a: 'On a satisfactory cert with non-mandatory items the right action is \u201Coptional remedial\u201D (which completes the job and raises a maintenance request in CRM 1.0). If you clicked \u201Crequired remedial\u201D by mistake the agent starts waiting for a quote. To recover: upload the certs manually via the file manager in CRM 1.0, create the maintenance jobs for the optional remedials by hand, then ask ops to cancel the stray 2.0 job.' },
+        { q: 'The cert was corrected after remedials were raised \u2014 how do I fix it?', a: 'If a job has gone down the remedial flow and the provider then confirms no remedial was needed (e.g. a wrongly completed cert that\u2019s since been re-issued), there\u2019s no easy way back to certificate review once the invoice is approved. Upload the correct certificate manually (CRM 1.0 file manager / property page), then ask ops to cancel the 2.0 job.' },
+        { q: 'The landlord did the remedials themselves \u2014 what now?', a: 'Use \u201Cswitch back to us\u201D. A fresh certificate isn\u2019t automatically needed: if the original cert is satisfactory, what you need is proof the landlord did the work (e.g. photos or a receipt for replaced smoke alarms) stored on the job. Check with the provider before assuming they\u2019ll re-issue or re-charge.' },
+        { q: 'A provider re-sent a document I\u2019ve already processed \u2014 do I upload it again?', a: 'No. Re-uploading a certificate or invoice that 2.0 has already processed pushes the job back to document review and can re-trigger comms to the provider, even after the job has moved on to remedials. Ignore duplicate sends. There\u2019s no guardrail against this yet, so it\u2019s on the operator to catch \u2014 and if it\u2019s already happened, call the provider to disregard the last emails and ask ops to revert the job to the right stage.' },
+        { q: 'What\u2019s the EICR date rule?', a: 'Validity is 5 years from the date of inspection, and the issue date is the date the inspection was carried out. Standard EICR observation notes are normal \u2014 don\u2019t treat them as remedials.' },
+        { q: 'Does an EPC have to be renewed during a tenancy?', a: 'No. Unlike an EICR or gas cert, an EPC doesn\u2019t have to be renewed mid-tenancy \u2014 but it must be valid before you market the property, sign a new agreement with different tenants, formally change the agreement with existing tenants, or serve notice. So renewing is best practice.' },
+        { q: 'The landlord sent a certificate for a different property \u2014 do I just reject it?', a: 'No \u2014 take two actions. Upload the cert to the property it actually belongs to (CRM 1.0 \u2192 File Manager) so it isn\u2019t wasted, then request the correct cert for this job\u2019s property.' },
+      ] },
+
+      { type: 'heading', text: 'Landlord DIY & landlord-held certificates' },
+      { type: 'faq', faqs: [
+        { q: 'The landlord already holds a valid certificate \u2014 should I cancel the job?', a: 'No \u2014 cancelling loses the compliance record. Ask for the job to be switched to LL DIY, then upload the certificate against the job so the document is stored and the property shows as compliant.' },
+        { q: 'Can I use Landlord DIY to park a job I\u2019ll document later?', a: 'No. The LL DIY flow has no invoice-upload step, and dropping notes doesn\u2019t register a cert or invoice either. Only move a job to LL DIY when the landlord genuinely is arranging the work themselves; if a certificate and invoice need attaching, keep the job in its normal flow and upload them there.' },
+        { q: 'One landlord replied about several flats \u2014 is that one job or many?', a: 'Each flat stays its own job. Where the landlord says they\u2019ll arrange it, set LL DIY on each property named (Take Over first where a job needs it). For flats that are expiring but not yet in 2.0, don\u2019t try to bolt them on \u2014 email the landlord the expiry dates so they can plan.' },
+      ] },
+
+      { type: 'heading', text: 'Scheduling & visits' },
+      { type: 'faq', faqs: [
+        { q: 'A tenant rescheduled out-of-band (e.g. by email) \u2014 how do I handle it?', a: 'It arrives in 2.0 as an escalation. Just Set Visit Date to the agreed new slot \u2014 replying to the tenant won\u2019t break the automated flow, and no special handling is needed.' },
+        { q: 'The tenant wasn\u2019t home on the day \u2014 what\u2019s the right action?', a: 'Use \u201CRestart Scheduling\u201D. It puts the job back into the scheduling loop rather than needing a new job or an ops fix, so there\u2019s no need to flag it for help first.' },
+        { q: 'A visit is booked but no longer needed \u2014 what do I do first?', a: 'Tell the provider before you ask for the job to be cancelled \u2014 especially for same-day visits. Cancelling in the system doesn\u2019t reach the provider, so an uninformed SP will still attend and the visit becomes abortive. Confirm to ops that the SP has been told when you request the cancellation.' },
+        { q: 'A cancelled job never reached the provider \u2014 how do I stop them booking it?', a: 'Cancelling doesn\u2019t notify the SP, so they can carry on booking a job that no longer exists. When Take Over is unavailable (the only button being \u201CProvide Instructions\u201D), use the Send comms option to email the SP directly and tell them to stand down, then confirm in the channel once they\u2019ve been emailed.' },
+        { q: 'An empty property is being relet \u2014 how should I time the visit?', a: 'Date the certificate as close to the new move-in as possible. Don\u2019t force the timing through the scheduling loop \u2014 call the SP directly, agree a date, and set the visit date on the job manually.' },
+        { q: 'Set Visit Date or Add Direct Info on a property with no tenant?', a: 'Use Set Visit Date. A property with no tenant needs no different flow and no cancelling \u2014 proceed exactly as a regular job and the agent sends the confirmation to the relevant parties. Using Add Direct Info instead is what makes the job bounce back to you unresolved.' },
+        { q: 'I got a \u201Cverify the keys\u201D escalation the day before an untenanted visit \u2014 is that a glitch?', a: 'No, it\u2019s expected. For untenanted properties you\u2019ll get an escalation the day before asking you to confirm the keys are available for collection from the office. Check they\u2019re actually there, then click \u201CNo action needed\u201D to close it out.' },
+      ] },
+
+      { type: 'heading', text: 'Cancelling & scope' },
+      { type: 'faq', faqs: [
+        { q: 'Do I need to process jobs that haven\u2019t escalated?', a: 'Not for now \u2014 only handle flags. If a job hasn\u2019t escalated, it doesn\u2019t need you yet.' },
+        { q: 'Should I take over a job early just to call the tenant or provider?', a: 'No. If there\u2019s no new urgent information to process, let the agent keep working \u2014 it will escalate to you when it needs a human. Taking over early just adds work and can cut across what the agent is doing.' },
+        { q: 'A job is out of scope (vacant, being sold, etc.) \u2014 is cancelling enough?', a: 'No. You must cancel the job and set the property\u2019s compliance filters to \u201Cnot needed\u201D, otherwise the job regenerates and you see it again. Operators can\u2019t cancel themselves today, so raise it in-channel with the job link and the reason.' },
+        { q: 'I cancelled a job and it came back the next day \u2014 why?', a: 'Cancelling alone doesn\u2019t stop it: if the property\u2019s compliance preferences still say the certificate is required, the system recreates the same job. Change the relevant preference to \u201Cnot needed\u201D (or amend it to match reality) first, then request the cancellation \u2014 ops will hold the cancellation until the preferences are updated.' },
+        { q: 'The landlord has ignored a compliance request throughout \u2014 can I cancel it?', a: 'Yes, where the landlord has had the request (sometimes twice), never responded, and is visibly active on other CRM 1.0 tasks, the silence is a choice. Two things must both happen: the request is cancelled in 2.0 (ask ops \u2014 TCs don\u2019t have the permission) and the task is set to \u201Cnot needed\u201D in CRM 1.0, or it simply comes back round.' },
+        { q: 'A job disappeared from my 2.0 list but I can see it in 1.0 \u2014 is it duplicated?', a: 'No. It\u2019s normally been cancelled in 2.0 and moved back to 1.0 \u2014 the intended transfer behaviour \u2014 so only one live job exists. A common trigger is a contract that doesn\u2019t exist reopening in 1.0. Check with ops before raising anything if you\u2019re unsure.' },
+        { q: 'A job reached 2.0 late or via a transfer error \u2014 should I send it back to CRM 1?', a: 'Not on that basis alone \u2014 2.0 handles these and comparable cases are already running there. If a genuine hand-back is needed, ops pauses the auto-transfer first and then cancels the 2.0 request; confirm the pause has actually applied before raising the 1.0 job, or the landlord gets another duplicate email.' },
+        { q: 'A landlord queries the scope of a job \u2014 do I raise a change?', a: 'Check first. Open the job and read the actual scope \u2014 it\u2019s often already correct, and what misled them was the parsed job title in the agent\u2019s email (e.g. a \u201Cboiler service\u201D label on a property with a heat pump). Only where the scope genuinely is wrong do ops modify it in 2.0 and the operator aligns the equivalent 1.0 job.' },
+      ] },
+
+      { type: 'heading', text: 'AI extraction & summaries' },
+      { type: 'faq', faqs: [
+        { q: 'The AI flagged or marked a field \u201Cillegible\u201D \u2014 must I correct it?', a: 'No. A flagged or illegible field on a handwritten cert is a hint to check, not an error to fix. If the detail on the certificate is correct, no edit is required \u2014 the flag just draws your attention, and there\u2019s no audit reason to amend it.' },
+        { q: 'The agent mis-read a contractor\u2019s handwriting \u2014 should I fix it?', a: 'If the mis-read is cosmetic and doesn\u2019t change the substance of the job, leave it and proceed \u2014 there\u2019s no audit problem. Escalate only where the mis-read changes something that drives the job: wrong property, wrong appliance, or wrong expiry.' },
+        { q: 'The AI treated a name in the landlord\u2019s reply as a service provider \u2014 is the approval still valid?', a: 'Yes, the landlord\u2019s approval still stands; the extraction error doesn\u2019t invalidate it. Don\u2019t try to correct it with Add Direct Info \u2014 just select the provider you intend to use and let the job move on.' },
+        { q: 'Can I act on the AI\u2019s summary of a landlord\u2019s email?', a: 'Open the original first. The summary can state the opposite of what the landlord actually said (e.g. that they were arranging the EPC themselves when they\u2019d in fact asked us to book it). Before cancelling or closing a job on the strength of a summary, use \u201Cview full email\u201D and read their own words \u2014 and post the job link plus the real wording in the trial channel so the error can be logged.' },
+        { q: 'The agent tagged the quote as the invoice \u2014 how do I unpick it?', a: 'Download both documents. Click \u201Cupload another document\u201D and upload the actual invoice, then add the quote via Add Direct Info \u2192 from SP \u2192 upload the quote, so it\u2019s treated as SP-sent. Flag repeat cases to product so the classifier can be improved.' },
+        { q: 'My change request won\u2019t submit \u2014 what\u2019s wrong?', a: 'The form has more fields than are visible on screen: scroll down and fill in every field, or the submit button appears not to work. (A change request that never reaches the landlord is often a wrong landlord email address \u2014 correct it through the change request on PM questions.) It\u2019s not a bug; while you sort it, put the job on a 1-day wait rather than letting it auto-progress.' },
+      ] },
+
+      { type: 'heading', text: 'Invoices' },
+      { type: 'faq', faqs: [
+        { q: 'The Invoice Approved button won\u2019t fire \u2014 what do I check?', a: 'Check the invoice record for a blank Sub Total \u2014 it blocks approval and the system gives no message saying which field is missing. Fill it in and the button fires. If every field is populated and it still won\u2019t go, post the job link plus a screenshot.' },
+        { q: 'I\u2019m waiting on a corrected invoice \u2014 should I press \u201Cinvalid invoice\u201D?', a: 'No. If the invoice is fine but unusable (blank details, cropped) and you\u2019ve asked the SP to re-send, don\u2019t mark it invalid \u2014 call the SP to chase, and when the clean copy arrives click \u201Cupload another invoice\u201D. Leave the job where it is in the meantime.' },
+      ] },
+
+      { type: 'heading', text: 'Comms, Add Direct Info & flags' },
+      { type: 'faq', faqs: [
+        { q: 'Does Add Direct Info get relayed to the provider?', a: 'No. Anything you enter with Add Direct Info (e.g. the tenant now agreeing entry with management keys) is not automatically sent to the SP. After adding it, call or message the provider yourself so they act on it, then leave the job to run once they confirm a date. Assume nothing you add reaches the SP unless you send it.' },
+        { q: 'I handled something off-system \u2014 how do I record it?', a: 'Send a short email confirming the arrangement so there\u2019s a written record on the job, email the tenant too so they\u2019re not left guessing, then click No Action Needed. There\u2019s no separate \u201Chandled offline\u201D state \u2014 the confirming email is the record.' },
+        { q: 'An action-required flag is still showing after I\u2019ve dealt with it \u2014 how do I clear it?', a: 'If you\u2019ve already actioned or responded (e.g. the visit date is set and confirmed, or you replied by email), click Wait for Response and select the right domain; the flag then clears itself. Don\u2019t use Provide Instructions to force the job on, and don\u2019t re-send comms the parties have already had.' },
+      ] },
+
+      { type: 'heading', text: 'Waiting & timing' },
+      { type: 'faq', faqs: [
+        { q: 'How long can I wait for a provider to respond?', a: '\u201CWait for response\u201D caps at 3 days. If a provider is away longer, set the 3 days and extend again when the job comes back to your queue.' },
+        { q: 'I\u2019m chasing an SP over a weekend \u2014 how long should the wait be?', a: 'Set a 1-day wait, not 3, when the next working day is Monday. A 3-day wait re-flags the job mid-week; a 1-day wait brings it back on Monday, the earliest you could act anyway.' },
+        { q: 'Take Over / call / send comms won\u2019t do anything \u2014 is it a permissions problem?', a: 'Usually not \u2014 the agent is most likely still processing the job (it\u2019s heaviest around midday and can hang for a few minutes). Wait and refresh rather than moving the job to MANUAL; the agent will normally draft the communication for you. Only escalate if it\u2019s still blocked well after the queue clears.' },
+        { q: 'The Approve certificate button won\u2019t respond \u2014 what do I try?', a: 'First clear cache and cookies and log back in \u2014 that clears the common local cause. If the button is still dead both before and after editing the expiry date, treat it as a platform issue, not a local one: post the job link and a short screen recording, leave the job pending, and escalate rather than forcing another route.' },
+      ] },
+
+      { type: 'heading', text: 'Permissions & where to get help' },
+      { type: 'faq', faqs: [
+        { q: 'The phone number links are greyed out \u2014 is that a fault?', a: 'No \u2014 contact links only become click-to-call once you press Take Over. Take the job over first, then call. The same applies to other actions on a job you haven\u2019t taken over.' },
+        { q: 'I need to Cancel or Provide Instructions but have no access \u2014 what do I do?', a: 'The TC role currently can\u2019t cancel a request and has no access to Provide Instructions. When a job can only move via one of those, post the job link in-channel and ask ops to action it rather than looking for a workaround. It\u2019s a known open item.' },
+        { q: 'Who do I escalate to first?', a: 'Ops is the first line of call for all 2.0 trial questions. Only escalate to product once ops has looked at it, so product time is spent on genuine platform issues rather than process questions.' },
+        { q: 'Where\u2019s the quote cheat sheet?', a: 'It lives in the Scenario SOPs section at the bottom of the SOP page. If it doesn\u2019t render, refresh the page \u2014 a stale tab can hide new sections. Always provide the LL with a quote where the SOP calls for one; the cheat sheet has the standard wording.' },
+      ] },
     ],
   },
   {

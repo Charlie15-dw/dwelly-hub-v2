@@ -155,7 +155,7 @@ export function getSearchIndex(): SearchEntry[] {
       description: lesson.summary,
       href: base,
       keywords: lesson.content
-        .map(b => [b.text, b.items?.join(' '), b.headers?.join(' '), b.rows?.map(r => r.join(' ')).join(' ')].filter(Boolean).join(' '))
+        .map(b => [b.text, b.items?.join(' '), b.headers?.join(' '), b.rows?.map(r => r.join(' ')).join(' '), b.faqs?.map(f => `${f.q} ${f.a}`).join(' ')].filter(Boolean).join(' '))
         .join(' '),
     })
     for (const block of lesson.content) {
