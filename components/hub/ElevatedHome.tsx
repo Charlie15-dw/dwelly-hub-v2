@@ -61,7 +61,7 @@ export default function ElevatedHome({
 
   const passportTitle =
     remaining === 0
-      ? 'Your Competency Passport is signed off'
+      ? 'Your Competency Passport is complete'
       : remaining <= 2
         ? `${remaining} away from your Competency Passport`
         : 'Your Competency Passport is taking shape'
@@ -110,7 +110,7 @@ export default function ElevatedHome({
             </svg>
             <div className="relative flex flex-col items-center">
               <span className="text-[44px] font-bold leading-none tabular-nums">{pct}%</span>
-              <span className="text-[12.5px] text-white/60 mt-1">signed off</span>
+              <span className="text-[12.5px] text-white/60 mt-1">complete</span>
             </div>
           </div>
         </div>
