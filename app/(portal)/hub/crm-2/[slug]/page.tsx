@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import {
-  ArrowLeft, Clock, ChevronRight, ChevronLeft, ChevronDown, CalendarCheck, ClipboardCheck, Printer,
+  ArrowLeft, Clock, ChevronRight, ChevronLeft, ChevronDown, ClipboardCheck, Printer,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isCrm2Preview } from '@/lib/preview'
 import {
-  CRM2_LESSONS, CRM2_PILLARS, CRM2_LAST_REVIEWED, CRM2_GUIDES, CRM2_GUIDE_COUNT,
+  CRM2_LESSONS, CRM2_PILLARS, CRM2_GUIDES, CRM2_GUIDE_COUNT,
   getCrm2Lesson, getCrm2Glossary, getCrm2GuideNumber, getCrm2Guides, type Crm2Block,
 } from '@/lib/crm2-content'
 import { QUIZ_QUESTIONS } from '@/lib/data'
@@ -343,10 +343,6 @@ export default async function Crm2LessonPage({ params }: { params: { slug: strin
                 <div className="mt-6 flex items-center gap-x-5 gap-y-2 flex-wrap border-t border-white/10 pt-4 text-[13.5px] text-white/65">
                   <span className="flex items-center gap-2">
                     <Clock className="w-4 h-4" aria-hidden /> {lesson.minutes} min read
-                  </span>
-                  <span className="hidden sm:block w-px h-3.5 bg-white/15" aria-hidden />
-                  <span className="flex items-center gap-2" title="Checked against the live CRM 2.0 build">
-                    <CalendarCheck className="w-4 h-4" aria-hidden /> Reviewed {CRM2_LAST_REVIEWED}
                   </span>
                   {quizCount !== undefined && quizCount > 0 && (
                     <>

@@ -9,7 +9,7 @@ import { createServerClient } from '@/lib/supabase/server'
 import { isCrm2Preview } from '@/lib/preview'
 import {
   CRM2_PILLARS, CRM2_LESSONS, CRM2_GUIDES, CRM2_GUIDE_COUNT, CRM2_GUIDE_MINUTES,
-  CRM2_LAST_REVIEWED, CRM2_CAPSTONE_MODULE_ID, getCrm2GuideNumber, getCrm2Guides,
+  CRM2_CAPSTONE_MODULE_ID, getCrm2GuideNumber, getCrm2Guides,
 } from '@/lib/crm2-content'
 import { getCrm2CompletedSlugs } from '@/lib/crm2-completions'
 import ProgressRing, { type PillarProgress } from '@/components/crm2/ProgressRing'
@@ -107,8 +107,6 @@ export default async function Crm2Page() {
             </div>
             <span className="hidden sm:block w-px h-4 bg-white/15" aria-hidden />
             <span className="text-white/70">{references.length} reference sheets</span>
-            <span className="hidden sm:block w-px h-4 bg-white/15" aria-hidden />
-            <span className="text-white/70">Last reviewed {CRM2_LAST_REVIEWED}</span>
             <div className="ml-auto w-full sm:w-auto sm:max-w-xs">
               <SearchTrigger />
             </div>
