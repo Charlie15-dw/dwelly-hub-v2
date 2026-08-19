@@ -19,18 +19,18 @@ export default async function Crm2CertificatePage() {
 
   const { data: results } = await supabase
     .from('assessment_results')
-    .select('score, passed, created_at')
+    .select('score, passed, completed_at')
     .eq('user_id', user.id)
     .eq('assessment_id', CRM2_CAPSTONE_MODULE_ID)
     .eq('passed', true)
-    .order('created_at', { ascending: true })
+    .order('completed_at', { ascending: true })
 
   const first = results?.[0]
   if (!first) redirect('/hub/crm-2/capstone')
 
   const bestScore = Math.max(...(results ?? []).map((r) => r.score ?? 0))
-  const earned = first.created_at
-    ? new Date(first.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  const earned = first.completed_at
+    ? new Date(first.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     : CRM2_LAST_REVIEWED
   const name = user.email ?? 'Team member'
 
