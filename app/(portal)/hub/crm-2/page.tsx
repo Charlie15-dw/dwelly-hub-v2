@@ -122,6 +122,7 @@ export default async function Crm2Page() {
           guidesTotal={CRM2_GUIDE_COUNT}
           minutesLeft={minutesLeft}
           outstanding={outstandingGuides.length}
+          hasCertificate={hasCertificate}
         />
         <ProgressRing done={guidesDone} total={CRM2_GUIDE_COUNT} pillars={pillarProgress} />
       </div>

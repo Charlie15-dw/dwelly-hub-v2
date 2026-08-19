@@ -18,16 +18,19 @@ export default function ResumeCard({
   guidesTotal,
   minutesLeft,
   outstanding,
+  hasCertificate,
 }: {
   next: ResumeNext | null
   guidesDone: number
   guidesTotal: number
   minutesLeft: number
   outstanding: number
+  hasCertificate: boolean
 }) {
   const pct = guidesTotal > 0 ? Math.round((guidesDone / guidesTotal) * 100) : 0
 
-  // Every guide read — celebrate and point at the sign-off.
+  // Every guide read — celebrate. Once the capstone is passed there's nothing
+  // left to do, so point at the certificate rather than back at the capstone.
   if (!next) {
     return (
       <div className="card p-6 flex flex-col justify-between">
@@ -36,15 +39,25 @@ export default function ResumeCard({
             <CheckCircle2 className="w-6 h-6" aria-hidden />
           </span>
           <div className="min-w-0">
-            <p className="text-[18px] font-bold text-navy leading-snug">You&rsquo;ve read every guide</p>
+            <p className="text-[18px] font-bold text-navy leading-snug">
+              {hasCertificate ? 'You\u2019re a Certified Operator' : 'You\u2019ve read every guide'}
+            </p>
             <p className="text-[14px] text-[var(--text-secondary)] mt-1 leading-relaxed">
-              Nice work. The capstone is the last step to your Certified Operator badge.
+              {hasCertificate
+                ? 'Every guide read and the capstone passed. Nice work.'
+                : 'Nice work. The capstone is the last step to your Certified Operator badge.'}
             </p>
           </div>
         </div>
-        <Link href="/hub/crm-2/capstone" className="btn-primary mt-5 self-start">
-          Take the capstone <ArrowRight className="w-4 h-4" aria-hidden />
-        </Link>
+        {hasCertificate ? (
+          <Link href="/print/crm-2/certificate" target="_blank" className="btn-primary mt-5 self-start">
+            View certificate <ArrowRight className="w-4 h-4" aria-hidden />
+          </Link>
+        ) : (
+          <Link href="/hub/crm-2/capstone" className="btn-primary mt-5 self-start">
+            Take the capstone <ArrowRight className="w-4 h-4" aria-hidden />
+          </Link>
+        )}
       </div>
     )
   }
