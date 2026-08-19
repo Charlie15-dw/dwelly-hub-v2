@@ -3604,12 +3604,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Once you press Need remedial, what\'s the order of the remedial branch?',
     options: [
       'Landlord quote approval → Quotation awaiting → Quotation review → repeat visit',
-      'Quotation awaiting → Quotation review → Landlord quote approval → approved re-enters Scheduling / rejected → Remedial terminated',
+      'Quotation awaiting → Quotation review → Landlord quote approval → if the landlord approves, it re-enters Scheduling for the repeat visit; if the landlord rejects the quote, Remedial terminated',
       'Quotation review → Landlord quote approval → Quotation awaiting → Completed',
       'Scheduling → Quotation awaiting → Landlord quote approval → Certificate review',
     ],
     correct: 1,
-    rationale: 'The remedial branch runs Quotation awaiting (agent asks for a quote) → Quotation review (your checkpoint) → Landlord quote approval → approved re-enters Scheduling for the repeat visit, or rejected → Remedial terminated.',
+    rationale: 'The remedial branch runs Quotation awaiting (agent asks for a quote) → Quotation review (your checkpoint) → Landlord quote approval. If the landlord approves, the job re-enters Scheduling for the repeat visit; if the landlord rejects the quote, the remedial branch ends at Remedial terminated — the extra works don\'t go ahead, but the satisfactory certificate still stands.',
   },
   {
     id: 'q-crm2-rem-5', moduleId: 'crm2-remedial-works',
