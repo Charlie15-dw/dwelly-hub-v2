@@ -20,9 +20,16 @@ export default function AnnotatedImage({
 
   return (
     <figure className="my-1">
-      <div className="relative rounded-xl border border-[#E8E8ED] overflow-hidden bg-[#F5F5F7]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={caption ?? ''} className="w-full h-auto block" loading="lazy" />
+      {/* The image sits in its own overflow-hidden box so the rounded corners
+          crop the picture — but the pins and their pop-over panels live in the
+          outer, un-clipped `relative` wrapper. Otherwise, on short button-bar
+          images the panel opens below the pin, past the image edge, and gets
+          clipped away — which reads as "the pins don't do anything". */}
+      <div className="relative">
+        <div className="rounded-xl border border-[#E8E8ED] overflow-hidden bg-[#F5F5F7]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={src} alt={caption ?? ''} className="w-full h-auto block" loading="lazy" />
+        </div>
 
         {/* Pins */}
         {hotspots.map((h, i) => {
