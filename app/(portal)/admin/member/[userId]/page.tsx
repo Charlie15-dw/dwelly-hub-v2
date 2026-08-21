@@ -1,7 +1,8 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, CheckCircle2, XCircle, RefreshCw } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, XCircle, RefreshCw, Sparkles } from 'lucide-react'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
+import { CRM2_LESSONS } from '@/lib/crm2-content'
 import { cn } from '@/lib/utils'
 import ReassignButton from '@/components/ui/ReassignButton'
 import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
@@ -34,12 +35,132 @@ const ASSESSMENT_LABELS: Record<string, string> = {
   'release-contractor-portal-2026': 'New Product Release Quiz — Contractor Portal',
 }
 
+// CRM 2.0 assessments live in their own learning space. Their ids and labels
+// are derived straight from the lesson data so this list stays in step
+// automatically as lessons are added or renamed — no second list to maintain.
+// (This is a server component, so importing the data module here has no cost to
+// the client bundle.)
+const CRM2_QUIZ_LESSONS = CRM2_LESSONS.filter(l => l.quizModuleId)
+const CRM2_ASSESSMENT_IDS = CRM2_QUIZ_LESSONS.map(l => l.quizModuleId as string)
+const CRM2_ASSESSMENT_LABELS: Record<string, string> = Object.fromEntries(
+  CRM2_QUIZ_LESSONS.map(l => [l.quizModuleId as string, l.title]),
+)
+
 interface AnswerEntry {
   question: string
   yourAnswer: string
   correctAnswer: string
   isCorrect: boolean
   rationale: string
+}
+
+interface AssessmentAttempt {
+  score: number
+  passed: boolean
+  answers: unknown
+  completed_at: string
+}
+
+// One assessment's card: pass/fail badge, latest score, and every attempt
+// broken down question-by-question (their answer, the correct answer, and the
+// rationale on anything they got wrong). Shared by the core programme list and
+// the CRM 2.0 section so both render identically.
+function AssessmentCard({ label, attempts }: { label: string; attempts: AssessmentAttempt[] }) {
+  return (
+    <div className="card overflow-hidden">
+      <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-navy truncate">{label}</p>
+          <p className="text-xs text-slate-400 mt-0.5">{attempts.length} attempt{attempts.length !== 1 ? 's' : ''}</p>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {attempts[0].passed ? (
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-teal bg-teal/10 border border-teal/20 px-2.5 py-1 rounded-full">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Passed
+            </span>
+          ) : (
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full">
+              <XCircle className="w-3.5 h-3.5" /> Failed
+            </span>
+          )}
+          <span className={cn('text-lg font-black tabular-nums', {
+            'text-teal': attempts[0].score >= 80,
+            'text-amber-500': attempts[0].score >= 65 && attempts[0].score < 80,
+            'text-red-500': attempts[0].score < 65,
+          })}>
+            {attempts[0].score}%
+          </span>
+        </div>
+      </div>
+
+      {attempts.map((attempt, attemptIdx) => {
+        const answers: AnswerEntry[] = Array.isArray(attempt.answers) ? attempt.answers : []
+        const completedDate = attempt.completed_at
+          ? new Date(attempt.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+          : '—'
+        const correctCount = answers.filter(a => a.isCorrect).length
+
+        return (
+          <div key={attemptIdx} className={cn('border-b border-slate-50 last:border-b-0', attemptIdx > 0 && 'bg-slate-50/40')}>
+            <div className="px-5 py-3 flex items-center justify-between text-xs text-slate-400">
+              <span className="font-medium text-slate-500">
+                {attempts.length > 1 ? `Attempt ${attempts.length - attemptIdx}` : 'Latest attempt'} · {completedDate}
+              </span>
+              {answers.length > 0 && <span>{correctCount}/{answers.length} correct</span>}
+            </div>
+
+            {answers.length > 0 ? (
+              <div className="px-5 pb-5 space-y-3">
+                {answers.map((ans, qi) => (
+                  <div
+                    key={qi}
+                    className={cn(
+                      'rounded-xl border p-4',
+                      ans.isCorrect ? 'border-teal/20 bg-teal/3' : 'border-red-200 bg-red-50/40',
+                    )}
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <div className="mt-0.5 flex-shrink-0">
+                        {ans.isCorrect
+                          ? <CheckCircle2 className="w-4 h-4 text-teal" />
+                          : <XCircle className="w-4 h-4 text-red-500" />
+                        }
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-navy leading-snug">{ans.question}</p>
+                        <div className="mt-2 space-y-1.5">
+                          <div className="flex items-start gap-2">
+                            <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Their answer</span>
+                            <span className={cn('text-xs leading-relaxed', ans.isCorrect ? 'text-teal font-medium' : 'text-red-600 font-medium')}>
+                              {ans.yourAnswer}
+                            </span>
+                          </div>
+                          {!ans.isCorrect && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Correct</span>
+                              <span className="text-xs text-teal font-medium leading-relaxed">{ans.correctAnswer}</span>
+                            </div>
+                          )}
+                          {ans.rationale && (
+                            <div className="flex items-start gap-2 mt-1 pt-2 border-t border-slate-100">
+                              <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Rationale</span>
+                              <span className="text-xs text-slate-500 leading-relaxed">{ans.rationale}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="px-5 pb-4 text-xs text-slate-400">No answer detail available for this attempt.</p>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
 }
 
 export default async function AdminMemberDetailPage({
@@ -293,104 +414,44 @@ export default async function AdminMemberDetailPage({
         {ALL_ASSESSMENT_IDS.map(assessmentId => {
           const attempts = byAssessment.get(assessmentId) ?? []
           if (attempts.length === 0) return null
-
           return (
-            <div key={assessmentId} className="card overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4">
-                <div className="min-w-0">
-                  <p className="text-sm font-bold text-navy truncate">{ASSESSMENT_LABELS[assessmentId] ?? assessmentId}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{attempts.length} attempt{attempts.length !== 1 ? 's' : ''}</p>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  {attempts[0].passed ? (
-                    <span className="flex items-center gap-1.5 text-xs font-semibold text-teal bg-teal/10 border border-teal/20 px-2.5 py-1 rounded-full">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Passed
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full">
-                      <XCircle className="w-3.5 h-3.5" /> Failed
-                    </span>
-                  )}
-                  <span className={cn('text-lg font-black tabular-nums', {
-                    'text-teal': attempts[0].score >= 80,
-                    'text-amber-500': attempts[0].score >= 65 && attempts[0].score < 80,
-                    'text-red-500': attempts[0].score < 65,
-                  })}>
-                    {attempts[0].score}%
-                  </span>
-                </div>
-              </div>
-
-              {attempts.map((attempt, attemptIdx) => {
-                const answers: AnswerEntry[] = Array.isArray(attempt.answers) ? attempt.answers : []
-                const completedDate = attempt.completed_at
-                  ? new Date(attempt.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-                  : '—'
-                const correctCount = answers.filter(a => a.isCorrect).length
-
-                return (
-                  <div key={attemptIdx} className={cn('border-b border-slate-50 last:border-b-0', attemptIdx > 0 && 'bg-slate-50/40')}>
-                    <div className="px-5 py-3 flex items-center justify-between text-xs text-slate-400">
-                      <span className="font-medium text-slate-500">
-                        {attempts.length > 1 ? `Attempt ${attempts.length - attemptIdx}` : 'Latest attempt'} · {completedDate}
-                      </span>
-                      {answers.length > 0 && <span>{correctCount}/{answers.length} correct</span>}
-                    </div>
-
-                    {answers.length > 0 ? (
-                      <div className="px-5 pb-5 space-y-3">
-                        {answers.map((ans, qi) => (
-                          <div
-                            key={qi}
-                            className={cn(
-                              'rounded-xl border p-4',
-                              ans.isCorrect ? 'border-teal/20 bg-teal/3' : 'border-red-200 bg-red-50/40',
-                            )}
-                          >
-                            <div className="flex items-start gap-2.5">
-                              <div className="mt-0.5 flex-shrink-0">
-                                {ans.isCorrect
-                                  ? <CheckCircle2 className="w-4 h-4 text-teal" />
-                                  : <XCircle className="w-4 h-4 text-red-500" />
-                                }
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold text-navy leading-snug">{ans.question}</p>
-                                <div className="mt-2 space-y-1.5">
-                                  <div className="flex items-start gap-2">
-                                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Their answer</span>
-                                    <span className={cn('text-xs leading-relaxed', ans.isCorrect ? 'text-teal font-medium' : 'text-red-600 font-medium')}>
-                                      {ans.yourAnswer}
-                                    </span>
-                                  </div>
-                                  {!ans.isCorrect && (
-                                    <div className="flex items-start gap-2">
-                                      <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Correct</span>
-                                      <span className="text-xs text-teal font-medium leading-relaxed">{ans.correctAnswer}</span>
-                                    </div>
-                                  )}
-                                  {ans.rationale && (
-                                    <div className="flex items-start gap-2 mt-1 pt-2 border-t border-slate-100">
-                                      <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Rationale</span>
-                                      <span className="text-xs text-slate-500 leading-relaxed">{ans.rationale}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="px-5 pb-4 text-xs text-slate-400">No answer detail available for this attempt.</p>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
+            <AssessmentCard
+              key={assessmentId}
+              label={ASSESSMENT_LABELS[assessmentId] ?? assessmentId}
+              attempts={attempts}
+            />
           )
         })}
       </div>
+
+      {/* CRM 2.0 Assessments — the private learning space's own knowledge checks
+          and capstone. Kept in a separate section (and out of the header's
+          passed-count, which is the core programme) so the two don't blur. */}
+      {(() => {
+        const crm2Attempted = CRM2_ASSESSMENT_IDS.filter(id => byAssessment.has(id))
+        if (crm2Attempted.length === 0) return null
+        const crm2Passed = CRM2_ASSESSMENT_IDS.filter(id => byAssessment.get(id)?.[0]?.passed).length
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 px-1">
+              <Sparkles className="w-4 h-4 text-indigo-500" aria-hidden />
+              <h2 className="text-sm font-bold text-navy">CRM 2.0 Assessments</h2>
+              <span className="ml-auto text-xs text-slate-400">{crm2Passed}/{CRM2_ASSESSMENT_IDS.length} passed</span>
+            </div>
+            {CRM2_ASSESSMENT_IDS.map(id => {
+              const attempts = byAssessment.get(id) ?? []
+              if (attempts.length === 0) return null
+              return (
+                <AssessmentCard
+                  key={id}
+                  label={CRM2_ASSESSMENT_LABELS[id] ?? id}
+                  attempts={attempts}
+                />
+              )
+            })}
+          </div>
+        )
+      })()}
 
       {/* Reassignment panel — failed assessments */}
       {(() => {
