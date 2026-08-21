@@ -88,7 +88,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'image', src: '/crm2/flow-diagram.png', text: 'The full compliance flow: the main path across the top, with the landlord-DIY, remedial and boiler-service branches coming off it.' },
 
       { type: 'heading', text: 'The main path' },
-      { type: 'paragraph', text: 'Most jobs travel through these stages, driven by the agent, with one checkpoint that is always yours (Certificate review):' },
+      { type: 'paragraph', text: 'Most jobs travel through these stages, driven by the agent, with two review checkpoints that are always yours (Certificate review and Invoice review):' },
       { type: 'steps', emphasisIndex: 5, items: [
         'Landlord approval — the agent asks the landlord to authorise the work.',
         'Provider selection — the agent finds a contractor.',
@@ -96,7 +96,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Visit — the agent confirms and sends a reminder the day before.',
         'Result awaiting — the agent chases the certificate.',
         'Certificate review — your checkpoint: check the document and its dates.',
-        'Invoice awaiting / review — the invoice comes in and is checked.',
+        'Invoice review — your checkpoint too: the invoice has to be reviewed manually before it closes.',
         'Completed.',
       ]},
 
@@ -151,6 +151,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'subheading', text: 'The property panel (right)' },
       { type: 'bullets', items: [
         'Property details, the certificate type (e.g. Gas Safety CP12), the agency, and the list of Planned Actions.',
+        'The property address is a link — click it to open the property record. It\u2019s not obvious, but the address itself is the hyperlink.',
+        'Notes and Open Jobs sections show any notes on the property and its other live jobs at a glance.',
         'The Contacts tab shows the landlord, tenant and contractor details, with a Call button.',
       ]},
 
@@ -183,8 +185,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
           ['Certificate review', 'Every job, once a certificate passes the AI check', 'Check the recognised dates against the document'],
           ['Invoice review', 'Every job that has an invoice', 'Check the subtotal / VAT / total add up and the reference is right'],
           ['Quotation review', 'Remedial branch, when a quote for extra works arrives', 'Check the amount and the work description'],
-          ['Approval message', 'Any stage, when the agent drafts a free-text (non-template) email or a non-standard SMS', 'Read it, edit if needed, then confirm to send or reject to write your own'],
-          ['Landlord quote approval', 'Remedial branch, the landlord\u2019s yes/no on paying', 'Usually nothing; if it escalates, record their response'],
+          ['Approval message', 'Any stage, when the agent drafts a free-text (non-template) email or a non-standard SMS', 'Read it, edit if needed, then confirm to send. To write your own, use Reject and Take Over — not just Reject (a plain reject only resolves the escalation, so the job is easily forgotten)'],
+          ['Landlord quote approval', 'Remedial branch, the landlord\u2019s yes/no on paying', 'Usually nothing; if it escalates, record their response using Add Direct Info'],
           ['Resolve a task', 'Any stage, when the agent hands a decision over — or when you Take Over', 'Pick a stage resolution (Wait / Cancel / Landlord DIY / Select another provider / Add direct info)'],
         ],
       },
@@ -221,7 +223,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     quizModuleId: 'crm2-buttons',
     content: [
       { type: 'heading', text: 'Landlord approval buttons — by certificate type' },
-      { type: 'paragraph', text: 'Every job starts at Landlord approval, where you authorise the works once the landlord says yes. The buttons differ slightly by certificate type. If the landlord approves by phone, use Landlord approved directly — not Add Direct Info.' },
+      { type: 'paragraph', text: 'Every job starts at Landlord approval, where you authorise the works once the landlord says yes. The buttons differ slightly by certificate type. If the landlord approves by phone, click the approval button directly (e.g. Approved, Use Dwelly SP) — not Add Direct Info.' },
       { type: 'subheading', text: 'Gas Safety Certificate (CP12)' },
       { type: 'callout', variant: 'warning', text: 'Note the \u201CAdd Boiler Service\u201D button — always double-check whether the landlord wants this done. If it\u2019s unclear from their response, ask again before proceeding.' },
       { type: 'image', src: '/crm2/buttons-cp12.png', text: 'Landlord approval buttons for a CP12 job, including Add Boiler Service.',
@@ -247,7 +249,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'steps', items: [
         'Click \u201CProceed with another provider\u201D.',
         'If they\u2019re not on the preferred list, check the provider panel at panel.dwelly.team/dw-admin/html/pm-providers.',
-        'If they\u2019re not on that list either, ask the relevant PMs for feedback, then onboard the provider following the onboarding SOP.',
+        'They may also be on the list of providers onboarded for a specific agency — if so, reach out to Dylan.',
+        'If they\u2019re not on any list, ask the relevant PMs for feedback, then send the provider to Veronica first — she\u2019ll make sure they\u2019re onboarded properly, following the onboarding SOP.',
       ]},
       { type: 'image', src: '/crm2/provider-picker.png', text: 'Selecting an alternative provider via \u201CProceed with another provider\u201D.' },
 
@@ -256,6 +259,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Send emails, SMS or notes — now with attachments.',
         'Rich text (bold, italic, bullet lists) plus direct file attachment, so certificates and photos can go out in a properly formatted message without leaving the job.',
       ]},
+      { type: 'callout', variant: 'tip', text: 'Emails and notes carry the attachments. SMS is effectively one-way — the recipient can\u2019t reply to it — so use it for informing only, such as a reminder of an upcoming visit or a nudge to ask the party to check their email.' },
 
       { type: 'heading', text: 'Scheduling — brokering the date' },
       { type: 'paragraph', text: 'The agent contacts the tenant and provider to find a matching slot, nudging whichever side is silent and escalating on a deadlock. These are the actions available to you at the Scheduling stage:' },
@@ -379,7 +383,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     content: [
       { type: 'heading', text: 'Check on every certificate' },
       { type: 'bullets', items: [
-        'Address — landlords sometimes send a certificate for another property in their portfolio.',
+        'Address — check it on the certificate, and on all the paperwork more generally (invoices and quotes too). Not every invoice or quote carries an address, but most do, so it\u2019s always best to check. Landlords sometimes send a document for another property in their portfolio.',
         'Numbers — subtotal, VAT and total.',
         'Dates — issue and expiry dates present and accurate, in the right fields on both the certificate and the CRM.',
       ]},
@@ -437,6 +441,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     quizModuleId: 'crm2-epc',
     content: [
       { type: 'paragraph', text: 'Unlike an EICR or a Gas Safety Certificate, an EPC does not have to be renewed during a live tenancy. It does have to be valid before you market the property, sign a new agreement with different tenants, formally change the tenancy agreement with existing tenants, or serve notice — so renewing is best practice.' },
+      { type: 'callout', variant: 'warning', text: 'The exception: some properties fall under a selective licensing clause, which means they must have a valid EPC at all times — not just at the trigger points above. If a property is subject to selective licensing, treat the EPC as required and keep it in date.' },
 
       { type: 'heading', text: 'Wording when the landlord hasn\u2019t responded' },
       { type: 'callout', variant: 'tip', text: '\u201CAs we have not heard from you regarding the renewal of the Energy Performance Certificate, we will not be going ahead with renewing this, as it is not a legal requirement to have one during a tenancy. Please be aware that you must have a valid EPC before you market the property, sign a new agreement with different tenants, or change the formal tenancy agreement with your existing tenants; if you were to serve notice on the tenants you would also need a valid EPC — so it would be best practice to renew it. If you would like this renewed in the future, please come back to us and confirm that we can arrange this for you.\u201D' },
