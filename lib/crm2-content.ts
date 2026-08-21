@@ -194,7 +194,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'table',
         headers: ['Stage', 'Reminders', 'Then'],
         rows: [
-          ['Landlord approval', '+1 working day, +3 days', '+4 days: auto-advance (ordinary jobs); EPC escalates to you'],
+          ['Landlord approval', '+1 working day, +3 days', '+4 days: auto-advance to provider selection (EPCs included)'],
           ['Provider selection', 'Instant', 'Escalates only if no contractor is found'],
           ['Scheduling', 'Nudges whichever side is silent', 'Escalates on a deadlock'],
           ['Visit', 'One reminder the day before', 'Auto-advances once the date passes'],

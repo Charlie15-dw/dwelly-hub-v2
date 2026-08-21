@@ -3789,15 +3789,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-crm2-tp-2', moduleId: 'crm2-touchpoints',
-    question: 'An ordinary job and an EPC job both sit unanswered at Landlord approval past the reminders. What happens at +4 days?',
+    question: 'A job sits unanswered at Landlord approval past both reminders. What happens at +4 days?',
     options: [
-      'Both auto-advance without a human',
-      'Both escalate to you',
-      'The ordinary job auto-advances, but the EPC escalates to you',
-      'Both are cancelled automatically',
+      'It auto-advances to provider selection without a human',
+      'It escalates to you to action manually',
+      'It is cancelled automatically',
+      'It waits indefinitely until the landlord responds',
     ],
-    correct: 2,
-    rationale: 'At Landlord approval the reminders are +1 and +3 days; at +4 days ordinary jobs auto-advance, but an EPC escalates to you.',
+    correct: 0,
+    rationale: 'At Landlord approval the reminders fire at +1 and +3 days; if there\'s still no landlord conversation, at +4 days the job auto-advances to provider selection on its own — no human needed. An EPC is no exception here: it auto-advances the same as any other job.',
   },
   {
     id: 'q-crm2-tp-3', moduleId: 'crm2-touchpoints',
