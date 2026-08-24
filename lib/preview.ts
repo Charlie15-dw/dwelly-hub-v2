@@ -35,6 +35,8 @@ const CRM2_ALLOWED_EMAILS = new Set([
   'veronica@dwelly.group',
   'mariia@dwelly.group',
   'ivan@dwelly.group',
+  'fei@edenharper.com',
+  'lisandra@edenharper.com',
 ])
 
 // Roles that get CRM 2.0 access by virtue of being on the management team.
