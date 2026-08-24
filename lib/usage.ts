@@ -23,9 +23,17 @@ const AREA_LABELS: Record<string, string> = {
   manager: 'Manager',
 }
 
+// The CRM 2.0 learning space lives under /hub/crm-2, so by the top-segment rule
+// it would fold into "Hub". Treat it as its own area so it can be tracked on its
+// own in the usage views.
+function isCrm2Path(path: string): boolean {
+  return path === '/hub/crm-2' || path.startsWith('/hub/crm-2/')
+}
+
 /** Broad area a path belongs to — used for the "most viewed areas" ranking. */
 export function areaLabel(path: string): string {
   if (path === '/' || path === '') return 'Home'
+  if (isCrm2Path(path)) return 'CRM 2.0'
   const top = path.split('/').filter(Boolean)[0]
   return AREA_LABELS[top] ?? top.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
 }
@@ -35,7 +43,9 @@ export function formatPath(path: string): string {
   if (path === '/' || path === '') return 'Home'
   const seg = path.split('/').filter(Boolean)
   const label = areaLabel(path)
-  const rest = seg.slice(1).join(' / ')
+  // CRM 2.0 sits two levels deep (/hub/crm-2/…); drop both prefix segments so
+  // the sub-path reads cleanly, e.g. "CRM 2.0 · how-it-works".
+  const rest = (isCrm2Path(path) ? seg.slice(2) : seg.slice(1)).join(' / ')
   return rest ? `${label} · ${rest}` : label
 }
 
