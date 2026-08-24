@@ -213,11 +213,19 @@ export function scoreEntry(entry: SearchEntry, query: string): number {
 
 // `includeCrm2` gates the private CRM 2.0 entries — the palette passes the
 // caller's allow-list status so those results only surface for permitted users.
-export function searchIndex(query: string, limit = 8, includeCrm2 = false): SearchEntry[] {
+// `crm2Only` narrows the whole index down to just the CRM 2.0 space, which the
+// palette turns on while the user is inside /hub/crm-2 so search there stays on
+// topic instead of pulling in the rest of the Hub.
+export function searchIndex(
+  query: string,
+  limit = 8,
+  includeCrm2 = false,
+  crm2Only = false,
+): SearchEntry[] {
   const q = query.trim()
   if (!q) return []
   return getSearchIndex()
-    .filter(entry => includeCrm2 || entry.kind !== 'crm2')
+    .filter(entry => (crm2Only ? entry.kind === 'crm2' : includeCrm2 || entry.kind !== 'crm2'))
     .map(entry => ({ entry, score: scoreEntry(entry, q) }))
     .filter(r => r.score > 0)
     .sort((a, b) => b.score - a.score)

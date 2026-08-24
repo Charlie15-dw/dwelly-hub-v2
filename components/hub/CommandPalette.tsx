@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import {
   Search, X, GraduationCap, BookOpen, Library, BookA, AlertTriangle, Megaphone, CornerDownLeft, Sparkles,
 } from 'lucide-react'
@@ -35,12 +35,19 @@ export default function CommandPalette() {
   const canSeeCrm2 = isCrm2Preview(email)
 
   const router = useRouter()
+  const pathname = usePathname()
+  // Inside the private CRM 2.0 space, scope search to that content only so it
+  // stays on topic rather than pulling in the rest of the Hub.
+  const crm2Only = Boolean(pathname?.startsWith('/hub/crm-2')) && canSeeCrm2
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const results = useMemo(() => (open ? searchIndex(query, 8, canSeeCrm2) : []), [open, query, canSeeCrm2])
+  const results = useMemo(
+    () => (open ? searchIndex(query, 8, canSeeCrm2, crm2Only) : []),
+    [open, query, canSeeCrm2, crm2Only],
+  )
 
   // Open with Cmd/Ctrl-K; allow other components to open via a custom event.
   useEffect(() => {
@@ -114,7 +121,7 @@ export default function CommandPalette() {
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={onInputKeyDown}
-            placeholder="Search modules, guides, knowledge, glossary…"
+            placeholder={crm2Only ? 'Search CRM 2.0…' : 'Search modules, guides, knowledge, glossary…'}
             className="flex-1 py-4 text-sm text-navy placeholder:text-slate-400 outline-none bg-transparent"
             aria-label="Search query"
           />
@@ -131,7 +138,7 @@ export default function CommandPalette() {
         <div className="max-h-[50vh] overflow-y-auto py-2">
           {query.trim() === '' ? (
             <p className="px-4 py-6 text-center text-sm text-slate-400">
-              Start typing to search across the Hub.
+              {crm2Only ? 'Start typing to search CRM 2.0.' : 'Start typing to search across the Hub.'}
             </p>
           ) : results.length === 0 ? (
             <p className="px-4 py-6 text-center text-sm text-slate-400">
@@ -176,7 +183,7 @@ export default function CommandPalette() {
           <span className="text-[11px] text-slate-400">
             <kbd className="font-sans font-semibold">↑↓</kbd> navigate · <kbd className="font-sans font-semibold">↵</kbd> open · <kbd className="font-sans font-semibold">esc</kbd> close
           </span>
-          <span className="text-[11px] text-slate-400">The Hub</span>
+          <span className="text-[11px] text-slate-400">{crm2Only ? 'CRM 2.0' : 'The Hub'}</span>
         </div>
       </div>
     </div>
