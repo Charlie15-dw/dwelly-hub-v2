@@ -413,7 +413,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'An EICR with only C3 items — or none — is satisfactory and needs no remedials.',
         'C1, C2 or FI codes mean remedial works: send the job down the required-remedial path.',
       ]},
-      { type: 'callout', variant: 'warning', text: 'Watch for the mixed case: an EICR marked overall Satisfactory that still lists FI (further investigation) items. Don\u2019t take the \u201Csatisfactory\u201D stamp at face value — go back to the service provider for clarification on the FIs before you close it out.' },
+      { type: 'callout', variant: 'warning', text: 'Read the codes, not just the summary box: FI (further investigation) is a fail code, just like C1 and C2. If an EICR lists any FI items it is unsatisfactory \u2014 don\u2019t be misled by a \u201Csatisfactory\u201D-looking summary. Send the job down the required-remedial path.' },
 
       { type: 'heading', text: 'The review panel' },
       { type: 'paragraph', text: 'The panel pre-fills the recognised dates for you to check against the document before you approve.' },

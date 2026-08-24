@@ -3556,15 +3556,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-crm2-cert-7', moduleId: 'crm2-certificate-review',
-    question: 'An EICR is marked overall Satisfactory but still lists a couple of FI (further investigation) items. What should you do?',
+    question: 'An EICR lists one or more FI (further investigation) items. What does that mean for the certificate?',
     options: [
-      'Approve it — the overall "satisfactory" result is what counts',
-      'Reject it as invalid and request a fresh inspection',
-      'Go back to the service provider for clarification on the FIs before closing it out',
-      'Send it straight down the required-remedial path automatically',
+      'FI codes render the EICR unsatisfactory — treat it as requiring remedial work',
+      'The FI items are advisory only, like C3 — you can approve it as satisfactory',
+      'FI has no effect unless there is also a C1 or C2 on the report',
+      'The cert is invalid — reject it and request a brand-new inspection',
     ],
-    correct: 2,
-    rationale: 'Don\'t take the "satisfactory" stamp at face value when FI items are present — FI means further investigation, so go back to the service provider to clarify before closing.',
+    correct: 0,
+    rationale: 'FI (further investigation) is a fail code, alongside C1 and C2 — any of them render an EICR unsatisfactory. So an EICR listing FI items is not a genuine pass; it needs to go down the required-remedial path. Only C3 (improvement recommended) items are advisory and leave the certificate satisfactory.',
   },
 
   // crm2-remedial-works
@@ -3577,15 +3577,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-crm2-rem-2', moduleId: 'crm2-remedial-works',
-    question: 'A gas certificate is satisfactory but the engineer noted an optional remedial. What is the common mistake to avoid?',
+    question: 'You click Optional remedial to confirm the C3 items on an otherwise-satisfactory certificate. What happens next?',
     options: [
-      'Closing the job immediately without recording the engineer\'s optional note',
-      'Redirecting a satisfactory certificate into the mandatory remedial flow',
-      'Telling the landlord the certificate failed when the appliances are safe',
-      'Booking a second contractor straight away to carry out the optional work',
+      'CRM 2.0 automatically creates a maintenance job in CRM 1.0, where the optional-remedial workflow lives',
+      'The job is voided until the optional work has been completed',
+      'Nothing — optional items are recorded but never create any follow-up job',
+      'A second contractor is booked automatically to carry out the work',
     ],
-    correct: 1,
-    rationale: 'Don\'t redirect a satisfactory cert into the mandatory remedial flow. If the appliances are safe to use, treat it as satisfactory and handle the optional remedial via the optional flow.',
+    correct: 0,
+    rationale: 'Confirming C3s on a satisfactory cert in CRM 2.0 automatically creates a maintenance job in CRM 1.0 — the optional-remedial workflow lives in 1.0, so seeing the job appear there is expected behaviour, not a bug.',
   },
   {
     id: 'q-crm2-rem-3', moduleId: 'crm2-remedial-works',
@@ -4059,7 +4059,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-crm2-er-6', moduleId: 'crm2-escalations-reference',
-    question: 'The landlord refuses the quote for remedial works. What\'s the correct outcome?',
+    question: 'The certificate is satisfactory, but the landlord refuses the quote for the optional (recommended) remedial works. What\'s the correct outcome?',
     options: [
       'The whole job fails and the certificate is voided',
       'Record the response; the remedial branch ends at Remedial terminated and the satisfactory cert still stands',
@@ -4067,7 +4067,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Escalate to an admin to overrule the landlord',
     ],
     correct: 1,
-    rationale: 'If the landlord refuses the quote, record the response. The remedial branch ends at Remedial terminated, and the satisfactory certificate still stands.',
+    rationale: 'These remedials are optional — the certificate is already satisfactory — so the landlord can decline. Record the response; the remedial branch ends at Remedial terminated and the satisfactory certificate still stands. This is different from required remedials on an unsatisfactory cert (a C1/C2/FI on an EICR, or an unsafe gas appliance), where the compliance issue doesn\'t go away just because the landlord refuses.',
   },
 
   // crm2-across-systems
