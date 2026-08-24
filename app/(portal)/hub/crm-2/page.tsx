@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
-import { isCrm2Preview } from '@/lib/preview'
+import { canAccessCrm2 } from '@/lib/crm2-access'
 import {
   CRM2_PILLARS, CRM2_LESSONS, CRM2_GUIDES, CRM2_GUIDE_COUNT, CRM2_GUIDE_MINUTES,
   CRM2_CAPSTONE_MODULE_ID, getCrm2GuideNumber, getCrm2Guides,
@@ -38,7 +38,7 @@ export default async function Crm2Page() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
-  if (!isCrm2Preview(user.email)) redirect('/hub')
+  if (!(await canAccessCrm2(supabase, user))) redirect('/hub')
 
   const completed = await getCrm2CompletedSlugs(supabase, user.id)
 

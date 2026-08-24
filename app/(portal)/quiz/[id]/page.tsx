@@ -8,7 +8,8 @@ import {
 } from '@/lib/data'
 import { redirect } from 'next/navigation'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
-import { isHubBeta, isCrm2Preview, isHubElevated } from '@/lib/preview'
+import { isHubBeta, isHubElevated } from '@/lib/preview'
+import { canAccessCrm2 } from '@/lib/crm2-access'
 import { CRM2_LESSONS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/lib/crm2-content'
 import QuizClient, { type QuizCategory } from './QuizClient'
 
@@ -47,7 +48,7 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     const auth = createServerClient()
     const { data: { user } } = await auth.auth.getUser()
     if (!user) redirect('/')
-    if (!isCrm2Preview(user.email)) redirect('/hub')
+    if (!(await canAccessCrm2(auth, user))) redirect('/hub')
   }
 
   // ── Determine quiz category and metadata ────────────────────────────────

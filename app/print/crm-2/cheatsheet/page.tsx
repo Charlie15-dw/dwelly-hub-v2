@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isCrm2Preview } from '@/lib/preview'
+import { canAccessCrm2 } from '@/lib/crm2-access'
 import { getCrm2Lesson, CRM2_LAST_REVIEWED, type Crm2Block } from '@/lib/crm2-content'
 import PrintButton from '@/components/crm2/PrintButton'
 
@@ -14,7 +14,7 @@ export default async function Crm2CheatsheetPrintPage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
-  if (!isCrm2Preview(user.email)) redirect('/hub')
+  if (!(await canAccessCrm2(supabase, user))) redirect('/hub')
 
   const lesson = getCrm2Lesson('cheatsheet')
   if (!lesson) redirect('/hub/crm-2')

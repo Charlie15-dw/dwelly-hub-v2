@@ -129,7 +129,6 @@ export default function Sidebar() {
       if (!user) return
       const preview = isHubPreview(user.email)
       setIsPreview(preview)
-      setIsCrm2(isCrm2Preview(user.email))
       // In the Hub preview, each pillar is a collapsible group; open the one
       // matching the current page automatically.
       if (preview) {
@@ -151,6 +150,9 @@ export default function Sidebar() {
       setIsAdmin(data?.role === 'admin')
       setUserDisplayName(data?.full_name ?? user.email?.split('@')[0] ?? null)
       setUserRole(data?.role ?? null)
+      // CRM 2.0 is open to managers/admins as well as the named allow-list, so
+      // this depends on the role we've just fetched.
+      setIsCrm2(isCrm2Preview(user.email, data?.role))
     })
   }, [pathname])
 

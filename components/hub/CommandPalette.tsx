@@ -30,9 +30,9 @@ const KIND_ACCENT: Record<SearchKind, string> = {
 }
 
 export default function CommandPalette() {
-  const { email } = useUser()
+  const { email, profile } = useUser()
   const isPreview = isHubPreview(email)
-  const canSeeCrm2 = isCrm2Preview(email)
+  const canSeeCrm2 = isCrm2Preview(email, profile?.role)
 
   const router = useRouter()
   const pathname = usePathname()

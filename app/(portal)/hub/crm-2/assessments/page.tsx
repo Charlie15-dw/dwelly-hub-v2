@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, ClipboardCheck, ChevronRight, Trophy, CheckCircle2 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isCrm2Preview } from '@/lib/preview'
+import { canAccessCrm2 } from '@/lib/crm2-access'
 import { CRM2_LESSONS, CRM2_PILLARS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/lib/crm2-content'
 import { QUIZ_QUESTIONS } from '@/lib/data'
 
@@ -16,7 +16,7 @@ export default async function Crm2AssessmentsPage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
-  if (!isCrm2Preview(user.email)) redirect('/hub')
+  if (!(await canAccessCrm2(supabase, user))) redirect('/hub')
 
   const quizLessons = CRM2_LESSONS.filter((l) => l.quizModuleId)
   const questionCount = (moduleId: string) =>

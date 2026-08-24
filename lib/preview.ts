@@ -23,11 +23,11 @@ export function isHubBeta(email: string | null | undefined): boolean {
 
 // CRM 2.0 learning space — private early-access gate.
 //
-// The "2.0" section is a work-in-progress learning area that should only be
-// visible to Charlie while the content is being built. Restricted to the two
-// listed accounts; everyone else neither sees the nav entry nor can reach the
-// page. Widen this set (or replace it with a role/flag) when it's ready to roll
-// out more broadly.
+// The "2.0" section is a review area rolled out ahead of the wider launch. It's
+// open to every manager/admin (so the whole management team can review the
+// content and sit the assessments) plus a handful of named accounts who had
+// early access. The wider group stays locked out — they neither see the nav
+// entry nor can reach the page. When it's ready for everyone, drop the gate.
 const CRM2_ALLOWED_EMAILS = new Set([
   'charlie@dwelly.group',
   'charlie@pennington-online.co.uk',
@@ -37,7 +37,16 @@ const CRM2_ALLOWED_EMAILS = new Set([
   'ivan@dwelly.group',
 ])
 
-export function isCrm2Preview(email: string | null | undefined): boolean {
+// Roles that get CRM 2.0 access by virtue of being on the management team.
+const CRM2_ALLOWED_ROLES = new Set(['manager', 'admin'])
+
+// `role` comes from user_profiles.role. Managers and admins always have access;
+// otherwise fall back to the named allow-list of early-access accounts.
+export function isCrm2Preview(
+  email: string | null | undefined,
+  role?: string | null,
+): boolean {
+  if (role && CRM2_ALLOWED_ROLES.has(role)) return true
   return email ? CRM2_ALLOWED_EMAILS.has(email.trim().toLowerCase()) : false
 }
 

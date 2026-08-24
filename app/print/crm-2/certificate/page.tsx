@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowLeft, Award, Sparkles, Star, ShieldCheck } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isCrm2Preview } from '@/lib/preview'
+import { canAccessCrm2 } from '@/lib/crm2-access'
 import { CRM2_CAPSTONE_MODULE_ID, CRM2_LAST_REVIEWED } from '@/lib/crm2-content'
 import PrintButton from '@/components/crm2/PrintButton'
 
@@ -20,7 +20,7 @@ export default async function Crm2CertificatePage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
-  if (!isCrm2Preview(user.email)) redirect('/hub')
+  if (!(await canAccessCrm2(supabase, user))) redirect('/hub')
 
   const { data: results } = await supabase
     .from('assessment_results')

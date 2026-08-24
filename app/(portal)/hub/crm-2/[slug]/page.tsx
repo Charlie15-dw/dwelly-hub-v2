@@ -4,7 +4,7 @@ import {
   ArrowLeft, Clock, ChevronRight, ChevronLeft, ChevronDown, ClipboardCheck, Printer,
 } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isCrm2Preview } from '@/lib/preview'
+import { canAccessCrm2 } from '@/lib/crm2-access'
 import {
   CRM2_LESSONS, CRM2_PILLARS, CRM2_GUIDES, CRM2_GUIDE_COUNT,
   getCrm2Lesson, getCrm2Glossary, getCrm2GuideNumber, getCrm2Guides, type Crm2Block,
@@ -242,7 +242,7 @@ export default async function Crm2LessonPage({ params }: { params: { slug: strin
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
-  if (!isCrm2Preview(user.email)) redirect('/hub')
+  if (!(await canAccessCrm2(supabase, user))) redirect('/hub')
 
   const lesson = getCrm2Lesson(params.slug)
   if (!lesson) notFound()
