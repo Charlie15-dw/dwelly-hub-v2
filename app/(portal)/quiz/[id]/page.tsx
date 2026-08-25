@@ -204,9 +204,14 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     // Non-critical — quiz still loads without the beta confidence UI.
   }
 
-  // Check for a pending manager reset — done server-side so RLS never blocks it.
-  // While we're here, read this user's last attempt from the DB so the locked
-  // screen is driven by the per-user record rather than shared localStorage.
+  // Lock / unlock, decided server-side so RLS never blocks it.
+  //
+  // A completed attempt (pass or fail) locks the assessment. A manager "reassign"
+  // inserts an un-consumed module_resets row to grant a retake. The retake grant
+  // stays live until it is actually USED — i.e. until a new attempt is recorded
+  // AFTER the reset was created. Crucially we do NOT consume the reset just
+  // because the quiz page was opened: viewing must never burn a granted retake
+  // (that bug left people locked out after merely looking at the assessment).
   let wasReset = false
   let lockedByDb = false
   let lastAttempt: { score: number; passed: boolean; completedAt: string } | undefined
@@ -216,48 +221,59 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
       const { data: { user } } = await auth.auth.getUser()
       if (user) {
         const service = createServiceClient()
-        // There may be more than one pending reset if reassign was pressed
-        // multiple times — consume them all, not just one.
+
+        // This user's most recent attempt for this assessment.
+        const { data: attempts } = await auth
+          .from('assessment_results')
+          .select('score, passed, completed_at')
+          .eq('user_id', user.id)
+          .eq('assessment_id', moduleId)
+          .order('completed_at', { ascending: false })
+          .limit(1)
+        const last = attempts?.[0]
+
+        // Any live (un-consumed) retake grant, newest first.
         const { data: resets } = await service
           .from('module_resets')
-          .select('id')
+          .select('id, created_at')
           .eq('user_id', user.id)
           .eq('module_id', moduleId)
           .is('consumed_at', null)
-        if (resets && resets.length > 0) {
-          await service
-            .from('module_resets')
-            .update({ consumed_at: new Date().toISOString() })
-            .eq('user_id', user.id)
-            .eq('module_id', moduleId)
-            .is('consumed_at', null)
-          await service
-            .from('assessment_sessions')
-            .delete()
-            .eq('user_id', user.id)
-            .eq('module_id', moduleId)
-          wasReset = true
-        }
+          .order('created_at', { ascending: false })
+        const pendingReset = resets?.[0]
 
-        // A completed attempt (pass or fail) locks the assessment until a
-        // manager grants a retake. A just-consumed reset unlocks it now.
-        if (!wasReset) {
-          const { data: attempts } = await auth
-            .from('assessment_results')
-            .select('score, passed, completed_at')
-            .eq('user_id', user.id)
-            .eq('assessment_id', moduleId)
-            .order('completed_at', { ascending: false })
-            .limit(1)
-          const last = attempts?.[0]
-          if (last) {
+        const toAttempt = () => ({
+          score: last?.score ?? 0,
+          passed: last?.passed ?? false,
+          completedAt: last?.completed_at ?? '',
+        })
+
+        if (pendingReset) {
+          // Has the granted retake already been used? Only if there's an attempt
+          // dated after the reset was created.
+          const retakeUsed = Boolean(
+            last?.completed_at && Date.parse(last.completed_at) > Date.parse(pendingReset.created_at)
+          )
+          if (retakeUsed) {
+            // Retake spent — consume every live reset and lock again on the
+            // fresh attempt.
+            await service
+              .from('module_resets')
+              .update({ consumed_at: new Date().toISOString() })
+              .eq('user_id', user.id)
+              .eq('module_id', moduleId)
+              .is('consumed_at', null)
             lockedByDb = true
-            lastAttempt = {
-              score: last.score ?? 0,
-              passed: last.passed ?? false,
-              completedAt: last.completed_at ?? '',
-            }
+            lastAttempt = toAttempt()
+          } else {
+            // Retake still available — unlocked. Signal a fresh start so any
+            // stale in-progress session from the previous attempt is cleared.
+            wasReset = true
           }
+        } else if (last) {
+          // No retake granted and there's a completed attempt — locked.
+          lockedByDb = true
+          lastAttempt = toAttempt()
         }
       }
     } catch {
