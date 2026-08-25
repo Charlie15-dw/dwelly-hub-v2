@@ -5,12 +5,18 @@
 // tripping people up — with a reassign control on any failed attempt so a
 // retake can be granted without leaving the 2.0 section.
 //
+// Two tabs:
+//   • Results  — summary + pass-rate-by-assessment + a member table. Click a
+//                person to open their FULL overview (every assessment at once,
+//                with the question breakdown and a reassign on any fail).
+//   • Reassign — a focused queue of everyone who has failed at least one check,
+//                so retakes can be granted in one place.
+//
 // Presentational only: all data is computed server-side (latest attempt per
-// person/assessment, plus any pending reset) and passed in. State here is just
-// the expanded-row UI.
+// person/assessment, plus any pending reset) and passed in.
 
 import { Fragment, useState } from 'react'
-import { Sparkles, CheckCircle2, XCircle, ChevronDown } from 'lucide-react'
+import { Sparkles, CheckCircle2, XCircle, ChevronDown, ChevronRight, RefreshCw, LayoutGrid } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import ReassignButton from '@/components/ui/ReassignButton'
 
@@ -60,8 +66,102 @@ function ScoreBadge({ passed, score }: { passed: boolean; score: number }) {
   )
 }
 
+function formatDate(iso: string | null) {
+  return iso
+    ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    : null
+}
+
+// One assessment for one person — pass/fail header, reassign on fail, and the
+// question-by-question breakdown. Shared by the per-person overview and the
+// reassign queue.
+function AssessmentDetail({
+  person,
+  assessment,
+  attempt,
+}: {
+  person: Crm2PersonRow
+  assessment: Crm2Assessment
+  attempt: Crm2Attempt
+}) {
+  const date = formatDate(attempt.completedAt)
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+      <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2 min-w-0">
+          <p className="text-sm font-bold text-navy truncate">{assessment.title}</p>
+          <ScoreBadge passed={attempt.passed} score={attempt.score} />
+          {date && <span className="text-xs text-slate-400">{date}</span>}
+        </div>
+        {!attempt.passed && (
+          <ReassignButton
+            userId={person.id}
+            moduleId={assessment.id}
+            moduleName={assessment.title}
+            pending={person.pending.includes(assessment.id)}
+          />
+        )}
+      </div>
+
+      {attempt.answers.length > 0 ? (
+        <div className="p-4 space-y-3">
+          {attempt.answers.map((ans, qi) => (
+            <div
+              key={qi}
+              className={cn(
+                'rounded-xl border p-3.5',
+                ans.isCorrect ? 'border-teal/20 bg-teal/5' : 'border-red-200 bg-red-50/40',
+              )}
+            >
+              <div className="flex items-start gap-2.5">
+                <div className="mt-0.5 flex-shrink-0">
+                  {ans.isCorrect
+                    ? <CheckCircle2 className="w-4 h-4 text-teal" aria-hidden />
+                    : <XCircle className="w-4 h-4 text-red-500" aria-hidden />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-navy leading-snug">{ans.question}</p>
+                  <div className="mt-2 space-y-1.5">
+                    <div className="flex items-start gap-2">
+                      <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Their answer</span>
+                      <span className={cn('text-xs leading-relaxed font-medium', ans.isCorrect ? 'text-teal' : 'text-red-600')}>
+                        {ans.yourAnswer}
+                      </span>
+                    </div>
+                    {!ans.isCorrect && (
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Correct</span>
+                        <span className="text-xs text-teal font-medium leading-relaxed">{ans.correctAnswer}</span>
+                      </div>
+                    )}
+                    {ans.rationale && (
+                      <div className="flex items-start gap-2 mt-1 pt-2 border-t border-slate-100">
+                        <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Rationale</span>
+                        <span className="text-xs text-slate-500 leading-relaxed">{ans.rationale}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="px-4 py-4 text-xs text-slate-400">No answer detail available for this attempt.</p>
+      )}
+    </div>
+  )
+}
+
 export default function Crm2AdminOverview({ assessments, people }: Props) {
-  const [expanded, setExpanded] = useState<string | null>(null)
+  const [tab, setTab] = useState<'results' | 'reassign'>('results')
+  const [expandedPerson, setExpandedPerson] = useState<string | null>(null)
+
+  // Everything a person has actually attempted, in assessment order.
+  const attemptedFor = (p: Crm2PersonRow) =>
+    assessments
+      .filter((a) => p.attempts[a.id])
+      .map((a) => ({ assessment: a, attempt: p.attempts[a.id]! }))
 
   // ── Derived stats ────────────────────────────────────────────────────────
   let attemptedCells = 0
@@ -84,6 +184,12 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
   })
   const overallPassRate = attemptedCells > 0 ? Math.round((passedCells / attemptedCells) * 100) : 0
 
+  // People with at least one failed latest attempt — the reassign queue.
+  const reassignQueue = people
+    .map((p) => ({ person: p, fails: attemptedFor(p).filter((x) => !x.attempt.passed) }))
+    .filter((row) => row.fails.length > 0)
+  const totalFails = reassignQueue.reduce((s, r) => s + r.fails.length, 0)
+
   if (people.length === 0) {
     return (
       <div className="card p-10 text-center">
@@ -97,11 +203,12 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* Summary stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      {/* Summary stats — always visible */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
           { label: 'People assessed', value: people.length, sub: 'have taken at least one check' },
           { label: 'Overall pass rate', value: `${overallPassRate}%`, sub: `${passedCells} of ${attemptedCells} attempts passed`, accent: overallPassRate >= 80 ? 'text-teal' : overallPassRate >= 50 ? 'text-amber-500' : 'text-red-500' },
+          { label: 'Need a retake', value: totalFails, sub: `${reassignQueue.length} ${reassignQueue.length === 1 ? 'person' : 'people'} with a fail`, accent: totalFails > 0 ? 'text-red-500' : 'text-navy' },
           { label: 'Assessments', value: assessments.length, sub: 'knowledge checks in CRM 2.0' },
         ].map(({ label, value, sub, accent }) => (
           <div key={label} className="card p-5">
@@ -112,184 +219,178 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
         ))}
       </div>
 
-      {/* Pass rate per assessment — spot the checks that are tripping people up */}
-      <div className="card overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-100">
-          <h2 className="text-sm font-bold text-navy">Pass rate by assessment</h2>
-          <p className="text-xs text-slate-400 mt-0.5">Share of people who have passed each knowledge check</p>
-        </div>
-        <div className="divide-y divide-slate-50">
-          {perAssessment.map((a) => {
-            const pct = a.attempted > 0 ? Math.round((a.passed / a.attempted) * 100) : 0
-            return (
-              <div key={a.id} className="px-5 py-3.5 flex items-center gap-4">
-                <p className="text-sm font-medium text-navy flex-1 min-w-0 truncate">{a.title}</p>
-                <div className="w-32 flex-shrink-0">
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${pct}%`, background: pct >= 80 ? '#1A7F37' : pct >= 50 ? '#F59E0B' : '#DC2626' }}
-                    />
-                  </div>
-                </div>
-                <span className="text-xs font-semibold text-slate-500 tabular-nums w-24 text-right flex-shrink-0">
-                  {a.passed}/{a.attempted} passed
-                </span>
-              </div>
-            )
-          })}
-        </div>
+      {/* Tabs */}
+      <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl w-fit">
+        {([
+          { key: 'results' as const, label: 'Results', icon: LayoutGrid },
+          { key: 'reassign' as const, label: 'Reassign', icon: RefreshCw, count: totalFails },
+        ]).map(({ key, label, icon: Icon, count }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setTab(key)}
+            className={cn(
+              'flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors',
+              tab === key ? 'bg-white text-navy shadow-sm' : 'text-slate-500 hover:text-navy',
+            )}
+            aria-current={tab === key}
+          >
+            <Icon className="w-4 h-4" aria-hidden />
+            {label}
+            {typeof count === 'number' && count > 0 && (
+              <span className={cn(
+                'text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded-full',
+                tab === key ? 'bg-red-100 text-red-600' : 'bg-slate-200 text-slate-500',
+              )}>
+                {count}
+              </span>
+            )}
+          </button>
+        ))}
       </div>
 
-      {/* Results matrix — every person, every assessment. Click a cell to see the
-          question breakdown and reassign. */}
-      <div className="card overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-[#0071E3]" aria-hidden />
-          <h2 className="text-sm font-bold text-navy">Assessment results</h2>
-          <span className="ml-auto text-xs text-slate-400">Click a score to see the breakdown &amp; reassign</span>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm" role="table">
-            <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap sticky left-0 bg-slate-50/80" scope="col">
-                  Team Member
-                </th>
-                {assessments.map((a) => (
-                  <th key={a.id} className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">
-                    {a.title}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
+      {/* ── Results ──────────────────────────────────────────────────────── */}
+      {tab === 'results' && (
+        <div className="space-y-6">
+          {/* Pass rate per assessment */}
+          <div className="card overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100">
+              <h2 className="text-sm font-bold text-navy">Pass rate by assessment</h2>
+              <p className="text-xs text-slate-400 mt-0.5">Share of people who have passed each knowledge check</p>
+            </div>
+            <div className="divide-y divide-slate-50">
+              {perAssessment.map((a) => {
+                const pct = a.attempted > 0 ? Math.round((a.passed / a.attempted) * 100) : 0
+                return (
+                  <div key={a.id} className="px-5 py-3.5 flex items-center gap-4">
+                    <p className="text-sm font-medium text-navy flex-1 min-w-0 truncate">{a.title}</p>
+                    <div className="w-32 flex-shrink-0">
+                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${pct}%`, background: pct >= 80 ? '#1A7F37' : pct >= 50 ? '#F59E0B' : '#DC2626' }}
+                        />
+                      </div>
+                    </div>
+                    <span className="text-xs font-semibold text-slate-500 tabular-nums w-24 text-right flex-shrink-0">
+                      {a.passed}/{a.attempted} passed
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Members — click a person to open their full overview */}
+          <div className="card overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#0071E3]" aria-hidden />
+              <h2 className="text-sm font-bold text-navy">Members</h2>
+              <span className="ml-auto text-xs text-slate-400">Click a person to see their full breakdown</span>
+            </div>
+            <div className="divide-y divide-slate-50">
               {people.map((person) => {
-                const openKey = expanded?.startsWith(`${person.id}::`) ? expanded : null
-                const openAssessmentId = openKey ? openKey.split('::')[1] : null
-                const openAttempt = openAssessmentId ? person.attempts[openAssessmentId] : null
-                const openAssessment = assessments.find((a) => a.id === openAssessmentId)
+                const attempted = attemptedFor(person)
+                const passedCount = attempted.filter((x) => x.attempt.passed).length
+                const failCount = attempted.length - passedCount
+                const isOpen = expandedPerson === person.id
                 return (
                   <Fragment key={person.id}>
-                    <tr className="hover:bg-slate-50/60 transition-colors">
-                      <td className="px-4 py-3 whitespace-nowrap sticky left-0 bg-white">
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-                            <span className="text-white text-[11px] font-bold">{person.initials}</span>
-                          </div>
-                          <p className="text-sm font-medium text-navy">{person.displayName}</p>
-                        </div>
-                      </td>
-                      {assessments.map((a) => {
-                        const at = person.attempts[a.id]
-                        const key = `${person.id}::${a.id}`
-                        const isOpen = expanded === key
-                        return (
-                          <td key={a.id} className="px-4 py-3 whitespace-nowrap">
-                            {at ? (
-                              <button
-                                type="button"
-                                onClick={() => setExpanded(isOpen ? null : key)}
-                                className={cn(
-                                  'inline-flex items-center gap-1 rounded-full transition-transform hover:scale-105',
-                                  isOpen && 'ring-2 ring-[#0071E3]/30 ring-offset-1 rounded-full',
-                                )}
-                                aria-expanded={isOpen}
-                              >
-                                <ScoreBadge passed={at.passed} score={at.score} />
-                              </button>
-                            ) : (
-                              <span className="text-xs text-slate-300">Not completed</span>
-                            )}
-                          </td>
-                        )
-                      })}
-                    </tr>
+                    <button
+                      type="button"
+                      onClick={() => setExpandedPerson(isOpen ? null : person.id)}
+                      className="w-full text-left px-5 py-3.5 flex items-center gap-4 hover:bg-slate-50/70 transition-colors"
+                      aria-expanded={isOpen}
+                    >
+                      <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-xs font-bold">{person.initials}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-navy">{person.displayName}</p>
+                        <p className="text-xs text-slate-400">
+                          {attempted.length} of {assessments.length} taken · {passedCount} passed
+                          {failCount > 0 && <span className="text-red-500 font-medium"> · {failCount} to retake</span>}
+                        </p>
+                      </div>
+                      {/* Compact per-assessment badges */}
+                      <div className="hidden md:flex items-center gap-1.5 flex-shrink-0">
+                        {attempted.map(({ assessment, attempt }) => (
+                          <ScoreBadge key={assessment.id} passed={attempt.passed} score={attempt.score} />
+                        ))}
+                      </div>
+                      {isOpen
+                        ? <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" aria-hidden />
+                        : <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0" aria-hidden />}
+                    </button>
 
-                    {openAttempt && openAssessment && (
-                      <tr className="bg-slate-50/60">
-                        <td colSpan={assessments.length + 1} className="px-4 py-4">
-                          <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                            <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between gap-3 flex-wrap">
-                              <div className="flex items-center gap-2 min-w-0">
-                                <ChevronDown className="w-4 h-4 text-[#0071E3] flex-shrink-0" aria-hidden />
-                                <p className="text-sm font-bold text-navy truncate">
-                                  {person.displayName} · {openAssessment.title}
-                                </p>
-                                <ScoreBadge passed={openAttempt.passed} score={openAttempt.score} />
-                                {openAttempt.completedAt && (
-                                  <span className="text-xs text-slate-400">
-                                    {new Date(openAttempt.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                                  </span>
-                                )}
-                              </div>
-                              {!openAttempt.passed && (
-                                <ReassignButton
-                                  userId={person.id}
-                                  moduleId={openAssessment.id}
-                                  moduleName={openAssessment.title}
-                                  pending={person.pending.includes(openAssessment.id)}
-                                />
-                              )}
-                            </div>
-
-                            {openAttempt.answers.length > 0 ? (
-                              <div className="p-4 space-y-3">
-                                {openAttempt.answers.map((ans, qi) => (
-                                  <div
-                                    key={qi}
-                                    className={cn(
-                                      'rounded-xl border p-3.5',
-                                      ans.isCorrect ? 'border-teal/20 bg-teal/5' : 'border-red-200 bg-red-50/40',
-                                    )}
-                                  >
-                                    <div className="flex items-start gap-2.5">
-                                      <div className="mt-0.5 flex-shrink-0">
-                                        {ans.isCorrect
-                                          ? <CheckCircle2 className="w-4 h-4 text-teal" aria-hidden />
-                                          : <XCircle className="w-4 h-4 text-red-500" aria-hidden />}
-                                      </div>
-                                      <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-navy leading-snug">{ans.question}</p>
-                                        <div className="mt-2 space-y-1.5">
-                                          <div className="flex items-start gap-2">
-                                            <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Their answer</span>
-                                            <span className={cn('text-xs leading-relaxed font-medium', ans.isCorrect ? 'text-teal' : 'text-red-600')}>
-                                              {ans.yourAnswer}
-                                            </span>
-                                          </div>
-                                          {!ans.isCorrect && (
-                                            <div className="flex items-start gap-2">
-                                              <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Correct</span>
-                                              <span className="text-xs text-teal font-medium leading-relaxed">{ans.correctAnswer}</span>
-                                            </div>
-                                          )}
-                                          {ans.rationale && (
-                                            <div className="flex items-start gap-2 mt-1 pt-2 border-t border-slate-100">
-                                              <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Rationale</span>
-                                              <span className="text-xs text-slate-500 leading-relaxed">{ans.rationale}</span>
-                                            </div>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="px-4 py-4 text-xs text-slate-400">No answer detail available for this attempt.</p>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
+                    {isOpen && (
+                      <div className="px-5 py-4 bg-slate-50/60 space-y-3">
+                        {attempted.length === 0 ? (
+                          <p className="text-xs text-slate-400">No assessments attempted yet.</p>
+                        ) : (
+                          attempted.map(({ assessment, attempt }) => (
+                            <AssessmentDetail
+                              key={assessment.id}
+                              person={person}
+                              assessment={assessment}
+                              attempt={attempt}
+                            />
+                          ))
+                        )}
+                      </div>
                     )}
                   </Fragment>
                 )
               })}
-            </tbody>
-          </table>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* ── Reassign ─────────────────────────────────────────────────────── */}
+      {tab === 'reassign' && (
+        <div className="space-y-4">
+          {reassignQueue.length === 0 ? (
+            <div className="card p-10 text-center">
+              <div className="w-11 h-11 rounded-full bg-teal/10 text-teal flex items-center justify-center mx-auto mb-3">
+                <CheckCircle2 className="w-5 h-5" aria-hidden />
+              </div>
+              <p className="text-sm font-semibold text-slate-500">Nobody needs a retake</p>
+              <p className="text-xs text-slate-400 mt-1">Everyone who has sat a CRM 2.0 assessment has passed it.</p>
+            </div>
+          ) : (
+            reassignQueue.map(({ person, fails }) => (
+              <div key={person.id} className="card overflow-hidden">
+                <div className="px-5 py-3.5 border-b border-slate-100 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-xs font-bold">{person.initials}</span>
+                  </div>
+                  <p className="text-sm font-semibold text-navy">{person.displayName}</p>
+                  <span className="ml-auto text-xs text-red-500 font-medium">
+                    {fails.length} to retake
+                  </span>
+                </div>
+                <div className="p-4 flex flex-wrap gap-3">
+                  {fails.map(({ assessment, attempt }) => (
+                    <div key={assessment.id} className="rounded-xl border border-red-100 bg-red-50/50 px-4 py-3 flex items-center gap-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-navy truncate max-w-[220px]">{assessment.title}</p>
+                        <p className="text-[11px] text-red-500">Score: {attempt.score}% · Failed</p>
+                      </div>
+                      <ReassignButton
+                        userId={person.id}
+                        moduleId={assessment.id}
+                        moduleName={assessment.title}
+                        pending={person.pending.includes(assessment.id)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   )
 }
