@@ -3520,15 +3520,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-crm2-cert-4', moduleId: 'crm2-certificate-review',
-    question: 'How do you judge whether a CP12 (gas certificate) is satisfactory?',
+    question: 'How do you read a CP12 (gas certificate)? It doesn\'t carry an overall satisfactory/unsatisfactory stamp like an EICR.',
     options: [
       'Look for a single overall "satisfactory" stamp, the way an EICR shows one',
-      'Read the "Safe to use" column — if every appliance is YES, it\'s satisfactory',
+      'Read the "Safe to use" column appliance by appliance, then read the engineer\'s notes and judge any remedial required vs optional on its own merits',
       'Check the issue date is recent and take that as the certificate being fine',
-      'Assume it is satisfactory unless the contractor tells you otherwise in the notes',
+      'If every appliance is "Safe to use: YES", treat any noted remedials as elective and close it out',
     ],
     correct: 1,
-    rationale: 'A CP12 categorises each appliance rather than the whole document. If every appliance is "Safe to use: YES", treat the certificate as satisfactory and any remedials as nice-to-have.',
+    rationale: 'A CP12 categorises each appliance against the "Safe to use" column rather than giving the whole document a pass/fail stamp — think of a clean one as "passed, with any noted recommendations". "Safe to use: YES" on every appliance means there\'s no safety failure forcing a required remedial, but it does NOT make every noted item elective. Read the engineer\'s notes and decide required vs optional on each item\'s own merits.',
   },
   {
     id: 'q-crm2-cert-5', moduleId: 'crm2-certificate-review',

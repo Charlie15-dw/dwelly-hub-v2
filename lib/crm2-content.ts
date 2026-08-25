@@ -354,7 +354,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'callout', variant: 'info', text: 'Expected behaviour, not a bug: confirming C3s on a satisfactory cert in CRM 2.0 automatically creates a maintenance job in CRM 1.0. The optional-remedial workflow lives in 1.0, so seeing the job appear there is correct.' },
       { type: 'bullets', items: [
         'Interim rule on C3-only certs: accept them as satisfactory — the document is satisfactory at this point in time.',
-        'Common mistake: don\u2019t redirect a satisfactory cert into the mandatory remedial flow. It\u2019s straightforward on EICRs; on gas certs, if all the appliances are safe to use, treat it as satisfactory.',
+        'Common mistake: don\u2019t automatically redirect an optional remedial into the mandatory flow. On EICRs it\u2019s clear-cut (C1/C2/FI = required, C3 = optional). On a CP12 there\u2019s no overall pass/fail stamp \u2014 \u201CSafe to use: YES\u201D on every appliance means no safety failure forcing a required remedial, but it doesn\u2019t make every noted item elective. Read the engineer\u2019s notes and judge each remedial (required vs optional) on its own merits.',
       ]},
 
       { type: 'heading', text: 'Wording for optional remedials on a satisfactory cert' },
@@ -400,11 +400,11 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
 
       { type: 'heading', text: 'Gas certs (CP12) — a unified approach' },
       { type: 'bullets', items: [
-        'A CP12 isn\u2019t labelled satisfactory / unsatisfactory the way an EICR is — it categorises each appliance individually.',
-        'Check the \u201CSafe to use\u201D column. If every appliance is YES, treat the certificate as satisfactory and any remedials as nice-to-have (follow the optional-remedial flow).',
-        'A remedial can be \u201Cnon-satisfactory in spirit\u201D without making the certificate unsatisfactory — for example, a missing flame supervision device on an old hob.',
+        'A CP12 isn\u2019t labelled satisfactory / unsatisfactory the way an EICR is — it categorises each appliance individually. Think of a clean one as \u201Cpassed, with any noted recommendations\u201D rather than \u201Csatisfactory\u201D.',
+        'Check the \u201CSafe to use\u201D column. If every appliance is YES there\u2019s no safety failure forcing the required-remedial path — but that doesn\u2019t make every noted item elective. Read the engineer\u2019s notes and decide required vs optional on the item\u2019s own merits.',
+        '\u201CSafe to use\u201D is about immediate safety, not about whether the work should be done. A noted remedial (e.g. a missing flame supervision device on an old hob) can still matter without turning the whole record into a fail.',
       ]},
-      { type: 'image', src: '/crm2/cp12-safe-to-use.png', text: 'A CP12 with the \u201CSafe to use\u201D column — worked example: a missing flame supervision device on an old hob, still marked satisfactory (request 248).' },
+      { type: 'image', src: '/crm2/cp12-safe-to-use.png', text: 'A CP12 with the \u201CSafe to use\u201D column — worked example: a missing flame supervision device on an old hob; the appliance is still safe to use, so the record passes with the item noted as a recommendation (request 248).' },
 
       { type: 'heading', text: 'Reading an EICR' },
       { type: 'bullets', items: [
@@ -628,7 +628,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'table',
         headers: ['Certificate', 'Note'],
         rows: [
-          ['CP12 (Gas Safety Certificate)', 'Categorises each appliance rather than labelling the whole cert satisfactory/unsatisfactory. Read the \u201CSafe to use\u201D column.'],
+          ['CP12 (Gas Safety Certificate)', 'Categorises each appliance against the \u201CSafe to use\u201D column rather than giving the whole cert a satisfactory/unsatisfactory stamp. A clean one is \u201Cpassed, with any noted recommendations\u201D \u2014 read the notes.'],
           ['EICR', 'Electrical report; clearly labelled satisfactory or unsatisfactory.'],
           ['EPC', 'Energy Performance Certificate. Not required to be renewed mid-tenancy, but needed before marketing, a new agreement, a formal change or serving notice.'],
         ],
@@ -662,7 +662,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Check the dates — issue and expiry present and in the right fields on both the cert and the CRM.',
         'Read the \u201CSafe to use\u201D column. In this example one appliance is flagged — a missing flame supervision device on an old hob — so there is a remedial to consider.',
       ]},
-      { type: 'callout', variant: 'info', text: 'Every other appliance is \u201CSafe to use: YES\u201D, so the certificate itself is satisfactory. The flagged item is a remedial that rides alongside it — the cert doesn\u2019t become unsatisfactory just because one optional item was noted.' },
+      { type: 'callout', variant: 'info', text: 'Every other appliance is \u201CSafe to use: YES\u201D, so there\u2019s no safety failure on the record — it passes, with this item noted. The flagged item rides alongside as a remedial; whether it\u2019s required or optional is a judgement call on the item itself, not something \u201Csafe to use\u201D settles for you.' },
 
       { type: 'heading', text: 'The remedial branch' },
       { type: 'paragraph', text: 'You decide the remedial is worth doing, so the job branches:' },
@@ -670,7 +670,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Quotation awaiting — the agent asks the contractor for a quote for the remedial work.',
         'Quotation review — you check the quote.',
         'Landlord quote approval — the landlord agrees to pay.',
-        'A repeat visit completes the works. (Had the landlord declined, the branch would end at Remedial terminated and the satisfactory cert would still stand.)',
+        'A repeat visit completes the works. (Had the landlord declined, the branch would end at Remedial terminated and the cert would still stand as a pass with the item noted.)',
       ]},
 
       { type: 'heading', text: 'Closing out' },
@@ -695,7 +695,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         headers: ['When you see this…', 'Do this'],
         rows: [
           ['A satisfactory cert with optional items noted', 'Follow the optional-remedial flow and send the 7-day wording — don\u2019t redirect it into the mandatory remedial path.'],
-          ['A CP12 where every appliance is \u201CSafe to use: YES\u201D', 'Treat the certificate as satisfactory; any remedials are nice-to-have.'],
+          ['A CP12 where every appliance is \u201CSafe to use: YES\u201D', 'No safety failure \u2014 it passes with any items noted. Still read the notes and judge each remedial required vs optional; \u201Csafe to use\u201D doesn\u2019t make them automatically elective.'],
           ['The AI has flagged the address', 'Just a hint to look, not an error to fix. Common trigger: a handwritten certificate.'],
           ['A cert for the wrong property', 'Two actions: upload it to the property it belongs to (CRM 1 \u2192 File Manager), and request the correct cert for this job.'],
           ['A landlord going quiet on an EPC', 'Not legally required mid-tenancy — send the EPC wording. (Chase vs cancel on no response is still an open question — check.)'],
@@ -835,7 +835,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
 
       { type: 'heading', text: 'Certificates & remedials' },
       { type: 'faq', faqs: [
-        { q: 'How do I judge a CP12 that never says \u201Csatisfactory\u201D?', a: 'A gas certificate categorises each appliance rather than the whole document. Read the \u201CSafe to use\u201D column: if every appliance is YES, treat the cert as satisfactory and any remedials as nice-to-have.' },
+        { q: 'How do I judge a CP12 that never says \u201Csatisfactory\u201D?', a: 'A gas certificate categorises each appliance rather than giving the whole document a pass/fail stamp \u2014 treat a clean one as \u201Cpassed, with any noted recommendations\u201D. Read the \u201CSafe to use\u201D column: if every appliance is YES there\u2019s no safety failure forcing a required remedial, but read the engineer\u2019s notes and judge each remedial (required vs optional) on its merits rather than assuming \u201Csafe to use\u201D makes it elective.' },
         { q: 'Which remedial type do I choose on a certificate?', a: 'When a cert carries remedials, pick the right type \u2014 required vs optional (C3) \u2014 before moving the job on. The type drives which comms go out and which downstream workflow the job follows, so the wrong choice sends the landlord the wrong message. Read the cert in full before you select.' },
         { q: 'Confirming optional remedials (C3) created a maintenance job in CRM 1.0 \u2014 is that right?', a: 'Yes. Confirming optional remedials on a satisfactory cert automatically raises a maintenance job in CRM 1.0 \u2014 the optional-remedial workflow lives in 1.0, so seeing the job appear there is expected, not a bug.' },
         { q: 'The recommended-remedial button \u2014 who emails the landlord?', a: 'That button closes the compliance job and hands all comms to maintenance; that\u2019s what it\u2019s designed to do. Maintenance sends the landlord the permission email at the start of the maintenance job, so don\u2019t send your own version \u2014 otherwise the landlord gets two emails asking for the same permission.' },
