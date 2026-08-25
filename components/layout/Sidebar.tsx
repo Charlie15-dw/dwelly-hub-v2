@@ -6,11 +6,11 @@ import {
   LayoutDashboard, BookOpen, Award, Users,
   ClipboardCheck, Settings, LogOut, ChevronRight, Bell, GraduationCap, Brain, Library, RefreshCw,
   AlertTriangle, BarChart3, BookA, MessageCircle, Building2, Scale, LayoutGrid, ChevronDown,
-  MessageSquareDashed, Megaphone, MessageSquareReply, Sparkles, type LucideIcon,
+  MessageSquareDashed, Megaphone, MessageSquareReply, Sparkles, Wrench, type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
-import { isHubPreview, isCrm2Preview } from '@/lib/preview'
+import { isHubPreview, isCrm2Preview, isMaintenancePreview } from '@/lib/preview'
 import { useSidebar } from '@/components/layout/SidebarContext'
 import { useEffect, useState } from 'react'
 
@@ -117,6 +117,7 @@ export default function Sidebar() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [isPreview, setIsPreview] = useState(false)
   const [isCrm2, setIsCrm2] = useState(false)
+  const [isMaintenance, setIsMaintenance] = useState(false)
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<string | null>(null)
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
@@ -153,6 +154,8 @@ export default function Sidebar() {
       // CRM 2.0 is open to managers/admins as well as the named allow-list, so
       // this depends on the role we've just fetched.
       setIsCrm2(isCrm2Preview(user.email, data?.role))
+      // Maintenance is scaffold-only for now — locked to a single account.
+      setIsMaintenance(isMaintenancePreview(user.email))
     })
   }, [pathname])
 
@@ -398,18 +401,69 @@ export default function Sidebar() {
                     <div className="ml-3 pl-3 border-l border-white/15 space-y-1 mt-1">
                       <Link href="/hub/crm-2" className={cn('sidebar-link', overviewActive && 'active')} aria-current={overviewActive ? 'page' : undefined}>
                         <LayoutGrid className="w-4 h-4 flex-shrink-0" aria-hidden />
-                        <span className="flex-1">Overview</span>
+                        <span className="flex-1">Compliance Overview</span>
                         {overviewActive && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                       </Link>
                       <Link href="/hub/crm-2/assessments" className={cn('sidebar-link', assessmentsActive && 'active')} aria-current={assessmentsActive ? 'page' : undefined}>
                         <ClipboardCheck className="w-4 h-4 flex-shrink-0" aria-hidden />
-                        <span className="flex-1">Assessments</span>
+                        <span className="flex-1">Compliance Assessments</span>
                         {crm2Left > 0 && (
                           <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/15 text-white flex-shrink-0">
                             {crm2Left} left
                           </span>
                         )}
                         {assessmentsActive && crm2Left === 0 && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
+
+            {/* Maintenance — sibling track to CRM 2.0 Compliance. Scaffold only
+                for now (locked to a single account); same collapsible format so
+                it slots in beside the Compliance space. */}
+            {isMaintenance && (() => {
+              const sectionActive = pathname.startsWith('/hub/maintenance')
+              const open = openGroups['maintenance'] ?? sectionActive
+              const toggle = () => setOpenGroups(prev => ({ ...prev, maintenance: !(prev['maintenance'] ?? sectionActive) }))
+              const overviewActive = pathname === '/hub/maintenance'
+              const assessmentsActive = pathname.startsWith('/hub/maintenance/assessments')
+              return (
+                <div className="mt-2">
+                  <div className="flex items-center gap-1">
+                    <Link
+                      href="/hub/maintenance"
+                      className={cn('sidebar-link flex-1', sectionActive && 'active')}
+                      aria-current={sectionActive ? 'page' : undefined}
+                    >
+                      <Wrench className="w-4 h-4 flex-shrink-0" aria-hidden />
+                      <span className="flex-1">Maintenance</span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
+                        New
+                      </span>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={toggle}
+                      aria-expanded={open}
+                      aria-label={`${open ? 'Collapse' : 'Expand'} Maintenance`}
+                      className="flex items-center justify-center px-2 py-2.5 rounded-xl text-white/40 hover:bg-white/10 hover:text-white transition-all flex-shrink-0"
+                    >
+                      <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', open && 'rotate-180')} aria-hidden />
+                    </button>
+                  </div>
+                  {open && (
+                    <div className="ml-3 pl-3 border-l border-white/15 space-y-1 mt-1">
+                      <Link href="/hub/maintenance" className={cn('sidebar-link', overviewActive && 'active')} aria-current={overviewActive ? 'page' : undefined}>
+                        <LayoutGrid className="w-4 h-4 flex-shrink-0" aria-hidden />
+                        <span className="flex-1">Maintenance Overview</span>
+                        {overviewActive && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
+                      </Link>
+                      <Link href="/hub/maintenance/assessments" className={cn('sidebar-link', assessmentsActive && 'active')} aria-current={assessmentsActive ? 'page' : undefined}>
+                        <ClipboardCheck className="w-4 h-4 flex-shrink-0" aria-hidden />
+                        <span className="flex-1">Maintenance Assessments</span>
+                        {assessmentsActive && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                       </Link>
                     </div>
                   )}

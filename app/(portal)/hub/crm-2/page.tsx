@@ -97,7 +97,7 @@ export default async function Crm2Page() {
           </span>
 
           <h1 className="mt-4 text-[40px] leading-[1.05] font-bold tracking-tight text-white">
-            Master <span className="hub-shimmer">CRM 2.0</span>
+            Master <span className="hub-shimmer">CRM 2.0</span> Compliance
           </h1>
           <p className="mt-3 max-w-xl text-[15px] text-white/70 leading-relaxed">
             Everything you need to run the agent-led compliance flow with confidence, one guide at a time.

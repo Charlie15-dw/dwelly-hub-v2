@@ -52,6 +52,20 @@ export function isCrm2Preview(
   return email ? CRM2_ALLOWED_EMAILS.has(email.trim().toLowerCase()) : false
 }
 
+// Maintenance learning space — private early-access gate.
+//
+// The "Maintenance" section is the sibling track to CRM 2.0 Compliance. It's
+// being scaffolded ahead of any content, so for now it's locked to a single
+// account while it's built out. Widen this allow-list (or fold it into the
+// CRM 2.0 rule) once there's content ready to share.
+const MAINTENANCE_ALLOWED_EMAILS = new Set([
+  'charlie@dwelly.group',
+])
+
+export function isMaintenancePreview(email: string | null | undefined): boolean {
+  return email ? MAINTENANCE_ALLOWED_EMAILS.has(email.trim().toLowerCase()) : false
+}
+
 // Elevated Hub — now live for all users.
 //
 // The elevated redesign (the "Today first" home with its hero + progress ring,
