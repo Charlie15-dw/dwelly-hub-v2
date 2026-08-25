@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import {
   Sparkles, Search, Printer, ChevronRight, Target, Check,
-  BookOpen, LayoutGrid, HelpCircle, Megaphone, type LucideIcon,
+  BookOpen, LayoutGrid, HelpCircle, Megaphone, BarChart3, type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
@@ -39,6 +39,11 @@ export default async function Crm2Page() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
   if (!(await canAccessCrm2(supabase, user))) redirect('/hub')
+
+  // Admins get an extra entry point to the org-wide assessment overview.
+  const { data: roleRow } = await supabase
+    .from('user_profiles').select('role').eq('id', user.id).maybeSingle()
+  const isAdmin = roleRow?.role === 'admin'
 
   const completed = await getCrm2CompletedSlugs(supabase, user.id)
 
@@ -113,6 +118,27 @@ export default async function Crm2Page() {
           </div>
         </div>
       </section>
+
+      {/* Admin-only — jump to the org-wide assessment command centre */}
+      {isAdmin && (
+        <Link
+          href="/hub/crm-2/overview"
+          className="card card-hover p-5 flex items-center gap-4 group"
+        >
+          <span className="w-11 h-11 rounded-xl bg-navy text-white flex items-center justify-center flex-shrink-0">
+            <BarChart3 className="w-5 h-5" aria-hidden />
+          </span>
+          <div className="flex-1 min-w-0">
+            <p className="text-[15px] font-bold text-navy">Assessment overview</p>
+            <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">
+              Admin · track everyone&rsquo;s knowledge-check results and grant retakes
+            </p>
+          </div>
+          <span className="inline-flex items-center gap-1 text-[14px] font-semibold text-orange flex-shrink-0 group-hover:gap-2 transition-all">
+            Open <ChevronRight className="w-4 h-4" aria-hidden />
+          </span>
+        </Link>
+      )}
 
       {/* Where was I + how far in am I */}
       <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-4 items-stretch">
