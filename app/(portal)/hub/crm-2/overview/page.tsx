@@ -81,20 +81,22 @@ export default async function Crm2OverviewPage() {
     pendingByUser.set(r.user_id, list)
   }
 
-  // Latest attempt per (user, assessment). Results come back newest-first, so the
-  // first one we see for a key is the latest.
-  const latest = new Map<string, Crm2Attempt>()
+  // All attempts per (user, assessment), newest-first — results come back
+  // ordered by completed_at desc, so we just append. Keeping the full history
+  // (not just the latest) means a prior attempt stays visible after a retake.
+  const attemptsByKey = new Map<string, Crm2Attempt[]>()
   const usersWithResults = new Set<string>()
   for (const r of allResults) {
     usersWithResults.add(r.user_id)
     const key = `${r.user_id}::${r.assessment_id}`
-    if (latest.has(key)) continue
-    latest.set(key, {
+    const list = attemptsByKey.get(key) ?? []
+    list.push({
       score: r.score,
       passed: r.passed,
       answers: Array.isArray(r.answers) ? (r.answers as AnswerEntry[]) : [],
       completedAt: r.completed_at,
     })
+    attemptsByKey.set(key, list)
   }
 
   // One row per person who has taken at least one CRM 2.0 assessment.
@@ -102,10 +104,10 @@ export default async function Crm2OverviewPage() {
     .filter(p => usersWithResults.has(p.id))
     .map(p => {
       const name = displayName(p)
-      const attempts: Record<string, Crm2Attempt> = {}
+      const attempts: Record<string, Crm2Attempt[]> = {}
       for (const a of assessments) {
-        const at = latest.get(`${p.id}::${a.id}`)
-        if (at) attempts[a.id] = at
+        const list = attemptsByKey.get(`${p.id}::${a.id}`)
+        if (list && list.length > 0) attempts[a.id] = list
       }
       return {
         id: p.id,
@@ -115,10 +117,10 @@ export default async function Crm2OverviewPage() {
         pending: pendingByUser.get(p.id) ?? [],
       }
     })
-    // Most-recently-active people first.
+    // Most-recently-active people first (by their latest attempt across checks).
     .sort((a, b) => {
-      const la = Math.max(0, ...Object.values(a.attempts).map(x => (x.completedAt ? Date.parse(x.completedAt) : 0)))
-      const lb = Math.max(0, ...Object.values(b.attempts).map(x => (x.completedAt ? Date.parse(x.completedAt) : 0)))
+      const la = Math.max(0, ...Object.values(a.attempts).map(list => (list[0]?.completedAt ? Date.parse(list[0].completedAt) : 0)))
+      const lb = Math.max(0, ...Object.values(b.attempts).map(list => (list[0]?.completedAt ? Date.parse(list[0].completedAt) : 0)))
       return lb - la
     })
 

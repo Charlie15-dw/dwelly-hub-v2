@@ -37,8 +37,12 @@ export interface Crm2PersonRow {
   id: string
   displayName: string
   initials: string
-  /** Latest attempt keyed by assessment id. Absent = not attempted. */
-  attempts: Record<string, Crm2Attempt>
+  /**
+   * All attempts keyed by assessment id, newest-first (index 0 is the latest).
+   * Absent = not attempted. Keeping the full history means a prior attempt stays
+   * visible even after a retake.
+   */
+  attempts: Record<string, Crm2Attempt[]>
   /** Assessment ids with an unconsumed reset already queued. */
   pending: string[]
 }
@@ -72,28 +76,81 @@ function formatDate(iso: string | null) {
     : null
 }
 
-// One assessment for one person — pass/fail header, reassign on fail, and the
-// question-by-question breakdown. Shared by the per-person overview and the
-// reassign queue.
+// The question-by-question breakdown for a single attempt.
+function AnswerList({ answers }: { answers: AnswerEntry[] }) {
+  if (answers.length === 0) {
+    return <p className="px-4 py-4 text-xs text-slate-400">No answer detail available for this attempt.</p>
+  }
+  return (
+    <div className="p-4 space-y-3">
+      {answers.map((ans, qi) => (
+        <div
+          key={qi}
+          className={cn(
+            'rounded-xl border p-3.5',
+            ans.isCorrect ? 'border-teal/20 bg-teal/5' : 'border-red-200 bg-red-50/40',
+          )}
+        >
+          <div className="flex items-start gap-2.5">
+            <div className="mt-0.5 flex-shrink-0">
+              {ans.isCorrect
+                ? <CheckCircle2 className="w-4 h-4 text-teal" aria-hidden />
+                : <XCircle className="w-4 h-4 text-red-500" aria-hidden />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-navy leading-snug">{ans.question}</p>
+              <div className="mt-2 space-y-1.5">
+                <div className="flex items-start gap-2">
+                  <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Their answer</span>
+                  <span className={cn('text-xs leading-relaxed font-medium', ans.isCorrect ? 'text-teal' : 'text-red-600')}>
+                    {ans.yourAnswer}
+                  </span>
+                </div>
+                {!ans.isCorrect && (
+                  <div className="flex items-start gap-2">
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Correct</span>
+                    <span className="text-xs text-teal font-medium leading-relaxed">{ans.correctAnswer}</span>
+                  </div>
+                )}
+                {ans.rationale && (
+                  <div className="flex items-start gap-2 mt-1 pt-2 border-t border-slate-100">
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Rationale</span>
+                    <span className="text-xs text-slate-500 leading-relaxed">{ans.rationale}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// One assessment for one person — pass/fail header (latest attempt), reassign on
+// fail, and the full attempt history. Every retake is recorded, so prior
+// attempts stay visible beneath the latest rather than being replaced.
 function AssessmentDetail({
   person,
   assessment,
-  attempt,
+  attempts,
 }: {
   person: Crm2PersonRow
   assessment: Crm2Assessment
-  attempt: Crm2Attempt
+  attempts: Crm2Attempt[]
 }) {
-  const date = formatDate(attempt.completedAt)
+  const latest = attempts[0]
   return (
     <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
       <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2 min-w-0">
           <p className="text-sm font-bold text-navy truncate">{assessment.title}</p>
-          <ScoreBadge passed={attempt.passed} score={attempt.score} />
-          {date && <span className="text-xs text-slate-400">{date}</span>}
+          <ScoreBadge passed={latest.passed} score={latest.score} />
+          <span className="text-xs text-slate-400">
+            {attempts.length} attempt{attempts.length !== 1 ? 's' : ''}
+          </span>
         </div>
-        {!attempt.passed && (
+        {!latest.passed && (
           <ReassignButton
             userId={person.id}
             moduleId={assessment.id}
@@ -103,52 +160,21 @@ function AssessmentDetail({
         )}
       </div>
 
-      {attempt.answers.length > 0 ? (
-        <div className="p-4 space-y-3">
-          {attempt.answers.map((ans, qi) => (
-            <div
-              key={qi}
-              className={cn(
-                'rounded-xl border p-3.5',
-                ans.isCorrect ? 'border-teal/20 bg-teal/5' : 'border-red-200 bg-red-50/40',
-              )}
-            >
-              <div className="flex items-start gap-2.5">
-                <div className="mt-0.5 flex-shrink-0">
-                  {ans.isCorrect
-                    ? <CheckCircle2 className="w-4 h-4 text-teal" aria-hidden />
-                    : <XCircle className="w-4 h-4 text-red-500" aria-hidden />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-navy leading-snug">{ans.question}</p>
-                  <div className="mt-2 space-y-1.5">
-                    <div className="flex items-start gap-2">
-                      <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Their answer</span>
-                      <span className={cn('text-xs leading-relaxed font-medium', ans.isCorrect ? 'text-teal' : 'text-red-600')}>
-                        {ans.yourAnswer}
-                      </span>
-                    </div>
-                    {!ans.isCorrect && (
-                      <div className="flex items-start gap-2">
-                        <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Correct</span>
-                        <span className="text-xs text-teal font-medium leading-relaxed">{ans.correctAnswer}</span>
-                      </div>
-                    )}
-                    {ans.rationale && (
-                      <div className="flex items-start gap-2 mt-1 pt-2 border-t border-slate-100">
-                        <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Rationale</span>
-                        <span className="text-xs text-slate-500 leading-relaxed">{ans.rationale}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+      {attempts.map((attempt, idx) => {
+        const date = formatDate(attempt.completedAt)
+        return (
+          <div key={idx} className={cn('border-b border-slate-50 last:border-b-0', idx > 0 && 'bg-slate-50/50')}>
+            <div className="px-4 py-2.5 flex items-center gap-2 text-xs">
+              <span className="font-semibold text-slate-500">
+                {attempts.length > 1 ? `Attempt ${attempts.length - idx}${idx === 0 ? ' · latest' : ''}` : 'Attempt'}
+              </span>
+              <ScoreBadge passed={attempt.passed} score={attempt.score} />
+              {date && <span className="text-slate-400">{date}</span>}
             </div>
-          ))}
-        </div>
-      ) : (
-        <p className="px-4 py-4 text-xs text-slate-400">No answer detail available for this attempt.</p>
-      )}
+            <AnswerList answers={attempt.answers} />
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -157,24 +183,28 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
   const [tab, setTab] = useState<'results' | 'reassign'>('results')
   const [expandedPerson, setExpandedPerson] = useState<string | null>(null)
 
-  // Everything a person has actually attempted, in assessment order.
+  // Everything a person has actually attempted, in assessment order. Each entry
+  // carries the full attempt list plus the latest (index 0) for at-a-glance use.
   const attemptedFor = (p: Crm2PersonRow) =>
     assessments
-      .filter((a) => p.attempts[a.id])
-      .map((a) => ({ assessment: a, attempt: p.attempts[a.id]! }))
+      .filter((a) => p.attempts[a.id]?.length)
+      .map((a) => {
+        const list = p.attempts[a.id]!
+        return { assessment: a, attempts: list, latest: list[0] }
+      })
 
-  // ── Derived stats ────────────────────────────────────────────────────────
+  // ── Derived stats ──────────────────────────────────────────────────────── (based on each person's latest attempt per check)
   let attemptedCells = 0
   let passedCells = 0
   const perAssessment = assessments.map((a) => {
     let attempted = 0
     let passed = 0
     for (const p of people) {
-      const at = p.attempts[a.id]
-      if (at) {
+      const latest = p.attempts[a.id]?.[0]
+      if (latest) {
         attempted += 1
         attemptedCells += 1
-        if (at.passed) {
+        if (latest.passed) {
           passed += 1
           passedCells += 1
         }
@@ -184,9 +214,9 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
   })
   const overallPassRate = attemptedCells > 0 ? Math.round((passedCells / attemptedCells) * 100) : 0
 
-  // People with at least one failed latest attempt — the reassign queue.
+  // People whose latest attempt on a check is a fail — the reassign queue.
   const reassignQueue = people
-    .map((p) => ({ person: p, fails: attemptedFor(p).filter((x) => !x.attempt.passed) }))
+    .map((p) => ({ person: p, fails: attemptedFor(p).filter((x) => !x.latest.passed) }))
     .filter((row) => row.fails.length > 0)
   const totalFails = reassignQueue.reduce((s, r) => s + r.fails.length, 0)
 
@@ -291,7 +321,7 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
             <div className="divide-y divide-slate-50">
               {people.map((person) => {
                 const attempted = attemptedFor(person)
-                const passedCount = attempted.filter((x) => x.attempt.passed).length
+                const passedCount = attempted.filter((x) => x.latest.passed).length
                 const failCount = attempted.length - passedCount
                 const isOpen = expandedPerson === person.id
                 return (
@@ -312,10 +342,10 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
                           {failCount > 0 && <span className="text-red-500 font-medium"> · {failCount} to retake</span>}
                         </p>
                       </div>
-                      {/* Compact per-assessment badges */}
+                      {/* Compact per-assessment badges — latest attempt each */}
                       <div className="hidden md:flex items-center gap-1.5 flex-shrink-0">
-                        {attempted.map(({ assessment, attempt }) => (
-                          <ScoreBadge key={assessment.id} passed={attempt.passed} score={attempt.score} />
+                        {attempted.map(({ assessment, latest }) => (
+                          <ScoreBadge key={assessment.id} passed={latest.passed} score={latest.score} />
                         ))}
                       </div>
                       {isOpen
@@ -328,12 +358,12 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
                         {attempted.length === 0 ? (
                           <p className="text-xs text-slate-400">No assessments attempted yet.</p>
                         ) : (
-                          attempted.map(({ assessment, attempt }) => (
+                          attempted.map(({ assessment, attempts }) => (
                             <AssessmentDetail
                               key={assessment.id}
                               person={person}
                               assessment={assessment}
-                              attempt={attempt}
+                              attempts={attempts}
                             />
                           ))
                         )}
@@ -371,11 +401,11 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
                   </span>
                 </div>
                 <div className="p-4 flex flex-wrap gap-3">
-                  {fails.map(({ assessment, attempt }) => (
+                  {fails.map(({ assessment, latest }) => (
                     <div key={assessment.id} className="rounded-xl border border-red-100 bg-red-50/50 px-4 py-3 flex items-center gap-3">
                       <div className="min-w-0">
                         <p className="text-xs font-semibold text-navy truncate max-w-[220px]">{assessment.title}</p>
-                        <p className="text-[11px] text-red-500">Score: {attempt.score}% · Failed</p>
+                        <p className="text-[11px] text-red-500">Score: {latest.score}% · Failed</p>
                       </div>
                       <ReassignButton
                         userId={person.id}
