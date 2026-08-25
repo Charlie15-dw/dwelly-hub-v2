@@ -426,11 +426,20 @@ export default async function AdminMemberDetailPage({
 
       {/* CRM 2.0 Assessments — the private learning space's own knowledge checks
           and capstone. Kept in a separate section (and out of the header's
-          passed-count, which is the core programme) so the two don't blur. */}
+          passed-count, which is the core programme) so the two don't blur.
+          Admin-only, like the rest of this page. Failed attempts surface here
+          with their own reassignment panel, mirroring the core programme. */}
       {(() => {
         const crm2Attempted = CRM2_ASSESSMENT_IDS.filter(id => byAssessment.has(id))
         if (crm2Attempted.length === 0) return null
         const crm2Passed = CRM2_ASSESSMENT_IDS.filter(id => byAssessment.get(id)?.[0]?.passed).length
+        const crm2Failed = CRM2_ASSESSMENT_IDS
+          .filter(id => byAssessment.has(id))
+          .map(id => {
+            const latest = byAssessment.get(id)![0]
+            return { assessmentId: id, score: latest.score, passed: latest.passed }
+          })
+          .filter(r => !r.passed)
         return (
           <div className="space-y-4">
             <div className="flex items-center gap-2 px-1">
@@ -449,6 +458,35 @@ export default async function AdminMemberDetailPage({
                 />
               )
             })}
+
+            {/* Reassignment — failed CRM 2.0 assessments. Same control and reset
+                flow as the core programme (crm2-* ids work through the same
+                /api/manager/reassign endpoint and quiz unlock logic). */}
+            {crm2Failed.length > 0 && (
+              <div className="card overflow-hidden">
+                <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+                  <RefreshCw className="w-4 h-4 text-amber-500" aria-hidden />
+                  <h2 className="text-sm font-bold text-navy">CRM 2.0 Reassignment Actions</h2>
+                  <span className="ml-auto text-xs text-slate-400">Grant a retake for failed CRM 2.0 assessments</span>
+                </div>
+                <div className="p-5 flex flex-wrap gap-3">
+                  {crm2Failed.map(f => (
+                    <div key={f.assessmentId} className="rounded-xl border border-red-100 bg-red-50/50 px-4 py-3 flex items-center gap-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-navy truncate max-w-[200px]">{CRM2_ASSESSMENT_LABELS[f.assessmentId] ?? f.assessmentId}</p>
+                        <p className="text-[11px] text-red-500">Score: {f.score}% · Failed</p>
+                      </div>
+                      <ReassignButton
+                        userId={params.userId}
+                        moduleId={f.assessmentId}
+                        moduleName={CRM2_ASSESSMENT_LABELS[f.assessmentId] ?? f.assessmentId}
+                        pending={pendingResetIds.has(f.assessmentId)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )
       })()}
