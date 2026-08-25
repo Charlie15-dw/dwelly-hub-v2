@@ -807,15 +807,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-sys-01-6', moduleId: 'mvt-02',
-    question: 'What three actions must be completed before a move-out task is officially considered complete in Dwelly?',
+    question: 'In the move-out job, what does "Mediation Finished" confirm?',
     options: [
-      'Checkout booked, report uploaded, deposit returned',
-      'Tenancy Ended clicked, Checkout Report uploaded, Result of Inspection selected and confirmed',
-      'Property Ready clicked, Mediation Finished, keys confirmed returned',
-      'Final invoice generated, deposit released, property remarketed',
+      'The property is physically ready and can be shown to new applicants',
+      'The financial side is resolved — the deposit return has been agreed and settled',
+      'All key sets have been returned and the job can be permanently closed',
+      'The final rent invoice has been generated and sent to the tenant',
     ],
     correct: 1,
-    rationale: 'A move-out task is officially complete only once all three are done: Tenancy Ended has been clicked, the Checkout Report has been uploaded, and the Result of Inspection has been selected and confirmed.',
+    rationale: '"Mediation Finished" marks the financial/deposit side of the move-out as resolved — the deposit return has been agreed and settled. It is separate from "Property Ready" (the physical condition and re-let readiness) and from confirming all keys are returned, which is the step that finally closes the job.',
   },
   {
     id: 'q-sys-01-7', moduleId: 'mvt-02',
