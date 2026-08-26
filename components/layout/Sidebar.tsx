@@ -369,8 +369,11 @@ export default function Sidebar() {
                 Assessments tab carries a live "N left" count like Training. */}
             {isCrm2 && (() => {
               const sectionActive = pathname.startsWith('/hub/crm-2')
-              const open = openGroups['crm2'] ?? sectionActive
-              const toggle = () => setOpenGroups(prev => ({ ...prev, crm2: !(prev['crm2'] ?? sectionActive) }))
+              // The Maintenance links live inside this dropdown, so a maintenance
+              // page should also auto-expand it.
+              const dropdownActive = sectionActive || pathname.startsWith('/hub/maintenance')
+              const open = openGroups['crm2'] ?? dropdownActive
+              const toggle = () => setOpenGroups(prev => ({ ...prev, crm2: !(prev['crm2'] ?? dropdownActive) }))
               const overviewActive = pathname === '/hub/crm-2'
               const assessmentsActive = pathname.startsWith('/hub/crm-2/assessments')
               return (
@@ -414,57 +417,28 @@ export default function Sidebar() {
                         )}
                         {assessmentsActive && crm2Left === 0 && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
                       </Link>
-                    </div>
-                  )}
-                </div>
-              )
-            })()}
-
-            {/* Maintenance — sibling track to CRM 2.0 Compliance. Scaffold only
-                for now (locked to a single account); same collapsible format so
-                it slots in beside the Compliance space. */}
-            {isMaintenance && (() => {
-              const sectionActive = pathname.startsWith('/hub/maintenance')
-              const open = openGroups['maintenance'] ?? sectionActive
-              const toggle = () => setOpenGroups(prev => ({ ...prev, maintenance: !(prev['maintenance'] ?? sectionActive) }))
-              const overviewActive = pathname === '/hub/maintenance'
-              const assessmentsActive = pathname.startsWith('/hub/maintenance/assessments')
-              return (
-                <div className="mt-2">
-                  <div className="flex items-center gap-1">
-                    <Link
-                      href="/hub/maintenance"
-                      className={cn('sidebar-link flex-1', sectionActive && 'active')}
-                      aria-current={sectionActive ? 'page' : undefined}
-                    >
-                      <Wrench className="w-4 h-4 flex-shrink-0" aria-hidden />
-                      <span className="flex-1">Maintenance</span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
-                        New
-                      </span>
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={toggle}
-                      aria-expanded={open}
-                      aria-label={`${open ? 'Collapse' : 'Expand'} Maintenance`}
-                      className="flex items-center justify-center px-2 py-2.5 rounded-xl text-white/40 hover:bg-white/10 hover:text-white transition-all flex-shrink-0"
-                    >
-                      <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', open && 'rotate-180')} aria-hidden />
-                    </button>
-                  </div>
-                  {open && (
-                    <div className="ml-3 pl-3 border-l border-white/15 space-y-1 mt-1">
-                      <Link href="/hub/maintenance" className={cn('sidebar-link', overviewActive && 'active')} aria-current={overviewActive ? 'page' : undefined}>
-                        <LayoutGrid className="w-4 h-4 flex-shrink-0" aria-hidden />
-                        <span className="flex-1">Maintenance Overview</span>
-                        {overviewActive && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
-                      </Link>
-                      <Link href="/hub/maintenance/assessments" className={cn('sidebar-link', assessmentsActive && 'active')} aria-current={assessmentsActive ? 'page' : undefined}>
-                        <ClipboardCheck className="w-4 h-4 flex-shrink-0" aria-hidden />
-                        <span className="flex-1">Maintenance Assessments</span>
-                        {assessmentsActive && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
-                      </Link>
+                      {/* Maintenance — sibling track, kept inside the same 2.0
+                          dropdown so everything lives in one place. Scaffold
+                          only for now, so it's shown to the single allow-listed
+                          account. */}
+                      {isMaintenance && (() => {
+                        const mOverviewActive = pathname === '/hub/maintenance'
+                        const mAssessmentsActive = pathname.startsWith('/hub/maintenance/assessments')
+                        return (
+                          <>
+                            <Link href="/hub/maintenance" className={cn('sidebar-link', mOverviewActive && 'active')} aria-current={mOverviewActive ? 'page' : undefined}>
+                              <Wrench className="w-4 h-4 flex-shrink-0" aria-hidden />
+                              <span className="flex-1">Maintenance Overview</span>
+                              {mOverviewActive && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
+                            </Link>
+                            <Link href="/hub/maintenance/assessments" className={cn('sidebar-link', mAssessmentsActive && 'active')} aria-current={mAssessmentsActive ? 'page' : undefined}>
+                              <ClipboardCheck className="w-4 h-4 flex-shrink-0" aria-hidden />
+                              <span className="flex-1">Maintenance Assessments</span>
+                              {mAssessmentsActive && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}
+                            </Link>
+                          </>
+                        )
+                      })()}
                     </div>
                   )}
                 </div>
