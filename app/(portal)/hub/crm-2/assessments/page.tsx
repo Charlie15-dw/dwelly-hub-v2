@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ClipboardCheck, ChevronRight, Trophy, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, ClipboardCheck, ChevronRight, Trophy, CheckCircle2, XCircle } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { canAccessCrm2 } from '@/lib/crm2-access'
 import { CRM2_LESSONS, CRM2_PILLARS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/lib/crm2-content'
@@ -37,8 +37,10 @@ export default async function Crm2AssessmentsPage() {
     : { data: [] }
 
   const passed = new Set<string>()
+  const attempted = new Set<string>()
   const bestScore = new Map<string, number>()
   for (const r of myResults ?? []) {
+    attempted.add(r.assessment_id)
     if (r.passed) passed.add(r.assessment_id)
     const prev = bestScore.get(r.assessment_id)
     if (prev === undefined || r.score > prev) bestScore.set(r.assessment_id, r.score)
@@ -113,6 +115,7 @@ export default async function Crm2AssessmentsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {lessons.map((lesson) => {
                 const isPassed = passed.has(lesson.quizModuleId!)
+                const isFailed = !isPassed && attempted.has(lesson.quizModuleId!)
                 const score = bestScore.get(lesson.quizModuleId!)
                 return (
                   <Link
@@ -120,10 +123,12 @@ export default async function Crm2AssessmentsPage() {
                     href={`/quiz/${lesson.quizModuleId}`}
                     className="card card-hover p-5 flex items-center gap-4 group"
                   >
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${isPassed ? 'rag-green' : 'bg-orange/10 text-orange'}`}>
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${isPassed ? 'rag-green' : isFailed ? 'rag-red' : 'bg-orange/10 text-orange'}`}>
                       {isPassed
                         ? <CheckCircle2 className="w-5 h-5" aria-hidden />
-                        : <ClipboardCheck className="w-5 h-5" aria-hidden />}
+                        : isFailed
+                          ? <XCircle className="w-5 h-5" aria-hidden />
+                          : <ClipboardCheck className="w-5 h-5" aria-hidden />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[15px] font-bold text-navy truncate">{lesson.title}</p>
@@ -135,6 +140,16 @@ export default async function Crm2AssessmentsPage() {
                       <span className="hidden sm:inline-flex items-center gap-1 text-[12px] font-semibold rag-green rounded-full px-2.5 py-1 flex-shrink-0">
                         <CheckCircle2 className="w-3.5 h-3.5" aria-hidden />
                         Passed{score !== undefined ? ` · ${score}%` : ''}
+                      </span>
+                    ) : isFailed ? (
+                      <span className="hidden sm:inline-flex items-center gap-2 flex-shrink-0">
+                        <span className="inline-flex items-center gap-1 text-[12px] font-semibold rag-red rounded-full px-2.5 py-1">
+                          <XCircle className="w-3.5 h-3.5" aria-hidden />
+                          Failed{score !== undefined ? ` · ${score}%` : ''}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[14px] font-semibold text-orange group-hover:gap-2 transition-all">
+                          Retake <ChevronRight className="w-4 h-4" aria-hidden />
+                        </span>
                       </span>
                     ) : (
                       <span className="hidden sm:inline-flex items-center gap-1 text-[14px] font-semibold text-orange flex-shrink-0 group-hover:gap-2 transition-all">
