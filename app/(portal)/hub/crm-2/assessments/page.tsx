@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ClipboardCheck, ChevronRight, Trophy, CheckCircle2, XCircle } from 'lucide-react'
-import { createServerClient } from '@/lib/supabase/server'
+import { ArrowLeft, ClipboardCheck, ChevronRight, Trophy, CheckCircle2, XCircle, RotateCcw } from 'lucide-react'
+import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { canAccessCrm2 } from '@/lib/crm2-access'
 import { CRM2_LESSONS, CRM2_PILLARS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/lib/crm2-content'
 import { QUIZ_QUESTIONS } from '@/lib/data'
@@ -31,7 +31,7 @@ export default async function Crm2AssessmentsPage() {
   const { data: myResults } = quizModuleIds.length > 0
     ? await supabase
         .from('assessment_results')
-        .select('assessment_id, score, passed')
+        .select('assessment_id, score, passed, completed_at')
         .eq('user_id', user.id)
         .in('assessment_id', quizModuleIds)
     : { data: [] }
@@ -39,11 +39,36 @@ export default async function Crm2AssessmentsPage() {
   const passed = new Set<string>()
   const attempted = new Set<string>()
   const bestScore = new Map<string, number>()
+  const latestAttemptAt = new Map<string, string>()
   for (const r of myResults ?? []) {
     attempted.add(r.assessment_id)
     if (r.passed) passed.add(r.assessment_id)
     const prev = bestScore.get(r.assessment_id)
     if (prev === undefined || r.score > prev) bestScore.set(r.assessment_id, r.score)
+    const prevAt = latestAttemptAt.get(r.assessment_id)
+    if (r.completed_at && (!prevAt || Date.parse(r.completed_at) > Date.parse(prevAt))) {
+      latestAttemptAt.set(r.assessment_id, r.completed_at)
+    }
+  }
+
+  // A manager "reassign" grants a retake by inserting an un-consumed reset. Mirror
+  // the quiz page's rule: the grant is live (shown as "Retake granted") only until
+  // it's used — i.e. until a fresh attempt is recorded after the reset was created.
+  const service = createServiceClient()
+  const { data: resets } = quizModuleIds.length > 0
+    ? await service
+        .from('module_resets')
+        .select('module_id, created_at')
+        .eq('user_id', user.id)
+        .is('consumed_at', null)
+        .in('module_id', quizModuleIds)
+    : { data: [] }
+
+  const retakeGranted = new Set<string>()
+  for (const reset of resets ?? []) {
+    const attemptAt = latestAttemptAt.get(reset.module_id)
+    const usedSince = attemptAt && Date.parse(attemptAt) > Date.parse(reset.created_at)
+    if (!usedSince) retakeGranted.add(reset.module_id)
   }
   const passedCount = passed.size
   const totalQuizzes = quizModuleIds.length
@@ -115,7 +140,8 @@ export default async function Crm2AssessmentsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {lessons.map((lesson) => {
                 const isPassed = passed.has(lesson.quizModuleId!)
-                const isFailed = !isPassed && attempted.has(lesson.quizModuleId!)
+                const isGranted = !isPassed && retakeGranted.has(lesson.quizModuleId!)
+                const isFailed = !isPassed && !isGranted && attempted.has(lesson.quizModuleId!)
                 const score = bestScore.get(lesson.quizModuleId!)
                 return (
                   <Link
@@ -128,7 +154,9 @@ export default async function Crm2AssessmentsPage() {
                         ? <CheckCircle2 className="w-5 h-5" aria-hidden />
                         : isFailed
                           ? <XCircle className="w-5 h-5" aria-hidden />
-                          : <ClipboardCheck className="w-5 h-5" aria-hidden />}
+                          : isGranted
+                            ? <RotateCcw className="w-5 h-5" aria-hidden />
+                            : <ClipboardCheck className="w-5 h-5" aria-hidden />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[15px] font-bold text-navy truncate">{lesson.title}</p>
@@ -140,6 +168,16 @@ export default async function Crm2AssessmentsPage() {
                       <span className="hidden sm:inline-flex items-center gap-1 text-[12px] font-semibold rag-green rounded-full px-2.5 py-1 flex-shrink-0">
                         <CheckCircle2 className="w-3.5 h-3.5" aria-hidden />
                         Passed{score !== undefined ? ` · ${score}%` : ''}
+                      </span>
+                    ) : isGranted ? (
+                      <span className="hidden sm:inline-flex items-center gap-2 flex-shrink-0">
+                        <span className="inline-flex items-center gap-1 text-[12px] font-semibold rag-amber rounded-full px-2.5 py-1">
+                          <RotateCcw className="w-3.5 h-3.5" aria-hidden />
+                          Retake granted
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[14px] font-semibold text-orange group-hover:gap-2 transition-all">
+                          Retake <ChevronRight className="w-4 h-4" aria-hidden />
+                        </span>
                       </span>
                     ) : isFailed ? (
                       <span className="hidden sm:inline-flex items-center gap-2 flex-shrink-0">
