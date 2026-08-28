@@ -222,8 +222,14 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
       if (user) {
         const service = createServiceClient()
 
-        // This user's most recent attempt for this assessment.
-        const { data: attempts } = await auth
+        // This user's most recent attempt for this assessment. Read via the
+        // service role (not the RLS-gated auth client): in a Server Component
+        // createServerClient can't refresh a stale session cookie, so an
+        // auth-client read can silently return no rows and leave the assessment
+        // unlocked. Reading through the service role makes the lock decision
+        // independent of session freshness, matching the reset read below and
+        // the admin overview.
+        const { data: attempts } = await service
           .from('assessment_results')
           .select('score, passed, completed_at')
           .eq('user_id', user.id)
