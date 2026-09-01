@@ -21,37 +21,19 @@ export function isHubBeta(email: string | null | undefined): boolean {
   return Boolean(email)
 }
 
-// CRM 2.0 learning space — private early-access gate.
+// CRM 2.0 Compliance learning space — now live for all users.
 //
-// The "2.0" section is a review area rolled out ahead of the wider launch. It's
-// open to every manager/admin (so the whole management team can review the
-// content and sit the assessments) plus a handful of named accounts who had
-// early access. The wider group stays locked out — they neither see the nav
-// entry nor can reach the page. When it's ready for everyone, drop the gate.
-const CRM2_ALLOWED_EMAILS = new Set([
-  'charlie@dwelly.group',
-  'charlie@pennington-online.co.uk',
-  'walter@dwelly.group',
-  'veronica@dwelly.group',
-  'mariia@dwelly.group',
-  'ivan@dwelly.group',
-  'fei@edenharper.com',
-  'lisandra@edenharper.com',
-  'brendon@uk.dwelly.group',
-  'megan.masella@uk.dwelly.group',
-])
-
-// Roles that get CRM 2.0 access by virtue of being on the management team.
-const CRM2_ALLOWED_ROLES = new Set(['manager', 'admin'])
-
-// `role` comes from user_profiles.role. Managers and admins always have access;
-// otherwise fall back to the named allow-list of early-access accounts.
+// It began as a review area gated to the management team and a handful of
+// early-access accounts ahead of the wider launch. It's now been rolled out to
+// the whole team, so any authenticated user can see the nav entry, reach the
+// content and sit the assessments. The function is retained (with its role
+// parameter) so existing call sites keep working; it now returns true for any
+// authenticated user. Maintenance stays private via isMaintenancePreview below.
 export function isCrm2Preview(
   email: string | null | undefined,
-  role?: string | null,
+  _role?: string | null,
 ): boolean {
-  if (role && CRM2_ALLOWED_ROLES.has(role)) return true
-  return email ? CRM2_ALLOWED_EMAILS.has(email.trim().toLowerCase()) : false
+  return Boolean(email)
 }
 
 // Maintenance learning space — private early-access gate.
