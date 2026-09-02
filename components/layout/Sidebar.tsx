@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { isHubPreview, isCrm2Preview, isMaintenancePreview } from '@/lib/preview'
 import { useSidebar } from '@/components/layout/SidebarContext'
+import { useUser } from '@/components/UserProvider'
 import { useEffect, useState } from 'react'
 
 const journeyItems = [
@@ -113,78 +114,70 @@ export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const { open, close } = useSidebar()
-  const [isManager, setIsManager] = useState(false)
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [isPreview, setIsPreview] = useState(false)
-  const [isCrm2, setIsCrm2] = useState(false)
-  const [isMaintenance, setIsMaintenance] = useState(false)
-  const [userDisplayName, setUserDisplayName] = useState<string | null>(null)
-  const [userRole, setUserRole] = useState<string | null>(null)
+
+  // Identity, role and the preview/access flags all come from the shared
+  // UserProvider context (fetched once for the whole app) rather than the
+  // sidebar doing its own getUser() + user_profiles query. That query used to
+  // re-run on every navigation (it was keyed on `pathname`), adding two Supabase
+  // round-trips to every page change; deriving from context removes that lag.
+  const { user, profile } = useUser()
+  const email = user?.email ?? null
+  const role = profile?.role ?? null
+  const isManager = role === 'manager'
+  const isAdmin = role === 'admin'
+  const userRole = role
+  const userDisplayName = profile?.full_name ?? email?.split('@')[0] ?? null
+  const isPreview = isHubPreview(email)
+  // CRM 2.0 is open to managers/admins as well as the named allow-list.
+  const isCrm2 = isCrm2Preview(email, role)
+  // Maintenance is scaffold-only for now — locked to a single account.
+  const isMaintenance = isMaintenancePreview(email)
+
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
   const [trainingLeft, setTrainingLeft] = useState(0)
   const [crm2Left, setCrm2Left] = useState(0)
 
+  // In the Hub preview, each pillar is a collapsible group; open the one
+  // matching the current page automatically. Pure pathname logic — no network.
   useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (!user) return
-      const preview = isHubPreview(user.email)
-      setIsPreview(preview)
-      // In the Hub preview, each pillar is a collapsible group; open the one
-      // matching the current page automatically.
-      if (preview) {
-        const toOpen: Record<string, boolean> = {}
-        for (const group of HUB_GROUPS) {
-          const hrefMatch = group.href ? pathname.startsWith(group.href) : false
-          if (hrefMatch || group.items.some(i => !i.external && pathname.startsWith(i.href))) {
-            toOpen[group.id] = true
-          }
-        }
-        if (Object.keys(toOpen).length) setOpenGroups(prev => ({ ...prev, ...toOpen }))
+    if (!isPreview) return
+    const toOpen: Record<string, boolean> = {}
+    for (const group of HUB_GROUPS) {
+      const hrefMatch = group.href ? pathname.startsWith(group.href) : false
+      if (hrefMatch || group.items.some(i => !i.external && pathname.startsWith(i.href))) {
+        toOpen[group.id] = true
       }
-      const { data } = await supabase
-        .from('user_profiles')
-        .select('role, full_name')
-        .eq('id', user.id)
-        .single()
-      setIsManager(data?.role === 'manager')
-      setIsAdmin(data?.role === 'admin')
-      setUserDisplayName(data?.full_name ?? user.email?.split('@')[0] ?? null)
-      setUserRole(data?.role ?? null)
-      // CRM 2.0 is open to managers/admins as well as the named allow-list, so
-      // this depends on the role we've just fetched.
-      setIsCrm2(isCrm2Preview(user.email, data?.role))
-      // Maintenance is scaffold-only for now — locked to a single account.
-      setIsMaintenance(isMaintenancePreview(user.email))
-    })
-  }, [pathname])
+    }
+    if (Object.keys(toOpen).length) setOpenGroups(prev => ({ ...prev, ...toOpen }))
+  }, [pathname, isPreview])
 
   // Close the mobile drawer whenever the route changes (i.e. a nav link was
   // tapped). No-op on desktop where the sidebar is always visible.
   useEffect(() => { close() }, [pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Nav counts — fetched once, not per navigation, so they don't add a query to
-  // every page change. "N left" on Training mirrors the assessments still to
-  // pass, the same figure the Hub home works from.
+  // Nav counts — the one query the sidebar still needs (assessment results
+  // aren't in the shared context). Keyed on the user id so it runs once the
+  // user is known, not on every navigation. "N left" on Training mirrors the
+  // assessments still to pass, the same figure the Hub home works from.
   useEffect(() => {
+    if (!user) return
     const supabase = createClient()
     let active = true
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (!user) return
-      const { data: results } = await supabase
-        .from('assessment_results').select('assessment_id, passed').eq('user_id', user.id)
-      if (!active) return
-      const passed = new Set(
-        (results ?? []).filter(r => r.passed && ASSESSMENT_IDS.includes(r.assessment_id)).map(r => r.assessment_id),
-      )
-      setTrainingLeft(Math.max(0, ASSESSMENT_IDS.length - passed.size))
-      const crm2Passed = new Set(
-        (results ?? []).filter(r => r.passed && CRM2_ASSESSMENT_IDS.includes(r.assessment_id)).map(r => r.assessment_id),
-      )
-      setCrm2Left(Math.max(0, CRM2_ASSESSMENT_IDS.length - crm2Passed.size))
-    })
+    supabase
+      .from('assessment_results').select('assessment_id, passed').eq('user_id', user.id)
+      .then(({ data: results }) => {
+        if (!active) return
+        const passed = new Set(
+          (results ?? []).filter(r => r.passed && ASSESSMENT_IDS.includes(r.assessment_id)).map(r => r.assessment_id),
+        )
+        setTrainingLeft(Math.max(0, ASSESSMENT_IDS.length - passed.size))
+        const crm2Passed = new Set(
+          (results ?? []).filter(r => r.passed && CRM2_ASSESSMENT_IDS.includes(r.assessment_id)).map(r => r.assessment_id),
+        )
+        setCrm2Left(Math.max(0, CRM2_ASSESSMENT_IDS.length - crm2Passed.size))
+      })
     return () => { active = false }
-  }, [])
+  }, [user])
 
   async function handleSignOut() {
     const supabase = createClient()
