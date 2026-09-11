@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Groq from 'groq-sdk'
 import { TRAINING_PAGES, KNOWLEDGE_ARTICLES, ContentBlock } from '@/lib/training-content'
+import { CRM2_LESSONS, Crm2Block } from '@/lib/crm2-content'
 import { GLOSSARY_TERMS } from '@/lib/glossary-data'
 
 // ─── Rate limiter ──────────────────────────────────────────────────────────
@@ -81,6 +82,77 @@ function blocksToText(blocks: ContentBlock[]): string {
     }
   }).filter(Boolean).join(' ')
 }
+
+// ─── CRM 2.0 content → searchable sections ─────────────────────────────────
+// The CRM 2.0 compliance material lives in CRM2_LESSONS with a slightly richer
+// block set than the training pages (it adds image/widget/faq). Rather than
+// treat a whole lesson as one blob — the FAQ lesson alone is thousands of
+// characters and would be truncated to nothing useful — we flatten each lesson
+// into granular sections: one per heading, plus one per FAQ question/answer
+// pair. That keeps every piece of the content individually retrievable, so a
+// specific 2.0 question surfaces the exact answer instead of a truncated lesson.
+function crm2BlockToText(block: Crm2Block): string {
+  switch (block.type) {
+    case 'heading':
+    case 'subheading':
+    case 'paragraph':
+    case 'callout':
+    case 'image': // `text` is the caption
+      return block.text ?? ''
+    case 'bullets':
+    case 'steps':
+      return (block.items ?? []).join('. ')
+    case 'table':
+      if (!block.headers || !block.rows) return ''
+      return block.rows.map(r => r.join(': ')).join('. ')
+    case 'faq':
+      return (block.faqs ?? []).map(f => `${f.q} ${f.a}`).join(' ')
+    default: // divider, widget
+      return ''
+  }
+}
+
+function buildCrm2Sections(): { title: string; text: string }[] {
+  const out: { title: string; text: string }[] = []
+  for (const lesson of CRM2_LESSONS) {
+    // Practice/capstone are drills and assessment meta ("80% to pass"), not
+    // knowledge — skip them so they don't pollute answers.
+    if (lesson.kind === 'practice') continue
+
+    const base = `CRM 2.0 Compliance — ${lesson.title}`
+    let heading = base
+    let buffer: string[] = [lesson.summary]
+
+    const flush = () => {
+      const text = buffer.filter(Boolean).join(' ').trim()
+      if (text) out.push({ title: heading, text })
+      buffer = []
+    }
+
+    for (const block of lesson.content) {
+      if (block.type === 'heading') {
+        flush()
+        heading = block.text ? `${base}: ${block.text}` : base
+        continue
+      }
+      // Each FAQ pair becomes its own section — the question text is a strong
+      // keyword-match target, so the exact answer can surface on its own.
+      if (block.type === 'faq') {
+        for (const f of block.faqs ?? []) {
+          out.push({ title: `${base} (FAQ)`, text: `${f.q} ${f.a}` })
+        }
+        continue
+      }
+      const t = crm2BlockToText(block)
+      if (t) buffer.push(t)
+    }
+    flush()
+  }
+  return out
+}
+
+// Precomputed once at module load — the lesson set is static per deploy.
+const CRM2_SECTIONS = buildCrm2Sections()
 
 // ─── Stop words to ignore when scoring ────────────────────────────────────
 const STOP_WORDS = new Set([
@@ -174,6 +246,11 @@ function findRelevantContent(query: string, topN = MAX_SECTIONS): string {
     if (score > 0) sections.push({ title: article.title, text, score })
   }
 
+  for (const section of CRM2_SECTIONS) {
+    const score = scoreText(section.title + ' ' + section.text, keywords)
+    if (score > 0) sections.push({ title: section.title, text: section.text, score })
+  }
+
   // Matching glossary terms, ranked by score, capped and truncated
   const glossaryMatches = GLOSSARY_TERMS
     .map(t => ({ t, score: scoreText(t.term + ' ' + t.definition, keywords) }))
@@ -221,6 +298,9 @@ Dwelly has two separate systems that both handle jobs, and they must never be mi
 - The internal Dwelly CRM is what Property Managers and Team Coordinators use. This is where "Auto mode", "On Hold" / "Pause mode", the Job Chat, provider instruction and the automated reminder flows live. These are Dwelly-side controls that only staff see — a contractor never sees any of them.
 - The Maintenance Provider Portal (provider.dwelly.group) is what external contractors and providers use. It has only Active Jobs, Closed Jobs, Schedule and Earnings, and its job statuses are Awaiting Appointment, Awaiting Completion, Awaiting Invoice and Quote Sent. It has NO "Auto mode", NO "On Hold" and NO "Job Chat".
 When a question is about what a contractor or provider does in their portal, answer only in terms of the provider portal. Never tell a contractor to check for "Auto mode" or "On Hold", or to use a "Job Chat" — those do not exist on their side. A contractor treats every job that appears in Active Jobs as a live work order: they book the visit with the tenant, carry out the work, then upload their invoice, certificate and completion photos (or reply to the job email) to close it and get paid.
+
+CRM 2.0 (COMPLIANCE):
+CRM 2.0 is Dwelly's newer, agent-driven version of the internal staff CRM, currently used for compliance-certificate jobs (Gas Safety/CP12, EICR, EPC and so on). In 2.0 an AI agent runs the routine end to end — landlord approval, provider selection, scheduling, reminders — and the operator steps in for the human checkpoints, mainly Certificate review and Invoice review. When content below is labelled "CRM 2.0 Compliance", it describes this staff-facing 2.0 system, not CRM 1.0 and not the provider portal. Answer CRM 2.0 questions from that content, and if a 2.0 process differs from the older CRM, follow the 2.0 content.
 
 RELEVANT PORTAL CONTENT:`
 
