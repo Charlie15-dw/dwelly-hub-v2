@@ -34,6 +34,20 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
+  // Redirect while preserving any auth cookies that supabase.auth.getUser()
+  // refreshed above. Building a bare NextResponse.redirect() would drop the
+  // rotated session tokens, so the browser would keep sending the old (now
+  // invalidated) token — and every later navigation would fail auth and bounce
+  // the user back to the landing page. Copying the cookies keeps the session in
+  // sync across the redirect.
+  const redirectTo = (path: string) => {
+    const response = NextResponse.redirect(new URL(path, request.url))
+    for (const cookie of supabaseResponse.cookies.getAll()) {
+      response.cookies.set(cookie)
+    }
+    return response
+  }
+
   // Routes that don't require authentication
   const isPublic =
     pathname === '/' ||
@@ -42,14 +56,14 @@ export async function middleware(request: NextRequest) {
 
   // If not logged in and trying to access a protected route → redirect to login
   if (!user && !isPublic) {
-    return NextResponse.redirect(new URL('/', request.url))
+    return redirectTo('/')
   }
 
   // If already logged in and visiting the login page → redirect to their home.
   // Hub preview users land on /hub; everyone else on the training dashboard.
   if (user && pathname === '/') {
     const home = isHubPreview(user.email) ? '/hub' : '/dashboard'
-    return NextResponse.redirect(new URL(home, request.url))
+    return redirectTo(home)
   }
 
   return supabaseResponse
