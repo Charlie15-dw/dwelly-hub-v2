@@ -166,6 +166,15 @@ export default function QuizClient({
   // True when a critical result/progress write to Supabase failed, so we can
   // warn the user rather than silently losing their result.
   const [saveError, setSaveError]      = useState(false)
+  // Client-side re-verification of the DB lock. The server computes lockedByDb
+  // once, at render — but that render can be replayed from the Next.js Router
+  // Cache (e.g. the browser Back button) after the user has since recorded a
+  // completed attempt, handing back a stale "unlocked" value. Re-checking the
+  // live DB on every mount closes that hole so a failed attempt can't be
+  // retaken without a manager reset. Starts null = "not yet verified".
+  const [runtimeLocked, setRuntimeLocked] = useState<boolean>(false)
+  const [runtimeLastAttempt, setRuntimeLastAttempt] =
+    useState<{ score: number; passed: boolean; completedAt: string } | undefined>(undefined)
 
   // Read scheduleId from URL on mount (recall quizzes only)
   useEffect(() => {
@@ -201,6 +210,60 @@ export default function QuizClient({
       setQuizStarted(true)
     }
   }, [moduleId, wasReset, lockedByDb, isRecapQuiz, isRecallQuiz, demoQuestions.length])
+
+  // Verify the lock against the live DB on mount — the server's lockedByDb can
+  // be stale if this render came from the Router Cache (e.g. the Back button)
+  // after a completed attempt was recorded. Only graded, lockable assessments
+  // lock; recap/recall/CRM 2.0 never do. Mirrors the server's rule: locked when
+  // a completed attempt exists and there's no live reset dated after it — so a
+  // granted retake still opens, but a spent one (or a stale cached render)
+  // re-locks. Degrades safely — if the read fails we fall back to lockedByDb.
+  useEffect(() => {
+    if (isRecapQuiz || isRecallQuiz || isCrm2Quiz) return
+    let cancelled = false
+    async function verifyLock() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data: attempts } = await supabase
+        .from('assessment_results')
+        .select('score, passed, completed_at')
+        .eq('user_id', user.id)
+        .eq('assessment_id', moduleId)
+        .order('completed_at', { ascending: false })
+        .limit(1)
+      const last = attempts?.[0]
+      if (!last) return
+
+      const { data: resets } = await supabase
+        .from('module_resets')
+        .select('created_at')
+        .eq('user_id', user.id)
+        .eq('module_id', moduleId)
+        .is('consumed_at', null)
+        .order('created_at', { ascending: false })
+        .limit(1)
+      const pendingReset = resets?.[0]
+
+      // A live reset dated after the last attempt keeps the retake open.
+      const retakeOpen = Boolean(
+        pendingReset &&
+        last.completed_at &&
+        Date.parse(pendingReset.created_at) > Date.parse(last.completed_at)
+      )
+      if (!cancelled && !retakeOpen) {
+        setRuntimeLastAttempt({
+          score: last.score ?? 0,
+          passed: last.passed ?? false,
+          completedAt: last.completed_at ?? '',
+        })
+        setRuntimeLocked(true)
+      }
+    }
+    verifyLock()
+    return () => { cancelled = true }
+  }, [moduleId, isRecapQuiz, isRecallQuiz, isCrm2Quiz])
 
   // Save recall result to Supabase and mark schedule complete
   useEffect(() => {
@@ -327,7 +390,11 @@ export default function QuizClient({
   }, [showResults])
 
   // ── Locked screen ─────────────────────────────────────────────────────────
-  if (lockedByDb) {
+  // lockedByDb is the server's verdict; runtimeLocked catches a stale (cached)
+  // render where a completed attempt now exists. Show whichever last attempt we
+  // have — the server prop, or the one the client re-verification fetched.
+  const lockScreenAttempt = lastAttempt ?? runtimeLastAttempt
+  if (lockedByDb || runtimeLocked) {
     return (
       <div className="max-w-2xl mx-auto space-y-5">
         <Link href={backHref} className="text-sm text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
@@ -342,14 +409,14 @@ export default function QuizClient({
             You&apos;ve already completed this assessment. Your manager will unlock a retake
             once they&apos;ve reviewed your result.
           </p>
-          {lastAttempt && (
+          {lockScreenAttempt && (
             <div className="inline-flex items-center gap-5 bg-slate-50 border border-slate-200 rounded-2xl px-7 py-4 mb-6">
               <div className="text-center">
                 <p className={cn(
                   'text-3xl font-black tabular-nums',
-                  lastAttempt.passed ? 'text-teal' : 'text-red-500',
+                  lockScreenAttempt.passed ? 'text-teal' : 'text-red-500',
                 )}>
-                  {lastAttempt.score}%
+                  {lockScreenAttempt.score}%
                 </p>
                 <p className="text-xs text-slate-400 mt-0.5">Last Score</p>
               </div>
@@ -357,12 +424,12 @@ export default function QuizClient({
               <div className="text-center">
                 <p className={cn(
                   'text-sm font-semibold',
-                  lastAttempt.passed ? 'text-teal' : 'text-red-500',
+                  lockScreenAttempt.passed ? 'text-teal' : 'text-red-500',
                 )}>
-                  {lastAttempt.passed ? 'Passed' : 'Failed'}
+                  {lockScreenAttempt.passed ? 'Passed' : 'Failed'}
                 </p>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  {new Date(lastAttempt.completedAt).toLocaleDateString('en-GB', {
+                  {new Date(lockScreenAttempt.completedAt).toLocaleDateString('en-GB', {
                     day: 'numeric', month: 'short', year: 'numeric',
                   })}
                 </p>
