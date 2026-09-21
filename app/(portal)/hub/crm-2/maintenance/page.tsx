@@ -47,7 +47,7 @@ export default async function Crm2MaintenancePage() {
           how the flow works yet, the shared overview covers both tracks.
         </p>
         <Link
-          href="/hub/crm-2/how-it-works"
+          href="/hub/crm-2/getting-started"
           className="mt-6 btn-primary inline-flex items-center gap-2"
         >
           How CRM 2.0 works

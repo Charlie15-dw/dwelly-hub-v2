@@ -92,8 +92,10 @@ export default async function Crm2CompliancePage() {
         <ProgressRing done={guidesDone} total={CRM2_GUIDE_COUNT} pillars={pillarProgress} />
       </div>
 
-      {/* The guides, as one row group per pillar */}
-      {CRM2_PILLARS.map(({ id, label, description }, pillarIndex) => {
+      {/* The guides, as one row group per pillar. The "Get orientated" pillar
+          is the shared cross-track model, so it lives on the How it works
+          overview, not here — Compliance lists only its own guides. */}
+      {CRM2_PILLARS.filter(({ id }) => id !== 'orientate').map(({ id, label, description }, pillarIndex) => {
         const guides = getCrm2Guides(id)
         if (guides.length === 0) return null
         const done = guides.filter((g) => completed.has(g.slug)).length

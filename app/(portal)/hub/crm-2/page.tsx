@@ -86,7 +86,7 @@ export default async function Crm2Page() {
 
         {/* How it works — the shared starting point for both tracks */}
         <Link
-          href="/hub/crm-2/how-it-works"
+          href="/hub/crm-2/getting-started"
           className="card card-hover p-6 flex items-center gap-4 group"
         >
           <span className="w-12 h-12 rounded-2xl bg-orange/10 text-orange flex items-center justify-center flex-shrink-0">
