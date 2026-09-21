@@ -47,12 +47,6 @@ export default async function Crm2GettingStartedPage() {
       </header>
 
       <section className="card overflow-hidden">
-        <div className="px-5 py-4 border-b border-navy-100">
-          <h2 className="text-[16px] font-bold text-navy leading-tight">Get orientated</h2>
-          <p className="text-[13px] text-[var(--text-secondary)] mt-0.5 leading-snug">
-            How CRM 2.0 works and how to find your way around it.
-          </p>
-        </div>
         <div>
           {guides.map((g) => (
             <GuideRow
