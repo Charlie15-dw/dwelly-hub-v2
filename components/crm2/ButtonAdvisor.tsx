@@ -121,8 +121,8 @@ const CATEGORIES: Category[] = [
       },
       {
         q: 'A satisfactory cert with C3 / optional items only',
-        action: 'Optional remedial + 7-day wording',
-        why: 'The cert stands as satisfactory; the items are nice-to-have. Send the 7-day wording — don’t redirect it into the mandatory path.',
+        action: 'Recommended remedial',
+        why: 'The cert stands as satisfactory; the items are nice-to-have. Pressing Recommended remedial hands the landlord comms to the auto-created CRM 1.0 maintenance job — you don’t send them yourself. Don’t redirect it into the mandatory path.',
         watch: 'A satisfactory cert doesn’t become unsatisfactory just because one optional item was noted.',
       },
     ],
@@ -134,13 +134,13 @@ const CATEGORIES: Category[] = [
     situations: [
       {
         q: 'A job is blocked by a block manager / other third party',
-        action: 'Wait For SP, then Take Over',
-        why: 'Interim workaround: set Wait For SP to pause the job and clear the flag, then Take Over once the information arrives.',
+        action: 'Divert to Manual',
+        why: 'Manual is the hold state — use it to sit the job outside the automated flow until the information arrives, rather than cancelling and re-creating it.',
       },
       {
         q: 'A provider is away longer than 3 days',
-        action: 'Set the 3-day wait, then extend',
-        why: '“Wait for response” caps at 3 days. Set it, and extend again when the job comes back to your queue.',
+        action: 'Divert to Manual',
+        why: '“Wait for response” caps at 3 days. If they’ll be longer than that, divert the job to Manual rather than repeatedly re-setting the wait.',
       },
       {
         q: 'A closed job gets a thank-you or unrelated email',

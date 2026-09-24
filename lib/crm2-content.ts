@@ -314,7 +314,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'image', src: '/crm2/buttons-visit.png', text: 'The two rescheduling actions: Reset Visit Date and Restart Scheduling.',
         hotspots: [
           { x: 4.75, y: 50, label: 'Set New Visit Date', detail: 'Use when a new time is already agreed by both sides — it updates the booking and notifies both automatically.' },
-          { x: 30, y: 50, label: 'Wait for Response', detail: 'Holds the job for a reply — capped at 3 days. Extend again when it returns to your queue.' },
+          { x: 30, y: 50, label: 'Wait for Response', detail: 'Holds the job for a reply — capped at 3 days. If the wait needs to be longer, divert the job to Manual instead.' },
           { x: 39.5, y: 50, label: 'Provide Instructions', detail: 'Admin-only — consult an admin before using it.' },
           { x: 49, y: 50, label: 'Restart Scheduling', detail: 'Use when no new time is agreed yet — pick tenant or provider and write the opening message so context carries over.' },
         ],
@@ -327,6 +327,9 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'heading', text: 'Restart Scheduling' },
       { type: 'paragraph', text: 'Use this when a new appointment hasn\u2019t been agreed yet. You choose whether to restart with the tenant or the provider, and you write the opening message so the context carries over — for example, \u201Ccan\u2019t do tomorrow, next Monday works\u201D. The other party is told the original is cancelled and a new one is being arranged.' },
       { type: 'callout', variant: 'tip', text: 'Dates you put in your message are recognised and used through the flow — so a natural message like \u201Cnext Monday works\u201D is enough to move things along, and they\u2019re quoted verbatim at the end of the email too.' },
+
+      { type: 'heading', text: 'Always record the date in the system' },
+      { type: 'callout', variant: 'warning', text: 'A visit date must be agreed AND recorded in the system before the job proceeds — this is enforced strictly, not a nice-to-have. Confirming a new time on a call or by email and then letting the job carry on without pressing Reset Visit Date / Restart Scheduling is the single most common deviation logged — it shows up as \u201Crescheduled by hand\u201D. If a date changes, record it here.' },
     ],
   },
   {
@@ -346,19 +349,19 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Click Need required remedial and continue with the remedial flow as usual.',
       ]},
 
-      { type: 'heading', text: 'Optional / recommended remedials (a satisfactory cert with C3 items)' },
+      { type: 'heading', text: 'Recommended remedials (a satisfactory cert with C3 items)' },
       { type: 'steps', items: [
         'Review the certificate as usual — dates and service-provider names.',
-        'Click Optional remedial.',
+        'Click Recommended remedial.',
       ]},
       { type: 'callout', variant: 'info', text: 'Expected behaviour, not a bug: confirming C3s on a satisfactory cert in CRM 2.0 automatically creates a maintenance job in CRM 1.0. The optional-remedial workflow lives in 1.0, so seeing the job appear there is correct.' },
       { type: 'bullets', items: [
         'Interim rule on C3-only certs: accept them as satisfactory — the document is satisfactory at this point in time.',
-        'Common mistake: don\u2019t automatically redirect an optional remedial into the mandatory flow. On EICRs it\u2019s clear-cut (C1/C2/FI = required, C3 = optional). On a CP12 there\u2019s no overall pass/fail stamp \u2014 \u201CSafe to use: YES\u201D on every appliance means no safety failure forcing a required remedial, but it doesn\u2019t make every noted item elective. Read the engineer\u2019s notes and judge each remedial (required vs optional) on its own merits.',
+        'Common mistake: don\u2019t automatically redirect a recommended remedial into the mandatory flow. On EICRs it\u2019s clear-cut (C1/C2/FI = required, C3 = optional). On a CP12 there\u2019s no overall pass/fail stamp \u2014 \u201CSafe to use: YES\u201D on every appliance means no safety failure forcing a required remedial, but it doesn\u2019t make every noted item elective. Read the engineer\u2019s notes and judge each remedial (required vs optional) on its own merits.',
       ]},
 
-      { type: 'heading', text: 'Wording for optional remedials on a satisfactory cert' },
-      { type: 'callout', variant: 'tip', text: '\u201CHi, your [X] certificate has been deemed satisfactory. The inspection did, however, highlight some optional remedial items (listed below). These aren\u2019t required for the certificate to be valid, but we recommend addressing them. Left unattended, they may deteriorate further and be flagged again at the next inspection. Please let us know if you\u2019d like us to complete the remedials. If we don\u2019t hear from you within 7 days, we\u2019ll proceed with closing the job.\u201D' },
+      { type: 'heading', text: 'You don\u2019t send the landlord comms yourself' },
+      { type: 'callout', variant: 'important', text: 'There\u2019s no need to send recommended-remedial comms in CRM 2.0. Pressing Recommended remedial hands that off to the auto-created CRM 1.0 maintenance job, which contacts the landlord about the recommended works. Don\u2019t write and send your own version.' },
 
       { type: 'heading', text: 'The remedial branch, once you press Need remedial' },
       { type: 'paragraph', text: 'The job leaves the main path: Quotation awaiting (the agent asks the provider for a quote) → Quotation review (your checkpoint) → Landlord quote approval (the landlord agrees to pay) → approved re-enters Scheduling for the repeat visit / rejected → Remedial terminated.' },
@@ -414,6 +417,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'C1, C2 or FI codes mean remedial works: send the job down the required-remedial path.',
       ]},
       { type: 'callout', variant: 'warning', text: 'Read the codes, not just the summary box: FI (further investigation) is a fail code, just like C1 and C2. If an EICR lists any FI items it is unsatisfactory \u2014 don\u2019t be misled by a \u201Csatisfactory\u201D-looking summary. Send the job down the required-remedial path.' },
+      { type: 'callout', variant: 'tip', text: 'If a cert is marked satisfactory but still lists FI items, that\u2019s a contradiction — ask the service provider for clarification rather than approving it as-is.' },
 
       { type: 'heading', text: 'The review panel' },
       { type: 'paragraph', text: 'The panel pre-fills the recognised dates for you to check against the document before you approve.' },
@@ -465,13 +469,16 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'image', src: '/crm2/planned-actions.png', text: 'The planned-actions list on the right-hand side of the job.' },
       { type: 'callout', variant: 'tip', text: 'If the next action is an escalation, you can action it in advance. If it\u2019s an auto reminder, leave it.' },
 
+      { type: 'heading', text: 'Call before you Wait' },
+      { type: 'callout', variant: 'warning', text: 'Don\u2019t just set Wait on a silent party — call them first. Setting Wait without calling is the single most-flagged operator deviation (48% of Wait actions). The SOP asks for a call, not just a snooze; Wait is for after you\u2019ve tried to reach them.' },
+
       { type: 'heading', text: 'Jobs blocked by a third party' },
-      { type: 'callout', variant: 'info', text: 'If a job is blocked by someone who isn\u2019t the tenant, landlord or provider — for example a block manager — there\u2019s no dedicated hold state yet. Interim workaround: set Wait For SP to pause the job and lift the red flag, then Take Over once the information arrives. A proper hold / \u201Cother\u201D option is on the roadmap.' },
+      { type: 'callout', variant: 'info', text: 'If a job is blocked by someone who isn\u2019t the tenant, landlord or provider — for example a block manager — divert the job to Manual. Manual mode in CRM 2.0 is the hold state: use it to sit the job outside the automated flow until the information arrives, rather than cancelling and re-creating it.' },
 
       { type: 'heading', text: '\u201CWait for response\u201D caps at 3 days' },
       { type: 'bullets', items: [
         '\u201CWait for response\u201D maxes out at 3 days.',
-        'If a provider is away longer (e.g. on annual leave), set the 3 days and extend again when the job returns to your queue.',
+        'If a provider is away longer than that (e.g. on annual leave), divert the job to Manual rather than repeatedly re-setting the 3-day wait.',
       ]},
     ],
   },
@@ -569,7 +576,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Before requesting a document from a provider, check the last few emails on the job — often it\u2019s already there.',
         'Collect the certificate AND the invoice for every appointment.',
         'Use the Job Notes tab for operational context (why we\u2019re waiting, special agreements) — it\u2019s for context, not communication history.',
-        'Some agencies run in manual mode in CRM 1 (for example, British Gas).',
+        'Some providers sit outside the automated flow — British Gas jobs, for example, are diverted to Manual in CRM 2.0.',
       ]},
 
       { type: 'heading', text: 'Tools & resources' },
@@ -618,9 +625,10 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         headers: ['Term', 'What it means'],
         rows: [
           ['Unattended', 'A vacant-property job. With no tenant, the agent goes straight to the provider and books from their availability; keys are collected from the agency.'],
-          ['Wait For SP', 'Pauses the job while waiting on a service provider (or, as an interim workaround, any third party). Lifts the red flag until the job returns to you.'],
+          ['Wait For SP', 'Pauses the job while waiting on a service provider. Lifts the red flag until the job returns to you.'],
+          ['Manual', 'The hold state for anything that needs to sit outside the automated flow for a while — a third-party block, a provider away on long leave, or a British Gas job. Use it instead of cancelling and re-creating the job.'],
           ['Take Over', 'You step in and take the next action on a job yourself, rather than leaving it to the agent.'],
-          ['Wait for response', 'Holds the job for a provider\u2019s reply — capped at 3 days. Extend it again when the job comes back to your queue.'],
+          ['Wait for response', 'Holds the job for a provider\u2019s reply — capped at 3 days. If they\u2019ll be longer than that, divert the job to Manual rather than re-setting the wait.'],
         ],
       },
 
@@ -694,13 +702,13 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'table',
         headers: ['When you see this…', 'Do this'],
         rows: [
-          ['A satisfactory cert with optional items noted', 'Follow the optional-remedial flow and send the 7-day wording — don\u2019t redirect it into the mandatory remedial path.'],
+          ['A satisfactory cert with optional items noted', 'Press Recommended remedial — don\u2019t redirect it into the mandatory path. You don\u2019t send the landlord comms yourself; the auto-created CRM 1.0 maintenance job handles that.'],
           ['A CP12 where every appliance is \u201CSafe to use: YES\u201D', 'No safety failure \u2014 it passes with any items noted. Still read the notes and judge each remedial required vs optional; \u201Csafe to use\u201D doesn\u2019t make them automatically elective.'],
           ['The AI has flagged the address', 'Just a hint to look, not an error to fix. Common trigger: a handwritten certificate.'],
           ['A cert for the wrong property', 'Two actions: upload it to the property it belongs to (CRM 1 \u2192 File Manager), and request the correct cert for this job.'],
           ['A landlord going quiet on an EPC', 'Not legally required mid-tenancy — send the EPC wording. (Chase vs cancel on no response is still an open question — check.)'],
-          ['A job blocked by a block manager / other third party', 'Interim: set Wait For SP to pause and clear the flag, then Take Over once the info arrives.'],
-          ['A provider away longer than 3 days', 'Set the 3-day wait, then extend again when the job returns to your queue.'],
+          ['A job blocked by a block manager / other third party', 'Divert the job to Manual — the hold state — until the information arrives. Don\u2019t cancel and re-create.'],
+          ['A provider away longer than 3 days', 'Divert the job to Manual rather than repeatedly re-setting the 3-day wait.'],
           ['The next-action date at the bottom of a job', 'If it\u2019s an escalation you can action it early; if it\u2019s an auto reminder, leave it.'],
         ],
       },
@@ -718,7 +726,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
           ['You spot a problem with a cert (wrong date/address)', 'Invalid certificate.'],
           ['A new cert arrived that the agent didn\u2019t recognise', 'Upload another certificate.'],
           ['Faults that must be fixed for compliance', 'Need required remedial (mandatory remedial branch).'],
-          ['A satisfactory cert with C3 / optional items only', 'Optional remedial + send the 7-day wording.'],
+          ['A satisfactory cert with C3 / optional items only', 'Recommended remedial — the auto-created CRM 1.0 maintenance job handles the landlord comms, not you.'],
           ['A closed job gets a thank-you or unrelated email', 'Provide Instructions (\u201Cdo nothing\u201D) — but it\u2019s admin-only, so consult an admin first.'],
         ],
       },
@@ -893,6 +901,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'faq', faqs: [
         { q: 'The Invoice Approved button won\u2019t fire \u2014 what do I check?', a: 'Check the invoice record for a blank Sub Total \u2014 it blocks approval and the system gives no message saying which field is missing. Fill it in and the button fires. If every field is populated and it still won\u2019t go, post the job link plus a screenshot.' },
         { q: 'I\u2019m waiting on a corrected invoice \u2014 should I press \u201Cinvalid invoice\u201D?', a: 'No. If the invoice is fine but unusable (blank details, cropped) and you\u2019ve asked the SP to re-send, don\u2019t mark it invalid \u2014 call the SP to chase, and when the clean copy arrives click \u201Cupload another invoice\u201D. Leave the job where it is in the meantime.' },
+        { q: 'The invoice doesn\u2019t match the quote \u2014 do I reject it?', a: 'No, don\u2019t reject it outright (for compliance or maintenance). The numbers legitimately differ sometimes \u2014 the SP found something extra on site, the landlord or PM asked for additional work, or a compliance SP simply doesn\u2019t quote the same way before invoicing. Default to flagging the mismatch to the PM rather than auto-rejecting.' },
       ] },
 
       { type: 'heading', text: 'Comms, Add Direct Info & flags' },
@@ -936,7 +945,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Waiting is time-boxed. \u201CWait for response\u201D caps at 3 days, so jobs come back to you rather than sitting open indefinitely.',
         'The next-action date is visible on every job — with the full list of planned actions on the right — so you can see what the agent will do next and action escalations early.',
       ]},
-      { type: 'callout', variant: 'info', text: 'Some things are still being finalised — for example, a dedicated hold state for jobs blocked by a third party, and whether to chase or cancel an unresponsive EPC. Where a lesson flags an \u201Copen question\u201D, check before assuming.' },
+      { type: 'callout', variant: 'info', text: 'A few things are still being finalised — for example, whether to chase or cancel an unresponsive EPC. Where a lesson flags an \u201Copen question\u201D, check before assuming.' },
       { type: 'divider' },
       { type: 'paragraph', text: 'This learning space launched on 3 Aug 2026 and is reviewed against the live 2.0 build. As 2.0 evolves, new lessons and changes will land here first.' },
     ],
