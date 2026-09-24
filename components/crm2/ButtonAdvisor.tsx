@@ -121,8 +121,8 @@ const CATEGORIES: Category[] = [
       },
       {
         q: 'A satisfactory cert with C3 / optional items only',
-        action: 'Recommended remedial',
-        why: 'The cert stands as satisfactory; the items are nice-to-have. Pressing Recommended remedial hands the landlord comms to the auto-created CRM 1.0 maintenance job — you don’t send them yourself. Don’t redirect it into the mandatory path.',
+        action: 'Optional remedial',
+        why: 'The cert stands as satisfactory; the items are nice-to-have. Optional remedial runs the same branch as a required remedial (quote → landlord approval → repeat visit), but the passing cert is saved to file since the property is already compliant. Don’t redirect it into the required path.',
         watch: 'A satisfactory cert doesn’t become unsatisfactory just because one optional item was noted.',
       },
     ],
