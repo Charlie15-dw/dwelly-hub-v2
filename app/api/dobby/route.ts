@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Groq from 'groq-sdk'
+import { createServerClient } from '@/lib/supabase/server'
 import { TRAINING_PAGES, KNOWLEDGE_ARTICLES, ContentBlock } from '@/lib/training-content'
 import { CRM2_LESSONS, Crm2Block } from '@/lib/crm2-content'
 import { GLOSSARY_TERMS } from '@/lib/glossary-data'
@@ -308,6 +309,10 @@ RELEVANT PORTAL CONTENT:`
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 export async function POST(req: NextRequest) {
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   const ip = getClientIp(req)
   const { allowed, retryAfter } = checkRateLimit(ip)
   if (!allowed) {

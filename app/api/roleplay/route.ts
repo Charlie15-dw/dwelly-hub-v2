@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@/lib/supabase/server'
 
 // ─── In-memory rate limiter ────────────────────────────────────────────────
 const RATE_LIMIT_WINDOW_MS = 60_000 // 1 minute
@@ -68,6 +69,10 @@ function validateScenario(scenario: unknown): Record<string, string> | null {
 
 // ─── Route handler ─────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   // Rate limiting
   const ip = getClientIp(req)
   const { allowed, retryAfter } = checkRateLimit(ip)
