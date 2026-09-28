@@ -101,6 +101,11 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
       { type: 'paragraph', text: 'The tenant has just reported a problem, usually with photos. Before anyone asks the landlord for money or calls a contractor, a human makes sure the information is good enough and tidies it up. This is an operator checkpoint \u2014 the agent decides nothing here.' },
       { type: 'callout', variant: 'info', text: 'What the agent does: it sends the tenant an immediate acknowledgement (\u201Crequest received, we\u2019re arranging the repair\u201D), raises your task with the triage form, and stops. No reminders fire on this stage. Anything further from the tenant comes to you with a short summary.' },
 
+      { type: 'heading', text: 'Why photos and a clear report matter' },
+      { type: 'paragraph', text: 'The provider prices the job remotely at online quoting \u2014 they don\u2019t visit first. They quote from exactly what you attach here: the photos and the written report. If those are missing or don\u2019t show the problem, the provider simply can\u2019t put a number on it.' },
+      { type: 'paragraph', text: 'Too many jobs reach the provider with no photos and a one-line report. The provider then has to come back and ask for them, so the request sits in online quoting for days while messages go back and forth \u2014 the tenant waits longer, and you handle the same job twice. A minute spent getting it right at triage saves that whole detour.' },
+      { type: 'callout', variant: 'warning', text: 'A job with no usable photos or report doesn\u2019t stall here \u2014 it stalls later, at quoting, where it\u2019s slower and harder to fix. Triage is the cheapest place to catch it.' },
+
       { type: 'heading', text: 'What to check before you progress' },
       { type: 'subheading', text: 'Photos' },
       { type: 'paragraph', text: 'Request photos if they\u2019re absent and the job type warrants them, and check the ones you have actually show the issue. If you need them, email the tenant to say we can\u2019t proceed without them and use Wait for Tenant (1 or 3 days by severity). If they don\u2019t reply, call to clarify; if there\u2019s still no luck, send one more email and then cancel with the reason that the tenant is unresponsive.' },
