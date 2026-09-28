@@ -270,15 +270,20 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'image', src: '/crm2/adi-example.png', text: 'Add Direct Info — worked example (request 585).' },
       { type: 'image', src: '/crm2/adi-panel.png', text: 'The Add Direct Info panel.' },
       { type: 'bullets', items: [
-        'It now supports attachments — useful when a document arrives outside the normal email flow (e.g. via Slack).',
-        'Choose the right source (e.g. From Provider) and the agent processes it as if it had received the document itself. No need to take over just to upload a file.',
+        'Pick the source it came from — Landlord, Tenant or Service Provider. The agent treats what you enter as if that party had sent it in directly.',
+        'Common case: a tenant who wasn\u2019t replying to Scheduling emails gives you their availability on a call — add it here as From Tenant. No need to write the full message; just enter the proposed dates and the agent does the rest.',
+        'It now supports attachments — useful when a document (e.g. an EICR) arrives outside the normal email flow, such as via Slack. Choose From Provider, add a short note, attach up to 10 files and submit; the agent processes it as if it had received the document itself, so there\u2019s no need to take over just to upload a file.',
       ]},
 
       { type: 'heading', text: 'Add Direct Info vs Set Visit Date' },
       { type: 'callout', variant: 'tip', text: 'Rule of thumb: Direct Info = passing on information you received. Set Visit Date = recording an appointment both sides have already agreed.' },
       { type: 'image', src: '/crm2/svd-panel.png', text: 'The Set Visit Date panel.' },
+      { type: 'callout', variant: 'warning', text: 'Only use Set Visit Date once every party involved has confirmed the same slot — in most cases that means both the tenant(s) and the provider have agreed the timeslot. It records an agreed appointment, not a proposal.' },
       { type: 'bullets', items: [
-        'Relative times the AI won\u2019t accept: if a provider or tenant says \u201Cmorning\u201D, the system won\u2019t treat it as a confirmation. Set the visit date manually rather than waiting for an exact time — treat morning as 8am–12pm.',
+        'Date and time are both required — enter the agreed date, then the time.',
+        'Time note (optional): use it for a window rather than an exact time — \u201C9\u201312\u201D, \u201Cin the morning\u201D, \u201C8\u201310 AM\u201D, \u201Cafter 5 PM\u201D. A time note overrides the exact time field, so reach for it whenever the slot is a range.',
+        'Notes like \u201Cwith keys\u201D must sit alongside a time note, never on their own — a note with no time leaves the job with no visit time at all.',
+        'Relative times the AI won\u2019t accept: if a provider or tenant says \u201Cmorning\u201D, the system won\u2019t treat it as a confirmation. Set the visit date manually rather than waiting for an exact time — put the window in the time note (e.g. \u201Cin the morning\u201D), or treat morning as 8am–12pm.',
         'Tenant reschedules out-of-band (e.g. emails us directly): it arrives as an escalation. Just Set Visit Date to the agreed new slot — replying to the tenant won\u2019t break the automated flow, and no special handling is needed.',
       ]},
 
@@ -716,7 +721,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         rows: [
           ['You\u2019re passing on information you received from one party', 'Add Direct Info — write it as the party you got it from; choose the right source (e.g. From Provider).'],
           ['Both sides have already agreed the appointment', 'Set Visit Date — it records an agreed slot; it is not for passing on information.'],
-          ['A party gives a relative time like \u201Cmorning\u201D', 'Set Visit Date manually (treat morning as 8am–12pm) — the AI won\u2019t accept a relative time as confirmation.'],
+          ['A party gives a relative time or window like \u201Cmorning\u201D', 'Set Visit Date manually and put the window in the Time note field (e.g. \u201Cin the morning\u201D) — it overrides the exact time. The AI won\u2019t accept a relative time as confirmation on its own.'],
           ['The landlord approves the works by phone', 'Click the approval button directly (e.g. Approved, Use Dwelly SP) — not Add Direct Info.'],
           ['A new time is agreed (both in the thread, or one proposed + you confirmed the other by phone)', 'Reset Visit Date.'],
           ['No new time is agreed yet', 'Restart Scheduling — pick tenant or provider and write the opening message so context carries over.'],

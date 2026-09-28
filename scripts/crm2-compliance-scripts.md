@@ -252,9 +252,11 @@ If no new time is agreed yet, use Restart Scheduling. Choose whether to restart 
 
 A provider or tenant confirmed a slot over the phone. This is the single most common mistake in the whole flow, so get it right: a visit date has to be agreed *and recorded in the system* before the job proceeds. It's enforced strictly.
 
-If both sides have agreed the slot, log it — Set Visit Date at the Scheduling stage, or Reset Visit Date if you're rescheduling. Confirming a date by phone or email and then just letting the job carry on without recording it is the most-flagged deviation there is.
+Only use Set Visit Date once *everyone* has confirmed the same slot — in most cases that's both the tenant and the provider. It records an agreed appointment, not a proposal; if you're still passing dates between the two sides, that's Add Direct Info, not this. Once it's agreed, log it — Set Visit Date at the Scheduling stage, or Reset Visit Date if you're rescheduling.
 
-[TIP] If a date changes, record it in the system. A confirmation that only lives in your call notes doesn't count.
+Date and time are both required. If the slot is a window rather than an exact time — "in the morning", "8 to 10", "after 5" — put that in the Time note field. The time note overrides the exact time, so it's how you record a range.
+
+[TIP] Notes like "with keys" only work *alongside* a time note — a note on its own leaves the job with no visit time at all. And if a date changes, record it in the system: a confirmation that only lives in your call notes doesn't count.
 
 ---
 
@@ -346,7 +348,7 @@ There are legitimate reasons the numbers differ — the provider found something
 
 Someone's confirmed a "morning" or an "afternoon" visit rather than an exact time. The agent won't accept a relative time as a confirmed slot, so it'll sit there waiting.
 
-Step in and use Set Visit Date manually. Treat morning as roughly 8am to 12pm. That records a firm slot and lets the job move on.
+Step in and use Set Visit Date manually. Put the window straight into the Time note field — "in the morning", or "8 to 10" — which overrides the exact time. Or, if you'd rather pin it, treat morning as roughly 8am to 12pm. Either way records a firm slot and lets the job move on.
 
 [TIP] Don't wait for the party to come back with an exact minute — set it manually and keep the job flowing.
 
