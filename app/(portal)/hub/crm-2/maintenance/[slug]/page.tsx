@@ -8,13 +8,16 @@ import { canAccessCrm2 } from '@/lib/crm2-access'
 import { isMaintenancePreview } from '@/lib/preview'
 import { type Crm2Block } from '@/lib/crm2-content'
 import {
-  MAINTENANCE_LESSONS, MAINTENANCE_PILLARS, MAINTENANCE_GUIDE_COUNT,
+  MAINTENANCE_LESSONS, MAINTENANCE_PILLARS, MAINTENANCE_GUIDES, MAINTENANCE_GUIDE_COUNT,
   getMaintenanceLesson, getMaintenanceGuideNumber, getMaintenanceGuides,
 } from '@/lib/crm2-maintenance-content'
+import { MAINTENANCE_CONTENT_TYPE } from '@/lib/crm2-completions'
+import { QUIZ_QUESTIONS } from '@/lib/data'
 import { headingAnchor } from '@/lib/search-index'
 import ReadingProgress from '@/components/knowledge/ReadingProgress'
 import ArticleTOC from '@/components/knowledge/ArticleTOC'
 import BookmarkButton from '@/components/knowledge/BookmarkButton'
+import LessonActions from '@/components/crm2/LessonActions'
 import { renderBlock } from '@/components/crm2/renderBlock'
 import { type GlossaryEntry } from '@/components/crm2/GlossaryText'
 
@@ -62,6 +65,10 @@ export default async function Crm2MaintenanceLessonPage({ params }: { params: { 
       : []
 
   const kindLabel = `Guide ${String(guideNumber ?? 0).padStart(2, '0')} of ${MAINTENANCE_GUIDE_COUNT}`
+  const guideSlugs = MAINTENANCE_GUIDES.map((l) => l.slug)
+  const quizCount = lesson.quizModuleId
+    ? QUIZ_QUESTIONS.filter((q) => q.moduleId === lesson.quizModuleId).length
+    : undefined
 
   return (
     <>
@@ -131,6 +138,20 @@ export default async function Crm2MaintenanceLessonPage({ params }: { params: { 
             <article className="card p-6 sm:p-9 [&>*:first-child]:mt-0">
               {lesson.content.map((block, i) => renderBlock(block, i, glossary, ledeIndex))}
             </article>
+
+            {/* Mark as read + test yourself + was this helpful. Maintenance
+                completions live in their own bucket, so they never touch the
+                compliance certificate count. */}
+            <LessonActions
+              slug={lesson.slug}
+              isGuide
+              guideCount={MAINTENANCE_GUIDE_COUNT}
+              guideSlugs={guideSlugs}
+              quizModuleId={lesson.quizModuleId}
+              quizCount={quizCount}
+              contentType={MAINTENANCE_CONTENT_TYPE}
+              progressSuffix="maintenance guides read"
+            />
 
             {/* Lesson navigation */}
             <div className="grid grid-cols-2 gap-3">

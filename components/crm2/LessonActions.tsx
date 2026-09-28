@@ -37,6 +37,8 @@ export default function LessonActions({
   guideSlugs,
   quizModuleId,
   quizCount,
+  contentType = 'crm2',
+  progressSuffix = 'towards Certified Operator',
 }: {
   slug: string
   isGuide: boolean
@@ -44,6 +46,11 @@ export default function LessonActions({
   guideSlugs: string[]
   quizModuleId?: string
   quizCount?: number
+  /** Which content_completions bucket to read/write. Maintenance uses its own
+   *  ('crm2-maint') so it never mixes with compliance progress. */
+  contentType?: string
+  /** The phrase after "n of N" in the progress line (guides only). */
+  progressSuffix?: string
 }) {
   const router = useRouter()
   const [userId, setUserId] = useState<string | null>(null)
@@ -68,10 +75,11 @@ export default function LessonActions({
         .from('content_completions')
         .select('content_id')
         .eq('user_id', user.id)
-        .eq('content_type', 'crm2')
+        .eq('content_type', contentType)
 
       if (!active) return
-      const doneSlugs = new Set((data ?? []).map((r) => r.content_id.replace(/^crm2-/, '')))
+      const prefix = `${contentType}-`
+      const doneSlugs = new Set((data ?? []).map((r) => r.content_id.startsWith(prefix) ? r.content_id.slice(prefix.length) : r.content_id))
       setDone(doneSlugs.has(slug))
       setGuidesDone(guideSlugs.filter((s) => doneSlugs.has(s)).length)
       setLoading(false)
@@ -79,7 +87,7 @@ export default function LessonActions({
 
     load()
     return () => { active = false }
-  }, [slug, guideSlugs])
+  }, [slug, guideSlugs, contentType])
 
   useEffect(() => {
     const fb = readMap(FEEDBACK_KEY)[slug]
@@ -97,7 +105,7 @@ export default function LessonActions({
 
     if (next) {
       const { error: err } = await supabase.from('content_completions').upsert(
-        { user_id: userId, content_type: 'crm2', content_id: `crm2-${slug}`, completed_at: new Date().toISOString() },
+        { user_id: userId, content_type: contentType, content_id: `${contentType}-${slug}`, completed_at: new Date().toISOString() },
         { onConflict: 'user_id,content_type,content_id' },
       )
       if (err) {
@@ -110,8 +118,8 @@ export default function LessonActions({
         .from('content_completions')
         .delete()
         .eq('user_id', userId)
-        .eq('content_type', 'crm2')
-        .eq('content_id', `crm2-${slug}`)
+        .eq('content_type', contentType)
+        .eq('content_id', `${contentType}-${slug}`)
       if (err) {
         setDone(true)
         if (isGuide) setGuidesDone((n) => n + 1)
@@ -174,7 +182,7 @@ export default function LessonActions({
             {error
               ? 'Couldn\u2019t save — please try again in a moment.'
               : isGuide
-                ? `${guidesDone} of ${guideCount} towards Certified Operator`
+                ? `${guidesDone} of ${guideCount} ${progressSuffix}`
                 : 'References don\u2019t count towards your progress — read it whenever you need it.'}
           </p>
         </div>

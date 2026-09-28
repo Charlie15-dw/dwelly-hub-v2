@@ -42,6 +42,12 @@ export default async function Crm2Page() {
   if (!user) redirect('/')
   if (!(await canAccessCrm2(supabase, user))) redirect('/hub')
 
+  // Admins get an extra entry point to the org-wide 2.0 admin command centre —
+  // computed before the preview chooser so both landings can surface it.
+  const { data: roleRow } = await supabase
+    .from('user_profiles').select('role').eq('id', user.id).maybeSingle()
+  const isAdmin = roleRow?.role === 'admin'
+
   // Preview-only: the 2.0 tab as a chooser. A new agency lands here and picks a
   // track — Maintenance or Compliance — after the shared "how it works". The
   // guides/progress that used to live on this page now sit behind Compliance.
@@ -83,6 +89,27 @@ export default async function Crm2Page() {
             </div>
           </div>
         </section>
+
+        {/* Admin-only — jump to the org-wide 2.0 command centre (usage + results) */}
+        {isAdmin && (
+          <Link
+            href="/hub/crm-2/overview"
+            className="card card-hover p-5 flex items-center gap-4 group"
+          >
+            <span className="w-11 h-11 rounded-xl bg-navy text-white flex items-center justify-center flex-shrink-0">
+              <BarChart3 className="w-5 h-5" aria-hidden />
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="text-[15px] font-bold text-navy">CRM 2.0 Admin</p>
+              <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">
+                Admin · usage across compliance &amp; maintenance, plus every knowledge-check result
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1 text-[14px] font-semibold text-orange flex-shrink-0 group-hover:gap-2 transition-all">
+              Open <ChevronRight className="w-4 h-4" aria-hidden />
+            </span>
+          </Link>
+        )}
 
         {/* How it works — the shared starting point for both tracks */}
         <Link
@@ -200,11 +227,6 @@ export default async function Crm2Page() {
     )
   }
 
-  // Admins get an extra entry point to the org-wide assessment overview.
-  const { data: roleRow } = await supabase
-    .from('user_profiles').select('role').eq('id', user.id).maybeSingle()
-  const isAdmin = roleRow?.role === 'admin'
-
   const completed = await getCrm2CompletedSlugs(supabase, user.id)
 
   // Has this user passed the capstone? If so, a certificate is available.
@@ -279,7 +301,7 @@ export default async function Crm2Page() {
         </div>
       </section>
 
-      {/* Admin-only — jump to the org-wide assessment command centre */}
+      {/* Admin-only — jump to the org-wide 2.0 command centre (usage + results) */}
       {isAdmin && (
         <Link
           href="/hub/crm-2/overview"
@@ -289,9 +311,9 @@ export default async function Crm2Page() {
             <BarChart3 className="w-5 h-5" aria-hidden />
           </span>
           <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-bold text-navy">Assessment overview</p>
+            <p className="text-[15px] font-bold text-navy">CRM 2.0 Admin</p>
             <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">
-              Admin · track everyone&rsquo;s knowledge-check results and grant retakes
+              Admin · usage across the material, every knowledge-check result, and retakes
             </p>
           </div>
           <span className="inline-flex items-center gap-1 text-[14px] font-semibold text-orange flex-shrink-0 group-hover:gap-2 transition-all">

@@ -2,11 +2,14 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Sparkles } from 'lucide-react'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
-import { CRM2_LESSONS } from '@/lib/crm2-content'
+import { CRM2_LESSONS, CRM2_GUIDES } from '@/lib/crm2-content'
+import { MAINTENANCE_LESSONS, MAINTENANCE_GUIDES } from '@/lib/crm2-maintenance-content'
+import { CRM2_CONTENT_TYPE, MAINTENANCE_CONTENT_TYPE } from '@/lib/crm2-completions'
 import Crm2AdminOverview, {
   type Crm2PersonRow,
   type Crm2Attempt,
   type Crm2Assessment,
+  type Crm2Usage,
 } from '@/components/crm2/Crm2AdminOverview'
 
 // Admin command centre for CRM 2.0 assessments — lives inside the 2.0 section so
@@ -42,15 +45,20 @@ export default async function Crm2OverviewPage() {
     .from('user_profiles').select('role').eq('id', user.id).maybeSingle()
   if (currentProfile?.role !== 'admin') redirect('/hub/crm-2')
 
-  // The assessments are exactly the CRM 2.0 lessons that carry a quiz, so this
-  // list stays in step automatically as lessons gain or lose knowledge checks.
-  const quizLessons = CRM2_LESSONS.filter(l => l.quizModuleId)
-  const assessments: Crm2Assessment[] = quizLessons.map(l => ({ id: l.quizModuleId as string, title: l.title }))
+  // The assessments are exactly the CRM 2.0 lessons that carry a quiz — across
+  // BOTH tracks — so this list stays in step automatically as lessons gain or
+  // lose knowledge checks. Maintenance checks are tagged so the scoreboard can
+  // group them apart from compliance.
+  const assessments: Crm2Assessment[] = [
+    ...CRM2_LESSONS.filter(l => l.quizModuleId).map(l => ({ id: l.quizModuleId as string, title: l.title, track: 'compliance' as const })),
+    ...MAINTENANCE_LESSONS.filter(l => l.quizModuleId).map(l => ({ id: l.quizModuleId as string, title: l.title, track: 'maintenance' as const })),
+  ]
   const quizIds = assessments.map(a => a.id)
 
-  // Service client — read every user's results and any queued resets, bypassing RLS.
+  // Service client — read every user's results, queued resets, and lesson reads,
+  // bypassing RLS.
   const service = createServiceClient()
-  const [{ data: profiles }, { data: results }, { data: pendingResets }] = await Promise.all([
+  const [{ data: profiles }, { data: results }, { data: pendingResets }, { data: completions }] = await Promise.all([
     service
       .from('user_profiles')
       .select('id, full_name, email, created_at')
@@ -66,10 +74,15 @@ export default async function Crm2OverviewPage() {
       .from('module_resets')
       .select('user_id, module_id')
       .is('consumed_at', null),
+    service
+      .from('content_completions')
+      .select('user_id, content_type, content_id')
+      .in('content_type', [CRM2_CONTENT_TYPE, MAINTENANCE_CONTENT_TYPE]),
   ])
 
   const allResults = results ?? []
   const allProfiles = profiles ?? []
+  const allCompletions = completions ?? []
 
   // Pending (unconsumed) resets, grouped per user, filtered to CRM 2.0 assessments.
   const quizIdSet = new Set(quizIds)
@@ -124,6 +137,54 @@ export default async function Crm2OverviewPage() {
       return lb - la
     })
 
+  // ── Usage: guide reads across both tracks ───────────────────────────────
+  // Reads live in content_completions, keyed by content_type ('crm2' for
+  // compliance, 'crm2-maint' for maintenance) — the two tracks share slugs, so
+  // we must split on content_type, not the content_id prefix. Only guides count
+  // (references aren't progress), matching the reader-facing progress lines.
+  const complianceGuideSet = new Set(CRM2_GUIDES.map(g => g.slug))
+  const maintenanceGuideSet = new Set(MAINTENANCE_GUIDES.map(g => g.slug))
+  const readsByUser = new Map<string, { compliance: Set<string>; maintenance: Set<string> }>()
+  const readsByGuide = new Map<string, number>() // key `${track}:${slug}` → people who've read it
+  for (const c of allCompletions) {
+    const isMaint = c.content_type === MAINTENANCE_CONTENT_TYPE
+    const prefix = isMaint ? 'crm2-maint-' : 'crm2-'
+    const slug = c.content_id.startsWith(prefix) ? c.content_id.slice(prefix.length) : c.content_id
+    if (!(isMaint ? maintenanceGuideSet.has(slug) : complianceGuideSet.has(slug))) continue
+    const bucket = readsByUser.get(c.user_id) ?? { compliance: new Set<string>(), maintenance: new Set<string>() }
+    ;(isMaint ? bucket.maintenance : bucket.compliance).add(slug)
+    readsByUser.set(c.user_id, bucket)
+    const gk = `${isMaint ? 'maintenance' : 'compliance'}:${slug}`
+    readsByGuide.set(gk, (readsByGuide.get(gk) ?? 0) + 1)
+  }
+
+  const usagePeople = allProfiles
+    .filter(p => readsByUser.has(p.id))
+    .map(p => {
+      const name = displayName(p)
+      const b = readsByUser.get(p.id)!
+      return {
+        id: p.id,
+        displayName: name,
+        initials: initials(name),
+        complianceRead: b.compliance.size,
+        maintenanceRead: b.maintenance.size,
+      }
+    })
+    .sort((a, b) => (b.complianceRead + b.maintenanceRead) - (a.complianceRead + a.maintenanceRead))
+
+  const usage: Crm2Usage = {
+    complianceGuideCount: complianceGuideSet.size,
+    maintenanceGuideCount: maintenanceGuideSet.size,
+    peopleEngaged: usagePeople.length,
+    totalReads: usagePeople.reduce((s, p) => s + p.complianceRead + p.maintenanceRead, 0),
+    guides: [
+      ...CRM2_GUIDES.map(g => ({ slug: g.slug, title: g.title, track: 'compliance' as const, reads: readsByGuide.get(`compliance:${g.slug}`) ?? 0 })),
+      ...MAINTENANCE_GUIDES.map(g => ({ slug: g.slug, title: g.title, track: 'maintenance' as const, reads: readsByGuide.get(`maintenance:${g.slug}`) ?? 0 })),
+    ],
+    people: usagePeople,
+  }
+
   return (
     <div className="space-y-8 hub-fade">
       {/* Breadcrumb */}
@@ -132,7 +193,7 @@ export default async function Crm2OverviewPage() {
           <ArrowLeft className="w-3.5 h-3.5" /> CRM 2.0
         </Link>
         <span className="text-navy-200">/</span>
-        <span className="text-navy font-medium">Assessment Overview</span>
+        <span className="text-navy font-medium">Admin</span>
       </div>
 
       {/* Header */}
@@ -146,15 +207,16 @@ export default async function Crm2OverviewPage() {
             <Sparkles className="w-3.5 h-3.5 text-orange-200" aria-hidden />
             Admin
           </span>
-          <h1 className="mt-5 text-3xl sm:text-4xl font-bold tracking-tight text-white">Assessment Overview</h1>
+          <h1 className="mt-5 text-3xl sm:text-4xl font-bold tracking-tight text-white">CRM 2.0 Admin</h1>
           <p className="mt-3 max-w-2xl text-sm sm:text-base text-white/70 leading-relaxed">
-            Every CRM 2.0 knowledge check in one place — track who&rsquo;s been assessed, spot the
-            checks people are struggling with, and grant a retake on any failed attempt.
+            The whole of CRM 2.0 in one place — see how much of the compliance and maintenance
+            material the team is working through, track every knowledge check, and grant a retake
+            on any failed attempt.
           </p>
         </div>
       </section>
 
-      <Crm2AdminOverview assessments={assessments} people={people} />
+      <Crm2AdminOverview assessments={assessments} people={people} usage={usage} />
     </div>
   )
 }

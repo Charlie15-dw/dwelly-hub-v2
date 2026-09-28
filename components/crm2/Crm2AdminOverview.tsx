@@ -16,7 +16,7 @@
 // person/assessment, plus any pending reset) and passed in.
 
 import { Fragment, useState } from 'react'
-import { CheckCircle2, XCircle, ChevronDown, ChevronRight, RefreshCw, LayoutGrid } from 'lucide-react'
+import { CheckCircle2, XCircle, ChevronDown, ChevronRight, RefreshCw, LayoutGrid, BookOpen, Wrench } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import ReassignButton from '@/components/ui/ReassignButton'
 
@@ -49,11 +49,39 @@ export interface Crm2PersonRow {
 export interface Crm2Assessment {
   id: string
   title: string
+  /** Which 2.0 track the check belongs to. Optional so older callers still fit. */
+  track?: 'compliance' | 'maintenance'
+}
+
+/** Per-guide read count, one entry per guide across both tracks. */
+export interface Crm2GuideUsage {
+  slug: string
+  title: string
+  track: 'compliance' | 'maintenance'
+  reads: number
+}
+/** Per-person read totals, split by track. */
+export interface Crm2PersonUsage {
+  id: string
+  displayName: string
+  initials: string
+  complianceRead: number
+  maintenanceRead: number
+}
+/** Everything the Usage tab needs — guide reads across both 2.0 tracks. */
+export interface Crm2Usage {
+  complianceGuideCount: number
+  maintenanceGuideCount: number
+  peopleEngaged: number
+  totalReads: number
+  guides: Crm2GuideUsage[]
+  people: Crm2PersonUsage[]
 }
 
 interface Props {
   assessments: Crm2Assessment[]
   people: Crm2PersonRow[]
+  usage: Crm2Usage
 }
 
 function ScoreBadge({ passed, score }: { passed: boolean; score: number }) {
@@ -205,8 +233,135 @@ function AssessmentDetail({
   )
 }
 
-export default function Crm2AdminOverview({ assessments, people }: Props) {
-  const [tab, setTab] = useState<'results' | 'reassign'>('results')
+// One track's guides, each with a read count and a bar relative to the most-read
+// guide in that track — a quick read on which material is landing and which is
+// being skipped.
+function TrackUsage({
+  label,
+  icon: Icon,
+  guides,
+}: {
+  label: string
+  icon: typeof BookOpen
+  guides: Crm2GuideUsage[]
+}) {
+  const totalReads = guides.reduce((s, g) => s + g.reads, 0)
+  const maxReads = Math.max(1, ...guides.map((g) => g.reads))
+  return (
+    <div className="card overflow-hidden">
+      <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2.5">
+        <Icon className="w-4 h-4 text-orange" aria-hidden />
+        <h3 className="text-sm font-bold text-navy">{label}</h3>
+        <span className="ml-auto text-xs text-slate-400 tabular-nums">
+          {totalReads} {totalReads === 1 ? 'read' : 'reads'} · {guides.length} guides
+        </span>
+      </div>
+      <div className="divide-y divide-slate-50">
+        {guides.map((g) => (
+          <div key={g.slug} className="px-5 py-2.5 flex items-center gap-3">
+            <p className="text-xs font-medium text-navy truncate flex-1 min-w-0" title={g.title}>{g.title}</p>
+            <div className="w-24 h-1.5 rounded-full bg-slate-100 overflow-hidden flex-shrink-0" aria-hidden>
+              <div className="h-full rounded-full bg-orange" style={{ width: `${(g.reads / maxReads) * 100}%` }} />
+            </div>
+            <span className="text-xs font-bold text-navy tabular-nums w-6 text-right flex-shrink-0">{g.reads}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// The Usage tab: how much of the 2.0 material the team is actually working
+// through, across both the compliance and maintenance tracks.
+function UsagePanel({ usage }: { usage: Crm2Usage }) {
+  const compliance = usage.guides.filter((g) => g.track === 'compliance')
+  const maintenance = usage.guides.filter((g) => g.track === 'maintenance')
+
+  if (usage.peopleEngaged === 0) {
+    return (
+      <div className="card p-10 text-center">
+        <p className="text-sm font-semibold text-slate-500">No reading activity yet</p>
+        <p className="text-xs text-slate-400 mt-1">
+          Once someone opens a CRM 2.0 guide and marks it read, their progress will show here.
+        </p>
+      </div>
+    )
+  }
+
+  const guideTotal = usage.complianceGuideCount + usage.maintenanceGuideCount
+
+  return (
+    <div className="space-y-6">
+      {/* Headline usage numbers */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {[
+          { label: 'Working through 2.0', value: usage.peopleEngaged, sub: 'have opened at least one guide' },
+          { label: 'Guide reads', value: usage.totalReads, sub: 'marked read across both tracks' },
+          { label: 'Compliance', value: usage.complianceGuideCount, sub: 'guides in the track' },
+          { label: 'Maintenance', value: usage.maintenanceGuideCount, sub: 'guides in the track' },
+        ].map(({ label, value, sub }) => (
+          <div key={label} className="card p-5">
+            <p className="text-3xl font-black tabular-nums text-navy">{value}</p>
+            <p className="text-xs font-semibold text-slate-600 mt-0.5">{label}</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">{sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Which guides are landing, per track */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TrackUsage label="Compliance" icon={BookOpen} guides={compliance} />
+        <TrackUsage label="Maintenance" icon={Wrench} guides={maintenance} />
+      </div>
+
+      {/* Per-person progress across both tracks */}
+      <div className="card overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-100">
+          <h2 className="text-sm font-bold text-navy">Who&rsquo;s reading</h2>
+          <p className="text-xs text-slate-400 mt-0.5">Guides marked read per person, per track.</p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-slate-100">
+                <th className="px-5 py-2.5 text-left text-[11px] font-bold uppercase tracking-wide text-slate-400">Person</th>
+                <th className="px-4 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">Compliance</th>
+                <th className="px-4 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">Maintenance</th>
+                <th className="px-5 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">Total</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {usage.people.map((p) => (
+                <tr key={p.id} className="hover:bg-slate-50/70">
+                  <td className="px-5 py-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-[10px] font-bold">{p.initials}</span>
+                      </div>
+                      <p className="text-sm font-semibold text-navy truncate">{p.displayName}</p>
+                    </div>
+                  </td>
+                  <td className="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 tabular-nums whitespace-nowrap">
+                    {p.complianceRead}/{usage.complianceGuideCount}
+                  </td>
+                  <td className="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 tabular-nums whitespace-nowrap">
+                    {p.maintenanceRead}/{usage.maintenanceGuideCount}
+                  </td>
+                  <td className="px-5 py-2.5 text-right text-xs font-bold text-navy tabular-nums whitespace-nowrap">
+                    {p.complianceRead + p.maintenanceRead}/{guideTotal}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function Crm2AdminOverview({ assessments, people, usage }: Props) {
+  const [tab, setTab] = useState<'usage' | 'results' | 'reassign'>('usage')
   const [expandedPerson, setExpandedPerson] = useState<string | null>(null)
 
   // Everything a person has actually attempted, in assessment order. Each entry
@@ -246,20 +401,10 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
     .filter((row) => row.fails.length > 0)
   const totalFails = reassignQueue.reduce((s, r) => s + r.fails.length, 0)
 
-  if (people.length === 0) {
-    return (
-      <div className="card p-10 text-center">
-        <p className="text-sm font-semibold text-slate-500">No assessments completed yet</p>
-        <p className="text-xs text-slate-400 mt-1">
-          Once someone in the CRM 2.0 group sits a knowledge check, their results will appear here.
-        </p>
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-6">
-      {/* Summary stats — always visible */}
+      {/* Summary stats — assessment tabs only; Usage carries its own headline. */}
+      {tab !== 'usage' && (
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
           { label: 'People assessed', value: people.length, sub: 'have taken at least one check' },
@@ -274,10 +419,12 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
           </div>
         ))}
       </div>
+      )}
 
       {/* Tabs */}
       <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl w-fit">
         {([
+          { key: 'usage' as const, label: 'Usage', icon: BookOpen },
           { key: 'results' as const, label: 'Results', icon: LayoutGrid },
           { key: 'reassign' as const, label: 'Reassign', icon: RefreshCw, count: totalFails },
         ]).map(({ key, label, icon: Icon, count }) => (
@@ -305,8 +452,21 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
         ))}
       </div>
 
+      {/* ── Usage ────────────────────────────────────────────────────────── */}
+      {tab === 'usage' && (
+        <UsagePanel usage={usage} />
+      )}
+
       {/* ── Results ──────────────────────────────────────────────────────── */}
-      {tab === 'results' && (
+      {tab === 'results' && people.length === 0 && (
+        <div className="card p-10 text-center">
+          <p className="text-sm font-semibold text-slate-500">No assessments completed yet</p>
+          <p className="text-xs text-slate-400 mt-1">
+            Once someone in the CRM 2.0 group sits a knowledge check, their results will appear here.
+          </p>
+        </div>
+      )}
+      {tab === 'results' && people.length > 0 && (
         <div className="card overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2 flex-wrap">
             <div>
@@ -454,6 +614,9 @@ export default function Crm2AdminOverview({ assessments, people }: Props) {
               {perAssessment.map((a, i) => (
                 <div key={a.id} className="flex items-baseline gap-2 text-xs">
                   <span className="font-bold text-slate-400 tabular-nums w-4 flex-shrink-0">{i + 1}</span>
+                  {a.track === 'maintenance' && (
+                    <span className="text-[9px] font-bold uppercase tracking-wide text-orange bg-orange/10 rounded px-1 py-0.5 flex-shrink-0" title="Maintenance track">M</span>
+                  )}
                   <span className="text-navy font-medium truncate">{a.title}</span>
                 </div>
               ))}

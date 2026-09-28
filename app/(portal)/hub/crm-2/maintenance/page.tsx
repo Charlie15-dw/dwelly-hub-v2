@@ -10,6 +10,7 @@ import {
   MAINTENANCE_PILLARS, MAINTENANCE_GUIDE_COUNT, MAINTENANCE_GUIDE_MINUTES,
   getMaintenanceGuideNumber, getMaintenanceGuides,
 } from '@/lib/crm2-maintenance-content'
+import { getMaintenanceCompletedSlugs } from '@/lib/crm2-completions'
 import GuideRow from '@/components/crm2/GuideRow'
 
 // CRM 2.0 → Maintenance. The sibling track to Compliance, reached from the 2.0
@@ -22,6 +23,8 @@ export default async function Crm2MaintenancePage() {
   if (!user) redirect('/')
   if (!(await canAccessCrm2(supabase, user))) redirect('/hub')
   if (!isMaintenancePreview(user.email)) redirect('/hub/crm-2')
+
+  const completed = await getMaintenanceCompletedSlugs(supabase, user.id)
 
   return (
     <div className="mx-auto max-w-[880px] space-y-7 hub-fade">
@@ -67,6 +70,7 @@ export default async function Crm2MaintenancePage() {
         const guides = getMaintenanceGuides(id)
         if (guides.length === 0) return null
         const minutes = guides.reduce((s, g) => s + g.minutes, 0)
+        const done = guides.filter((g) => completed.has(g.slug)).length
         return (
           <section key={id} className="card overflow-hidden">
             <div className="px-5 py-4 border-b border-navy-100 flex items-center justify-between gap-4">
@@ -80,7 +84,7 @@ export default async function Crm2MaintenancePage() {
                 </div>
               </div>
               <span className="text-[12.5px] font-medium text-[var(--text-secondary)] tabular-nums whitespace-nowrap flex-shrink-0">
-                {minutes} min · {guides.length} guides
+                {minutes} min · {done} of {guides.length} read
               </span>
             </div>
             <div>
@@ -93,7 +97,7 @@ export default async function Crm2MaintenancePage() {
                   title={g.title}
                   summary={g.summary}
                   minutes={g.minutes}
-                  read={false}
+                  read={completed.has(g.slug)}
                   inProgress={false}
                 />
               ))}
