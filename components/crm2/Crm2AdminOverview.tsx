@@ -233,6 +233,216 @@ function AssessmentDetail({
   )
 }
 
+// A single track's results table — latest score per person, per assessment, with
+// a per-column pass rate and an expandable question breakdown per person. Scoped
+// to the assessments and people passed in, so compliance and maintenance each
+// get their own board.
+function Scoreboard({
+  title,
+  assessments,
+  people,
+  expandedPerson,
+  setExpandedPerson,
+}: {
+  title: string
+  assessments: Crm2Assessment[]
+  people: Crm2PersonRow[]
+  expandedPerson: string | null
+  setExpandedPerson: (id: string | null) => void
+}) {
+  const attemptedFor = (p: Crm2PersonRow) =>
+    assessments
+      .filter((a) => p.attempts[a.id]?.length)
+      .map((a) => {
+        const list = p.attempts[a.id]!
+        return { assessment: a, attempts: list, latest: list[0] }
+      })
+
+  let attemptedCells = 0
+  let passedCells = 0
+  const perAssessment = assessments.map((a) => {
+    let attempted = 0
+    let passed = 0
+    for (const p of people) {
+      const latest = p.attempts[a.id]?.[0]
+      if (latest) {
+        attempted += 1
+        attemptedCells += 1
+        if (latest.passed) {
+          passed += 1
+          passedCells += 1
+        }
+      }
+    }
+    return { ...a, attempted, passed }
+  })
+  const passRate = attemptedCells > 0 ? Math.round((passedCells / attemptedCells) * 100) : 0
+
+  return (
+    <div className="card overflow-hidden">
+      <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2 flex-wrap">
+        <div>
+          <h2 className="text-sm font-bold text-navy">{title}</h2>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Latest score per person, per assessment. Click a name to open their full breakdown.
+          </p>
+        </div>
+        <div className="ml-auto flex items-center gap-3 text-[11px] font-medium text-slate-500">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="inline-block w-3 h-3 rounded bg-teal/10 border border-teal/20" aria-hidden />
+            Passed
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="inline-block w-3 h-3 rounded bg-red-50 border border-red-100" aria-hidden />
+            Failed
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="inline-block w-3 h-3 rounded bg-slate-50 border border-slate-200" aria-hidden />
+            Not taken
+          </span>
+        </div>
+      </div>
+
+      {people.length === 0 ? (
+        <p className="px-5 py-8 text-center text-xs text-slate-400">
+          Nobody has sat a {title.toLowerCase()} knowledge check yet.
+        </p>
+      ) : (
+        <>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-slate-100">
+                  <th className="sticky left-0 z-10 bg-white px-5 py-2.5 text-left text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                    Person
+                  </th>
+                  {perAssessment.map((a, i) => (
+                    <th
+                      key={a.id}
+                      title={a.title}
+                      className="px-2 py-2.5 text-center text-xs font-bold text-slate-500 tabular-nums"
+                    >
+                      {i + 1}
+                    </th>
+                  ))}
+                  <th className="px-4 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">
+                    Passed
+                  </th>
+                  <th className="w-8 px-2 py-2.5" aria-hidden />
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-slate-50">
+                {people.map((person) => {
+                  const attempted = attemptedFor(person)
+                  const passedCount = attempted.filter((x) => x.latest.passed).length
+                  const failCount = attempted.length - passedCount
+                  const isOpen = expandedPerson === person.id
+                  return (
+                    <Fragment key={person.id}>
+                      <tr
+                        onClick={() => setExpandedPerson(isOpen ? null : person.id)}
+                        className={cn('cursor-pointer transition-colors', isOpen ? 'bg-slate-50' : 'hover:bg-slate-50/70')}
+                        aria-expanded={isOpen}
+                      >
+                        <td className={cn('sticky left-0 z-10 px-5 py-2.5', isOpen ? 'bg-slate-50' : 'bg-white')}>
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
+                              <span className="text-white text-[10px] font-bold">{person.initials}</span>
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-navy truncate">{person.displayName}</p>
+                              {failCount > 0 && (
+                                <p className="text-[11px] text-red-500 font-medium">{failCount} to retake</p>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        {perAssessment.map((a) => (
+                          <ScoreCell key={a.id} attempt={person.attempts[a.id]?.[0]} />
+                        ))}
+                        <td className="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 tabular-nums whitespace-nowrap">
+                          {passedCount}/{attempted.length}
+                        </td>
+                        <td className="px-2 py-2.5 text-center">
+                          {isOpen
+                            ? <ChevronDown className="w-4 h-4 text-slate-400 inline" aria-hidden />
+                            : <ChevronRight className="w-4 h-4 text-slate-400 inline" aria-hidden />}
+                        </td>
+                      </tr>
+
+                      {isOpen && (
+                        <tr>
+                          <td colSpan={perAssessment.length + 3} className="px-5 py-4 bg-slate-50/60">
+                            <div className="space-y-3">
+                              {attempted.length === 0 ? (
+                                <p className="text-xs text-slate-400">No assessments attempted yet.</p>
+                              ) : (
+                                attempted.map(({ assessment, attempts }) => (
+                                  <AssessmentDetail
+                                    key={assessment.id}
+                                    person={person}
+                                    assessment={assessment}
+                                    attempts={attempts}
+                                  />
+                                ))
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  )
+                })}
+              </tbody>
+
+              {/* Pass rate per column */}
+              <tfoot>
+                <tr className="border-t-2 border-slate-100 bg-slate-50/40">
+                  <td className="sticky left-0 z-10 bg-slate-50/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                    Pass rate
+                  </td>
+                  {perAssessment.map((a) => {
+                    const pct = a.attempted > 0 ? Math.round((a.passed / a.attempted) * 100) : null
+                    return (
+                      <td key={a.id} className="px-2 py-2.5 text-center">
+                        <span
+                          className="text-xs font-bold tabular-nums"
+                          style={{ color: pct === null ? '#CBD5E1' : pct >= 80 ? '#1A7F37' : pct >= 50 ? '#F59E0B' : '#DC2626' }}
+                          title={pct === null ? 'Not taken yet' : `${a.passed}/${a.attempted} passed`}
+                        >
+                          {pct === null ? '–' : `${pct}%`}
+                        </span>
+                      </td>
+                    )
+                  })}
+                  <td className="px-4 py-2.5 text-right text-xs font-bold tabular-nums" style={{ color: passRate >= 80 ? '#1A7F37' : passRate >= 50 ? '#F59E0B' : '#DC2626' }}>
+                    {passRate}%
+                  </td>
+                  <td className="px-2 py-2.5" aria-hidden />
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          {/* Legend: column number → assessment title */}
+          <div className="px-5 py-4 border-t border-slate-100">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-2">Assessments</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1.5">
+              {perAssessment.map((a, i) => (
+                <div key={a.id} className="flex items-baseline gap-2 text-xs">
+                  <span className="font-bold text-slate-400 tabular-nums w-4 flex-shrink-0">{i + 1}</span>
+                  <span className="text-navy font-medium truncate">{a.title}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 // One track's guides, each with a read count and a bar relative to the most-read
 // guide in that track — a quick read on which material is landing and which is
 // being skipped.
@@ -377,22 +587,15 @@ export default function Crm2AdminOverview({ assessments, people, usage }: Props)
   // ── Derived stats ──────────────────────────────────────────────────────── (based on each person's latest attempt per check)
   let attemptedCells = 0
   let passedCells = 0
-  const perAssessment = assessments.map((a) => {
-    let attempted = 0
-    let passed = 0
+  for (const a of assessments) {
     for (const p of people) {
       const latest = p.attempts[a.id]?.[0]
       if (latest) {
-        attempted += 1
         attemptedCells += 1
-        if (latest.passed) {
-          passed += 1
-          passedCells += 1
-        }
+        if (latest.passed) passedCells += 1
       }
     }
-    return { ...a, attempted, passed }
-  })
+  }
   const overallPassRate = attemptedCells > 0 ? Math.round((passedCells / attemptedCells) * 100) : 0
 
   // People whose latest attempt on a check is a fail — the reassign queue.
@@ -400,6 +603,16 @@ export default function Crm2AdminOverview({ assessments, people, usage }: Props)
     .map((p) => ({ person: p, fails: attemptedFor(p).filter((x) => !x.latest.passed) }))
     .filter((row) => row.fails.length > 0)
   const totalFails = reassignQueue.reduce((s, r) => s + r.fails.length, 0)
+
+  // Results split by track. A scoreboard only lists people who've sat a check in
+  // that track, so the compliance board isn't padded with maintenance-only names
+  // (and vice versa).
+  const complianceAssessments = assessments.filter((a) => a.track !== 'maintenance')
+  const maintenanceAssessments = assessments.filter((a) => a.track === 'maintenance')
+  const peopleWithAttemptIn = (list: Crm2Assessment[]) =>
+    people.filter((p) => list.some((a) => p.attempts[a.id]?.length))
+  const compliancePeople = peopleWithAttemptIn(complianceAssessments)
+  const maintenancePeople = peopleWithAttemptIn(maintenanceAssessments)
 
   return (
     <div className="space-y-6">
@@ -467,161 +680,25 @@ export default function Crm2AdminOverview({ assessments, people, usage }: Props)
         </div>
       )}
       {tab === 'results' && people.length > 0 && (
-        <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2 flex-wrap">
-            <div>
-              <h2 className="text-sm font-bold text-navy">Scoreboard</h2>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Latest score per person, per assessment. Click a name to open their full breakdown.
-              </p>
-            </div>
-            <div className="ml-auto flex items-center gap-3 text-[11px] font-medium text-slate-500">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block w-3 h-3 rounded bg-teal/10 border border-teal/20" aria-hidden />
-                Passed
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block w-3 h-3 rounded bg-red-50 border border-red-100" aria-hidden />
-                Failed
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block w-3 h-3 rounded bg-slate-50 border border-slate-200" aria-hidden />
-                Not taken
-              </span>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-sm">
-              <thead>
-                <tr className="border-b border-slate-100">
-                  <th className="sticky left-0 z-10 bg-white px-5 py-2.5 text-left text-[11px] font-bold uppercase tracking-wide text-slate-400">
-                    Person
-                  </th>
-                  {perAssessment.map((a, i) => (
-                    <th
-                      key={a.id}
-                      title={a.title}
-                      className="px-2 py-2.5 text-center text-xs font-bold text-slate-500 tabular-nums"
-                    >
-                      {i + 1}
-                    </th>
-                  ))}
-                  <th className="px-4 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">
-                    Passed
-                  </th>
-                  <th className="w-8 px-2 py-2.5" aria-hidden />
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-slate-50">
-                {people.map((person) => {
-                  const attempted = attemptedFor(person)
-                  const passedCount = attempted.filter((x) => x.latest.passed).length
-                  const failCount = attempted.length - passedCount
-                  const isOpen = expandedPerson === person.id
-                  return (
-                    <Fragment key={person.id}>
-                      <tr
-                        onClick={() => setExpandedPerson(isOpen ? null : person.id)}
-                        className={cn('cursor-pointer transition-colors', isOpen ? 'bg-slate-50' : 'hover:bg-slate-50/70')}
-                        aria-expanded={isOpen}
-                      >
-                        <td className={cn('sticky left-0 z-10 px-5 py-2.5', isOpen ? 'bg-slate-50' : 'bg-white')}>
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
-                              <span className="text-white text-[10px] font-bold">{person.initials}</span>
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-navy truncate">{person.displayName}</p>
-                              {failCount > 0 && (
-                                <p className="text-[11px] text-red-500 font-medium">{failCount} to retake</p>
-                              )}
-                            </div>
-                          </div>
-                        </td>
-                        {perAssessment.map((a) => (
-                          <ScoreCell key={a.id} attempt={person.attempts[a.id]?.[0]} />
-                        ))}
-                        <td className="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 tabular-nums whitespace-nowrap">
-                          {passedCount}/{attempted.length}
-                        </td>
-                        <td className="px-2 py-2.5 text-center">
-                          {isOpen
-                            ? <ChevronDown className="w-4 h-4 text-slate-400 inline" aria-hidden />
-                            : <ChevronRight className="w-4 h-4 text-slate-400 inline" aria-hidden />}
-                        </td>
-                      </tr>
-
-                      {isOpen && (
-                        <tr>
-                          <td colSpan={assessments.length + 3} className="px-5 py-4 bg-slate-50/60">
-                            <div className="space-y-3">
-                              {attempted.length === 0 ? (
-                                <p className="text-xs text-slate-400">No assessments attempted yet.</p>
-                              ) : (
-                                attempted.map(({ assessment, attempts }) => (
-                                  <AssessmentDetail
-                                    key={assessment.id}
-                                    person={person}
-                                    assessment={assessment}
-                                    attempts={attempts}
-                                  />
-                                ))
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </Fragment>
-                  )
-                })}
-              </tbody>
-
-              {/* Pass rate per column */}
-              <tfoot>
-                <tr className="border-t-2 border-slate-100 bg-slate-50/40">
-                  <td className="sticky left-0 z-10 bg-slate-50/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-slate-400">
-                    Pass rate
-                  </td>
-                  {perAssessment.map((a) => {
-                    const pct = a.attempted > 0 ? Math.round((a.passed / a.attempted) * 100) : null
-                    return (
-                      <td key={a.id} className="px-2 py-2.5 text-center">
-                        <span
-                          className="text-xs font-bold tabular-nums"
-                          style={{ color: pct === null ? '#CBD5E1' : pct >= 80 ? '#1A7F37' : pct >= 50 ? '#F59E0B' : '#DC2626' }}
-                          title={pct === null ? 'Not taken yet' : `${a.passed}/${a.attempted} passed`}
-                        >
-                          {pct === null ? '–' : `${pct}%`}
-                        </span>
-                      </td>
-                    )
-                  })}
-                  <td className="px-4 py-2.5 text-right text-xs font-bold tabular-nums" style={{ color: overallPassRate >= 80 ? '#1A7F37' : overallPassRate >= 50 ? '#F59E0B' : '#DC2626' }}>
-                    {overallPassRate}%
-                  </td>
-                  <td className="px-2 py-2.5" aria-hidden />
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-
-          {/* Legend: column number → assessment title */}
-          <div className="px-5 py-4 border-t border-slate-100">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-2">Assessments</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1.5">
-              {perAssessment.map((a, i) => (
-                <div key={a.id} className="flex items-baseline gap-2 text-xs">
-                  <span className="font-bold text-slate-400 tabular-nums w-4 flex-shrink-0">{i + 1}</span>
-                  {a.track === 'maintenance' && (
-                    <span className="text-[9px] font-bold uppercase tracking-wide text-orange bg-orange/10 rounded px-1 py-0.5 flex-shrink-0" title="Maintenance track">M</span>
-                  )}
-                  <span className="text-navy font-medium truncate">{a.title}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="space-y-6">
+          {complianceAssessments.length > 0 && (
+            <Scoreboard
+              title="Compliance"
+              assessments={complianceAssessments}
+              people={compliancePeople}
+              expandedPerson={expandedPerson}
+              setExpandedPerson={setExpandedPerson}
+            />
+          )}
+          {maintenanceAssessments.length > 0 && (
+            <Scoreboard
+              title="Maintenance"
+              assessments={maintenanceAssessments}
+              people={maintenancePeople}
+              expandedPerson={expandedPerson}
+              setExpandedPerson={setExpandedPerson}
+            />
+          )}
         </div>
       )}
 
