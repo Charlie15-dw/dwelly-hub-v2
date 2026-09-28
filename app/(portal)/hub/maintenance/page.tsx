@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Wrench, ClipboardCheck, ChevronRight, Hammer } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isMaintenancePreview } from '@/lib/preview'
+import { isMaintenanceStubPreview } from '@/lib/preview'
 
 // Maintenance — the sibling learning space to CRM 2.0 Compliance. This is the
 // scaffold: the section, hero and navigation are in place so guides and
@@ -13,7 +13,7 @@ export default async function MaintenancePage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
-  if (!isMaintenancePreview(user.email)) redirect('/hub')
+  if (!isMaintenanceStubPreview(user.email)) redirect('/hub')
 
   return (
     <div className="mx-auto max-w-[880px] space-y-7 hub-fade">

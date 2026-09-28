@@ -28,7 +28,8 @@ export function isHubBeta(email: string | null | undefined): boolean {
 // the whole team, so any authenticated user can see the nav entry, reach the
 // content and sit the assessments. The function is retained (with its role
 // parameter) so existing call sites keep working; it now returns true for any
-// authenticated user. Maintenance stays private via isMaintenancePreview below.
+// authenticated user. The Maintenance track is now live for all too (see
+// isMaintenancePreview below).
 export function isCrm2Preview(
   email: string | null | undefined,
   _role?: string | null,
@@ -36,18 +37,31 @@ export function isCrm2Preview(
   return Boolean(email)
 }
 
-// Maintenance learning space — private early-access gate.
+// CRM 2.0 Maintenance track — now live for all users.
 //
-// The "Maintenance" section is the sibling track to CRM 2.0 Compliance. It's
-// being scaffolded ahead of any content, so for now it's locked to a single
-// account while it's built out. Widen this allow-list (or fold it into the
-// CRM 2.0 rule) once there's content ready to share.
-const MAINTENANCE_ALLOWED_EMAILS = new Set([
+// This gate controls the CRM 2.0 "split" experience: the 2.0 tab as a chooser
+// (Maintenance vs Compliance), the Maintenance track and its guides, the
+// maintenance knowledge checks, and the maintenance getting-started. The
+// maintenance content is now written and reviewed, so it's rolled out to the
+// whole team alongside Compliance. The function is retained (and still drives
+// every split call site) so those pages open up together; it now returns true
+// for any authenticated user.
+export function isMaintenancePreview(email: string | null | undefined): boolean {
+  return Boolean(email)
+}
+
+// Standalone Maintenance scaffold — still private.
+//
+// Separate from the CRM 2.0 maintenance track above, there's an older top-level
+// /hub/maintenance shell that's still an empty "content coming soon" placeholder
+// and isn't linked in the nav. It stays locked to a single account so nobody
+// lands on an empty page; retire it (or give it content) before widening this.
+const MAINTENANCE_STUB_ALLOWED_EMAILS = new Set([
   'charlie@dwelly.group',
 ])
 
-export function isMaintenancePreview(email: string | null | undefined): boolean {
-  return email ? MAINTENANCE_ALLOWED_EMAILS.has(email.trim().toLowerCase()) : false
+export function isMaintenanceStubPreview(email: string | null | undefined): boolean {
+  return email ? MAINTENANCE_STUB_ALLOWED_EMAILS.has(email.trim().toLowerCase()) : false
 }
 
 // Elevated Hub — now live for all users.

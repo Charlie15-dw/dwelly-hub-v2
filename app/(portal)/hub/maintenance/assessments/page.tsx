@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Trophy, ClipboardCheck } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
-import { isMaintenancePreview } from '@/lib/preview'
+import { isMaintenanceStubPreview } from '@/lib/preview'
 
 // Maintenance assessments — the scaffold for the section's knowledge checks.
 // Mirrors the CRM 2.0 Compliance assessments layout; the grid of checks fills
@@ -13,7 +13,7 @@ export default async function MaintenanceAssessmentsPage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/')
-  if (!isMaintenancePreview(user.email)) redirect('/hub')
+  if (!isMaintenanceStubPreview(user.email)) redirect('/hub')
 
   return (
     <div className="space-y-8 hub-fade">
