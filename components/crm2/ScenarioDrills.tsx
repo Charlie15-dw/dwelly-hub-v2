@@ -60,7 +60,7 @@ const SCENARIOS: Scenario[] = [
         prompt: 'Every appliance reads “Safe to use: YES” except one — a missing flame supervision device on an old hob. Is the certificate satisfactory?',
         choices: [
           {
-            label: 'Yes — satisfactory, with an optional remedial alongside it',
+            label: 'Yes — satisfactory, with a recommended remedial alongside it',
             correct: true,
             feedback: 'Correct. A CP12 categorises each appliance rather than the whole cert. Every other item is YES, so the cert is satisfactory; the flagged hob is a remedial that rides alongside it.',
           },

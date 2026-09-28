@@ -353,7 +353,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
   },
   {
     slug: 'remedial-works',
-    title: 'Remedial works — required vs optional',
+    title: 'Remedial works — required vs recommended',
     summary: 'Deciding at Certificate review whether remedials are required for compliance or just recommended.',
     icon: '🔧',
     pillar: 'features',
@@ -361,25 +361,25 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     minutes: 5,
     quizModuleId: 'crm2-remedial-works',
     content: [
-      { type: 'paragraph', text: 'At Certificate review you decide whether remedial works are required for compliance or simply optional. Both now run through the same remedial branch — the difference is that an optional remedial saves the already-satisfactory cert to file, because the property is compliant either way.' },
+      { type: 'paragraph', text: 'At Certificate review you decide whether remedial works are required for compliance or simply recommended. Both now run through the same remedial branch — the difference is that a recommended remedial saves the already-satisfactory cert to file, because the property is compliant either way.' },
 
       { type: 'heading', text: 'Required remedials' },
       { type: 'bullets', items: [
         'Click Need required remedial and continue with the remedial flow as usual.',
       ]},
 
-      { type: 'heading', text: 'Optional remedials (a satisfactory cert with C3 items)' },
+      { type: 'heading', text: 'Recommended remedials (a satisfactory cert with C3 items)' },
       { type: 'steps', items: [
         'Review the certificate as usual — dates and service-provider names.',
-        'Click Optional remedial.',
+        'Click Recommended remedial.',
       ]},
-      { type: 'callout', variant: 'important', text: 'Optional remedials now follow the same path as required ones — Quotation awaiting → Quotation review → Landlord quote approval → repeat visit. The one difference: because the cert already passed, the satisfactory certificate is saved to file (the property stays compliant), so the works are genuinely optional rather than needed for compliance.' },
+      { type: 'callout', variant: 'important', text: 'Recommended remedials now follow the same path as required ones — Quotation awaiting → Quotation review → Landlord quote approval → repeat visit. The one difference: because the cert already passed, the satisfactory certificate is saved to file (the property stays compliant), so the works are genuinely recommended rather than needed for compliance.' },
       { type: 'bullets', items: [
-        'C3-only certs are satisfactory — the document is satisfactory at this point in time, and that passing cert is saved to file when you press Optional remedial.',
-        'Common mistake: don\u2019t automatically redirect an optional remedial into the required path. On EICRs it\u2019s clear-cut (C1/C2/FI = required, C3 = optional). On a CP12 there\u2019s no overall pass/fail stamp \u2014 \u201CSafe to use: YES\u201D on every appliance means no safety failure forcing a required remedial, but it doesn\u2019t make every noted item elective. Read the engineer\u2019s notes and judge each remedial (required vs optional) on its own merits.',
+        'C3-only certs are satisfactory — the document is satisfactory at this point in time, and that passing cert is saved to file when you press Recommended remedial. C3 items are still worth doing, though, so they go through the recommended-remedial flow rather than being ignored.',
+        'Common mistake: don\u2019t automatically redirect a recommended remedial into the required path. On EICRs it\u2019s clear-cut (C1/C2/FI = required, C3 = recommended). On a CP12 there\u2019s no overall pass/fail stamp \u2014 \u201CSafe to use: YES\u201D on every appliance means no safety failure forcing a required remedial, but it doesn\u2019t make every noted item elective. Read the engineer\u2019s notes and judge each remedial (required vs recommended) on its own merits.',
       ]},
 
-      { type: 'heading', text: 'The remedial branch — required and optional both take it' },
+      { type: 'heading', text: 'The remedial branch — required and recommended both take it' },
       { type: 'paragraph', text: 'Whichever you press, the job leaves the main path the same way: Quotation awaiting (the agent asks the provider for a quote) → Quotation review (your checkpoint) → Landlord quote approval (the landlord agrees to pay) → approved re-enters Scheduling for the repeat visit / rejected → Remedial terminated.' },
 
       { type: 'heading', text: 'Quotation review — your checkpoint' },
@@ -420,7 +420,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'heading', text: 'Gas certs (CP12) — a unified approach' },
       { type: 'bullets', items: [
         'A CP12 isn\u2019t labelled satisfactory / unsatisfactory the way an EICR is — it categorises each appliance individually. Think of a clean one as \u201Cpassed, with any noted recommendations\u201D rather than \u201Csatisfactory\u201D.',
-        'Check the \u201CSafe to use\u201D column. If every appliance is YES there\u2019s no safety failure forcing the required-remedial path — but that doesn\u2019t make every noted item elective. Read the engineer\u2019s notes and decide required vs optional on the item\u2019s own merits.',
+        'Check the \u201CSafe to use\u201D column. If every appliance is YES there\u2019s no safety failure forcing the required-remedial path — but that doesn\u2019t make every noted item elective. Read the engineer\u2019s notes and decide required vs recommended on the item\u2019s own merits.',
         '\u201CSafe to use\u201D is about immediate safety, not about whether the work should be done. A noted remedial (e.g. a missing flame supervision device on an old hob) can still matter without turning the whole record into a fail.',
       ]},
       { type: 'image', src: '/crm2/cp12-safe-to-use.png', text: 'A CP12 with the \u201CSafe to use\u201D column — worked example: a missing flame supervision device on an old hob; the appliance is still safe to use, so the record passes with the item noted as a recommendation (request 248).' },
@@ -429,7 +429,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'bullets', items: [
         'An EICR does carry an overall outcome — Satisfactory or Unsatisfactory — unlike a CP12.',
         'The observations are coded: C1 (danger present), C2 (potentially dangerous) and FI (further investigation) mean work is required; C3 (improvement recommended) is advisory only.',
-        'An EICR with only C3 items — or none — is satisfactory and needs no remedials.',
+        'An EICR with only C3 items is satisfactory — the property is compliant — but the C3s should still go through the recommended-remedial flow. Only a cert with no observations at all needs no remedials.',
         'C1, C2 or FI codes mean remedial works: send the job down the required-remedial path.',
       ]},
       { type: 'callout', variant: 'warning', text: 'Read the codes, not just the summary box: FI (further investigation) is a fail code, just like C1 and C2. If an EICR lists any FI items it is unsatisfactory \u2014 don\u2019t be misled by a \u201Csatisfactory\u201D-looking summary. Send the job down the required-remedial path.' },
@@ -464,7 +464,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'callout', variant: 'warning', text: 'The exception: some properties fall under a selective licensing clause, which means they must have a valid EPC at all times — not just at the trigger points above. If a property is subject to selective licensing, treat the EPC as required and keep it in date.' },
 
       { type: 'heading', text: 'When the landlord doesn\u2019t respond' },
-      { type: 'paragraph', text: 'Because an EPC isn\u2019t legally required mid-tenancy, an unresponsive landlord used to raise the question of whether to chase or cancel. That\u2019s now settled: we keep the EPC in date. If a renewal is due and the landlord doesn\u2019t reply, the job behaves like any other at Landlord approval — at +4 days it auto-advances to provider selection, and the system assigns a provider to carry out the renewal.' },
+      { type: 'paragraph', text: 'Because an EPC isn\u2019t legally required mid-tenancy, an unresponsive landlord used to raise the question of whether to chase or cancel. That\u2019s now settled: we keep the EPC in date. If a renewal is due and the landlord doesn\u2019t reply, the job behaves like any other at Landlord approval — at +4 days it auto-advances to provider selection, and the system assigns a provider to carry out the renewal, following the landlord preferences the PM filled out (now embedded in CRM 2.0).' },
       { type: 'callout', variant: 'important', text: 'An unresponsive landlord doesn\u2019t block an EPC. The system auto-assigns the provider and the renewal proceeds — we don\u2019t leave it to lapse, cancel the job, or chase an emergency contact.' },
     ],
   },
@@ -542,7 +542,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
           ['No contractor found / landlord named one', 'Provider selection needs a human — source a contractor, or record the one the landlord named.'],
           ['Contractor declined / won\u2019t attend', 'Restart scheduling or select another provider. (See \u201CRescheduling\u201D.)'],
           ['Document unreadable / wrong type / mixed', 'A \u201Cdocument problem\u201D escalation. Check the file and request a correct copy if needed. (See \u201CCertificate review\u201D for wrong-property certs.)'],
-          ['Certificate shows faults \u2014 remedial needed', 'Decide required vs optional at Certificate review. (See \u201CRemedial works\u201D.)'],
+          ['Certificate shows faults \u2014 remedial needed', 'Decide required vs recommended at Certificate review. (See \u201CRemedial works\u201D.)'],
           ['Landlord refuses the quote', 'Record the response; the remedial branch ends at Remedial terminated and the satisfactory cert still stands.'],
           ['External-system error', 'Transient vs persistent — retry a transient error; escalate a persistent one to support (e.g. missing mandatory data).'],
         ],
@@ -718,8 +718,8 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'table',
         headers: ['When you see this…', 'Do this'],
         rows: [
-          ['A satisfactory cert with optional items noted', 'Press Optional remedial. It runs the same branch as a required remedial (quote → landlord approval → repeat visit), but the passing cert is saved to file since the property is already compliant. Don\u2019t redirect it into the required path.'],
-          ['A CP12 where every appliance is \u201CSafe to use: YES\u201D', 'No safety failure \u2014 it passes with any items noted. Still read the notes and judge each remedial required vs optional; \u201Csafe to use\u201D doesn\u2019t make them automatically elective.'],
+          ['A satisfactory cert with recommended items noted', 'Press Recommended remedial. It runs the same branch as a required remedial (quote → landlord approval → repeat visit), but the passing cert is saved to file since the property is already compliant. Don\u2019t redirect it into the required path.'],
+          ['A CP12 where every appliance is \u201CSafe to use: YES\u201D', 'No safety failure \u2014 it passes with any items noted. Still read the notes and judge each remedial required vs recommended; \u201Csafe to use\u201D doesn\u2019t make them automatically elective.'],
           ['The AI has flagged the address', 'Just a hint to look, not an error to fix. Common trigger: a handwritten certificate.'],
           ['A cert for the wrong property', 'Two actions: upload it to the property it belongs to (CRM 1 \u2192 File Manager), and request the correct cert for this job.'],
           ['A landlord going quiet on an EPC', 'Silence doesn\u2019t block it — at +4 days the job auto-advances and the system assigns a provider, so the renewal proceeds. We keep the EPC in date rather than let it lapse.'],
@@ -742,7 +742,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
           ['You spot a problem with a cert (wrong date/address)', 'Invalid certificate.'],
           ['A new cert arrived that the agent didn\u2019t recognise', 'Upload another certificate.'],
           ['Faults that must be fixed for compliance', 'Need required remedial (mandatory remedial branch).'],
-          ['A satisfactory cert with C3 / optional items only', 'Optional remedial — same path as a required remedial, but the satisfactory cert is saved to file.'],
+          ['A satisfactory cert with C3 / recommended items only', 'Recommended remedial — same path as a required remedial, but the satisfactory cert is saved to file.'],
           ['A closed job gets a thank-you or unrelated email', 'Provide Instructions (\u201Cdo nothing\u201D) — but it\u2019s admin-only, so consult an admin first.'],
         ],
       },
@@ -859,12 +859,12 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
 
       { type: 'heading', text: 'Certificates & remedials' },
       { type: 'faq', faqs: [
-        { q: 'How do I judge a CP12 that never says \u201Csatisfactory\u201D?', a: 'A gas certificate categorises each appliance rather than giving the whole document a pass/fail stamp \u2014 treat a clean one as \u201Cpassed, with any noted recommendations\u201D. Read the \u201CSafe to use\u201D column: if every appliance is YES there\u2019s no safety failure forcing a required remedial, but read the engineer\u2019s notes and judge each remedial (required vs optional) on its merits rather than assuming \u201Csafe to use\u201D makes it elective.' },
-        { q: 'Which remedial type do I choose on a certificate?', a: 'When a cert carries remedials, pick the right type \u2014 required vs optional (C3) \u2014 before moving the job on. The type drives which comms go out and which downstream workflow the job follows, so the wrong choice sends the landlord the wrong message. Read the cert in full before you select.' },
-        { q: 'What happens when I press Optional remedial on a satisfactory cert?', a: 'The job runs the same remedial branch as a required remedial — Quotation awaiting → Quotation review → Landlord quote approval → repeat visit — all within CRM 2.0. The difference is that the already-satisfactory certificate is saved to file, because the property stays compliant whether or not the optional works go ahead.' },
-        { q: 'Do optional remedials still create a maintenance job in CRM 1.0?', a: 'No \u2014 not any more. Optional remedials now follow the same in-CRM-2.0 remedial branch as required ones; there\u2019s no hand-off to a CRM 1.0 maintenance job, and you don\u2019t send the landlord a separate comms email yourself.' },
-        { q: 'Can I undo remedials I\u2019ve already marked as required?', a: 'Not in-product \u2014 once remedials are marked required and the job moves to quotation stage there\u2019s no route back, and Take Over won\u2019t reverse it. Get the required-vs-optional call right up front, as it\u2019s currently one-way; if you\u2019re genuinely stuck, ask the product team to close the job.' },
-        { q: 'I pressed the wrong remedial button \u2014 how do I recover?', a: 'Both buttons now send the job down the same remedial branch (quote → landlord approval → repeat visit), so a wrong press doesn\u2019t split the job across systems. The practical difference is whether the passing cert was saved to file, so get the required-vs-optional call right up front \u2014 it\u2019s currently one-way. If you truly picked the wrong one, ask ops to correct the job rather than trying to reverse it yourself.' },
+        { q: 'How do I judge a CP12 that never says \u201Csatisfactory\u201D?', a: 'A gas certificate categorises each appliance rather than giving the whole document a pass/fail stamp \u2014 treat a clean one as \u201Cpassed, with any noted recommendations\u201D. Read the \u201CSafe to use\u201D column: if every appliance is YES there\u2019s no safety failure forcing a required remedial, but read the engineer\u2019s notes and judge each remedial (required vs recommended) on its merits rather than assuming \u201Csafe to use\u201D makes it elective.' },
+        { q: 'Which remedial type do I choose on a certificate?', a: 'When a cert carries remedials, pick the right type \u2014 required vs recommended (C3) \u2014 before moving the job on. The type drives which comms go out and which downstream workflow the job follows, so the wrong choice sends the landlord the wrong message. Read the cert in full before you select.' },
+        { q: 'What happens when I press Recommended remedial on a satisfactory cert?', a: 'The job runs the same remedial branch as a required remedial — Quotation awaiting → Quotation review → Landlord quote approval → repeat visit — all within CRM 2.0. The difference is that the already-satisfactory certificate is saved to file, because the property stays compliant whether or not the recommended works go ahead.' },
+        { q: 'Do recommended remedials still create a maintenance job in CRM 1.0?', a: 'No \u2014 not any more. Recommended remedials now follow the same in-CRM-2.0 remedial branch as required ones; there\u2019s no hand-off to a CRM 1.0 maintenance job, and you don\u2019t send the landlord a separate comms email yourself.' },
+        { q: 'Can I undo remedials I\u2019ve already marked as required?', a: 'Not in-product \u2014 once remedials are marked required and the job moves to quotation stage there\u2019s no route back, and Take Over won\u2019t reverse it. Get the required-vs-recommended call right up front, as it\u2019s currently one-way; if you\u2019re genuinely stuck, ask the product team to close the job.' },
+        { q: 'I pressed the wrong remedial button \u2014 how do I recover?', a: 'Both buttons now send the job down the same remedial branch (quote → landlord approval → repeat visit), so a wrong press doesn\u2019t split the job across systems. The practical difference is whether the passing cert was saved to file, so get the required-vs-recommended call right up front \u2014 it\u2019s currently one-way. If you truly picked the wrong one, ask ops to correct the job rather than trying to reverse it yourself.' },
         { q: 'The cert was corrected after remedials were raised \u2014 how do I fix it?', a: 'If a job has gone down the remedial flow and the provider then confirms no remedial was needed (e.g. a wrongly completed cert that\u2019s since been re-issued), there\u2019s no easy way back to certificate review once the invoice is approved. Upload the correct certificate manually (CRM 1.0 file manager / property page), then ask ops to cancel the 2.0 job.' },
         { q: 'The landlord did the remedials themselves \u2014 what now?', a: 'Use \u201Cswitch back to us\u201D. A fresh certificate isn\u2019t automatically needed: if the original cert is satisfactory, what you need is proof the landlord did the work (e.g. photos or a receipt for replaced smoke alarms) stored on the job. Check with the provider before assuming they\u2019ll re-issue or re-charge.' },
         { q: 'A provider re-sent a document I\u2019ve already processed \u2014 do I upload it again?', a: 'No. Re-uploading a certificate or invoice that 2.0 has already processed pushes the job back to document review and can re-trigger comms to the provider, even after the job has moved on to remedials. Ignore duplicate sends. There\u2019s no guardrail against this yet, so it\u2019s on the operator to catch \u2014 and if it\u2019s already happened, call the provider to disregard the last emails and ask ops to revert the job to the right stage.' },
