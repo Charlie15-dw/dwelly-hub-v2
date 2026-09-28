@@ -249,8 +249,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'steps', items: [
         'Click \u201CProceed with another provider\u201D.',
         'If they\u2019re not on the preferred list, check the provider panel at panel.dwelly.team/dw-admin/html/pm-providers.',
-        'They may also be on the list of providers onboarded for a specific agency — if so, reach out to Dylan.',
-        'If they\u2019re not on any list, ask the relevant PMs for feedback, then send the provider to Veronica first — she\u2019ll make sure they\u2019re onboarded properly, following the onboarding SOP.',
+        'If they\u2019re not on the list, reach out to your TL so they can onboard the desired SP for you.',
       ]},
       { type: 'image', src: '/crm2/provider-picker.png', text: 'Selecting an alternative provider via \u201CProceed with another provider\u201D.' },
 
@@ -266,14 +265,16 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'image', src: '/crm2/buttons-scheduling.png', text: 'The Scheduling-stage action buttons.' },
 
       { type: 'heading', text: 'Add Direct Info' },
-      { type: 'paragraph', text: 'Use this to pass on information you received from one party to the other. Write it as if you are the party you got it from — whatever you type is sent on in full. If the engineer says he can do 11 August at 2pm, you write \u201C11th August 2026 at 2pm\u201D, not an internal note about it.' },
-      { type: 'image', src: '/crm2/adi-example.png', text: 'Add Direct Info — worked example (request 585).' },
+      { type: 'paragraph', text: 'Use this to pass on something a party gave you outside the system — a proposed date, their availability, or a document. Pick the source it came from (Landlord, Tenant or Service Provider) and the agent treats what you enter as if that party had sent it in directly, so write it in their voice. If the tenant says they can do 11 August at 2pm, you write \u201C11th August 2026 at 2pm\u201D, not an internal note about it.' },
       { type: 'image', src: '/crm2/adi-panel.png', text: 'The Add Direct Info panel.' },
+      { type: 'subheading', text: 'When to use it' },
       { type: 'bullets', items: [
-        'Pick the source it came from — Landlord, Tenant or Service Provider. The agent treats what you enter as if that party had sent it in directly.',
-        'Common case: a tenant who wasn\u2019t replying to Scheduling emails gives you their availability on a call — add it here as From Tenant. No need to write the full message; just enter the proposed dates and the agent does the rest.',
-        'It now supports attachments — useful when a document (e.g. an EICR) arrives outside the normal email flow, such as via Slack. Choose From Provider, add a short note, attach up to 10 files and submit; the agent processes it as if it had received the document itself, so there\u2019s no need to take over just to upload a file.',
+        'A tenant who went quiet on Scheduling gives you their availability on a call — source Tenant, just enter the proposed dates. No need to write a full message; the agent does the rest.',
+        'A provider sends you new dates outside the system — source Service Provider, add the dates as a short note.',
+        'A provider sends a document (e.g. an EICR) outside the normal email flow, such as via Slack — source Service Provider, add a short note, attach up to 10 files and submit. The agent processes it as if it had received the document itself, so there\u2019s no need to take over just to upload a file.',
+        'The landlord books the visit in themselves (DIY) — source Landlord, message \u201Cthis has been booked for [date]\u201D. Two things follow: the landlord gets an email, and the visit date appears in the top-right with its reminders adjusted.',
       ]},
+      { type: 'callout', variant: 'warning', text: 'Add Direct Info needs something actionable to move the job on — a proposed date, availability, or a document. A note about what you did, with no dates in it (e.g. \u201CBoth tenants didn\u2019t answer; left a voicemail asking for a call back\u201D), doesn\u2019t progress anything; it just lands back with you as a fresh escalation. Relay the actual dates or file, and log anything else another way.' },
 
       { type: 'heading', text: 'Add Direct Info vs Set Visit Date' },
       { type: 'callout', variant: 'tip', text: 'Rule of thumb: Direct Info = passing on information you received. Set Visit Date = recording an appointment both sides have already agreed.' },
@@ -283,14 +284,27 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Date and time are both required — enter the agreed date, then the time.',
         'Time note (optional): use it for a window rather than an exact time — \u201C9\u201312\u201D, \u201Cin the morning\u201D, \u201C8\u201310 AM\u201D, \u201Cafter 5 PM\u201D. A time note overrides the exact time field, so reach for it whenever the slot is a range.',
         'Notes like \u201Cwith keys\u201D must sit alongside a time note, never on their own — a note with no time leaves the job with no visit time at all.',
-        'Relative times the AI won\u2019t accept: if a provider or tenant says \u201Cmorning\u201D, the system won\u2019t treat it as a confirmation. Set the visit date manually rather than waiting for an exact time — put the window in the time note (e.g. \u201Cin the morning\u201D), or treat morning as 8am–12pm.',
         'Tenant reschedules out-of-band (e.g. emails us directly): it arrives as an escalation. Just Set Visit Date to the agreed new slot — replying to the tenant won\u2019t break the automated flow, and no special handling is needed.',
       ]},
 
       { type: 'heading', text: 'Chasing the tenant & provider' },
-      { type: 'paragraph', text: 'When a side goes quiet at Scheduling, chase by phone first, then a confirming email. Never give out direct phone numbers between tenant, landlord and provider — we\u2019re only allowed to share masked ones.' },
-      { type: 'image', src: '/crm2/chase-tenant.png', text: 'Chasing the tenant (more edge cases in the SOPs).' },
-      { type: 'image', src: '/crm2/chase-provider.png', text: 'Chasing the provider (more edge cases in the SOPs).' },
+      { type: 'paragraph', text: 'When a side goes quiet at Scheduling, chase by phone first, then a confirming email. Never give out direct phone numbers between tenant, landlord and provider — we\u2019re only allowed to share masked ones. Once a job is escalated or flagged to you, follow these SOPs exactly.' },
+      { type: 'subheading', text: 'Tenant not responding' },
+      { type: 'callout', variant: 'warning', text: 'We\u2019re not allowed to force-book any appointment (unless there\u2019s a court order). Once the job is escalated or flagged, call the tenant first, then work the ladder below.' },
+      { type: 'steps', items: [
+        'First escalation: if there\u2019s no reply, leave a voice message and send a follow-up email, then click Wait for Response \u2192 3 days. If there\u2019s still no response, repeat that step once. If the tenant does respond, use Add Direct Info to add their dates to the system.',
+        'Second escalation: if there\u2019s no response after the second attempt, send a WhatsApp message, add a note in the job (\u201CWhatsApp message sent\u201D) and Wait for Response \u2192 3 days.',
+        'If there\u2019s still no response, arrange a physical letter to be sent by mail requesting a call-back to the agency.',
+        'If there\u2019s no further response within a week of sending the letter, arrange for a property specialist / PM to visit the property and speak to the tenant.',
+        'Notify the tenant with notice in accordance with the tenancy agreement: if they comply, proceed with the job; if they don\u2019t comply or reject the request at any point, go back to the escalation point.',
+      ]},
+      { type: 'callout', variant: 'important', text: 'This isn\u2019t a recommendation — it\u2019s a strict rule. Follow these exact steps.' },
+      { type: 'subheading', text: 'Contractor not responding' },
+      { type: 'steps', items: [
+        '1st PM escalation: call the contractor, then place the job on hold for one business day.',
+        '2nd PM escalation: change the contractor, then use Add Direct Info to input the previous dates the tenant suggested (as long as they haven\u2019t lapsed).',
+      ]},
+      { type: 'callout', variant: 'tip', text: 'If you realise you need to reassign a substantial number of jobs away from one specific contractor, run it through your TL first before doing it in bulk.' },
 
       { type: 'heading', text: 'Provide Instructions (admin-only)' },
       { type: 'callout', variant: 'warning', text: 'Never use Provide Instructions unless you\u2019ve consulted an admin. It\u2019s now admin-only, along with Reassign Job and Cancel Job — operators still see the button but will be asked to contact an admin. The main accepted case is a job that\u2019s already closed and someone sends a thank-you or an unrelated email, where the instruction is simply \u201Cdo nothing\u201D.' },
@@ -315,7 +329,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     content: [
       { type: 'callout', variant: 'info', text: 'New: rescheduling is now built in for jobs already at the Visit or Result awaiting stage. Previously this needed a manual take-over.' },
       { type: 'image', src: '/crm2/visit-jobcard.png', text: 'A job at the Visit stage.' },
-      { type: 'paragraph', text: 'From Visit (and Result awaiting) you have two direct rescheduling actions — the right one depends on whether a new time has already been agreed.' },
+      { type: 'paragraph', text: 'You no longer need to call the provider, tenant or landlord to move a visit unless it\u2019s genuinely urgent — the agent can reschedule any visit for you. From Visit (and Result awaiting) you have two direct rescheduling actions, and the right one depends on whether a new time has already been agreed.' },
       { type: 'image', src: '/crm2/buttons-visit.png', text: 'The two rescheduling actions: Reset Visit Date and Restart Scheduling.',
         hotspots: [
           { x: 4.75, y: 50, label: 'Set New Visit Date', detail: 'Use when a new time is already agreed by both sides — it updates the booking and notifies both automatically.' },
@@ -330,7 +344,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'image', src: '/crm2/reset-visit-example.png', text: 'Reset Visit Date — worked example.' },
 
       { type: 'heading', text: 'Restart Scheduling' },
-      { type: 'paragraph', text: 'Use this when a new appointment hasn\u2019t been agreed yet. You choose whether to restart with the tenant or the provider, and you write the opening message so the context carries over — for example, \u201Ccan\u2019t do tomorrow, next Monday works\u201D. The other party is told the original is cancelled and a new one is being arranged.' },
+      { type: 'paragraph', text: 'Use this when a new appointment hasn\u2019t been agreed yet. It drops the current visit date and restarts the negotiation: you choose whether to restart with the tenant or the provider, and you write the opening message so the context carries over — for example, \u201Ccan\u2019t do tomorrow, next Monday works\u201D. The chosen party gets an availability request quoting your message, and the other party is asked to stand by.' },
       { type: 'callout', variant: 'tip', text: 'Dates you put in your message are recognised and used through the flow — so a natural message like \u201Cnext Monday works\u201D is enough to move things along, and they\u2019re quoted verbatim at the end of the email too.' },
 
       { type: 'heading', text: 'Always record the date in the system' },
