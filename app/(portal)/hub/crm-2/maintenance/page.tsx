@@ -1,14 +1,21 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Wrench } from 'lucide-react'
+import {
+  ArrowLeft, ChevronRight, Wrench, Clock, BookOpen, Target,
+} from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { canAccessCrm2 } from '@/lib/crm2-access'
 import { isMaintenancePreview } from '@/lib/preview'
+import {
+  MAINTENANCE_PILLARS, MAINTENANCE_GUIDE_COUNT, MAINTENANCE_GUIDE_MINUTES,
+  getMaintenanceGuideNumber, getMaintenanceGuides,
+} from '@/lib/crm2-maintenance-content'
+import GuideRow from '@/components/crm2/GuideRow'
 
 // CRM 2.0 → Maintenance. The sibling track to Compliance, reached from the 2.0
-// tab chooser. It's an empty shell for now — the guides and video links get
-// dropped in here once the content is ready. Gated to the same preview
-// allow-list as the rest of the split.
+// tab chooser. Lists the maintenance guides grouped by pillar, in the same style
+// as the compliance landing — minus the progress / certificate machinery, which
+// is compliance-only. Gated to the same preview allow-list as the split.
 export default async function Crm2MaintenancePage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -32,27 +39,68 @@ export default async function Crm2MaintenancePage() {
         <div>
           <h1 className="text-[26px] font-bold text-navy leading-tight tracking-tight">Maintenance</h1>
           <p className="text-[14px] text-[var(--text-secondary)] mt-1 leading-relaxed">
-            The maintenance side of CRM 2.0 — it runs the same agent-led way as compliance.
+            Run a repair end to end the agent-led way — {MAINTENANCE_GUIDE_COUNT} guides across the ten stages.
           </p>
         </div>
       </header>
 
-      <div className="card p-10 text-center">
-        <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-5 bg-navy-50 text-navy">
-          <Wrench className="w-7 h-7" aria-hidden />
-        </div>
-        <h2 className="text-lg font-bold text-navy mb-2">Guides coming soon</h2>
-        <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed">
-          The maintenance guides and video walkthroughs will live here. If you&rsquo;re not sure
-          how the flow works yet, the shared overview covers both tracks.
-        </p>
-        <Link
-          href="/hub/crm-2/getting-started"
-          className="mt-6 btn-primary inline-flex items-center gap-2"
-        >
-          How CRM 2.0 works
-        </Link>
+      {/* At-a-glance — the shape of the track */}
+      <div className="card p-5 flex items-center gap-6 flex-wrap">
+        <span className="flex items-center gap-2.5 text-[14px] text-navy-800">
+          <BookOpen className="w-4 h-4 text-orange" aria-hidden />
+          <span className="font-semibold">{MAINTENANCE_GUIDE_COUNT}</span> guides
+        </span>
+        <span className="hidden sm:block w-px h-4 bg-navy-100" aria-hidden />
+        <span className="flex items-center gap-2.5 text-[14px] text-navy-800">
+          <Clock className="w-4 h-4 text-orange" aria-hidden />
+          <span className="font-semibold">{MAINTENANCE_GUIDE_MINUTES}</span> min end to end
+        </span>
+        <span className="hidden sm:block w-px h-4 bg-navy-100" aria-hidden />
+        <span className="flex items-center gap-2.5 text-[14px] text-navy-800">
+          <Target className="w-4 h-4 text-orange" aria-hidden />
+          <span className="font-semibold">3</span> human checkpoints
+        </span>
       </div>
+
+      {/* The guides, as one row group per pillar. */}
+      {MAINTENANCE_PILLARS.map(({ id, label, description }, pillarIndex) => {
+        const guides = getMaintenanceGuides(id)
+        if (guides.length === 0) return null
+        const minutes = guides.reduce((s, g) => s + g.minutes, 0)
+        return (
+          <section key={id} className="card overflow-hidden">
+            <div className="px-5 py-4 border-b border-navy-100 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <span className="w-9 h-9 rounded-xl bg-navy text-white flex items-center justify-center text-[15px] font-bold tabular-nums flex-shrink-0">
+                  {pillarIndex + 1}
+                </span>
+                <div className="min-w-0">
+                  <h2 className="text-[16px] font-bold text-navy leading-tight">{label}</h2>
+                  <p className="text-[13px] text-[var(--text-secondary)] mt-0.5 leading-snug">{description}</p>
+                </div>
+              </div>
+              <span className="text-[12.5px] font-medium text-[var(--text-secondary)] tabular-nums whitespace-nowrap flex-shrink-0">
+                {minutes} min · {guides.length} guides
+              </span>
+            </div>
+            <div>
+              {guides.map((g) => (
+                <GuideRow
+                  key={g.slug}
+                  slug={g.slug}
+                  href={`/hub/crm-2/maintenance/${g.slug}`}
+                  number={getMaintenanceGuideNumber(g.slug) ?? 0}
+                  title={g.title}
+                  summary={g.summary}
+                  minutes={g.minutes}
+                  read={false}
+                  inProgress={false}
+                />
+              ))}
+            </div>
+          </section>
+        )
+      })}
     </div>
   )
 }

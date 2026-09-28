@@ -17,6 +17,7 @@ export default function GuideRow({
   minutes,
   read,
   inProgress,
+  href,
 }: {
   slug: string
   number: number
@@ -25,10 +26,11 @@ export default function GuideRow({
   minutes: number
   read: boolean
   inProgress: boolean
+  href?: string
 }) {
   return (
     <Link
-      href={`/hub/crm-2/${slug}`}
+      href={href ?? `/hub/crm-2/${slug}`}
       className={cn(
         'flex items-center gap-4 pr-5 py-4 border-b border-navy-100 last:border-b-0 border-l-[3px] transition-colors',
         read ? 'bg-[#FAFAFB]' : 'hover:bg-navy-50/60',
