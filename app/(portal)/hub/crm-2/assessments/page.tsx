@@ -1,12 +1,13 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ClipboardCheck, ChevronRight, Trophy, CheckCircle2, XCircle, RotateCcw, ShieldCheck, Wrench } from 'lucide-react'
+import { ArrowLeft, Trophy, CheckCircle2 } from 'lucide-react'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { canAccessCrm2 } from '@/lib/crm2-access'
 import { isMaintenancePreview } from '@/lib/preview'
 import { CRM2_LESSONS, CRM2_PILLARS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE, type Crm2Lesson, type Crm2Pillar } from '@/lib/crm2-content'
 import { MAINTENANCE_LESSONS, MAINTENANCE_PILLARS } from '@/lib/crm2-maintenance-content'
 import { QUIZ_QUESTIONS } from '@/lib/data'
+import AssessmentTracks, { type AssessmentTrack } from '@/components/crm2/AssessmentTracks'
 
 // A dedicated home for the CRM 2.0 knowledge checks. Lists every lesson that
 // has a quiz, grouped by pillar, so the team can test themselves without
@@ -35,11 +36,14 @@ export default async function Crm2AssessmentsPage() {
       ? CRM2_CAPSTONE_SAMPLE
       : QUIZ_QUESTIONS.filter((q) => q.moduleId === moduleId).length
 
-  // The two tracks, each grouped by its own pillars. Rendered identically below.
-  const tracks: { key: string; label: string; icon: typeof ShieldCheck; pillars: { id: Crm2Pillar; label: string }[]; lessons: Crm2Lesson[] }[] = [
-    { key: 'compliance', label: 'Compliance', icon: ShieldCheck, pillars: CRM2_PILLARS, lessons: complianceLessons },
+  // The two tracks, each grouped by its own pillars. Turned into serializable
+  // data for the client tab component further down. The two tracks never share a
+  // question pool — the maintenance checks are drawn solely from the maintenance
+  // guides.
+  const trackDefs: { key: string; label: string; icon: 'shield' | 'wrench'; pillars: { id: Crm2Pillar; label: string }[]; lessons: Crm2Lesson[] }[] = [
+    { key: 'compliance', label: 'Compliance', icon: 'shield', pillars: CRM2_PILLARS, lessons: complianceLessons },
     ...(showMaintenance
-      ? [{ key: 'maintenance', label: 'Maintenance', icon: Wrench, pillars: MAINTENANCE_PILLARS, lessons: maintenanceLessons }]
+      ? [{ key: 'maintenance' as const, label: 'Maintenance', icon: 'wrench' as const, pillars: MAINTENANCE_PILLARS, lessons: maintenanceLessons }]
       : []),
   ]
 
@@ -93,6 +97,32 @@ export default async function Crm2AssessmentsPage() {
   const passedCount = passed.size
   const totalQuizzes = quizModuleIds.length
   const passedPct = totalQuizzes > 0 ? Math.round((passedCount / totalQuizzes) * 100) : 0
+
+  // Fold the results into plain, serializable data for the client tab component —
+  // each card carries its precomputed state so the client stays presentational.
+  const trackData: AssessmentTrack[] = trackDefs
+    .filter((t) => t.lessons.length > 0)
+    .map((t) => ({
+      key: t.key,
+      label: t.label,
+      icon: t.icon,
+      pillars: t.pillars.map(({ id, label }) => ({ id, label })),
+      cards: t.lessons.map((lesson) => {
+        const moduleId = lesson.quizModuleId!
+        const isPassed = passed.has(moduleId)
+        const isGranted = !isPassed && retakeGranted.has(moduleId)
+        const isFailed = !isPassed && !isGranted && attempted.has(moduleId)
+        return {
+          slug: lesson.slug,
+          quizModuleId: moduleId,
+          title: lesson.title,
+          pillarId: lesson.pillar,
+          questionCount: questionCount(moduleId),
+          state: (isPassed ? 'passed' : isGranted ? 'granted' : isFailed ? 'failed' : 'new') as AssessmentTrack['cards'][number]['state'],
+          score: bestScore.get(moduleId),
+        }
+      }),
+    }))
 
   return (
     <div className="space-y-8 hub-fade">
@@ -150,99 +180,9 @@ export default async function Crm2AssessmentsPage() {
         </div>
       </div>
 
-      {/* One block per track (Compliance, then Maintenance for preview users),
-          each grouped by its own pillars. The two tracks never share a question
-          pool — the maintenance checks are drawn solely from the maintenance
-          guides. */}
-      {tracks.map((track) => {
-        const trackLessons = track.lessons
-        if (trackLessons.length === 0) return null
-        const TrackIcon = track.icon
-        return (
-          <section key={track.key} className="space-y-5">
-            <div className="flex items-center gap-3 border-b border-navy-100 pb-3">
-              <span className="w-9 h-9 rounded-xl bg-navy text-white flex items-center justify-center flex-shrink-0">
-                <TrackIcon className="w-5 h-5" aria-hidden />
-              </span>
-              <h2 className="text-[18px] font-bold text-navy">{track.label}</h2>
-              <span className="text-[12.5px] text-[var(--text-secondary)] tabular-nums">
-                {trackLessons.length} {trackLessons.length === 1 ? 'check' : 'checks'}
-              </span>
-            </div>
-
-            {track.pillars.map(({ id, label }) => {
-              const lessons = trackLessons.filter((l) => l.pillar === id)
-              if (lessons.length === 0) return null
-              return (
-                <div key={id} className="space-y-3">
-                  <h3 className="text-[12px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]">{label}</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {lessons.map((lesson) => {
-                const isPassed = passed.has(lesson.quizModuleId!)
-                const isGranted = !isPassed && retakeGranted.has(lesson.quizModuleId!)
-                const isFailed = !isPassed && !isGranted && attempted.has(lesson.quizModuleId!)
-                const score = bestScore.get(lesson.quizModuleId!)
-                return (
-                  <Link
-                    key={lesson.slug}
-                    href={`/quiz/${lesson.quizModuleId}`}
-                    className="card card-hover p-5 flex items-center gap-4 group"
-                  >
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${isPassed ? 'rag-green' : isFailed ? 'rag-red' : 'bg-orange/10 text-orange'}`}>
-                      {isPassed
-                        ? <CheckCircle2 className="w-5 h-5" aria-hidden />
-                        : isFailed
-                          ? <XCircle className="w-5 h-5" aria-hidden />
-                          : isGranted
-                            ? <RotateCcw className="w-5 h-5" aria-hidden />
-                            : <ClipboardCheck className="w-5 h-5" aria-hidden />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-bold text-navy truncate">{lesson.title}</p>
-                      <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">
-                        {questionCount(lesson.quizModuleId!)} questions · 80% to pass
-                      </p>
-                    </div>
-                    {isPassed ? (
-                      <span className="hidden sm:inline-flex items-center gap-1 text-[12px] font-semibold rag-green rounded-full px-2.5 py-1 flex-shrink-0">
-                        <CheckCircle2 className="w-3.5 h-3.5" aria-hidden />
-                        Passed{score !== undefined ? ` · ${score}%` : ''}
-                      </span>
-                    ) : isGranted ? (
-                      <span className="hidden sm:inline-flex items-center gap-2 flex-shrink-0">
-                        <span className="inline-flex items-center gap-1 text-[12px] font-semibold rag-amber rounded-full px-2.5 py-1">
-                          <RotateCcw className="w-3.5 h-3.5" aria-hidden />
-                          Retake granted
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-[14px] font-semibold text-orange group-hover:gap-2 transition-all">
-                          Retake <ChevronRight className="w-4 h-4" aria-hidden />
-                        </span>
-                      </span>
-                    ) : isFailed ? (
-                      <span className="hidden sm:inline-flex items-center gap-2 flex-shrink-0">
-                        <span className="inline-flex items-center gap-1 text-[12px] font-semibold rag-red rounded-full px-2.5 py-1">
-                          <XCircle className="w-3.5 h-3.5" aria-hidden />
-                          Failed{score !== undefined ? ` · ${score}%` : ''}
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-[14px] font-semibold text-orange group-hover:gap-2 transition-all">
-                          Retake <ChevronRight className="w-4 h-4" aria-hidden />
-                        </span>
-                      </span>
-                    ) : (
-                      <span className="hidden sm:inline-flex items-center gap-1 text-[14px] font-semibold text-orange flex-shrink-0 group-hover:gap-2 transition-all">
-                        Start <ChevronRight className="w-4 h-4" aria-hidden />
-                      </span>
-                    )}
-                  </Link>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })}
-          </section>
-        )
-      })}
+      {/* The checks themselves — Compliance and Maintenance (preview only) as
+          tabs, each grouped by its own pillars. */}
+      <AssessmentTracks tracks={trackData} />
     </div>
   )
 }
