@@ -101,6 +101,23 @@ export default async function Crm2MaintenancePage() {
           </section>
         )
       })}
+
+      {/* Prove it — the maintenance knowledge checks live in the shared
+          assessments home, alongside the compliance ones. */}
+      <Link href="/hub/crm-2/assessments" className="card card-hover p-5 flex items-center gap-4 group">
+        <span className="w-11 h-11 rounded-xl bg-orange/10 text-orange flex items-center justify-center flex-shrink-0">
+          <Target className="w-5 h-5" aria-hidden />
+        </span>
+        <div className="flex-1 min-w-0">
+          <p className="text-[15px] font-bold text-navy">Test yourself</p>
+          <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">
+            Short knowledge checks on the maintenance guides — 80% to pass, retake as often as you like.
+          </p>
+        </div>
+        <span className="hidden sm:inline-flex items-center gap-1 text-[14px] font-semibold text-orange flex-shrink-0 group-hover:gap-2 transition-all">
+          Open <ChevronRight className="w-4 h-4" aria-hidden />
+        </span>
+      </Link>
     </div>
   )
 }

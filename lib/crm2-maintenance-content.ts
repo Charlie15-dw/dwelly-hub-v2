@@ -44,6 +44,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
     pillar: 'orientate',
     kind: 'guide',
     minutes: 6,
+    quizModuleId: 'crm2-maint-how-it-works',
     content: [
       { type: 'heading', text: 'One agent runs the repair, you make three calls' },
       { type: 'paragraph', text: 'A maintenance request is a single repair job \u2014 a leak, a broken boiler, a blocked drain \u2014 that runs from the tenant\u2019s first report all the way to the provider being paid. An AI agent runs the routine end to end: it acknowledges the tenant, chases the landlord, brokers the visit and waits for the invoice. You, the operator, step in at the handful of points that need human judgement.' },
@@ -96,6 +97,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
     pillar: 'features',
     kind: 'guide',
     minutes: 6,
+    quizModuleId: 'crm2-maint-triage',
     content: [
       { type: 'heading', text: 'The aim' },
       { type: 'paragraph', text: 'The tenant has just reported a problem, usually with photos. Before anyone asks the landlord for money or calls a contractor, a human makes sure the information is good enough and tidies it up. This is an operator checkpoint \u2014 the agent decides nothing here.' },
@@ -136,6 +138,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
     pillar: 'features',
     kind: 'guide',
     minutes: 7,
+    quizModuleId: 'crm2-maint-writing',
     content: [
       { type: 'heading', text: 'Why this matters' },
       { type: 'paragraph', text: 'The header and description are not internal notes. The provider quotes from them, the landlord approves from them, and the tenant is told what\u2019s happening from them. If the job doesn\u2019t read properly, someone has to stop and ask \u2014 and the job stops moving while they do. A review of 534 real maintenance jobs found a quarter still carried the tenant-portal Q&A dump, a quarter still had template text left in, and dozens had headers that were just a service name.' },
@@ -230,6 +233,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
     pillar: 'features',
     kind: 'guide',
     minutes: 4,
+    quizModuleId: 'crm2-maint-provider',
     content: [
       { type: 'heading', text: 'The aim' },
       { type: 'paragraph', text: 'Choose the contractor. In the maintenance flow this is never automatic \u2014 the agent does not assign providers. The system only pre-fills the service it classified after triage; the choice of firm is always yours.' },
@@ -258,6 +262,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
     pillar: 'features',
     kind: 'guide',
     minutes: 8,
+    quizModuleId: 'crm2-maint-quoting',
     content: [
       { type: 'heading', text: 'The aim' },
       { type: 'paragraph', text: 'Get a price out of the assigned provider without anyone travelling \u2014 on the strength of the description and the photos alone. This is the busiest stage in the flow, and the pattern for reading every other one.' },
@@ -362,6 +367,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
     pillar: 'features',
     kind: 'guide',
     minutes: 6,
+    quizModuleId: 'crm2-maint-invoice',
     content: [
       { type: 'heading', text: 'Result awaiting: the aim' },
       { type: 'paragraph', text: 'The visit has happened \u2014 collect its result: an invoice for the work done, a quotation if further works were found, or both. In one line: get the documents out of the contractor.' },
@@ -447,6 +453,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
     pillar: 'operate',
     kind: 'guide',
     minutes: 6,
+    quizModuleId: 'crm2-maint-branches',
     content: [
       { type: 'heading', text: 'Landlord DIY' },
       { type: 'paragraph', text: 'The landlord organises the works with his own tradesman. We order nothing and wait for confirmation it\u2019s done. It\u2019s auto-routed whenever the landlord says he\u2019ll handle it, has ordered a part, is using his own handyman, or the item is under warranty.' },

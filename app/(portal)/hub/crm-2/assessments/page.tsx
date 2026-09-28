@@ -1,9 +1,11 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ClipboardCheck, ChevronRight, Trophy, CheckCircle2, XCircle, RotateCcw } from 'lucide-react'
+import { ArrowLeft, ClipboardCheck, ChevronRight, Trophy, CheckCircle2, XCircle, RotateCcw, ShieldCheck, Wrench } from 'lucide-react'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { canAccessCrm2 } from '@/lib/crm2-access'
-import { CRM2_LESSONS, CRM2_PILLARS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/lib/crm2-content'
+import { isMaintenancePreview } from '@/lib/preview'
+import { CRM2_LESSONS, CRM2_PILLARS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE, type Crm2Lesson, type Crm2Pillar } from '@/lib/crm2-content'
+import { MAINTENANCE_LESSONS, MAINTENANCE_PILLARS } from '@/lib/crm2-maintenance-content'
 import { QUIZ_QUESTIONS } from '@/lib/data'
 
 // A dedicated home for the CRM 2.0 knowledge checks. Lists every lesson that
@@ -11,6 +13,10 @@ import { QUIZ_QUESTIONS } from '@/lib/data'
 // hunting through the lessons. Gated to the same allow-list as everything else
 // in the section. These quizzes are practice — freely retakeable, and they
 // don't feed the manager assessment dashboard.
+//
+// The page is split into two tracks — Compliance (everyone) and Maintenance
+// (preview only, and drawn solely from the maintenance guides). The two never
+// mix: separate question pools, separate module ids.
 
 export default async function Crm2AssessmentsPage() {
   const supabase = createServerClient()
@@ -18,15 +24,29 @@ export default async function Crm2AssessmentsPage() {
   if (!user) redirect('/')
   if (!(await canAccessCrm2(supabase, user))) redirect('/hub')
 
-  const quizLessons = CRM2_LESSONS.filter((l) => l.quizModuleId)
+  const showMaintenance = isMaintenancePreview(user.email)
+
+  const complianceLessons = CRM2_LESSONS.filter((l) => l.quizModuleId)
+  const maintenanceLessons = showMaintenance
+    ? MAINTENANCE_LESSONS.filter((l) => l.quizModuleId)
+    : []
   const questionCount = (moduleId: string) =>
     moduleId === CRM2_CAPSTONE_MODULE_ID
       ? CRM2_CAPSTONE_SAMPLE
       : QUIZ_QUESTIONS.filter((q) => q.moduleId === moduleId).length
 
+  // The two tracks, each grouped by its own pillars. Rendered identically below.
+  const tracks: { key: string; label: string; icon: typeof ShieldCheck; pillars: { id: Crm2Pillar; label: string }[]; lessons: Crm2Lesson[] }[] = [
+    { key: 'compliance', label: 'Compliance', icon: ShieldCheck, pillars: CRM2_PILLARS, lessons: complianceLessons },
+    ...(showMaintenance
+      ? [{ key: 'maintenance', label: 'Maintenance', icon: Wrench, pillars: MAINTENANCE_PILLARS, lessons: maintenanceLessons }]
+      : []),
+  ]
+
   // Pull this user's results so we can show how many they've passed (X of Y) and
   // mark the ones already completed. These are scored, locking assessments — a
   // pass is permanent once earned, so "ever passed" is the right measure.
+  const quizLessons = [...complianceLessons, ...maintenanceLessons]
   const quizModuleIds = quizLessons.map((l) => l.quizModuleId!)
   const { data: myResults } = quizModuleIds.length > 0
     ? await supabase
@@ -130,15 +150,34 @@ export default async function Crm2AssessmentsPage() {
         </div>
       </div>
 
-      {/* Assessments grouped by pillar */}
-      {CRM2_PILLARS.map(({ id, label }) => {
-        const lessons = quizLessons.filter((l) => l.pillar === id)
-        if (lessons.length === 0) return null
+      {/* One block per track (Compliance, then Maintenance for preview users),
+          each grouped by its own pillars. The two tracks never share a question
+          pool — the maintenance checks are drawn solely from the maintenance
+          guides. */}
+      {tracks.map((track) => {
+        const trackLessons = track.lessons
+        if (trackLessons.length === 0) return null
+        const TrackIcon = track.icon
         return (
-          <section key={id} className="space-y-3">
-            <h2 className="text-[12px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]">{label}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {lessons.map((lesson) => {
+          <section key={track.key} className="space-y-5">
+            <div className="flex items-center gap-3 border-b border-navy-100 pb-3">
+              <span className="w-9 h-9 rounded-xl bg-navy text-white flex items-center justify-center flex-shrink-0">
+                <TrackIcon className="w-5 h-5" aria-hidden />
+              </span>
+              <h2 className="text-[18px] font-bold text-navy">{track.label}</h2>
+              <span className="text-[12.5px] text-[var(--text-secondary)] tabular-nums">
+                {trackLessons.length} {trackLessons.length === 1 ? 'check' : 'checks'}
+              </span>
+            </div>
+
+            {track.pillars.map(({ id, label }) => {
+              const lessons = trackLessons.filter((l) => l.pillar === id)
+              if (lessons.length === 0) return null
+              return (
+                <div key={id} className="space-y-3">
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest text-[var(--text-secondary)]">{label}</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {lessons.map((lesson) => {
                 const isPassed = passed.has(lesson.quizModuleId!)
                 const isGranted = !isPassed && retakeGranted.has(lesson.quizModuleId!)
                 const isFailed = !isPassed && !isGranted && attempted.has(lesson.quizModuleId!)
@@ -195,9 +234,12 @@ export default async function Crm2AssessmentsPage() {
                       </span>
                     )}
                   </Link>
-                )
-              })}
-            </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
           </section>
         )
       })}

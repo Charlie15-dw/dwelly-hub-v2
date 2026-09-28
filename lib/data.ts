@@ -4131,6 +4131,453 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     rationale: 'Use the Job Notes tab for operational context (why we\'re waiting, special agreements) — it\'s for context, not communication history. Add your own via Send Communication → Add notes.',
   },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // CRM 2.0 — MAINTENANCE track. A separate set of knowledge checks drawn solely
+  // from the maintenance guides. These never mix with the compliance questions:
+  // different module ids (crm2-maint-*), different content.
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // crm2-maint-how-it-works
+  {
+    id: 'q-crm2-maint-hiw-1', moduleId: 'crm2-maint-how-it-works',
+    question: 'On a clean maintenance job, how many stages stop for a human decision?',
+    options: [
+      'One — only the invoice check',
+      'Three — tenant triage, provider selection, and the invoice check',
+      'Five — roughly every other stage',
+      'All ten — the operator confirms every stage',
+    ],
+    correct: 1,
+    rationale: 'The flow is ten stages, but on a clean job only three stop for you: you tidy the report at triage, you choose the provider, and you approve the invoice. Everything else is the agent\'s.',
+  },
+  {
+    id: 'q-crm2-maint-hiw-2', moduleId: 'crm2-maint-how-it-works',
+    question: 'What is the one big difference between the maintenance and compliance flows?',
+    options: [
+      'In maintenance there is no landlord approval step',
+      'In maintenance the agent never assigns the provider — that choice is always yours',
+      'In maintenance the agent checks the invoice for you',
+      'In maintenance there are no side branches',
+    ],
+    correct: 1,
+    rationale: 'The key difference to burn in: in maintenance the agent never assigns the provider. Provider selection is always a human choice in the picker.',
+  },
+  {
+    id: 'q-crm2-maint-hiw-3', moduleId: 'crm2-maint-how-it-works',
+    question: 'A request has no active task on it. What should you do before jumping in?',
+    options: [
+      'Take over immediately so nothing is missed',
+      'Check Planned Actions to see what the agent has already queued, and don\'t take over just to act early',
+      'Cancel and re-open the request to refresh it',
+      'Escalate it to your manager',
+    ],
+    correct: 1,
+    rationale: 'No active task usually means the agent is working or a party owes a reply. Check Planned Actions first — the agent may already have a chase queued — and don\'t take over just to act early.',
+  },
+  {
+    id: 'q-crm2-maint-hiw-4', moduleId: 'crm2-maint-how-it-works',
+    question: 'Which of these is NOT one of your three checkpoints on a maintenance job?',
+    options: ['Tenant triage', 'Provider selection', 'Scheduling', 'The invoice check'],
+    correct: 2,
+    rationale: 'Scheduling is the agent\'s — it brokers a slot between tenant and provider. Your three checkpoints are triage, provider selection and the invoice check.',
+  },
+  {
+    id: 'q-crm2-maint-hiw-5', moduleId: 'crm2-maint-how-it-works',
+    question: 'What is a maintenance request, in one line?',
+    options: [
+      'A single repair job that runs from the tenant\'s first report to the provider being paid',
+      'A request for a compliance certificate such as a gas or electrical check',
+      'A landlord\'s instruction to end a tenancy',
+      'A note recorded against a property for reference only',
+    ],
+    correct: 0,
+    rationale: 'A maintenance request is a single repair — a leak, a boiler, a blockage — that runs from the tenant\'s first report all the way to the provider being paid.',
+  },
+
+  // crm2-maint-triage
+  {
+    id: 'q-crm2-maint-triage-1', moduleId: 'crm2-maint-triage',
+    question: 'Why do photos and a clear report matter so much at tenant triage?',
+    options: [
+      'They are needed only for the landlord\'s records',
+      'The provider prices the job remotely at online quoting from exactly what you attach here',
+      'They speed up the tenant\'s acknowledgement message',
+      'They are required before the agent can send the landlord an FYI',
+    ],
+    correct: 1,
+    rationale: 'The provider quotes remotely at online quoting — they don\'t visit first. They price from exactly the photos and report you attach at triage. Missing those, they simply can\'t put a number on it.',
+  },
+  {
+    id: 'q-crm2-maint-triage-2', moduleId: 'crm2-maint-triage',
+    question: 'A job reaches the provider with no usable photos and a one-line report. What happens?',
+    options: [
+      'The agent automatically fills in the missing detail',
+      'It stalls later at online quoting while the provider comes back to ask for photos',
+      'The job is cancelled by the system',
+      'Nothing — the provider quotes anyway',
+    ],
+    correct: 1,
+    rationale: 'The provider has to come back and ask, so the request sits in online quoting for days while messages go back and forth. Triage is the cheapest place to catch it.',
+  },
+  {
+    id: 'q-crm2-maint-triage-3', moduleId: 'crm2-maint-triage',
+    question: 'A tenant reports a blocked drain. What should you check before dispatching anyone?',
+    options: [
+      'Nothing — send a contractor straight away',
+      'Whether the tenant has tried a plunger and drain unblocker, and what fixed it last time',
+      'Whether the landlord wants to do it himself',
+      'Whether the property has an EPC on file',
+    ],
+    correct: 1,
+    rationale: 'For a drain or blockage, ask about self-help first — plunger, drain unblocker, has it happened before. It often saves a chargeable visit.',
+  },
+  {
+    id: 'q-crm2-maint-triage-4', moduleId: 'crm2-maint-triage',
+    question: 'You need photos, but the tenant won\'t respond. What is the correct sequence?',
+    options: [
+      'Cancel the job immediately',
+      'Email, then use Wait for Tenant; if silent, call; if still nothing, send one more email, then cancel as unresponsive',
+      'Send a contractor to take the photos',
+      'Progress the job to the landlord without photos',
+    ],
+    correct: 1,
+    rationale: 'Email to say we can\'t proceed without them and use Wait for Tenant. If they don\'t reply, call; if still no luck, send one more email and then cancel with the reason that the tenant is unresponsive.',
+  },
+  {
+    id: 'q-crm2-maint-triage-5', moduleId: 'crm2-maint-triage',
+    question: 'At triage the issue looks like tenant damage, not a landlord repair. What should you do?',
+    options: [
+      'Progress it anyway and let the landlord decide',
+      'Say so now rather than progressing — a liability re-check belongs here',
+      'Cancel it silently with no reason',
+      'Move it straight to provider selection',
+    ],
+    correct: 1,
+    rationale: 'If the item looks like tenant damage or isn\'t part of the tenancy, flag it now rather than progressing — that\'s the liability re-check.',
+  },
+
+  // crm2-maint-writing
+  {
+    id: 'q-crm2-maint-write-1', moduleId: 'crm2-maint-writing',
+    question: 'What should a job header say?',
+    options: [
+      'The service category, e.g. "Plumbing request"',
+      'What is wrong and where, e.g. "Plumbing Request — Leak Under Kitchen Sink"',
+      'Who asked for the work, e.g. "Direct LL Request"',
+      'The job ID and lifecycle stage',
+    ],
+    correct: 1,
+    rationale: 'A provider seeing "Plumbing request" in a list of twelve has no idea which job is theirs. Name the problem and the location.',
+  },
+  {
+    id: 'q-crm2-maint-write-2', moduleId: 'crm2-maint-writing',
+    question: 'Where do "move-out", "emergency" and job IDs belong?',
+    options: [
+      'At the front of the header so they stand out',
+      'Set as tags — never typed into the header, which is for the actual problem',
+      'In the description\'s first line',
+      'Nowhere — they should be deleted entirely',
+    ],
+    correct: 1,
+    rationale: 'None of these describe the work. Set them as tags so they can be filtered and reported on, and give the header back to the actual problem. If a job is tagged emergency, it has to be one.',
+  },
+  {
+    id: 'q-crm2-maint-write-3', moduleId: 'crm2-maint-writing',
+    question: 'The tenant portal\'s "Additional details provided" Q&A block — what do you do with it?',
+    options: [
+      'Forward it in full so nothing is lost',
+      'Pull out the one or two facts that matter and delete the rest; never forward a tenant\'s name or health information',
+      'Paste it into the header',
+      'Delete the whole description and start blank',
+    ],
+    correct: 1,
+    rationale: 'The block roughly doubles the length and is mostly the portal\'s own questions. Read it, keep the fault and any real access instruction, delete the rest — and never forward a tenant\'s name or health information.',
+  },
+  {
+    id: 'q-crm2-maint-write-4', moduleId: 'crm2-maint-writing',
+    question: 'A job is quote-only. How should you write it?',
+    options: [
+      'Just put the service name in the header',
+      'Put "(quote)" in the header, state the source, and attach photos or the inspection report',
+      'Leave the description blank so the provider visits',
+      'Mark it as an emergency to get a faster response',
+    ],
+    correct: 1,
+    rationale: 'A contractor can\'t price a tree, a garden or a door from a sentence. Put "(quote)" in the header, state the source, and attach photos or the report.',
+  },
+  {
+    id: 'q-crm2-maint-write-5', moduleId: 'crm2-maint-writing',
+    question: 'If the description just repeats the header, what\'s the problem?',
+    options: [
+      'Nothing — repetition is fine for clarity',
+      'The provider is being asked to quote on nothing; the description must add make, model, symptom and consequence',
+      'The header should be deleted instead',
+      'The job will be flagged as a duplicate',
+    ],
+    correct: 1,
+    rationale: '"New cooker / New Cooker" tells the provider nothing. The description must add something the header doesn\'t — make, model, symptom, consequence.',
+  },
+  {
+    id: 'q-crm2-maint-write-6', moduleId: 'crm2-maint-writing',
+    question: 'Why not open a description with "Hi Joe, please attend today…"?',
+    options: [
+      'It\'s too informal for a contractor',
+      'The description is a permanent record read by several people — put the greeting in the message, and write the fault as a record',
+      'Contractors can\'t read greetings in the system',
+      'It triggers an automatic reminder',
+    ],
+    correct: 1,
+    rationale: 'The description is a permanent record read by several people over the life of the job. Put the greeting in the message, not the job, and state the fault as a record.',
+  },
+
+  // crm2-maint-provider
+  {
+    id: 'q-crm2-maint-prov-1', moduleId: 'crm2-maint-provider',
+    question: 'Who chooses the provider on a maintenance job?',
+    options: [
+      'The agent picks the best-matched contractor automatically',
+      'You do — provider selection is never automatic in the maintenance flow',
+      'The landlord always names the firm',
+      'The tenant selects from a list',
+    ],
+    correct: 1,
+    rationale: 'In the maintenance flow the agent does not assign providers. The choice of firm is always the operator\'s — an operator checkpoint every single time.',
+  },
+  {
+    id: 'q-crm2-maint-prov-2', moduleId: 'crm2-maint-provider',
+    question: 'What does the system pre-fill for you at provider selection?',
+    options: [
+      'The specific contractor to use',
+      'Only the service it classified after triage — the choice of firm is still yours',
+      'The quote amount',
+      'The visit date',
+    ],
+    correct: 1,
+    rationale: 'The system only pre-fills the service it classified after triage. The choice of firm is always yours.',
+  },
+  {
+    id: 'q-crm2-maint-prov-3', moduleId: 'crm2-maint-provider',
+    question: 'The provider will need to see the job before pricing it. Which button do you use?',
+    options: [
+      'Assign provider & start online quoting',
+      'Go to Quotation Scheduling',
+      'Set Provider Quote',
+      'Postpone',
+    ],
+    correct: 1,
+    rationale: 'Use "Go to Quotation Scheduling" when the provider will price on site. "Assign provider & start online quoting" is for a remote price.',
+  },
+  {
+    id: 'q-crm2-maint-prov-4', moduleId: 'crm2-maint-provider',
+    question: 'What communications does the agent send during the provider-selection stage?',
+    options: [
+      'A notice to the landlord and a chase to the tenant',
+      'None at all — no letters and no reminders are sent on this stage',
+      'A reminder to the provider every day',
+      'A confirmation SMS to the tenant',
+    ],
+    correct: 1,
+    rationale: 'The agent raises your task with the picker open and stops. No letters and no reminders are sent on this stage at all.',
+  },
+
+  // crm2-maint-quoting
+  {
+    id: 'q-crm2-maint-quote-1', moduleId: 'crm2-maint-quoting',
+    question: 'What decides whether the landlord has to approve a quote?',
+    options: [
+      'Whether the tenant agrees to the price',
+      'The property\'s threshold — within it goes to scheduling, over it goes to landlord quote approval',
+      'Whether the provider is onboarded',
+      'The time of day the quote arrives',
+    ],
+    correct: 1,
+    rationale: 'Every quote is compared against the property\'s threshold, VAT included. Within it, the job goes straight to scheduling; over it, the landlord is asked to agree to pay.',
+  },
+  {
+    id: 'q-crm2-maint-quote-2', moduleId: 'crm2-maint-quoting',
+    question: 'A quotation file arrives, and it names a different figure from the amount typed in the email body. Which wins?',
+    options: [
+      'The amount in the email body',
+      'The quotation file — the amount and scope are read from the document',
+      'Whichever is lower',
+      'Neither — the operator must re-key both',
+    ],
+    correct: 1,
+    rationale: 'A quotation file beats any amount typed in the email body: the amount and scope are read from the document.',
+  },
+  {
+    id: 'q-crm2-maint-quote-3', moduleId: 'crm2-maint-quoting',
+    question: 'When do YOU enter a price by hand with Set Provider Quote?',
+    options: [
+      'Every time a provider replies with a price',
+      'Only when the agent couldn\'t read the figure the provider gave',
+      'Whenever the quote is over threshold',
+      'Never — the agent always enters it',
+    ],
+    correct: 1,
+    rationale: 'Any price the agent can read is compared and routed without asking you. You only ever enter a price it couldn\'t read.',
+  },
+  {
+    id: 'q-crm2-maint-quote-4', moduleId: 'crm2-maint-quoting',
+    question: 'The provider says he can\'t price the job without seeing it. What does the agent do?',
+    options: [
+      'Cancels the request',
+      'Moves it to scheduling to arrange an inspection; the price comes afterwards',
+      'Escalates it to the landlord',
+      'Assigns a different provider automatically',
+    ],
+    correct: 1,
+    rationale: 'If he can\'t price it unseen, the agent moves the request to scheduling, and the price comes after an inspection visit.',
+  },
+  {
+    id: 'q-crm2-maint-quote-5', moduleId: 'crm2-maint-quoting',
+    question: 'A landlord writes in about doing the job himself while the provider is still quoting. What happens?',
+    options: [
+      'It waits until the provider\'s quote is in',
+      'It is always escalated to you, whatever the provider is doing',
+      'The agent moves it straight to Landlord DIY',
+      'It is ignored until scheduling',
+    ],
+    correct: 1,
+    rationale: 'A landlord writing in about DIY or his own contractor is always escalated to you, whatever the provider is doing.',
+  },
+  {
+    id: 'q-crm2-maint-quote-6', moduleId: 'crm2-maint-quoting',
+    question: 'A quote comes back within the property\'s threshold. Where does the job go?',
+    options: [
+      'To the landlord for approval anyway',
+      'Straight to scheduling — the landlord isn\'t asked',
+      'Back to the provider for a second quote',
+      'To the invoice check',
+    ],
+    correct: 1,
+    rationale: 'Within the threshold, the job goes straight to scheduling. The landlord is only ever asked when the threshold is exceeded.',
+  },
+
+  // crm2-maint-invoice
+  {
+    id: 'q-crm2-maint-inv-1', moduleId: 'crm2-maint-invoice',
+    question: 'Do you review quotations the way you review invoices?',
+    options: [
+      'Yes — both need a human check',
+      'No — you check invoices; quotations are read and routed automatically',
+      'Only quotations over threshold',
+      'Only the first quotation on a job',
+    ],
+    correct: 1,
+    rationale: 'You check invoices; you never check quotations. Quotations are read and routed by threshold automatically — an invoice always waits for a human.',
+  },
+  {
+    id: 'q-crm2-maint-inv-2', moduleId: 'crm2-maint-invoice',
+    question: 'Where does the invoice check sit in the flow?',
+    options: [
+      'It\'s the first checkpoint, before triage',
+      'It\'s your third and final checkpoint on a clean job — a task that doesn\'t change the stage',
+      'It\'s a stage of its own between scheduling and the visit',
+      'It only appears on landlord-DIY jobs',
+    ],
+    correct: 1,
+    rationale: 'The invoice check is your third and final checkpoint on a clean job. It\'s a task, not a stage — it arrives on whatever stage the request is on and doesn\'t change it.',
+  },
+  {
+    id: 'q-crm2-maint-inv-3', moduleId: 'crm2-maint-invoice',
+    question: 'What\'s the difference between "Invalid invoice" and "Invoice not needed"?',
+    options: [
+      'They do the same thing',
+      'Invalid means the document is wrong and the provider is asked to correct it; Not needed is no complaint and nothing is sent to him',
+      'Invalid closes the job; Not needed re-opens it',
+      'Invalid pays the provider; Not needed refuses payment',
+    ],
+    correct: 1,
+    rationale: 'Invalid is a complaint about the document — the provider is asked to correct it. Not needed is no complaint at all — nothing is sent to him.',
+  },
+  {
+    id: 'q-crm2-maint-inv-4', moduleId: 'crm2-maint-invoice',
+    question: 'An invoice comes in higher than the quote the landlord agreed. What do you do?',
+    options: [
+      'Send it back to the landlord to approve the extra',
+      'Resolve it on the invoice review screen — it\'s not a question for the landlord',
+      'Reject it and cancel the job',
+      'Pay it without question',
+    ],
+    correct: 1,
+    rationale: 'An invoice that exceeds an agreed quote is a question for the review screen — not something to send back to the landlord.',
+  },
+  {
+    id: 'q-crm2-maint-inv-5', moduleId: 'crm2-maint-invoice',
+    question: 'What must you check before approving an invoice?',
+    options: [
+      'That the provider is onboarded',
+      'That the Subtotal, VAT and Total add up — the fields are editable',
+      'That the landlord has seen it',
+      'That the tenant confirms the work',
+    ],
+    correct: 1,
+    rationale: 'Check that Subtotal, VAT and Total add up — the fields are editable — then approve.',
+  },
+
+  // crm2-maint-branches
+  {
+    id: 'q-crm2-maint-branch-1', moduleId: 'crm2-maint-branches',
+    question: 'On a Landlord DIY job, who do we ask whether the work is done?',
+    options: [
+      'The landlord',
+      'The tenant — only the resident can see whether anyone came',
+      'The provider',
+      'Nobody — it closes automatically',
+    ],
+    correct: 1,
+    rationale: 'We ask the tenant, not the landlord, whether the work is done — only the resident can see whether anyone came. No documents are required.',
+  },
+  {
+    id: 'q-crm2-maint-branch-2', moduleId: 'crm2-maint-branches',
+    question: 'What\'s the difference between Cancel Request and No Works Needed?',
+    options: [
+      'They behave identically',
+      'Cancel Request cancels quietly with no letters; No Works Needed sends stand-down letters',
+      'Cancel Request sends letters; No Works Needed is silent',
+      'No Works Needed re-opens the job later',
+    ],
+    correct: 1,
+    rationale: 'Cancel Request cancels quietly — reminders dropped, nobody written to. No Works Needed sends stand-down letters to the tenant, the provider, and the landlord in your own words.',
+  },
+  {
+    id: 'q-crm2-maint-branch-3', moduleId: 'crm2-maint-branches',
+    question: 'What is the reminder cadence on a Landlord DIY job?',
+    options: [
+      '+1 and +2 working days',
+      '+10 and +14 working days — the longest SLA in the flow, and the one most likely to be forgotten',
+      'No reminders at all',
+      'Every working day until confirmed',
+    ],
+    correct: 1,
+    rationale: 'Reminders fire at +10 and +14 working days (or from a promised completion date). This is the longest SLA in the flow and the one most easily forgotten.',
+  },
+  {
+    id: 'q-crm2-maint-branch-4', moduleId: 'crm2-maint-branches',
+    question: 'When a request is in Manual, what does the agent send?',
+    options: [
+      'Its normal letters and reminders',
+      'Nothing — no letters, SMS or reminders; all communication is human-owned',
+      'Only reminders, no letters',
+      'A daily status to the landlord',
+    ],
+    correct: 1,
+    rationale: 'In Manual the agent initiates nothing — no letters, no SMS, no reminders. All communication is human-owned, and inbound messages surface to you as tasks.',
+  },
+  {
+    id: 'q-crm2-maint-branch-5', moduleId: 'crm2-maint-branches',
+    question: 'How do you put a manual request back onto a normal stage?',
+    options: [
+      'It returns on its own after a few days',
+      'Use Take Over, then Provide Instructions',
+      'Cancel and re-create the request',
+      'Use No Action Needed',
+    ],
+    correct: 1,
+    rationale: 'Use Take Over, then Provide Instructions, to put the request back on a stage.',
+  },
 ]
 
 

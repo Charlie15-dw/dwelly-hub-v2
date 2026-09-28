@@ -8,9 +8,10 @@ import {
 } from '@/lib/data'
 import { redirect } from 'next/navigation'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
-import { isHubBeta, isHubElevated } from '@/lib/preview'
+import { isHubBeta, isHubElevated, isMaintenancePreview } from '@/lib/preview'
 import { canAccessCrm2 } from '@/lib/crm2-access'
 import { CRM2_LESSONS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/lib/crm2-content'
+import { MAINTENANCE_LESSONS } from '@/lib/crm2-maintenance-content'
 import QuizClient, { type QuizCategory } from './QuizClient'
 
 // Video module sections (3 questions each for combined assessments)
@@ -42,13 +43,18 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   const isRecallQuiz       = moduleId.startsWith('recall-')
   const isCrm2Quiz         = moduleId.startsWith('crm2-')
 
+  // Maintenance quizzes share the crm2- prefix but are still preview-only.
+  const isMaintQuiz = MAINTENANCE_LESSONS.some(l => l.quizModuleId === moduleId)
+
   // CRM 2.0 quizzes are private — gate them to the same allow-list as the
-  // lessons before doing anything else.
+  // lessons before doing anything else. Maintenance ones are gated tighter, to
+  // the maintenance preview, so they stay locked even by direct URL.
   if (isCrm2Quiz) {
     const auth = createServerClient()
     const { data: { user } } = await auth.auth.getUser()
     if (!user) redirect('/')
     if (!(await canAccessCrm2(auth, user))) redirect('/hub')
+    if (isMaintQuiz && !isMaintenancePreview(user.email)) redirect('/hub/crm-2')
   }
 
   // ── Determine quiz category and metadata ────────────────────────────────
@@ -123,11 +129,12 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     backLabel    = 'Back to Recap & Refresh'
   } else if (isCrm2Quiz) {
     const lesson = CRM2_LESSONS.find(l => l.quizModuleId === moduleId)
+      ?? MAINTENANCE_LESSONS.find(l => l.quizModuleId === moduleId)
     if (!lesson) notFound()
     quizCategory = 'crm2'
     moduleTitle  = `${lesson.title} — Knowledge Check`
     passmark     = 80
-    backHref     = `/hub/crm-2/${lesson.slug}`
+    backHref     = isMaintQuiz ? `/hub/crm-2/maintenance/${lesson.slug}` : `/hub/crm-2/${lesson.slug}`
     backLabel    = 'Back to lesson'
   } else {
     // Regular module assessment
