@@ -3,7 +3,7 @@ import Link from 'next/link'
 import {
   Sparkles, Search, Printer, ChevronRight, Target, Check,
   BookOpen, LayoutGrid, HelpCircle, Megaphone, BarChart3,
-  Wrench, ShieldCheck, Workflow, ArrowRight, type LucideIcon,
+  Wrench, ShieldCheck, Workflow, ArrowRight, Trophy, type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
@@ -138,6 +138,26 @@ export default async function Crm2Page() {
             </span>
           </Link>
         </div>
+
+        {/* Assessments — the bottom point of the diamond. Both tracks' knowledge
+            checks live here in one place; the maintenance and compliance pages
+            link back to it. */}
+        <Link
+          href="/hub/crm-2/assessments"
+          className="card card-hover p-6 flex items-center gap-4 group"
+        >
+          <span className="w-12 h-12 rounded-2xl bg-orange/10 text-orange flex items-center justify-center flex-shrink-0">
+            <Trophy className="w-6 h-6" aria-hidden />
+          </span>
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-tertiary)]">Prove it</p>
+            <h2 className="text-[17px] font-bold text-navy leading-tight mt-0.5">Assessments</h2>
+            <p className="text-[13.5px] text-[var(--text-secondary)] mt-1 leading-snug">
+              Knowledge checks for both tracks — maintenance and compliance, in one place.
+            </p>
+          </div>
+          <ArrowRight className="w-5 h-5 text-[var(--text-tertiary)] flex-shrink-0 group-hover:text-orange group-hover:translate-x-0.5 transition-all" aria-hidden />
+        </Link>
 
         {/* Keep to hand — the reference sheets, below the main choices */}
         <section className="space-y-4">
