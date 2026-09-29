@@ -113,9 +113,11 @@ export default function QuizClient({
   const isRecapQuiz        = quizCategory === 'recap'
   const isRecallQuiz       = quizCategory === 'recall'
   const isReleaseQuiz      = quizCategory === 'release'
-  // CRM 2.0 lesson quizzes: a private, freely-retakeable practice assessment.
-  // They keep a real pass mark but never lock and never write to the shared
-  // assessment tables the manager dashboard reads.
+  // CRM 2.0 lesson quizzes (Compliance + Maintenance): private, graded
+  // assessments. They keep a real pass mark, save a scored result and LOCK on
+  // completion just like any other assessment — only a manager/admin reassign
+  // grants a retake. They differ only in skipping the module_progress upsert and
+  // recall scheduling (no backing video module or recall content).
   const isCrm2Quiz         = quizCategory === 'crm2'
 
   // Confidence-based scoring is a beta trial; the elevated review variant turns
@@ -214,12 +216,14 @@ export default function QuizClient({
   // Verify the lock against the live DB on mount — the server's lockedByDb can
   // be stale if this render came from the Router Cache (e.g. the Back button)
   // after a completed attempt was recorded. Only graded, lockable assessments
-  // lock; recap/recall/CRM 2.0 never do. Mirrors the server's rule: locked when
-  // a completed attempt exists and there's no live reset dated after it — so a
-  // granted retake still opens, but a spent one (or a stale cached render)
+  // lock; recap/recall never do. CRM 2.0 quizzes (Compliance + Maintenance) DO
+  // lock, so they must be re-verified too — otherwise a stale cached render lets
+  // them be resat without a manager reset. Mirrors the server's rule: locked
+  // when a completed attempt exists and there's no live reset dated after it —
+  // so a granted retake still opens, but a spent one (or a stale cached render)
   // re-locks. Degrades safely — if the read fails we fall back to lockedByDb.
   useEffect(() => {
-    if (isRecapQuiz || isRecallQuiz || isCrm2Quiz) return
+    if (isRecapQuiz || isRecallQuiz) return
     let cancelled = false
     async function verifyLock() {
       const supabase = createClient()
@@ -263,7 +267,7 @@ export default function QuizClient({
     }
     verifyLock()
     return () => { cancelled = true }
-  }, [moduleId, isRecapQuiz, isRecallQuiz, isCrm2Quiz])
+  }, [moduleId, isRecapQuiz, isRecallQuiz])
 
   // Save recall result to Supabase and mark schedule complete
   useEffect(() => {
