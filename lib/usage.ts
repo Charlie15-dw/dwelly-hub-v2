@@ -104,6 +104,86 @@ export interface DayBucket {
   count: number
 }
 
+// The time windows offered by the usage dashboard's range selector.
+export type UsageRange = 'today' | '7d' | '30d' | '6m'
+
+export const USAGE_RANGES: { value: UsageRange; label: string }[] = [
+  { value: 'today', label: 'Today' },
+  { value: '7d', label: 'Last 7 days' },
+  { value: '30d', label: 'Last 30 days' },
+  { value: '6m', label: 'Last 6 months' },
+]
+
+const RANGE_PERIOD_LABEL: Record<UsageRange, string> = {
+  today: 'today',
+  '7d': 'last 7 days',
+  '30d': 'last 30 days',
+  '6m': 'last 6 months',
+}
+
+/** Start of the window for a range (inclusive), relative to `now`. */
+function rangeStart(range: UsageRange, now: Date): Date {
+  const d = new Date(now)
+  d.setHours(0, 0, 0, 0)
+  switch (range) {
+    case 'today': return d
+    case '7d': d.setDate(d.getDate() - 6); return d
+    case '30d': d.setDate(d.getDate() - 29); return d
+    case '6m': d.setMonth(d.getMonth() - 6); return d
+  }
+}
+
+/**
+ * Build the activity-chart buckets for a range. Granularity adapts to the
+ * window: hourly for today, daily for 7/30 days, monthly for 6 months. Labels
+ * are left blank on dense charts so the axis stays readable.
+ */
+function buildBuckets(events: UsageEvent[], range: UsageRange, now: Date): DayBucket[] {
+  const buckets: DayBucket[] = []
+  const byKey = new Map<string, DayBucket>()
+  const add = (key: string, label: string) => {
+    const b: DayBucket = { key, label, count: 0 }
+    buckets.push(b)
+    byKey.set(key, b)
+  }
+
+  if (range === 'today') {
+    for (let h = 0; h < 24; h++) add(`h${h}`, h % 6 === 0 ? String(h).padStart(2, '0') : '')
+    for (const e of events) {
+      const d = new Date(e.createdAt)
+      if (d.toDateString() === now.toDateString()) {
+        const b = byKey.get(`h${d.getHours()}`)
+        if (b) b.count += 1
+      }
+    }
+  } else if (range === '6m') {
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      add(`${d.getFullYear()}-${d.getMonth()}`, d.toLocaleDateString('en-GB', { month: 'short' }))
+    }
+    for (const e of events) {
+      const d = new Date(e.createdAt)
+      const b = byKey.get(`${d.getFullYear()}-${d.getMonth()}`)
+      if (b) b.count += 1
+    }
+  } else {
+    const n = range === '30d' ? 30 : 7
+    for (let i = n - 1; i >= 0; i--) {
+      const d = new Date(now)
+      d.setDate(now.getDate() - i)
+      const label = n === 7
+        ? d.toLocaleDateString('en-GB', { weekday: 'short' })
+        : (i % 7 === 0 ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '')
+      add(d.toDateString(), label)
+    }
+    for (const e of events) {
+      const b = byKey.get(new Date(e.createdAt).toDateString())
+      if (b) b.count += 1
+    }
+  }
+  return buckets
+}
+
 export interface UsageAggregate {
   totalViews: number
   activeUsers: number
@@ -111,14 +191,19 @@ export interface UsageAggregate {
   distinctAreas: number
   areas: AreaStat[]
   days: DayBucket[]
+  /** Human-readable window label for the chart heading, e.g. "last 7 days". */
+  periodLabel: string
   users: UserUsageStat[]
   recent: UsageEvent[]
 }
 
 /** Aggregate a flat list of events into everything the dashboard renders. */
-export function aggregateUsage(events: UsageEvent[], recentLimit = 40): UsageAggregate {
+export function aggregateUsage(events: UsageEvent[], range: UsageRange = '7d', recentLimit = 40): UsageAggregate {
+  const now = new Date()
+  const start = rangeStart(range, now).getTime()
   const sorted = events
     .filter(e => !isExcludedFromUsage(e.email))
+    .filter(e => new Date(e.createdAt).getTime() >= start)
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
   const totalViews = sorted.length
 
@@ -132,25 +217,8 @@ export function aggregateUsage(events: UsageEvent[], recentLimit = 40): UsageAgg
     .map(([label, count]) => ({ label, count, pct: totalViews ? Math.round((count / totalViews) * 100) : 0 }))
     .sort((a, b) => b.count - a.count)
 
-  // Activity over the last 7 days
-  const now = new Date()
-  const days: DayBucket[] = []
-  const dayByKey = new Map<string, DayBucket>()
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date(now)
-    d.setDate(now.getDate() - i)
-    const bucket: DayBucket = {
-      key: d.toDateString(),
-      label: d.toLocaleDateString('en-GB', { weekday: 'short' }),
-      count: 0,
-    }
-    days.push(bucket)
-    dayByKey.set(bucket.key, bucket)
-  }
-  for (const e of sorted) {
-    const bucket = dayByKey.get(new Date(e.createdAt).toDateString())
-    if (bucket) bucket.count += 1
-  }
+  // Activity buckets across the selected window
+  const days = buildBuckets(sorted, range, now)
 
   // Per-user rollup
   const byUser = new Map<string, { name: string | null; email: string; views: number; pages: Set<string>; lastActive: string }>()
@@ -181,6 +249,7 @@ export function aggregateUsage(events: UsageEvent[], recentLimit = 40): UsageAgg
     distinctAreas: areas.length,
     areas,
     days,
+    periodLabel: RANGE_PERIOD_LABEL[range],
     users,
     recent: sorted.slice(0, recentLimit),
   }

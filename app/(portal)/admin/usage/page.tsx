@@ -11,7 +11,10 @@ import type { UsageEvent } from '@/lib/usage'
 
 export const dynamic = 'force-dynamic'
 
-const RECENT_LIMIT = 2000
+// Fetch up to 6 months of activity so the dashboard's range selector (today →
+// 6 months) can filter client-side without a round-trip. Capped so a very busy
+// org can't pull an unbounded payload.
+const FETCH_LIMIT = 20000
 
 export default async function AdminUsagePage() {
   const supabase = createServerClient()
@@ -24,12 +27,16 @@ export default async function AdminUsagePage() {
 
   const service = createServiceClient()
 
+  const sixMonthsAgo = new Date()
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+
   const [{ data: events }, { data: profiles }, usersResult] = await Promise.all([
     service
       .from('activity_events')
       .select('user_id, path, created_at')
+      .gte('created_at', sixMonthsAgo.toISOString())
       .order('created_at', { ascending: false })
-      .limit(RECENT_LIMIT),
+      .limit(FETCH_LIMIT),
     service.from('user_profiles').select('id, full_name'),
     service.auth.admin.listUsers({ perPage: 1000 }),
   ])
