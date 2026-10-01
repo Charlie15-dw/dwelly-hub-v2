@@ -95,6 +95,10 @@ export interface UserUsageStat {
   email: string
   views: number
   distinctPages: number
+  /** The area this user viewed most in the period, e.g. "CRM 2.0". */
+  topArea: string | null
+  /** First recorded view within the selected window. */
+  firstActive: string
   lastActive: string
 }
 
@@ -221,12 +225,21 @@ export function aggregateUsage(events: UsageEvent[], range: UsageRange = '7d', r
   const days = buildBuckets(sorted, range, now)
 
   // Per-user rollup
-  const byUser = new Map<string, { name: string | null; email: string; views: number; pages: Set<string>; lastActive: string }>()
+  const byUser = new Map<string, {
+    name: string | null; email: string; views: number; pages: Set<string>
+    areaCounts: Map<string, number>; firstActive: string; lastActive: string
+  }>()
   for (const e of sorted) {
-    const cur = byUser.get(e.userId) ?? { name: e.name, email: e.email, views: 0, pages: new Set<string>(), lastActive: e.createdAt }
+    const cur = byUser.get(e.userId) ?? {
+      name: e.name, email: e.email, views: 0, pages: new Set<string>(),
+      areaCounts: new Map<string, number>(), firstActive: e.createdAt, lastActive: e.createdAt,
+    }
     cur.views += 1
     cur.pages.add(e.path)
+    const area = areaLabel(e.path)
+    cur.areaCounts.set(area, (cur.areaCounts.get(area) ?? 0) + 1)
     if (e.createdAt > cur.lastActive) cur.lastActive = e.createdAt
+    if (e.createdAt < cur.firstActive) cur.firstActive = e.createdAt
     byUser.set(e.userId, cur)
   }
   const users: UserUsageStat[] = Array.from(byUser.entries())
@@ -236,9 +249,11 @@ export function aggregateUsage(events: UsageEvent[], range: UsageRange = '7d', r
       email: v.email,
       views: v.views,
       distinctPages: v.pages.size,
+      topArea: Array.from(v.areaCounts.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null,
+      firstActive: v.firstActive,
       lastActive: v.lastActive,
     }))
-    .sort((a, b) => b.lastActive.localeCompare(a.lastActive))
+    .sort((a, b) => b.views - a.views)
 
   const activeUsers = users.length
 

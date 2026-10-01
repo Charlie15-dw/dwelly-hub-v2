@@ -60,14 +60,16 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
     lines.push('Area,Views,Share %')
     for (const a of areas) lines.push(`${csvCell(a.label)},${a.count},${a.pct}`)
     lines.push('')
-    lines.push('People')
-    lines.push('Name,Email,Views,Pages,Last active')
+    lines.push('Usage per person')
+    lines.push('Name,Email,Views,Pages,Top area,First active,Last active')
     for (const u of users) {
       lines.push([
         csvCell(u.name ?? ''),
         csvCell(u.email),
         u.views,
         u.distinctPages,
+        csvCell(u.topArea ?? ''),
+        csvCell(new Date(u.firstActive).toLocaleString('en-GB')),
         csvCell(new Date(u.lastActive).toLocaleString('en-GB')),
       ].join(','))
     }
@@ -198,11 +200,11 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
             </div>
           </div>
 
-          {/* Per-user table */}
+          {/* Per-user table — the full report for the selected range */}
           <div className="card overflow-hidden">
             <div className="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
               <Users className="w-4 h-4 text-slate-400" aria-hidden />
-              <h2 className="text-sm font-bold text-navy">People</h2>
+              <h2 className="text-sm font-bold text-navy">Usage per person — {periodLabel}</h2>
               <span className="ml-auto text-xs text-slate-400">{users.length} active</span>
             </div>
             <div className="overflow-x-auto">
@@ -212,6 +214,8 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
                     <th className="px-5 py-2.5 text-left font-semibold">User</th>
                     <th className="px-5 py-2.5 text-right font-semibold">Views</th>
                     <th className="px-5 py-2.5 text-right font-semibold">Pages</th>
+                    <th className="px-5 py-2.5 text-left font-semibold">Top area</th>
+                    <th className="px-5 py-2.5 text-right font-semibold">First active</th>
                     <th className="px-5 py-2.5 text-right font-semibold">Last active</th>
                   </tr>
                 </thead>
@@ -224,6 +228,8 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
                       </td>
                       <td className="px-5 py-3 text-right text-slate-600 tabular-nums">{u.views}</td>
                       <td className="px-5 py-3 text-right text-slate-600 tabular-nums">{u.distinctPages}</td>
+                      <td className="px-5 py-3 text-left text-slate-600">{u.topArea ?? '—'}</td>
+                      <td className="px-5 py-3 text-right text-slate-500">{timeAgo(u.firstActive)}</td>
                       <td className="px-5 py-3 text-right text-slate-500">{timeAgo(u.lastActive)}</td>
                     </tr>
                   ))}
