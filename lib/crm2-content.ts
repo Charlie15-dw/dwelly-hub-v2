@@ -111,6 +111,24 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'subheading', text: 'Boiler service (CP12)' },
       { type: 'paragraph', text: 'A boiler service can attach at landlord approval without changing the job\u2019s stages — it rides along with the CP12.' },
 
+      { type: 'heading', text: 'The maintenance main path' },
+      { type: 'callout', variant: 'important', text: 'This is the maintenance flow, not compliance. It runs to ten stages and the one difference to burn in: the agent never assigns the provider — Provider selection is always your choice in the picker. You also check invoices, never quotations.' },
+      { type: 'paragraph', text: 'A maintenance request is a single repair job — a leak, a broken boiler, a blocked drain. Most jobs travel these stages, driven by the agent, with three checkpoints that are always yours (Tenant triage, Provider selection and Invoice check):' },
+      { type: 'table',
+        headers: ['Stage', 'What happens here', 'Moves forward when\u2026', 'Moves back / branches when\u2026'],
+        rows: [
+          ['Tenant triage', 'Your checkpoint: tidy the report, get photos, confirm it\u2019s worth progressing.', 'You request landlord approval \u2192 Landlord approval (or straight to Provider selection if the landlord has already approved).', 'Nothing to fix / out of scope \u2192 Cancelled.'],
+          ['Landlord approval', 'The agent asks the owner to authorise the works.', 'Landlord approves \u2192 Provider selection.', 'Landlord will arrange it themselves \u2192 Landlord DIY; declines \u2192 Cancelled.'],
+          ['Provider selection', 'Your checkpoint: you pick the contractor in the picker \u2014 never automatic.', 'You choose a provider \u2192 Online quoting (or Scheduling if they\u2019ll price on site).', 'No suitable provider \u2192 stays with you until one is chosen.'],
+          ['Online quoting', 'The provider prices the job remotely; the system checks the price against the property\u2019s threshold.', 'Price within threshold \u2192 Scheduling.', 'Price over threshold \u2192 Landlord quote approval (the owner must agree to pay).'],
+          ['Scheduling', 'The agent brokers a slot between tenant and provider.', 'A slot is agreed \u2192 Visit.', 'Deadlock \u2192 escalates to you.'],
+          ['Visit', 'The date is confirmed to both sides, a reminder goes the day before, the works are done.', 'The visit date passes \u2192 Result awaiting.', 'Rearranged or tenant not home \u2192 back into scheduling.'],
+          ['Result awaiting', 'The agent waits for the invoice, chasing the provider if it\u2019s slow.', 'An invoice arrives \u2192 Invoice check.', 'No invoice \u2192 chases +1 / +2 working days, escalates at +3; further works found \u2192 Landlord quote approval (if over threshold).'],
+          ['Invoice check', 'Your checkpoint: verify the figures the AI pulled out, then approve. (A task, not a stage.)', 'Invoice approved \u2192 Completed.', 'Invoice unusable (blank or cropped) \u2192 chase the SP and upload another; job stays here.'],
+          ['Completed', 'A quiet day, then the closing letters go out. Terminal state.', '\u2014', '\u2014'],
+        ],
+      },
+
       { type: 'heading', text: 'Ground rules' },
       { type: 'bullets', items: [
         'Read the whole job before acting. The agent often suggests an action based only on the most recent activity; the broader history may point to a different decision.',
