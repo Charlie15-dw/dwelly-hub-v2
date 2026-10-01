@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import Groq from 'groq-sdk'
 import { createServerClient } from '@/lib/supabase/server'
 import { TRAINING_PAGES, KNOWLEDGE_ARTICLES, ContentBlock } from '@/lib/training-content'
-import { CRM2_LESSONS, Crm2Block } from '@/lib/crm2-content'
+import { CRM2_LESSONS, Crm2Block, Crm2Lesson } from '@/lib/crm2-content'
+import { MAINTENANCE_LESSONS } from '@/lib/crm2-maintenance-content'
 import { GLOSSARY_TERMS } from '@/lib/glossary-data'
 
 // ─── Rate limiter ──────────────────────────────────────────────────────────
@@ -113,14 +114,14 @@ function crm2BlockToText(block: Crm2Block): string {
   }
 }
 
-function buildCrm2Sections(): { title: string; text: string }[] {
+function buildCrm2Sections(lessons: Crm2Lesson[], track: string): { title: string; text: string }[] {
   const out: { title: string; text: string }[] = []
-  for (const lesson of CRM2_LESSONS) {
+  for (const lesson of lessons) {
     // Practice/capstone are drills and assessment meta ("80% to pass"), not
     // knowledge — skip them so they don't pollute answers.
     if (lesson.kind === 'practice') continue
 
-    const base = `CRM 2.0 Compliance — ${lesson.title}`
+    const base = `CRM 2.0 ${track} — ${lesson.title}`
     let heading = base
     let buffer: string[] = [lesson.summary]
 
@@ -152,8 +153,13 @@ function buildCrm2Sections(): { title: string; text: string }[] {
   return out
 }
 
-// Precomputed once at module load — the lesson set is static per deploy.
-const CRM2_SECTIONS = buildCrm2Sections()
+// Precomputed once at module load — the lesson set is static per deploy. Both
+// 2.0 tracks (compliance and maintenance) are flattened so Dobby can answer from
+// either; each section is tagged with its track in the title.
+const CRM2_SECTIONS = [
+  ...buildCrm2Sections(CRM2_LESSONS, 'Compliance'),
+  ...buildCrm2Sections(MAINTENANCE_LESSONS, 'Maintenance'),
+]
 
 // ─── Stop words to ignore when scoring ────────────────────────────────────
 const STOP_WORDS = new Set([
@@ -300,8 +306,8 @@ Dwelly has two separate systems that both handle jobs, and they must never be mi
 - The Maintenance Provider Portal (provider.dwelly.group) is what external contractors and providers use. It has only Active Jobs, Closed Jobs, Schedule and Earnings, and its job statuses are Awaiting Appointment, Awaiting Completion, Awaiting Invoice and Quote Sent. It has NO "Auto mode", NO "On Hold" and NO "Job Chat".
 When a question is about what a contractor or provider does in their portal, answer only in terms of the provider portal. Never tell a contractor to check for "Auto mode" or "On Hold", or to use a "Job Chat" — those do not exist on their side. A contractor treats every job that appears in Active Jobs as a live work order: they book the visit with the tenant, carry out the work, then upload their invoice, certificate and completion photos (or reply to the job email) to close it and get paid.
 
-CRM 2.0 (COMPLIANCE):
-CRM 2.0 is Dwelly's newer, agent-driven version of the internal staff CRM, currently used for compliance-certificate jobs (Gas Safety/CP12, EICR, EPC and so on). In 2.0 an AI agent runs the routine end to end — landlord approval, provider selection, scheduling, reminders — and the operator steps in for the human checkpoints, mainly Certificate review and Invoice review. When content below is labelled "CRM 2.0 Compliance", it describes this staff-facing 2.0 system, not CRM 1.0 and not the provider portal. Answer CRM 2.0 questions from that content, and if a 2.0 process differs from the older CRM, follow the 2.0 content.
+CRM 2.0 (COMPLIANCE AND MAINTENANCE):
+CRM 2.0 is Dwelly's newer, agent-driven version of the internal staff CRM. It runs two tracks: Compliance (certificate jobs — Gas Safety/CP12, EICR, EPC and so on) and Maintenance (repair jobs — a leak, a broken boiler, a blocked drain). In both, an AI agent runs the routine end to end and the operator steps in only at the human checkpoints. For compliance those are mainly Certificate review and Invoice review; for maintenance they are tidying the report at tenant triage, choosing the provider, and approving the invoice. One crucial difference between the tracks: in maintenance the agent NEVER picks the provider — provider selection is always a human choice in the picker — whereas in compliance the system can auto-assign a provider if the landlord is unresponsive. When content below is labelled "CRM 2.0 Compliance" or "CRM 2.0 Maintenance", it describes this staff-facing 2.0 system, not CRM 1.0 and not the provider portal. Answer CRM 2.0 questions from that content, keep the two tracks distinct, and if a 2.0 process differs from the older CRM, follow the 2.0 content.
 
 RELEVANT PORTAL CONTENT:`
 
