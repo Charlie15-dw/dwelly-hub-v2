@@ -85,7 +85,6 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'heading', text: 'An agent that runs the job, and you for the human calls' },
       { type: 'paragraph', text: 'Each request is a single compliance-certificate job — a Gas Safety Certificate (CP12), an EICR, an EPC, and so on. An AI agent runs the routine from end to end; you, the operator, make the decisions that need a human. Understanding that split is the key to working well in 2.0.' },
       { type: 'callout', variant: 'info', text: 'Think of it as two lanes. The agent lane runs autonomously — chasing, booking and reminding. The operator lane is where you step in for the human decisions. Around them sit two side flows: remedial works, and landlord-DIY.' },
-      { type: 'image', src: '/crm2/flow-diagram.png', text: 'The full compliance flow: the main path across the top, with the landlord-DIY, remedial and boiler-service branches coming off it.' },
 
       { type: 'heading', text: 'The main path' },
       { type: 'paragraph', text: 'Most jobs travel through these stages, driven by the agent, with two review checkpoints that are always yours (Certificate review and Invoice review):' },
