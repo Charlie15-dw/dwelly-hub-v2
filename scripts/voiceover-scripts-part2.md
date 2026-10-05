@@ -171,21 +171,33 @@ Dwelly creates the inspection job 14 days before the due date. When it appears i
 
 [PAUSE]
 
-[SCREEN: Step 2 — Schedule a visit, calendar visible]
+[SCREEN: Step 2 — Inspector Booking, three-step bar: Pick Date & Time / Your Details / Confirm]
 
-Now, Step 2 is scheduling the visit. Just like with move-out checkouts, how you do this depends on whether the inspection will be done internally or externally.
+Now, Step 2 is booking the visit. This now runs through the Inspector Booking flow, which has three steps across the top: Pick Date and Time, Your Details, and Confirm.
 
-If it is being done by an internal Property Specialist, Dwelly will show you their Google Calendar directly in the system. Browse the available times, select a slot, and fill in the Visit Time and Comments fields.
+[SCREEN: Pick a Date & Time — calendar with Property Specialist toggles and availability bands]
 
-[TIP] Dwelly does not have a routing system. This means you need to manually check postcodes to make sure the Property Specialist you are booking is actually going to be in the right area on that day. Do not just pick the first available slot without considering geography — it wastes time and fuel.
+You start on Pick a Date and Time. Rather than a single person's calendar, you now see all of your Property Specialists in one view. Each Property Specialist has a toggle at the top — for example John and Geoff — and a pill shows how many are active, such as "1 of 2 active". Switch Property Specialists on or off to compare availability, and each day shows that Property Specialist's available window, for example "Geoff: available 9 to 5". Use the week arrows to move between weeks.
+
+[TIP] Dwelly still does not have a routing system. You need to manually check postcodes to make sure the Property Specialist you are booking is actually going to be in the right area on that day. Having everyone in one calendar helps — pick whoever is already going to be nearby rather than just the first free slot.
 
 [PAUSE]
 
-If the inspection is being done by an external party, their calendar will not be visible in Dwelly. Contact them directly to agree on a date, then input that date into the system.
+Click any free slot to select it. It highlights, and a bar at the bottom summarises your choice — for example "Geoff — Monday 23 August at 10:00". When you are happy, click Continue.
 
-[SCREEN: Calendar event created, confirmation details]
+[SCREEN: Step 2 — Your Details form, Your Name and Property Address marked required]
 
-Once the date is selected — whether internal or external — a calendar event is automatically created. The tenant receives a confirmation message and will also get a reminder SMS 24 hours before the visit.
+The second step is Your Details, and this step must be completed before you can go any further. Two fields carry a red asterisk and are mandatory — Your Name and the Property Address — and the booking will not submit without them. The rest are optional but help the Property Specialist: Your Email, a Job Reference, the Tenant Name and Phone Number, where the Keys are, the Duration, and a Notes box for anything like a key safe code or the tenant preferring afternoon visits. Job Type is pre-filled as Inspection and Duration defaults to 15 minutes, so only change that if the visit needs longer.
+
+[PAUSE]
+
+When the details are in, click Review Booking — or Back if you need to change the slot. The final step, Confirm, shows the visit time and a summary so you can check everything before it is booked.
+
+If the inspection is being done by an external party, their availability will not be visible in Dwelly. Contact them directly to agree a date and time, then come back, select the matching slot, and complete Your Details in the same way.
+
+[SCREEN: Confirmation — calendar event created]
+
+Once the booking is confirmed — whether internal or external — a calendar event is automatically created. The tenant receives a confirmation message and will also get a reminder SMS 24 hours before the visit.
 
 [PAUSE]
 

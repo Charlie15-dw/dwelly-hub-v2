@@ -222,6 +222,21 @@ export default function ElevatedTrainingGuide({ id }: { id: string }) {
                       </div>
                     )
 
+                  case 'image':
+                    if (!block.src) return null
+                    return (
+                      <figure key={i} className="mt-6">
+                        <div className="rounded-2xl border border-navy-100 overflow-hidden bg-navy-50">
+                          {/* Static screenshot; next/image is unnecessary here. */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={block.src} alt={block.text ?? ''} className="w-full h-auto block" loading="lazy" />
+                        </div>
+                        {block.text && (
+                          <figcaption className="text-[13px] text-[var(--text-secondary)] mt-2 text-center leading-relaxed">{block.text}</figcaption>
+                        )}
+                      </figure>
+                    )
+
                   case 'divider':
                     return <hr key={i} className="mt-8 border-navy-100" />
 

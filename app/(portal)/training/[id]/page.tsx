@@ -188,6 +188,20 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
                   </div>
                 ) : null
 
+              case 'image':
+                return block.src ? (
+                  <figure key={i} className="space-y-2">
+                    <div className="rounded-xl border border-[#E8E8ED] overflow-hidden bg-[#F5F5F7]">
+                      {/* Static screenshot; next/image is unnecessary here. */}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={block.src} alt={block.text ?? ''} className="w-full h-auto block" loading="lazy" />
+                    </div>
+                    {block.text && (
+                      <figcaption className="text-xs text-[#6E6E73] text-center leading-relaxed">{block.text}</figcaption>
+                    )}
+                  </figure>
+                ) : null
+
               case 'divider':
                 return <hr key={i} className="border-[#E8E8ED]" />
 

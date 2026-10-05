@@ -56,13 +56,14 @@ export type TrainingSection =
   | 'kb-landlord-portal'
 
 export interface ContentBlock {
-  type: 'heading' | 'subheading' | 'paragraph' | 'steps' | 'bullets' | 'callout' | 'warning' | 'table' | 'divider'
+  type: 'heading' | 'subheading' | 'paragraph' | 'steps' | 'bullets' | 'callout' | 'warning' | 'table' | 'divider' | 'image'
   text?: string
   items?: string[]
   level?: 1 | 2 | 3
   variant?: 'info' | 'warning' | 'tip' | 'important'
   headers?: string[]
   rows?: string[][]
+  src?: string
 }
 
 export interface TrainingPage {
@@ -402,15 +403,41 @@ export const TRAINING_PAGES: TrainingPage[] = [
         ['HC Lettings', 'After 4 months', 'Every 6 months'],
         ['Number 1 Lettings', 'After 4 months', 'Every 6 months'],
       ]},
-      { type: 'paragraph', text: 'Dwelly automatically creates a job 14 days before the inspection is meant to take place. It will be labelled as INSPECTION REQUEST with a deadline for when it must be completed.' },
-      { type: 'heading', level: 1, text: 'Step 2: Schedule a Visit' },
-      { type: 'paragraph', text: 'The inspection can be performed by either an in-house property specialist or a third party.' },
-      { type: 'subheading', level: 2, text: 'Step 2.1: Using Internal Employee — Property Specialist' },
-      { type: 'paragraph', text: 'Dwelly has an integrated Google calendar view with the assigned Property Specialist. View their calendar on the page and select an available time that also works for the tenant. Fill out Visit Time and add any relevant notes under Comments.' },
-      { type: 'callout', variant: 'warning', text: 'There is currently no method of routing, so please manually check the postcodes to see where the Property Specialist will be — if all appointments are on the other side of town, allow enough time for travel.' },
-      { type: 'subheading', level: 2, text: 'Step 2.2: Using External Party' },
-      { type: 'paragraph', text: 'If using an external party, their calendar will not appear. You will need to get in touch with the third party directly via calling to agree on a date, then input it onto Dwelly.' },
-      { type: 'paragraph', text: 'Once you have selected the date and time, a new event will appear in the Property Specialist\'s calendar and the tenant will receive a confirmation. The tenant also receives a reminder SMS 24 hours ahead of the visit.' },
+      { type: 'paragraph', text: 'Dwelly automatically creates a job 14 days before the inspection is meant to take place. It will be labelled as INSPECTION REQUEST with a deadline for when it must be completed. That 14-day window is deliberate — it gives you enough time to agree access with the tenant and get the visit booked before the due date.' },
+      { type: 'subheading', level: 2, text: 'Creating one manually' },
+      { type: 'paragraph', text: 'Although inspections are generated automatically, you can also raise one yourself when you need to — for example an ad-hoc visit outside the normal schedule. Go to the Property Management tab, choose Add Request, then Compliance, and then Inspection.' },
+      { type: 'callout', variant: 'info', text: 'Inspections sit under Compliance rather than Maintenance on purpose: it is what tells the system to automate the job onto the Property Manager\'s workload and track it against the inspection schedule. A manually created inspection then follows exactly the same booking flow as an automatic one.' },
+      { type: 'heading', level: 1, text: 'Step 2: Book the Visit' },
+      { type: 'paragraph', text: 'Scheduling now runs through the Inspector Booking flow, which walks you through three steps: Pick Date & Time, Your Details, and Confirm. The inspection can be performed by either an in-house Property Specialist or a third party.' },
+      { type: 'subheading', level: 2, text: 'Step 2.1: Pick a Date & Time' },
+      { type: 'paragraph', text: 'Instead of a single Google Calendar embed, you now see every Property Specialist in one calendar view. Each one has a toggle at the top (for example John and Geoff) so you can switch them on or off and compare availability — the pill shows how many are active, e.g. "1 of 2 active". Each day shows that Property Specialist\'s available window (for example "Geoff: available (9–5)").' },
+      { type: 'steps', items: [
+        'Toggle on the Property Specialist(s) whose availability you want to see.',
+        'Use the week navigation (‹ / Today / ›) to find a suitable week.',
+        'Click any free slot in the grid to select it — the chosen slot is highlighted and summarised at the bottom (e.g. "Geoff — Monday 23 August at 10:00").',
+        'Click Continue to move on to Your Details.',
+      ]},
+      { type: 'callout', variant: 'warning', text: 'There is still no routing system, so manually check the postcodes to see where the Property Specialist will be — if all appointments are on the other side of town, allow enough time for travel. Having everyone in one view makes it easier to pick whoever is already going to be in the right area.' },
+      { type: 'callout', variant: 'tip', text: 'Some Property Specialists assign postcodes to particular days to make booking easier (Lime properties are a good example). Where that is the case, match the property to the day that already covers its area rather than spreading one person across several postcodes in a day.' },
+      { type: 'subheading', level: 2, text: 'Step 2.2: Your Details — this step must be completed' },
+      { type: 'paragraph', text: 'After picking a slot you must fill out the Your Details step before you can review or confirm the booking. Your Name and Property Address are mandatory (marked with a red asterisk) — the booking cannot be submitted without them. The remaining fields are optional but should be filled in wherever you have the information.' },
+      { type: 'image', src: '/training/inspection-your-details.png', text: 'The Your Details step of the Inspector Booking flow. Your Name and Property Address are required; the rest are optional.' },
+      { type: 'table', headers: ['Field', 'Required?', 'What to enter'], rows: [
+        ['Job Type', 'Pre-filled', 'Defaults to Inspection — no action needed.'],
+        ['Your Name', 'Required', 'The name of the person the booking is for / being made by.'],
+        ['Your Email', 'Optional', 'A contact email for the booking.'],
+        ['Property Address', 'Required', 'The address being inspected.'],
+        ['Job Reference', 'Optional', 'Any internal reference, e.g. JOB-1042.'],
+        ['Tenant Name', 'Optional', 'The tenant\'s full name.'],
+        ['Tenant Phone Number', 'Optional', 'A number for the tenant so they can be reached about access.'],
+        ['Keys', 'Optional', 'Where the keys are, e.g. key safe, with agent, at office.'],
+        ['Duration', 'Pre-filled', 'Defaults to 15 minutes — adjust if the visit needs longer.'],
+        ['Notes', 'Optional', 'Anything the Property Specialist needs to know (tricky key safe code, tenant works from home, etc.).'],
+      ]},
+      { type: 'paragraph', text: 'When the details are complete, click Review Booking to move to the Confirm step (use Back if you need to change the slot). The Confirm step shows the visit time and a summary so you can check everything before the booking is created.' },
+      { type: 'subheading', level: 2, text: 'Internal vs external Property Specialists' },
+      { type: 'paragraph', text: 'If the inspection is being done by an in-house Property Specialist, their live availability appears in the calendar, so just pick a free slot. If it is being done by an external party, their availability will not show in Dwelly — contact them directly to agree a date and time, then come back and select the matching slot and complete Your Details as above.' },
+      { type: 'paragraph', text: 'Once the booking is confirmed, a new calendar event is created and the tenant receives a confirmation. The tenant also receives a reminder SMS 24 hours ahead of the visit.' },
       { type: 'subheading', level: 2, text: 'How to Reschedule the Visit' },
       { type: 'steps', items: [
         'Take the job out of Auto mode and put it on Pause to stop the automations.',
@@ -418,6 +445,7 @@ export const TRAINING_PAGES: TrainingPage[] = [
         'Click Change Inspection Time.',
         'Enter a new agreed date once confirmed with Property Specialist\'s availability and the tenant.',
       ]},
+      { type: 'paragraph', text: 'Once the new time is saved, the system updates the calendar event and lets the tenant know automatically — you do not need to message them separately.' },
       { type: 'paragraph', text: 'If you need to cancel the inspection altogether, you will need to ask your Team Coordinator to do so as they have those permissions on the system.' },
       { type: 'heading', level: 1, text: 'Step 3: Upload the Inspection File' },
       { type: 'paragraph', text: 'At the end of the assigned time slot, the system will send an automatic message in the chatbot asking you to upload the results of the inspection.' },
