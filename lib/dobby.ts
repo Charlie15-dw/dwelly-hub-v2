@@ -15,12 +15,20 @@ export interface ChatMessage {
 }
 
 // Which slice of the knowledge base an answer may draw on.
-//  - 'all'  : the full portal — CRM 1.0 training, knowledge articles, CRM 2.0 and
-//             glossary, plus general UK-lettings reasoning. Used by the in-Hub chat.
-//  - 'crm2' : CRM 2.0 Maintenance and Compliance Dwelly content ONLY. No CRM 1.0,
-//             no general knowledge. Used by the Jobs-panel widget, where Dobby is a
-//             focused 2.0 process helper, not a general lettings adviser.
-export type DobbyScope = 'all' | 'crm2'
+//  - 'all'    : the full portal — every training page, knowledge article, CRM 2.0
+//               section and glossary, plus general UK-lettings reasoning. In-Hub chat.
+//  - 'dwelly' : Dwelly PROCESS content only — the process training pages (move-outs,
+//               inspections, navigation, etc.) and the CRM 2.0 Maintenance/Compliance
+//               sections. The general-law knowledge articles and outside-knowledge
+//               fallback are withheld and pointed to the Hub instead. For maintenance
+//               and compliance it uses the 2.0 content, not the legacy 1.0 pages.
+//               Used by the Jobs-panel widget.
+export type DobbyScope = 'all' | 'dwelly'
+
+// In 'dwelly' scope these legacy CRM 1.0 training pages are withheld: maintenance
+// and compliance are answered from the CRM 2.0 content instead, so the older 1.0
+// steps can't surface and contradict it.
+const DWELLY_SCOPE_EXCLUDED_PAGES = new Set(['maintenance', 'compliance'])
 
 // ─── Rate limiter ──────────────────────────────────────────────────────────
 const RATE_LIMIT_WINDOW_MS = 60_000
@@ -239,32 +247,31 @@ function truncate(text: string, max: number): string {
 }
 
 export function findRelevantContent(query: string, scope: DobbyScope = 'all', topN = MAX_SECTIONS): string {
-  // In crm2 scope the only knowledge is the CRM 2.0 Maintenance and Compliance
-  // sections — no CRM 1.0 training, no knowledge articles, no glossary.
-  const crm2Only = scope === 'crm2'
+  // In 'dwelly' scope the knowledge is Dwelly process only: the process training
+  // pages (minus the legacy 1.0 maintenance/compliance pages) and the CRM 2.0
+  // sections. The general-law knowledge articles are withheld — pointed to the Hub.
+  const dwellyOnly = scope === 'dwelly'
+  const includePage = (id: string) => !dwellyOnly || !DWELLY_SCOPE_EXCLUDED_PAGES.has(id)
 
   const keywords = extractKeywords(query)
   if (keywords.length === 0) {
     // No useful keywords — return a couple of trimmed sections as fallback.
-    if (crm2Only) {
-      return CRM2_SECTIONS.slice(0, 2)
-        .map(s => `[${s.title}]\n${truncate(s.text, MAX_SECTION_CHARS)}`)
-        .join('\n\n')
-    }
-    return TRAINING_PAGES.slice(0, 2)
+    return TRAINING_PAGES.filter(p => includePage(p.id)).slice(0, 2)
       .map(p => `[${p.title}]\n${truncate(blocksToText(p.content), MAX_SECTION_CHARS)}`)
       .join('\n\n')
   }
 
   const sections: ScoredSection[] = []
 
-  if (!crm2Only) {
-    for (const page of TRAINING_PAGES) {
-      const text = blocksToText(page.content)
-      const score = scoreText(page.title + ' ' + text, keywords)
-      if (score > 0) sections.push({ title: page.title, text, score })
-    }
+  for (const page of TRAINING_PAGES) {
+    if (!includePage(page.id)) continue
+    const text = blocksToText(page.content)
+    const score = scoreText(page.title + ' ' + text, keywords)
+    if (score > 0) sections.push({ title: page.title, text, score })
+  }
 
+  // General-law knowledge articles only in the full in-Hub scope.
+  if (!dwellyOnly) {
     for (const article of KNOWLEDGE_ARTICLES) {
       const text = blocksToText(article.content)
       const score = scoreText(article.title + ' ' + text, keywords)
@@ -277,9 +284,9 @@ export function findRelevantContent(query: string, scope: DobbyScope = 'all', to
     if (score > 0) sections.push({ title: section.title, text: section.text, score })
   }
 
-  // Matching glossary terms, ranked by score, capped and truncated. Omitted in
-  // crm2 scope — the widget answers only from 2.0 process content, not definitions.
-  const glossaryMatches = crm2Only ? '' : GLOSSARY_TERMS
+  // Matching glossary terms, ranked by score, capped and truncated. Kept in both
+  // scopes — these are Dwelly's own terminology, which helps process answers.
+  const glossaryMatches = GLOSSARY_TERMS
     .map(t => ({ t, score: scoreText(t.term + ' ' + t.definition, keywords) }))
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score)
@@ -335,25 +342,27 @@ ${SYSTEM_FRAMING}
 
 RELEVANT PORTAL CONTENT:`
 
-// CRM 2.0-only prompt for the Jobs-panel widget. Dobby here is a focused process
-// helper: it answers strictly from the CRM 2.0 Maintenance and Compliance content
-// provided, and declines anything that isn't 2.0 — no CRM 1.0, no general UK
-// lettings law or best-practice reasoning. The content block is 2.0-only too, so
-// this prompt and the retrieval scope reinforce each other.
-const CRM2_SYSTEM_PROMPT = `You are Dobby, the assistant inside the Dwelly Jobs panel. In here you help the team with Dwelly's CRM 2.0 Maintenance and Compliance processes only. Answer like someone who knows the 2.0 workflow inside out.
+// Dwelly-process prompt for the Jobs-panel widget. Dobby here is a focused process
+// helper: it answers from Dwelly's own process content provided below (move-outs,
+// inspections, navigation and the like, plus the CRM 2.0 Maintenance and Compliance
+// workflow), but it does NOT give general UK lettings law or best-practice guidance
+// — those go to the Hub. For maintenance and compliance the content is the 2.0
+// version, so this prompt and the retrieval scope reinforce each other.
+const DWELLY_SYSTEM_PROMPT = `You are Dobby, the assistant inside the Dwelly Jobs panel. In here you help the team carry out Dwelly's own day-to-day processes — the things they do in the CRM on a live job. Answer like someone who knows the Dwelly workflow inside out.
 
 HOW TO ANSWER:
-1. Answer ONLY from the CRM 2.0 Maintenance and Compliance content provided below. That content is your single source of truth.
-2. Do NOT answer from general UK residential lettings law or best practice, and do NOT answer from CRM 1.0, the older CRM, or any other Dwelly material. If the content below does not cover the question, do not fill the gap from outside knowledge.
-3. Be specific and practical about the 2.0 steps — the exact buttons, stages, checkpoints and SOP actions the operator should take, and keep the Compliance and Maintenance tracks distinct.
-4. If the question is not about CRM 2.0 Maintenance or Compliance, or the content below does not cover it, say exactly: "I can only help with CRM 2.0 Maintenance and Compliance in here. For anything else, head to the Hub or ask Charlie Lockwood." Do not attempt a general answer instead.
-5. Write in plain sentences only. No bold, no bullet points, no numbered lists, no headers, no markdown formatting of any kind.
-6. Keep answers clear and reasonably concise.
-7. You are Dobby. Never say you are an AI, and never refer to yourself as Claude, Gemini or Groq.
+1. Answer from the Dwelly process content provided below — how Dwelly handles move-outs, inspections, navigation and other day-to-day work, and the CRM 2.0 Maintenance and Compliance workflow. That content is your single source of truth.
+2. For maintenance and compliance, use the CRM 2.0 content provided — that is the current process. Keep the Maintenance and Compliance tracks distinct.
+3. Be specific and practical about the Dwelly steps — the exact buttons, stages, tags, checkpoints and SOP actions the operator should take.
+4. Do NOT answer general UK residential lettings law, legislation or best-practice questions in here, even though you know them. That includes things like Section 8/Section 21 notices, deposit schemes, HMO licensing, Right to Rent law, disrepair and Awaab's Law, tenancy agreements and the like. For anything like that, say exactly: "That's general lettings guidance rather than a Dwelly process — head to the Hub and ask me there for the full detail." Do not give the legal answer here.
+5. If a question is a genuine Dwelly process but the content below does not cover it, say exactly: "I could not find that process in my Dwelly content. Please head to the Hub or raise it with Charlie Lockwood." Do not fill the gap from outside knowledge.
+6. Write in plain sentences only. No bold, no bullet points, no numbered lists, no headers, no markdown formatting of any kind.
+7. Keep answers clear and reasonably concise.
+8. You are Dobby. Never say you are an AI, and never refer to yourself as Claude, Gemini or Groq.
 
 ${SYSTEM_FRAMING}
 
-RELEVANT CRM 2.0 CONTENT:`
+RELEVANT DWELLY PROCESS CONTENT:`
 
 // ─── Model call ────────────────────────────────────────────────────────────
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
@@ -362,8 +371,8 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
  * Run a validated conversation through the Dobby brain and return its reply.
  * Retrieval is keyed off the latest user message. The scope selects which slice
  * of the knowledge base (and which system prompt) is used: 'all' for the full
- * in-Hub assistant, 'crm2' for the 2.0-only Jobs-panel widget. Throws if the
- * model call fails; callers decide how to surface that.
+ * in-Hub assistant, 'dwelly' for the Dwelly-process Jobs-panel widget. Throws if
+ * the model call fails; callers decide how to surface that.
  */
 export async function generateDobbyReply(
   messages: ChatMessage[],
@@ -371,7 +380,7 @@ export async function generateDobbyReply(
 ): Promise<string> {
   const latestUserMessage = [...messages].reverse().find(m => m.role === 'user')?.content ?? ''
   const relevantContent = findRelevantContent(latestUserMessage, scope)
-  const basePrompt = scope === 'crm2' ? CRM2_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
+  const basePrompt = scope === 'dwelly' ? DWELLY_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
   const systemPrompt = `${basePrompt}\n\n${relevantContent}`
 
   const completion = await groq.chat.completions.create({
