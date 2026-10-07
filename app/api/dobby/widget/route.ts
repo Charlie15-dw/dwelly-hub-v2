@@ -93,7 +93,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const text = await generateDobbyReply(messages)
+    // The widget is a CRM 2.0 process helper — answer only from 2.0 Maintenance
+    // and Compliance content, never CRM 1.0 or general lettings knowledge.
+    const text = await generateDobbyReply(messages, 'crm2')
     return NextResponse.json({ message: text }, { headers })
   } catch (err: unknown) {
     console.error('Dobby widget API error:', err)

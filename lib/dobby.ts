@@ -14,6 +14,14 @@ export interface ChatMessage {
   content: string
 }
 
+// Which slice of the knowledge base an answer may draw on.
+//  - 'all'  : the full portal — CRM 1.0 training, knowledge articles, CRM 2.0 and
+//             glossary, plus general UK-lettings reasoning. Used by the in-Hub chat.
+//  - 'crm2' : CRM 2.0 Maintenance and Compliance Dwelly content ONLY. No CRM 1.0,
+//             no general knowledge. Used by the Jobs-panel widget, where Dobby is a
+//             focused 2.0 process helper, not a general lettings adviser.
+export type DobbyScope = 'all' | 'crm2'
+
 // ─── Rate limiter ──────────────────────────────────────────────────────────
 const RATE_LIMIT_WINDOW_MS = 60_000
 const RATE_LIMIT_MAX = 30
@@ -230,10 +238,19 @@ function truncate(text: string, max: number): string {
   return text.slice(0, max).replace(/\s+\S*$/, '') + '…'
 }
 
-export function findRelevantContent(query: string, topN = MAX_SECTIONS): string {
+export function findRelevantContent(query: string, scope: DobbyScope = 'all', topN = MAX_SECTIONS): string {
+  // In crm2 scope the only knowledge is the CRM 2.0 Maintenance and Compliance
+  // sections — no CRM 1.0 training, no knowledge articles, no glossary.
+  const crm2Only = scope === 'crm2'
+
   const keywords = extractKeywords(query)
   if (keywords.length === 0) {
-    // No useful keywords — return a couple of trimmed sections as fallback
+    // No useful keywords — return a couple of trimmed sections as fallback.
+    if (crm2Only) {
+      return CRM2_SECTIONS.slice(0, 2)
+        .map(s => `[${s.title}]\n${truncate(s.text, MAX_SECTION_CHARS)}`)
+        .join('\n\n')
+    }
     return TRAINING_PAGES.slice(0, 2)
       .map(p => `[${p.title}]\n${truncate(blocksToText(p.content), MAX_SECTION_CHARS)}`)
       .join('\n\n')
@@ -241,16 +258,18 @@ export function findRelevantContent(query: string, topN = MAX_SECTIONS): string 
 
   const sections: ScoredSection[] = []
 
-  for (const page of TRAINING_PAGES) {
-    const text = blocksToText(page.content)
-    const score = scoreText(page.title + ' ' + text, keywords)
-    if (score > 0) sections.push({ title: page.title, text, score })
-  }
+  if (!crm2Only) {
+    for (const page of TRAINING_PAGES) {
+      const text = blocksToText(page.content)
+      const score = scoreText(page.title + ' ' + text, keywords)
+      if (score > 0) sections.push({ title: page.title, text, score })
+    }
 
-  for (const article of KNOWLEDGE_ARTICLES) {
-    const text = blocksToText(article.content)
-    const score = scoreText(article.title + ' ' + text, keywords)
-    if (score > 0) sections.push({ title: article.title, text, score })
+    for (const article of KNOWLEDGE_ARTICLES) {
+      const text = blocksToText(article.content)
+      const score = scoreText(article.title + ' ' + text, keywords)
+      if (score > 0) sections.push({ title: article.title, text, score })
+    }
   }
 
   for (const section of CRM2_SECTIONS) {
@@ -258,8 +277,9 @@ export function findRelevantContent(query: string, topN = MAX_SECTIONS): string 
     if (score > 0) sections.push({ title: section.title, text: section.text, score })
   }
 
-  // Matching glossary terms, ranked by score, capped and truncated
-  const glossaryMatches = GLOSSARY_TERMS
+  // Matching glossary terms, ranked by score, capped and truncated. Omitted in
+  // crm2 scope — the widget answers only from 2.0 process content, not definitions.
+  const glossaryMatches = crm2Only ? '' : GLOSSARY_TERMS
     .map(t => ({ t, score: scoreText(t.term + ' ' + t.definition, keywords) }))
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score)
@@ -288,6 +308,17 @@ export function findRelevantContent(query: string, topN = MAX_SECTIONS): string 
 }
 
 // ─── System prompt ─────────────────────────────────────────────────────────
+// The two framing paragraphs both prompts share — they keep Dobby from mixing up
+// Dwelly's systems, which matters just as much in the 2.0-only widget.
+const SYSTEM_FRAMING = `TWO DWELLY SYSTEMS — NEVER CONFUSE THEM:
+Dwelly has two separate systems that both handle jobs, and they must never be mixed up.
+- The internal Dwelly CRM is what Property Managers and Team Coordinators use. This is where "Auto mode", "On Hold" / "Pause mode", the Job Chat, provider instruction and the automated reminder flows live. These are Dwelly-side controls that only staff see — a contractor never sees any of them.
+- The Maintenance Provider Portal (provider.dwelly.group) is what external contractors and providers use. It has only Active Jobs, Closed Jobs, Schedule and Earnings, and its job statuses are Awaiting Appointment, Awaiting Completion, Awaiting Invoice and Quote Sent. It has NO "Auto mode", NO "On Hold" and NO "Job Chat".
+When a question is about what a contractor or provider does in their portal, answer only in terms of the provider portal. Never tell a contractor to check for "Auto mode" or "On Hold", or to use a "Job Chat" — those do not exist on their side. A contractor treats every job that appears in Active Jobs as a live work order: they book the visit with the tenant, carry out the work, then upload their invoice, certificate and completion photos (or reply to the job email) to close it and get paid.
+
+CRM 2.0 (COMPLIANCE AND MAINTENANCE):
+CRM 2.0 is Dwelly's newer, agent-driven version of the internal staff CRM. It runs two tracks: Compliance (certificate jobs — Gas Safety/CP12, EICR, EPC and so on) and Maintenance (repair jobs — a leak, a broken boiler, a blocked drain). In both, an AI agent runs the routine end to end and the operator steps in only at the human checkpoints. For compliance those are mainly Certificate review and Invoice review; for maintenance they are tidying the report at tenant triage, choosing the provider, and approving the invoice. One crucial difference between the tracks: in maintenance the agent NEVER picks the provider — provider selection is always a human choice in the picker — whereas in compliance the system can auto-assign a provider if the landlord is unresponsive. When content below is labelled "CRM 2.0 Compliance" or "CRM 2.0 Maintenance", it describes this staff-facing 2.0 system, not CRM 1.0 and not the provider portal. Answer CRM 2.0 questions from that content, keep the two tracks distinct, and if a 2.0 process differs from the older CRM, follow the 2.0 content.`
+
 const BASE_SYSTEM_PROMPT = `You are Dobby, the expert assistant for the Dwelly Training Portal. You help property managers at Dwelly and its partner agencies with UK residential lettings (England) and their day-to-day work. Think and answer like an experienced, knowledgeable property professional.
 
 HOW TO ANSWER:
@@ -300,29 +331,48 @@ HOW TO ANSWER:
 7. Keep answers clear and reasonably concise. Write for someone working in UK residential lettings who is not a lawyer.
 8. You are Dobby. Never say you are an AI, and never refer to yourself as Claude, Gemini or Groq.
 
-TWO DWELLY SYSTEMS — NEVER CONFUSE THEM:
-Dwelly has two separate systems that both handle jobs, and they must never be mixed up.
-- The internal Dwelly CRM is what Property Managers and Team Coordinators use. This is where "Auto mode", "On Hold" / "Pause mode", the Job Chat, provider instruction and the automated reminder flows live. These are Dwelly-side controls that only staff see — a contractor never sees any of them.
-- The Maintenance Provider Portal (provider.dwelly.group) is what external contractors and providers use. It has only Active Jobs, Closed Jobs, Schedule and Earnings, and its job statuses are Awaiting Appointment, Awaiting Completion, Awaiting Invoice and Quote Sent. It has NO "Auto mode", NO "On Hold" and NO "Job Chat".
-When a question is about what a contractor or provider does in their portal, answer only in terms of the provider portal. Never tell a contractor to check for "Auto mode" or "On Hold", or to use a "Job Chat" — those do not exist on their side. A contractor treats every job that appears in Active Jobs as a live work order: they book the visit with the tenant, carry out the work, then upload their invoice, certificate and completion photos (or reply to the job email) to close it and get paid.
-
-CRM 2.0 (COMPLIANCE AND MAINTENANCE):
-CRM 2.0 is Dwelly's newer, agent-driven version of the internal staff CRM. It runs two tracks: Compliance (certificate jobs — Gas Safety/CP12, EICR, EPC and so on) and Maintenance (repair jobs — a leak, a broken boiler, a blocked drain). In both, an AI agent runs the routine end to end and the operator steps in only at the human checkpoints. For compliance those are mainly Certificate review and Invoice review; for maintenance they are tidying the report at tenant triage, choosing the provider, and approving the invoice. One crucial difference between the tracks: in maintenance the agent NEVER picks the provider — provider selection is always a human choice in the picker — whereas in compliance the system can auto-assign a provider if the landlord is unresponsive. When content below is labelled "CRM 2.0 Compliance" or "CRM 2.0 Maintenance", it describes this staff-facing 2.0 system, not CRM 1.0 and not the provider portal. Answer CRM 2.0 questions from that content, keep the two tracks distinct, and if a 2.0 process differs from the older CRM, follow the 2.0 content.
+${SYSTEM_FRAMING}
 
 RELEVANT PORTAL CONTENT:`
+
+// CRM 2.0-only prompt for the Jobs-panel widget. Dobby here is a focused process
+// helper: it answers strictly from the CRM 2.0 Maintenance and Compliance content
+// provided, and declines anything that isn't 2.0 — no CRM 1.0, no general UK
+// lettings law or best-practice reasoning. The content block is 2.0-only too, so
+// this prompt and the retrieval scope reinforce each other.
+const CRM2_SYSTEM_PROMPT = `You are Dobby, the assistant inside the Dwelly Jobs panel. In here you help the team with Dwelly's CRM 2.0 Maintenance and Compliance processes only. Answer like someone who knows the 2.0 workflow inside out.
+
+HOW TO ANSWER:
+1. Answer ONLY from the CRM 2.0 Maintenance and Compliance content provided below. That content is your single source of truth.
+2. Do NOT answer from general UK residential lettings law or best practice, and do NOT answer from CRM 1.0, the older CRM, or any other Dwelly material. If the content below does not cover the question, do not fill the gap from outside knowledge.
+3. Be specific and practical about the 2.0 steps — the exact buttons, stages, checkpoints and SOP actions the operator should take, and keep the Compliance and Maintenance tracks distinct.
+4. If the question is not about CRM 2.0 Maintenance or Compliance, or the content below does not cover it, say exactly: "I can only help with CRM 2.0 Maintenance and Compliance in here. For anything else, head to the Hub or ask Charlie Lockwood." Do not attempt a general answer instead.
+5. Write in plain sentences only. No bold, no bullet points, no numbered lists, no headers, no markdown formatting of any kind.
+6. Keep answers clear and reasonably concise.
+7. You are Dobby. Never say you are an AI, and never refer to yourself as Claude, Gemini or Groq.
+
+${SYSTEM_FRAMING}
+
+RELEVANT CRM 2.0 CONTENT:`
 
 // ─── Model call ────────────────────────────────────────────────────────────
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 /**
  * Run a validated conversation through the Dobby brain and return its reply.
- * Retrieval is keyed off the latest user message. Throws if the model call
- * fails; callers decide how to surface that.
+ * Retrieval is keyed off the latest user message. The scope selects which slice
+ * of the knowledge base (and which system prompt) is used: 'all' for the full
+ * in-Hub assistant, 'crm2' for the 2.0-only Jobs-panel widget. Throws if the
+ * model call fails; callers decide how to surface that.
  */
-export async function generateDobbyReply(messages: ChatMessage[]): Promise<string> {
+export async function generateDobbyReply(
+  messages: ChatMessage[],
+  scope: DobbyScope = 'all'
+): Promise<string> {
   const latestUserMessage = [...messages].reverse().find(m => m.role === 'user')?.content ?? ''
-  const relevantContent = findRelevantContent(latestUserMessage)
-  const systemPrompt = `${BASE_SYSTEM_PROMPT}\n\n${relevantContent}`
+  const relevantContent = findRelevantContent(latestUserMessage, scope)
+  const basePrompt = scope === 'crm2' ? CRM2_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
+  const systemPrompt = `${basePrompt}\n\n${relevantContent}`
 
   const completion = await groq.chat.completions.create({
     model: 'openai/gpt-oss-120b',
