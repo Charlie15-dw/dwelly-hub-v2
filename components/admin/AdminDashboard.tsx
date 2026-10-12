@@ -112,6 +112,10 @@ export default function AdminDashboard({
             <Activity className="w-4 h-4" aria-hidden />
             Usage
           </Link>
+          <Link href="/admin/widget-usage" className="btn-outline text-sm">
+            <LayoutGrid className="w-4 h-4" aria-hidden />
+            Widget usage
+          </Link>
           <InviteUserButton />
         </div>
       </div>
