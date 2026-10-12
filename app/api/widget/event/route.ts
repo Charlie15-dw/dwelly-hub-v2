@@ -83,11 +83,18 @@ export async function POST(req: NextRequest) {
 
   try {
     const service = createServiceClient()
-    await service.from('widget_events').insert({
+    // supabase-js returns DB errors in `error` rather than throwing, so check it
+    // explicitly — otherwise a failed insert (e.g. missing table) would look like
+    // a success and we'd never know the tracking wasn't landing.
+    const { error } = await service.from('widget_events').insert({
       client_id: clientIdStr,
       event: eventStr,
       tab: ALLOWED_TABS.has(tabStr) ? tabStr : null,
     })
+    if (error) {
+      console.error('Widget event insert error:', error)
+      return NextResponse.json({ error: 'Insert failed' }, { status: 500, headers })
+    }
     // 204 — the widget fires these fire-and-forget and ignores the body.
     return new NextResponse(null, { status: 204, headers })
   } catch (err: unknown) {
