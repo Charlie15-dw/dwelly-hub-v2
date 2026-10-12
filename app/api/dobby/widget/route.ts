@@ -23,6 +23,20 @@ function isAllowedOrigin(origin: string | null): boolean {
   return !!origin && allowedOrigins().includes(origin)
 }
 
+// The widget renders Dobby's reply as plain text (no Markdown parser), so any
+// stray emphasis or heading markers the model slips in would show as literal
+// characters. Strip them here — keeping the dash bullets, which are what we want.
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/\*\*([^*]+)\*\*/g, '$1')      // **bold** → bold
+    .replace(/__([^_]+)__/g, '$1')          // __bold__ → bold
+    .replace(/^[ \t]*[*+][ \t]+/gm, '- ')   // *, + list markers → dash bullet
+    .replace(/^[ \t]*#{1,6}[ \t]+/gm, '')   // # headings → plain line
+    .replace(/`([^`]+)`/g, '$1')            // `code` → code
+    .replace(/\*\*|__/g, '')                // any leftover emphasis runs
+    .trim()
+}
+
 // Build the CORS headers for a given request origin. Only echoes the origin back
 // when it is on the allowlist, so disallowed sites get no CORS grant.
 function corsHeaders(origin: string | null): Record<string, string> {
@@ -97,7 +111,7 @@ export async function POST(req: NextRequest) {
     // content (move-outs, inspections, 2.0 Maintenance/Compliance), but send
     // general lettings-law questions to the Hub rather than answering them here.
     const text = await generateDobbyReply(messages, 'dwelly')
-    return NextResponse.json({ message: text }, { headers })
+    return NextResponse.json({ message: stripMarkdown(text) }, { headers })
   } catch (err: unknown) {
     console.error('Dobby widget API error:', err)
     const message = err instanceof Error ? err.message : String(err)
