@@ -10,7 +10,6 @@
 // the tab state in the browser.
 
 import { useState } from 'react'
-import Link from 'next/link'
 import {
   Users, CheckCircle2, Brain, RefreshCw, CalendarCheck, Activity,
   LayoutGrid, ClipboardList,
@@ -23,6 +22,8 @@ import { RAG_DOT, RAG_LABEL } from '@/lib/rag'
 import CompetencyHeatmap from '@/components/manager/CompetencyHeatmap'
 import PeopleDirectory, { type DirectoryPerson } from '@/components/manager/PeopleDirectory'
 import Crm2AssessmentPanel from '@/components/manager/Crm2AssessmentPanel'
+import UsageDashboard from '@/components/usage/UsageDashboard'
+import type { UsageEvent } from '@/lib/usage'
 
 interface Member { id: string; displayName: string; initials: string }
 interface HeatmapResult { user_id: string; assessment_id: string; score: number }
@@ -59,6 +60,7 @@ interface Props {
   heatmapResults: HeatmapResult[]
   crm2People: Member[]
   crm2Results: Crm2Result[]
+  usageEvents: UsageEvent[]
   reassignMembers: ReassignMember[]
   assignUnassigned: AssignPerson[]
   assignMyTeam: AssignPerson[]
@@ -69,7 +71,7 @@ interface Props {
   totalAssessments: number
 }
 
-type TabKey = 'overview' | 'team' | 'manage' | 'development'
+type TabKey = 'overview' | 'team' | 'usage' | 'manage' | 'development'
 
 export default function ManagerDashboard({
   teamCount,
@@ -81,6 +83,7 @@ export default function ManagerDashboard({
   heatmapResults,
   crm2People,
   crm2Results,
+  usageEvents,
   reassignMembers,
   assignUnassigned,
   assignMyTeam,
@@ -98,10 +101,6 @@ export default function ManagerDashboard({
         <h1 className="text-xl font-bold text-navy">Manager Dashboard</h1>
         <p className="text-sm text-slate-500 mt-0.5">Team progress — Training Programme</p>
       </div>
-      <Link href="/manager/usage" className="btn-outline text-sm">
-        <Activity className="w-4 h-4" aria-hidden />
-        Usage
-      </Link>
     </div>
   )
 
@@ -127,6 +126,7 @@ export default function ManagerDashboard({
   const tabs: { key: TabKey; label: string; icon: typeof Users; count?: number }[] = [
     { key: 'overview', label: 'Overview', icon: LayoutGrid },
     { key: 'team', label: 'Team', icon: Users, count: teamCount },
+    { key: 'usage', label: 'Usage', icon: Activity },
     { key: 'manage', label: 'Manage', icon: RefreshCw, count: reassignMembers.length || undefined },
     { key: 'development', label: 'Development', icon: Brain },
   ]
@@ -232,6 +232,16 @@ export default function ManagerDashboard({
           title="Team Progress"
           secondaryColumn="role"
           showActivity
+        />
+      )}
+
+      {/* ── Usage ────────────────────────────────────────────────────────── */}
+      {tab === 'usage' && (
+        <UsageDashboard
+          events={usageEvents}
+          title="Team Usage"
+          subtitle="What your team is viewing on the Hub, and how active they are."
+          emptyHint="Once your team members start using the Hub, their activity will show here."
         />
       )}
 

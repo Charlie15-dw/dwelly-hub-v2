@@ -1,5 +1,6 @@
 import { Sparkles, CheckCircle2, XCircle } from 'lucide-react'
 import { CRM2_LESSONS } from '@/lib/crm2-content'
+import { MAINTENANCE_LESSONS } from '@/lib/crm2-maintenance-content'
 
 // A self-contained panel for the manager/admin dashboards showing CRM 2.0
 // knowledge-check results. CRM 2.0 is a private preview (gated to an allow-list),
@@ -29,8 +30,10 @@ export default function Crm2AssessmentPanel({
   results: Crm2Result[]
 }) {
   // The quizzes are derived from the lessons that carry a quizModuleId, so this
-  // stays in sync automatically as CRM 2.0 lessons gain or lose quizzes.
-  const quizzes = CRM2_LESSONS
+  // stays in sync automatically as CRM 2.0 lessons gain or lose quizzes. Both
+  // tracks are included — Compliance (CRM2_LESSONS) and Maintenance
+  // (MAINTENANCE_LESSONS) — so the manager sees the full 2.0 picture.
+  const quizzes = [...CRM2_LESSONS, ...MAINTENANCE_LESSONS]
     .filter((l) => l.quizModuleId)
     .map((l) => ({ id: l.quizModuleId!, title: l.title }))
   const quizIds = new Set(quizzes.map((q) => q.id))

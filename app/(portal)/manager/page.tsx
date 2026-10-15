@@ -1,11 +1,12 @@
 import { redirect } from 'next/navigation'
 import { MODULES, RECAP_ROUNDS } from '@/lib/data'
 import { CRM2_LESSONS } from '@/lib/crm2-content'
-import { createServerClient } from '@/lib/supabase/server'
+import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { isHubBeta } from '@/lib/preview'
 import { ragStatus } from '@/lib/rag'
 import { type DirectoryPerson } from '@/components/manager/PeopleDirectory'
 import ManagerDashboard from '@/components/manager/ManagerDashboard'
+import type { UsageEvent } from '@/lib/usage'
 
 // All assessable items — matches the assessments page exactly
 const ALL_ASSESSMENT_IDS = [
@@ -20,6 +21,11 @@ const ALL_ASSESSMENT_IDS = [
   'release-contractor-portal-2026',
 ]
 const TOTAL_ASSESSMENTS = ALL_ASSESSMENT_IDS.length // 16
+
+// Pull up to 6 months of team activity so the Usage tab's range selector
+// (today → 6 months) can filter client-side. Capped so a busy team can't pull
+// an unbounded payload.
+const USAGE_FETCH_LIMIT = 20000
 
 export default async function ManagerPage() {
   const supabase = createServerClient()
@@ -76,6 +82,20 @@ export default async function ManagerPage() {
         .from('learning_profiles')
         .select('user_id, style_label, style_icon, confidence_label, confidence_pct, manager_note, completed_at')
         .in('user_id', teamIds)
+    : { data: [] }
+
+  // Team activity for the Usage tab — scoped strictly to this manager's team.
+  // Uses the service client so RLS doesn't hide teammates' rows.
+  const sixMonthsAgo = new Date()
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+  const { data: activityEvents } = teamIds.length > 0
+    ? await createServiceClient()
+        .from('activity_events')
+        .select('user_id, path, created_at')
+        .in('user_id', teamIds)
+        .gte('created_at', sixMonthsAgo.toISOString())
+        .order('created_at', { ascending: false })
+        .limit(USAGE_FETCH_LIMIT)
     : { data: [] }
 
   // Build per-user stats
@@ -171,6 +191,20 @@ export default async function ManagerPage() {
     completed_at: r.completed_at,
   }))
 
+  // Usage events for the Usage tab — resolve each event's name/email from the
+  // team roster so the dashboard can label people without another lookup.
+  const nameById = new Map<string, string | null>(teamMembers.map(m => [m.id, m.full_name ?? null]))
+  const emailById = new Map<string, string>(
+    teamMembers.filter(m => m.email).map(m => [m.id, m.email as string])
+  )
+  const usageEvents: UsageEvent[] = (activityEvents ?? []).map(e => ({
+    userId: e.user_id,
+    path: e.path,
+    createdAt: e.created_at,
+    name: nameById.get(e.user_id) ?? null,
+    email: emailById.get(e.user_id) ?? '(unknown user)',
+  }))
+
   // Reassignment — resolve module labels server-side (via MODULES / CRM2_LESSONS).
   const reassignMembers = sorted
     .filter(m => m.failedModules.length > 0)
@@ -242,6 +276,7 @@ export default async function ManagerPage() {
       heatmapResults={heatmapResults}
       crm2People={crm2People}
       crm2Results={crm2Results}
+      usageEvents={usageEvents}
       reassignMembers={reassignMembers}
       assignUnassigned={unassigned}
       assignMyTeam={assignMyTeam}
