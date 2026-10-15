@@ -59,6 +59,49 @@ export function checkRateLimit(key: string): { allowed: boolean; retryAfter: num
   return { allowed: true, retryAfter: 0 }
 }
 
+// ─── Widget rate limiter ───────────────────────────────────────────────────
+// The public widget endpoint is callable by anyone who finds the URL, so it gets
+// a tighter limit than the logged-in Hub route: a low per-IP rate plus a global
+// ceiling across all callers, so a flood from many IPs still can't run the model
+// bill up without bound.
+// NOTE: this is an in-memory, best-effort limiter. On serverless each instance
+// has its own memory, so it's a backstop, not a hard cap — the real ceilings are
+// the Vercel Firewall rate rules and the Groq account spending cap.
+const WIDGET_PER_IP_WINDOW_MS = 60_000      // 1 minute
+const WIDGET_PER_IP_MAX = 10                // 10 requests / min / IP
+const WIDGET_GLOBAL_WINDOW_MS = 3_600_000   // 1 hour
+const WIDGET_GLOBAL_MAX = 300               // 300 requests / hour, all callers
+
+const widgetIpStore = new Map<string, { count: number; resetAt: number }>()
+let widgetGlobal = { count: 0, resetAt: 0 }
+
+export function checkWidgetRateLimit(ip: string): { allowed: boolean; retryAfter: number } {
+  const now = Date.now()
+
+  // Global ceiling first — once the hourly total is hit, nothing else gets through
+  // regardless of which IP it comes from. A blocked request is not counted.
+  if (now >= widgetGlobal.resetAt) {
+    widgetGlobal = { count: 0, resetAt: now + WIDGET_GLOBAL_WINDOW_MS }
+  }
+  if (widgetGlobal.count >= WIDGET_GLOBAL_MAX) {
+    return { allowed: false, retryAfter: Math.ceil((widgetGlobal.resetAt - now) / 1000) }
+  }
+
+  // Per-IP window.
+  const entry = widgetIpStore.get(ip)
+  if (!entry || now >= entry.resetAt) {
+    widgetIpStore.set(ip, { count: 1, resetAt: now + WIDGET_PER_IP_WINDOW_MS })
+    widgetGlobal.count++
+    return { allowed: true, retryAfter: 0 }
+  }
+  if (entry.count >= WIDGET_PER_IP_MAX) {
+    return { allowed: false, retryAfter: Math.ceil((entry.resetAt - now) / 1000) }
+  }
+  entry.count++
+  widgetGlobal.count++
+  return { allowed: true, retryAfter: 0 }
+}
+
 // ─── Input validation ──────────────────────────────────────────────────────
 const MAX_MESSAGE_LENGTH = 800
 const MAX_MESSAGES = 20

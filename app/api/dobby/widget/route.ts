@@ -5,7 +5,7 @@
 // matching x-dobby-key header. It answers through the same shared brain as the
 // Hub (lib/dobby.ts), so responses are identical.
 import { NextRequest, NextResponse } from 'next/server'
-import { checkRateLimit, validateMessages, generateDobbyReply } from '@/lib/dobby'
+import { checkWidgetRateLimit, validateMessages, generateDobbyReply } from '@/lib/dobby'
 
 // Origins allowed to embed the widget and call this endpoint. The Jobs panel is
 // the default; extra origins can be added via DOBBY_WIDGET_ORIGINS (comma-separated).
@@ -76,11 +76,12 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Rate limit per client IP (shared window with the Hub route).
+  // Rate limit: tight per-IP plus a global hourly ceiling (this endpoint is
+  // public, so it gets a stricter limiter than the logged-in Hub route).
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim()
     ?? req.headers.get('x-real-ip')
     ?? 'unknown'
-  const { allowed, retryAfter } = checkRateLimit(`widget:${ip}`)
+  const { allowed, retryAfter } = checkWidgetRateLimit(ip)
   if (!allowed) {
     return NextResponse.json(
       { error: 'Too many requests' },
