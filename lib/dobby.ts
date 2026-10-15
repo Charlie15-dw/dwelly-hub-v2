@@ -3,6 +3,7 @@
 // answer through this one module, so they always give identical responses from a
 // single source of truth. The HTTP concerns (auth, CORS) live in the routes; all
 // the retrieval, prompt-building and model-calling lives here.
+import Anthropic from '@anthropic-ai/sdk'
 import Groq from 'groq-sdk'
 import { TRAINING_PAGES, KNOWLEDGE_ARTICLES, ContentBlock } from '@/lib/training-content'
 import { CRM2_LESSONS, Crm2Block, Crm2Lesson } from '@/lib/crm2-content'
@@ -66,7 +67,8 @@ export function checkRateLimit(key: string): { allowed: boolean; retryAfter: num
 // bill up without bound.
 // NOTE: this is an in-memory, best-effort limiter. On serverless each instance
 // has its own memory, so it's a backstop, not a hard cap — the real ceilings are
-// the Vercel Firewall rate rules and the Groq account spending cap.
+// the Vercel Firewall rate rules and the Anthropic account spending cap (Groq's too, while it
+// remains the fallback).
 const WIDGET_PER_IP_WINDOW_MS = 60_000      // 1 minute
 const WIDGET_PER_IP_MAX = 10                // 10 requests / min / IP
 const WIDGET_GLOBAL_WINDOW_MS = 3_600_000   // 1 hour
@@ -285,8 +287,9 @@ function extractKeywords(query: string): string[] {
 }
 
 // Budgets that keep the injected context well under the model's tokens-per-minute
-// limit no matter how large the knowledge base grows. Groq counts input + output
-// tokens together, so we cap the retrieved context (roughly 4 chars per token).
+// limit no matter how large the knowledge base grows, and the per-question cost bounded
+// (input tokens are billed on every request), so we cap the retrieved context (roughly 4 chars
+// per token).
 const MAX_SECTIONS = 5          // most relevant articles/pages to include
 const MAX_SECTION_CHARS = 1500  // truncate each section so one long article can't dominate
 const MAX_GLOSSARY_TERMS = 4    // matching glossary definitions to append
@@ -417,7 +420,40 @@ ${SYSTEM_FRAMING}
 RELEVANT DWELLY PROCESS CONTENT:`
 
 // ─── Model call ────────────────────────────────────────────────────────────
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+// Dobby answers through Claude Sonnet 5.5 (Anthropic). It moved off Groq's gpt-oss-120b in
+// October 2026. Groq stays as a FALLBACK, used when no ANTHROPIC_API_KEY is configured or when a
+// Claude call fails (outage, rate limit, a rejected request), so a problem on the Claude side
+// degrades Dobby to the old model rather than taking it down. Every fallback is logged, and the
+// routes report the model that answered in an X-Dobby-Model header, so a silent fallback shows up.
+const DOBBY_MODEL = 'claude-sonnet-5-5'
+// Thinking is on (adaptive, the model's default) and counts toward max_tokens, so this is set
+// well above the length of a short bullet answer: at Groq's old 700 the thinking could crowd out
+// the answer itself. Reply length is governed by the prompt, not by truncation.
+const DOBBY_MAX_TOKENS = 2000
+
+const anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic() : null
+const groq = process.env.GROQ_API_KEY ? new Groq({ apiKey: process.env.GROQ_API_KEY }) : null
+
+/** Whether any model is configured. The routes answer 500 "Server configuration error" if not. */
+export function dobbyConfigured(): boolean {
+  return !!(anthropic || groq)
+}
+
+// Shown in place of an answer when Claude's safety classifiers decline a question. Dobby is a
+// lettings-process helper, so this should be rare; it must still read as a reply, not an error.
+const REFUSAL_REPLY =
+  "I can't help with that one here. Please check the Hub or ask your team lead."
+
+// Claude's Messages API needs the conversation to start with the user and to end with the user's
+// question: a trailing assistant turn would be read as a prefill, which Sonnet 5.5 rejects with a
+// 400. validateMessages keeps only the last 20, which can begin on an assistant turn, and an empty
+// message is rejected too. Groq accepted all three, so callers have never had to care.
+function forClaude(messages: ChatMessage[]): ChatMessage[] {
+  const out = messages.filter(m => m.content.length > 0)
+  while (out.length && out[0].role === 'assistant') out.shift()
+  while (out.length && out[out.length - 1].role === 'assistant') out.pop()
+  return out
+}
 
 /**
  * Run a validated conversation through the Dobby brain and return its reply.
@@ -430,11 +466,69 @@ export async function generateDobbyReply(
   messages: ChatMessage[],
   scope: DobbyScope = 'all'
 ): Promise<string> {
+  return (await generateDobbyAnswer(messages, scope)).text
+}
+
+export interface DobbyAnswer {
+  text: string
+  /** The model that produced the text: 'claude-sonnet-5-5', or the Groq fallback's. */
+  model: string
+}
+
+/** As generateDobbyReply, but also says which model answered — for the routes' header. */
+export async function generateDobbyAnswer(
+  messages: ChatMessage[],
+  scope: DobbyScope = 'all'
+): Promise<DobbyAnswer> {
   const latestUserMessage = [...messages].reverse().find(m => m.role === 'user')?.content ?? ''
   const relevantContent = findRelevantContent(latestUserMessage, scope)
   const basePrompt = scope === 'dwelly' ? DWELLY_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
   const systemPrompt = `${basePrompt}\n\n${relevantContent}`
 
+  if (anthropic) {
+    const conversation = forClaude(messages)
+    if (!conversation.length) return { text: '', model: DOBBY_MODEL }
+    try {
+      const response = await anthropic.beta.messages.create({
+        model: DOBBY_MODEL,
+        max_tokens: DOBBY_MAX_TOKENS,
+        system: systemPrompt,
+        messages: conversation,
+        // 'low' is the recommended starting point for chat on Sonnet 5.5: short, grounded answers
+        // don't repay deeper thinking, and it keeps cost and latency down. No temperature — Sonnet
+        // 5.5 rejects non-default sampling values; consistency comes from the prompt.
+        output_config: { effort: 'low' },
+        // On a safety decline in a category it covers, the API re-runs the request on a fallback
+        // model inside the same call. Requires the beta endpoint and this exact header.
+        betas: ['server-side-fallback-2026-07-01'],
+        fallbacks: 'default',
+      })
+      if (response.stop_reason === 'refusal') return { text: REFUSAL_REPLY, model: DOBBY_MODEL }
+      // Read by block type: with thinking on, the response can begin with a thinking block.
+      const text = response.content
+        .map(block => (block.type === 'text' ? block.text : ''))
+        .join('')
+        .trim()
+      return { text, model: DOBBY_MODEL }
+    } catch (err) {
+      // Typed errors, most specific first, so the logs say which kind of failure it was.
+      if (err instanceof Anthropic.RateLimitError) {
+        console.error('Dobby: Claude rate limit reached', err.status)
+      } else if (err instanceof Anthropic.AuthenticationError) {
+        console.error('Dobby: ANTHROPIC_API_KEY was rejected')
+      } else if (err instanceof Anthropic.APIError) {
+        console.error('Dobby: Claude API error', err.status, err.message)
+      } else {
+        console.error('Dobby: Claude call failed', err)
+      }
+      if (!groq) throw err
+      console.warn('Dobby: falling back to Groq after the Claude failure above')
+    }
+  } else {
+    console.warn('Dobby: ANTHROPIC_API_KEY is not set; answering with Groq')
+  }
+
+  if (!groq) throw new Error('No Dobby model configured')
   const completion = await groq.chat.completions.create({
     model: 'openai/gpt-oss-120b',
     messages: [
@@ -445,5 +539,5 @@ export async function generateDobbyReply(
     temperature: 0.2,
   })
 
-  return completion.choices[0]?.message?.content ?? ''
+  return { text: completion.choices[0]?.message?.content ?? '', model: 'groq/openai/gpt-oss-120b' }
 }

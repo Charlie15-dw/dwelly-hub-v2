@@ -5,7 +5,7 @@
 // matching x-dobby-key header. It answers through the same shared brain as the
 // Hub (lib/dobby.ts), so responses are identical.
 import { NextRequest, NextResponse } from 'next/server'
-import { checkWidgetRateLimit, validateMessages, generateDobbyReply } from '@/lib/dobby'
+import { checkWidgetRateLimit, validateMessages, generateDobbyAnswer, dobbyConfigured } from '@/lib/dobby'
 
 // Origins allowed to embed the widget and call this endpoint. The Jobs panel is
 // the default; extra origins can be added via DOBBY_WIDGET_ORIGINS (comma-separated).
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  if (!process.env.GROQ_API_KEY) {
+  if (!dobbyConfigured()) {
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500, headers })
   }
 
@@ -111,11 +111,13 @@ export async function POST(req: NextRequest) {
     // The widget is a Dwelly-process helper — answer from Dwelly's own process
     // content (move-outs, inspections, 2.0 Maintenance/Compliance), but send
     // general lettings-law questions to the Hub rather than answering them here.
-    const text = await generateDobbyReply(messages, 'dwelly')
-    return NextResponse.json({ message: stripMarkdown(text) }, { headers })
+    const answer = await generateDobbyAnswer(messages, 'dwelly')
+    return NextResponse.json({ message: stripMarkdown(answer.text) },
+                             { headers: { ...headers, 'X-Dobby-Model': answer.model } })
   } catch (err: unknown) {
+    // Logged in full; the caller gets a generic message. This endpoint is public, and the model
+    // provider's error text can name internals (model, request ids, account limits).
     console.error('Dobby widget API error:', err)
-    const message = err instanceof Error ? err.message : String(err)
-    return NextResponse.json({ error: message }, { status: 500, headers })
+    return NextResponse.json({ error: 'Dobby is unavailable right now' }, { status: 500, headers })
   }
 }

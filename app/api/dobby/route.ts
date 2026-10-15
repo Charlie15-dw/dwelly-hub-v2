@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
-import { checkRateLimit, validateMessages, generateDobbyReply } from '@/lib/dobby'
+import { checkRateLimit, validateMessages, generateDobbyAnswer, dobbyConfigured } from '@/lib/dobby'
 
 function getClientIp(req: NextRequest): string {
   return (
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  if (!process.env.GROQ_API_KEY) {
+  if (!dobbyConfigured()) {
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
   }
 
@@ -43,11 +43,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const text = await generateDobbyReply(messages)
-    return NextResponse.json({ message: text })
+    const answer = await generateDobbyAnswer(messages)
+    return NextResponse.json({ message: answer.text }, { headers: { 'X-Dobby-Model': answer.model } })
   } catch (err: unknown) {
+    // Logged in full; the caller gets a generic message. The model provider's error text can
+    // name internals (model, request ids, account limits) that have no business in a client.
     console.error('Dobby API error:', err)
-    const message = err instanceof Error ? err.message : String(err)
-    return NextResponse.json({ error: message }, { status: 500 })
+    return NextResponse.json({ error: 'Dobby is unavailable right now' }, { status: 500 })
   }
 }
