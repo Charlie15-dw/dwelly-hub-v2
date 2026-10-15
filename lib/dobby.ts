@@ -27,8 +27,17 @@ export type DobbyScope = 'all' | 'dwelly'
 
 // In 'dwelly' scope these legacy CRM 1.0 training pages are withheld: maintenance
 // and compliance are answered from the CRM 2.0 content instead, so the older 1.0
-// steps can't surface and contradict it.
-const DWELLY_SCOPE_EXCLUDED_PAGES = new Set(['maintenance', 'compliance'])
+// steps can't surface and contradict it. This includes the two "Auto Mode vs On
+// Hold" guides — they describe the 1.0 Auto/Pause and "Assign Progress: Certificate
+// Issued" flow, which doesn't exist in the 2.0 stage-based process. A question like
+// "what do I do when the landlord hasn't responded" matches them strongly, so left
+// in scope they pull the widget back to the old flow instead of the current 2.0 SOP.
+const DWELLY_SCOPE_EXCLUDED_PAGES = new Set([
+  'maintenance',
+  'compliance',
+  'auto-vs-hold',
+  'auto-vs-hold-compliance',
+])
 
 // ─── Rate limiter ──────────────────────────────────────────────────────────
 const RATE_LIMIT_WINDOW_MS = 60_000
