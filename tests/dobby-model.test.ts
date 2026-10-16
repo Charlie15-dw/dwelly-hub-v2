@@ -1,4 +1,5 @@
-// Dobby's model call: Claude Sonnet 5.5, with Groq as the fallback. Both SDKs are mocked, so these
+// Dobby's model call: the widget's Dobby on Claude Sonnet 5.5 with Groq as the fallback; the
+// in-Hub Dobby on Groq. Both SDKs are mocked, so these
 // pin the REQUEST Dobby sends and how it reads the response, without spending anything.
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
@@ -59,14 +60,14 @@ describe('Dobby on Claude', () => {
   it('leaves room for thinking: the token cap is well above Groq\'s old 700', async () => {
     const dobby = await load({ anthropic: true })
     claudeCreate.mockResolvedValue(claudeSays('ok'))
-    await dobby.generateDobbyAnswer([q('x')])
+    await dobby.generateDobbyAnswer([q('x')], 'dwelly')
     expect(claudeCreate.mock.calls[0][0].max_tokens).toBeGreaterThan(700)
   })
 
   it('reads the answer by block type, skipping the leading thinking block', async () => {
     const dobby = await load({ anthropic: true })
     claudeCreate.mockResolvedValue(claudeSays('The answer'))
-    expect((await dobby.generateDobbyAnswer([q('x')])).text).toBe('The answer')
+    expect((await dobby.generateDobbyAnswer([q('x')], 'dwelly')).text).toBe('The answer')
   })
 
   it('starts the conversation on a user turn and ends on one', async () => {
@@ -74,21 +75,21 @@ describe('Dobby on Claude', () => {
     // assistant turn would be read as a prefill, which Sonnet 5.5 rejects.
     const dobby = await load({ anthropic: true })
     claudeCreate.mockResolvedValue(claudeSays('ok'))
-    await dobby.generateDobbyAnswer([a('old reply'), q('first'), a('reply'), q('second'), a('dangling')])
+    await dobby.generateDobbyAnswer([a('old reply'), q('first'), a('reply'), q('second'), a('dangling')], 'dwelly')
     expect(claudeCreate.mock.calls[0][0].messages).toEqual([q('first'), a('reply'), q('second')])
   })
 
   it('drops empty messages, which Claude rejects', async () => {
     const dobby = await load({ anthropic: true })
     claudeCreate.mockResolvedValue(claudeSays('ok'))
-    await dobby.generateDobbyAnswer([q(''), q('real question')])
+    await dobby.generateDobbyAnswer([q(''), q('real question')], 'dwelly')
     expect(claudeCreate.mock.calls[0][0].messages).toEqual([q('real question')])
   })
 
   it('answers a refusal with a polite reply, not an error', async () => {
     const dobby = await load({ anthropic: true })
     claudeCreate.mockResolvedValue({ stop_reason: 'refusal', content: [] })
-    const answer = await dobby.generateDobbyAnswer([q('x')])
+    const answer = await dobby.generateDobbyAnswer([q('x')], 'dwelly')
     expect(answer.text).toMatch(/can't help with that/i)
     expect(answer.model).toBe('claude-sonnet-5-5')
   })
@@ -100,7 +101,7 @@ describe('Groq fallback', () => {
     const { default: Anthropic } = await import('@anthropic-ai/sdk') as any
     claudeCreate.mockRejectedValue(new Anthropic.RateLimitError())
     groqCreate.mockResolvedValue(groqSays('From Groq'))
-    const answer = await dobby.generateDobbyAnswer([q('x')])
+    const answer = await dobby.generateDobbyAnswer([q('x')], 'dwelly')
     expect(answer).toEqual({ text: 'From Groq', model: 'groq/openai/gpt-oss-120b' })
     expect(console.error).toHaveBeenCalled()
   })
@@ -108,25 +109,39 @@ describe('Groq fallback', () => {
   it('answers with Groq when no Anthropic key is configured', async () => {
     const dobby = await load({ groq: true })
     groqCreate.mockResolvedValue(groqSays('From Groq'))
-    expect((await dobby.generateDobbyAnswer([q('x')])).model).toBe('groq/openai/gpt-oss-120b')
+    expect((await dobby.generateDobbyAnswer([q('x')], 'dwelly')).model).toBe('groq/openai/gpt-oss-120b')
     expect(claudeCreate).not.toHaveBeenCalled()
   })
 
   it('rethrows a Claude failure when there is no Groq to fall back to', async () => {
     const dobby = await load({ anthropic: true })
     claudeCreate.mockRejectedValue(new Error('down'))
-    await expect(dobby.generateDobbyAnswer([q('x')])).rejects.toThrow('down')
+    await expect(dobby.generateDobbyAnswer([q('x')], 'dwelly')).rejects.toThrow('down')
   })
 
-  it('reports whether any model is configured', async () => {
-    expect((await load({})).dobbyConfigured()).toBe(false)
-    expect((await load({ anthropic: true })).dobbyConfigured()).toBe(true)
+  it('reports whether a model is configured for each Dobby', async () => {
+    expect((await load({})).dobbyConfigured('dwelly')).toBe(false)
+    expect((await load({ anthropic: true })).dobbyConfigured('dwelly')).toBe(true)
+    expect((await load({ groq: true })).dobbyConfigured('dwelly')).toBe(true)
+    // The in-Hub Dobby only uses Groq, so an Anthropic key alone isn't enough for it.
+    expect((await load({ anthropic: true })).dobbyConfigured()).toBe(false)
     expect((await load({ groq: true })).dobbyConfigured()).toBe(true)
   })
 
   it('generateDobbyReply still returns just the text, for any other caller', async () => {
     const dobby = await load({ anthropic: true })
     claudeCreate.mockResolvedValue(claudeSays('plain'))
-    expect(await dobby.generateDobbyReply([q('x')])).toBe('plain')
+    expect(await dobby.generateDobbyReply([q('x')], 'dwelly')).toBe('plain')
+  })
+})
+
+describe('In-Hub Dobby', () => {
+  it('stays on Groq even when an Anthropic key is configured', async () => {
+    const dobby = await load({ anthropic: true, groq: true })
+    groqCreate.mockResolvedValue(groqSays('From Groq'))
+    vi.mocked(console.warn).mockClear()
+    expect(await dobby.generateDobbyAnswer([q('x')])).toEqual({ text: 'From Groq', model: 'groq/openai/gpt-oss-120b' })
+    expect(claudeCreate).not.toHaveBeenCalled()
+    expect(console.warn).not.toHaveBeenCalled()
   })
 })

@@ -420,8 +420,9 @@ ${SYSTEM_FRAMING}
 RELEVANT DWELLY PROCESS CONTENT:`
 
 // ─── Model call ────────────────────────────────────────────────────────────
-// Dobby answers through Claude Sonnet 5.5 (Anthropic). It moved off Groq's gpt-oss-120b in
-// October 2026. Groq stays as a FALLBACK, used when no ANTHROPIC_API_KEY is configured or when a
+// The Jobs-panel widget's Dobby (scope 'dwelly') answers through Claude Sonnet 5.5 (Anthropic);
+// it moved off Groq's gpt-oss-120b in October 2026. The in-Hub Dobby (scope 'all') stays on Groq
+// for now. For the widget, Groq is a FALLBACK, used when no ANTHROPIC_API_KEY is configured or a
 // Claude call fails (outage, rate limit, a rejected request), so a problem on the Claude side
 // degrades Dobby to the old model rather than taking it down. Every fallback is logged, and the
 // routes report the model that answered in an X-Dobby-Model header, so a silent fallback shows up.
@@ -434,9 +435,17 @@ const DOBBY_MAX_TOKENS = 2000
 const anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic() : null
 const groq = process.env.GROQ_API_KEY ? new Groq({ apiKey: process.env.GROQ_API_KEY }) : null
 
-/** Whether any model is configured. The routes answer 500 "Server configuration error" if not. */
-export function dobbyConfigured(): boolean {
-  return !!(anthropic || groq)
+/** Only the widget's Dobby uses Claude; the in-Hub Dobby is Groq-only until it moves too. */
+function usesClaude(scope: DobbyScope): boolean {
+  return scope === 'dwelly'
+}
+
+/**
+ * Whether a model is configured for this scope. The routes answer 500 "Server configuration
+ * error" if not.
+ */
+export function dobbyConfigured(scope: DobbyScope = 'all'): boolean {
+  return !!groq || (usesClaude(scope) && !!anthropic)
 }
 
 // Shown in place of an answer when Claude's safety classifiers decline a question. Dobby is a
@@ -485,7 +494,7 @@ export async function generateDobbyAnswer(
   const basePrompt = scope === 'dwelly' ? DWELLY_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
   const systemPrompt = `${basePrompt}\n\n${relevantContent}`
 
-  if (anthropic) {
+  if (anthropic && usesClaude(scope)) {
     const conversation = forClaude(messages)
     if (!conversation.length) return { text: '', model: DOBBY_MODEL }
     try {
@@ -524,7 +533,7 @@ export async function generateDobbyAnswer(
       if (!groq) throw err
       console.warn('Dobby: falling back to Groq after the Claude failure above')
     }
-  } else {
+  } else if (usesClaude(scope)) {
     console.warn('Dobby: ANTHROPIC_API_KEY is not set; answering with Groq')
   }
 
