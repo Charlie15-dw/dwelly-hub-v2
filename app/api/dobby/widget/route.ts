@@ -5,7 +5,7 @@
 // matching x-dobby-key header. It answers through the same shared brain as the
 // Hub (lib/dobby.ts), so responses are identical.
 import { NextRequest, NextResponse } from 'next/server'
-import { checkWidgetRateLimit, validateMessages, generateDobbyAnswer, dobbyConfigured } from '@/lib/dobby'
+import { checkWidgetRateLimit, validateMessages, validateWidgetContext, generateDobbyAnswer, dobbyConfigured } from '@/lib/dobby'
 
 // Origins allowed to embed the widget and call this endpoint. The Jobs panel is
 // the default; extra origins can be added via DOBBY_WIDGET_ORIGINS (comma-separated).
@@ -100,8 +100,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400, headers })
   }
 
-  const { messages: rawMessages } = body as Record<string, unknown>
+  const { messages: rawMessages, context: rawContext } = body as Record<string, unknown>
   const messages = validateMessages(rawMessages)
+  // The job and the SOPs the widget matched to the question. Optional: an older widget sends none.
+  const context = validateWidgetContext(rawContext)
 
   if (messages.length === 0) {
     return NextResponse.json({ error: 'No valid messages provided' }, { status: 400, headers })
@@ -111,7 +113,7 @@ export async function POST(req: NextRequest) {
     // The widget is a Dwelly-process helper — answer from Dwelly's own process
     // content (move-outs, inspections, 2.0 Maintenance/Compliance), but send
     // general lettings-law questions to the Hub rather than answering them here.
-    const answer = await generateDobbyAnswer(messages, 'dwelly')
+    const answer = await generateDobbyAnswer(messages, 'dwelly', context)
     return NextResponse.json({ message: stripMarkdown(answer.text) },
                              { headers: { ...headers, 'X-Dobby-Model': answer.model } })
   } catch (err: unknown) {
