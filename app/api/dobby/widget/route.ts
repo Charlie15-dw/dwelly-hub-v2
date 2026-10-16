@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  if (!dobbyConfigured('dwelly')) {
+  if (!dobbyConfigured()) {
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500, headers })
   }
 
