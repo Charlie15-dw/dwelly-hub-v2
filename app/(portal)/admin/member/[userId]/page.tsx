@@ -9,6 +9,7 @@ import MemberAssessmentCard from '@/components/admin/MemberAssessmentCard'
 import OnboardingControl from '@/components/admin/OnboardingControl'
 import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
 import AssignManagerPanel from '@/components/ui/AssignManagerPanel'
+import ChangeRolePanel from '@/components/ui/ChangeRolePanel'
 import DeleteUserButton from '@/components/ui/DeleteUserButton'
 
 const ALL_ASSESSMENT_IDS = [
@@ -185,6 +186,15 @@ export default async function AdminMemberDetailPage({
           </div>
           <DeleteUserButton userId={params.userId} userName={displayName} userEmail={memberProfile.email ?? null} />
         </div>
+      )}
+
+      {/* Change role — admin only. Hidden for the admin's own account so they
+          can't accidentally demote themselves out of admin access. */}
+      {params.userId !== user.id && (
+        <ChangeRolePanel
+          userId={params.userId}
+          currentRole={memberProfile.role as 'property-manager' | 'manager' | 'admin'}
+        />
       )}
 
       {/* Staged onboarding — admin control over a new starter's journey.
