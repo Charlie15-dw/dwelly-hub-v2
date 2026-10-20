@@ -55,7 +55,7 @@ export interface Crm2Lesson {
 // Every lesson is checked against the live CRM 2.0 build on this date. Because
 // 2.0 is changing fast, the lesson pages show this as a "freshness" badge so
 // the team can see the material is current. Bump it whenever the set is reviewed.
-export const CRM2_LAST_REVIEWED = '6 Aug 2026'
+export const CRM2_LAST_REVIEWED = '20 Oct 2026'
 
 // The capstone is a single assessment that samples across every lesson quiz —
 // the "you're signed off on 2.0" check. It isn't a normal per-lesson quiz, so
@@ -327,7 +327,15 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'callout', variant: 'tip', text: 'If you realise you need to reassign a substantial number of jobs away from one specific contractor, run it through your TL first before doing it in bulk.' },
 
       { type: 'heading', text: 'Provide Instructions (admin-only)' },
-      { type: 'callout', variant: 'warning', text: 'Never use Provide Instructions unless you\u2019ve consulted an admin. It\u2019s now admin-only, along with Reassign Job and Cancel Job — operators still see the button but will be asked to contact an admin. The main accepted case is a job that\u2019s already closed and someone sends a thank-you or an unrelated email, where the instruction is simply \u201Cdo nothing\u201D.' },
+      { type: 'callout', variant: 'warning', text: 'Never use Provide Instructions unless you\u2019ve consulted an admin. It\u2019s now admin-only, along with Reassign Job and Cancel Job — operators still see the button but will be asked to contact an admin. The main case — a job that\u2019s already closed and someone sends a thank-you or an unrelated email, where the instruction is simply \u201Cdo nothing\u201D — now has its own self-serve button (see No action needed, below).' },
+
+      { type: 'heading', text: 'No action needed & No works needed (self-serve)' },
+      { type: 'paragraph', text: 'Two buttons let you close these situations out yourself, so you no longer have to route them through an admin (Elya).' },
+      { type: 'bullets', items: [
+        'No action needed — now available in the terminal stages (Cancelled and Completed). Use it to close out a job when nothing more is required, such as a landlord sending a \u201Cthank you\u201D after the job is already done. This is the \u201Cdo nothing\u201D case that previously had to go through an admin.',
+        'No works needed — cancels the job and lets everyone who has already been contacted know the ticket is closed, so no party is left expecting a visit.',
+      ]},
+      { type: 'callout', variant: 'important', text: 'Cancel itself still goes through an admin (Elya) only. \u201CNo works needed\u201D closes the job and notifies the people already contacted, but a full Cancel Request remains admin-only — along with Reassign Job and Provide Instructions.' },
 
       { type: 'heading', text: 'Take Over \u2192 call' },
       { type: 'bullets', items: [
