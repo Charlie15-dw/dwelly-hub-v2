@@ -6,8 +6,45 @@ import { SidebarProvider } from '@/components/layout/SidebarContext'
 import CommandPalette from '@/components/hub/CommandPalette'
 import ActivityTracker from '@/components/hub/ActivityTracker'
 import ScrollReset from '@/components/layout/ScrollReset'
+import OnboardingHeader from '@/components/onboarding/OnboardingHeader'
+import { ONBOARDING_HOME, isGraduated } from '@/lib/onboarding-gate'
+import { createServerClient } from '@/lib/supabase/server'
 
-export default function PortalLayout({ children }: { children: React.ReactNode }) {
+export default async function PortalLayout({ children }: { children: React.ReactNode }) {
+  // New starters reach the real lesson / guide / video / quiz pages during their
+  // staged journey, but should see a segregated shell — no Hub sidebar or
+  // navigation — not the full Hub. Decide here which chrome to render.
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  let onboarding = false
+  if (user) {
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('role, onboarding_stage, onboarding_bypass')
+      .eq('id', user.id)
+      .maybeSingle()
+    onboarding = !isGraduated(profile ?? null)
+  }
+
+  if (onboarding) {
+    return (
+      <UserProvider>
+        <SettingsProvider>
+          <div className="relative min-h-[100dvh] bg-[#F5F5F7]">
+            <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+              <div className="hub-orb-a absolute -top-32 -right-24 w-[32rem] h-[32rem] rounded-full bg-orange-500/[0.06] blur-3xl" />
+            </div>
+            <OnboardingHeader backHref={ONBOARDING_HOME} />
+            <main id="main-content" className="hub-fade mx-auto w-full max-w-[1100px] px-4 sm:px-6 py-8">
+              <ScrollReset />
+              {children}
+            </main>
+          </div>
+        </SettingsProvider>
+      </UserProvider>
+    )
+  }
+
   return (
     <UserProvider>
     <SettingsProvider>

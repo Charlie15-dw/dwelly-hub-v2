@@ -59,5 +59,13 @@ export async function POST(req: NextRequest) {
       { onConflict: 'user_id,module_id' }
     )
 
+  // Close out any open retake request now that the grant has been given.
+  await supabase
+    .from('retake_requests')
+    .update({ status: 'resolved', resolved_at: new Date().toISOString() })
+    .eq('user_id', userId)
+    .eq('assessment_id', moduleId)
+    .eq('status', 'pending')
+
   return NextResponse.json({ ok: true })
 }

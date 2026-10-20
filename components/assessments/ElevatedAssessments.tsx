@@ -6,6 +6,7 @@ import { ArrowRight, Check, ChevronRight, Lock, Info } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { clearLegacyLockData } from '@/lib/assessmentStorage'
 import { MODULES } from '@/lib/data'
+import RequestRetakeButton from '@/components/assessments/RequestRetakeButton'
 
 // Elevated Assessments — "group by state, not taxonomy" (rule 03). The only
 // real locks in the product live here (rule 05), so the locked group always
@@ -169,7 +170,7 @@ export default function ElevatedAssessments() {
                     {r.score != null ? `Scored ${r.score}% · ` : ''}pass mark {r.passmark}% · {r.questions} questions
                   </p>
                 </div>
-                <Link href="/hub/connect" className="btn-outline text-[13px] flex-shrink-0">Request retake</Link>
+                <RequestRetakeButton assessmentId={r.id} />
               </div>
             ))}
           </div>

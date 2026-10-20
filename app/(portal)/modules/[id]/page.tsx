@@ -108,6 +108,10 @@ export default async function ModulePage({ params }: { params: { id: string } })
   const prevModule = MODULES[MODULES.indexOf(module) - 1]
   const nextModule = MODULES[MODULES.indexOf(module) + 1]
 
+  // Some modules are reading-only (the knowledge modules carry no training
+  // video). sup-02 has no video of its own but points learners to Support 1/2.
+  const hasVideo = Boolean(MODULE_VIDEO_IDS[params.id]) || params.id === 'sup-02'
+
   return (
     <div className="max-w-4xl space-y-6">
       {/* Back */}
@@ -149,7 +153,7 @@ export default async function ModulePage({ params }: { params: { id: string } })
         <div className="flex items-center gap-6 mt-5 pt-5 border-t border-slate-100 flex-wrap">
           {[
             { icon: Clock,         label: module.duration,    sub: 'Total time' },
-            { icon: Play,          label: module.videoLength, sub: 'Video guide' },
+            ...(hasVideo ? [{ icon: Play, label: module.videoLength, sub: 'Video guide' }] : []),
             { icon: ClipboardCheck,label: `${module.quizCount} questions`, sub: 'Assessment' },
             { icon: Star,          label: `${module.passmark}%`,           sub: 'Pass mark' },
           ].map(({ icon: Icon, label, sub }) => (
@@ -209,22 +213,16 @@ export default async function ModulePage({ params }: { params: { id: string } })
           </div>
         </div>
       ) : (
-        <div className="card p-1 overflow-hidden rounded-2xl">
-          <div className="aspect-video rounded-xl flex items-center justify-center relative overflow-hidden bg-navy">
-            <div className="pointer-events-none absolute -top-10 -right-8 w-40 h-40 rounded-full bg-orange/30 blur-3xl" aria-hidden />
-            <div className="pointer-events-none absolute -bottom-10 -left-8 w-40 h-40 rounded-full bg-orange-400/15 blur-3xl" aria-hidden />
-            <div className="relative text-center">
-              <button
-                className="w-16 h-16 rounded-full bg-orange flex items-center justify-center
-                           shadow-lg hover:bg-orange-600 transition-colors focus:outline-none focus:ring-4 focus:ring-orange/30
-                           active:scale-95"
-                aria-label={`Play video: ${module.title}`}
-              >
-                <Play className="w-6 h-6 text-white ml-0.5" aria-hidden />
-              </button>
-              <p className="font-semibold mt-3 text-sm text-white">{module.title}</p>
-              <p className="text-xs mt-1 text-white/60">{module.videoLength} · Dwelly Training Video</p>
-            </div>
+        <div className="relative overflow-hidden p-6 flex items-center gap-4 rounded-2xl bg-navy text-white shadow-panel">
+          <div className="pointer-events-none absolute -top-16 -right-10 w-48 h-48 rounded-full bg-orange/25 blur-3xl" aria-hidden />
+          <div className="relative w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-orange">
+            <BookOpen className="w-5 h-5 text-white" aria-hidden />
+          </div>
+          <div className="relative">
+            <p className="text-sm font-semibold text-white">Reading module</p>
+            <p className="text-sm text-white/70 mt-0.5">
+              This is a reading-based module — there&rsquo;s no video. Work through the notes below, then complete the assessment.
+            </p>
           </div>
         </div>
       )}

@@ -65,8 +65,8 @@ export default async function MemberDetailPage({
 
   if (!memberProfile) notFound()
 
-  // Fetch all assessment results and pending resets for this member
-  const [{ data: results }, { data: pendingResets }] = await Promise.all([
+  // Fetch all assessment results, pending resets, and open retake requests
+  const [{ data: results }, { data: pendingResets }, { data: retakeRequests }] = await Promise.all([
     supabase
       .from('assessment_results')
       .select('assessment_id, score, passed, answers, completed_at')
@@ -77,10 +77,16 @@ export default async function MemberDetailPage({
       .select('module_id')
       .eq('user_id', params.userId)
       .is('consumed_at', null),
+    supabase
+      .from('retake_requests')
+      .select('assessment_id')
+      .eq('user_id', params.userId)
+      .eq('status', 'pending'),
   ])
 
   const allResults = results ?? []
   const pendingResetIds = new Set((pendingResets ?? []).map(r => r.module_id))
+  const requestedRetakeIds = new Set((retakeRequests ?? []).map(r => r.assessment_id))
 
   const displayName = memberProfile.full_name
     || memberProfile.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
@@ -172,6 +178,11 @@ export default async function MemberDetailPage({
                       <span className="flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full">
                         <XCircle className="w-3.5 h-3.5" /> Failed
                       </span>
+                      {requestedRetakeIds.has(assessmentId) && (
+                        <span className="flex items-center gap-1.5 text-xs font-semibold text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full">
+                          <RefreshCw className="w-3.5 h-3.5" /> Retake requested
+                        </span>
+                      )}
                       <ReassignButton
                         userId={params.userId}
                         moduleId={assessmentId}

@@ -43,12 +43,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/auth/set-password?error=invite_failed`)
   }
 
-  // Set role + name on the newly created profile
+  // Set role + name on the newly created profile. Managers and admins skip the
+  // staged onboarding (straight to graduated); property-managers start at stage
+  // 1 and are walked through each area before the full Hub unlocks.
   const newUserId = linkData.user?.id
   if (newUserId) {
+    const onboardingStage = invite.role === 'property-manager' ? 1 : 7
     await service
       .from('user_profiles')
-      .update({ role: invite.role, full_name: invite.full_name, email: invite.email })
+      .update({
+        role: invite.role,
+        full_name: invite.full_name,
+        email: invite.email,
+        onboarding_stage: onboardingStage,
+      })
       .eq('id', newUserId)
   }
 

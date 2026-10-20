@@ -2,6 +2,12 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { isHubPreview } from '@/lib/preview'
+import {
+  ONBOARDING_HOME,
+  isGraduated,
+  onboardingRedirect,
+  type OnboardingProfile,
+} from '@/lib/onboarding-gate'
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
@@ -59,11 +65,37 @@ export async function middleware(request: NextRequest) {
     return redirectTo('/')
   }
 
+  // Load the onboarding profile for signed-in users, so we can both route the
+  // landing page and seal the Hub off from anyone still in onboarding. Only
+  // fetched where it's actually needed (the landing page or a protected route),
+  // and fail-open on any read error so a hiccup never traps a user.
+  let onboarding: OnboardingProfile | null = null
+  if (user && (pathname === '/' || !isPublic)) {
+    try {
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('role, onboarding_stage, onboarding_bypass')
+        .eq('id', user.id)
+        .maybeSingle()
+      onboarding = (data as OnboardingProfile | null) ?? null
+    } catch {
+      onboarding = null
+    }
+  }
+
   // If already logged in and visiting the login page → redirect to their home.
-  // Hub preview users land on /hub; everyone else on the training dashboard.
+  // Onboarding users go to their staged journey; otherwise Hub / dashboard.
   if (user && pathname === '/') {
+    if (!isGraduated(onboarding)) return redirectTo(ONBOARDING_HOME)
     const home = isHubPreview(user.email) ? '/hub' : '/dashboard'
     return redirectTo(home)
+  }
+
+  // Seal the full Hub off from users still in onboarding — they may only reach
+  // their stage's content pages and the getting-started shell.
+  if (user && !isPublic) {
+    const dest = onboardingRedirect(pathname, onboarding)
+    if (dest && dest !== pathname) return redirectTo(dest)
   }
 
   return supabaseResponse

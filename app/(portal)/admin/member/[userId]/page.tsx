@@ -6,6 +6,7 @@ import { CRM2_LESSONS } from '@/lib/crm2-content'
 import { cn } from '@/lib/utils'
 import ReassignButton from '@/components/ui/ReassignButton'
 import MemberAssessmentCard from '@/components/admin/MemberAssessmentCard'
+import OnboardingControl from '@/components/admin/OnboardingControl'
 import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
 import AssignManagerPanel from '@/components/ui/AssignManagerPanel'
 import DeleteUserButton from '@/components/ui/DeleteUserButton'
@@ -65,7 +66,7 @@ export default async function AdminMemberDetailPage({
 
   const { data: memberProfile } = await service
     .from('user_profiles')
-    .select('id, full_name, email, role, created_at, manager_id')
+    .select('id, full_name, email, role, created_at, manager_id, onboarding_stage, onboarding_bypass')
     .eq('id', params.userId)
     .maybeSingle()
 
@@ -184,6 +185,16 @@ export default async function AdminMemberDetailPage({
           </div>
           <DeleteUserButton userId={params.userId} userName={displayName} userEmail={memberProfile.email ?? null} />
         </div>
+      )}
+
+      {/* Staged onboarding — admin control over a new starter's journey.
+          Only property-managers go through it (managers/admins skip). */}
+      {memberProfile.role === 'property-manager' && (
+        <OnboardingControl
+          userId={params.userId}
+          stage={memberProfile.onboarding_stage ?? 7}
+          bypass={memberProfile.onboarding_bypass ?? false}
+        />
       )}
 
       {/* Assign supervisor — admin only, property-managers only.
