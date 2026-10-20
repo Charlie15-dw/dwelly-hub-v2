@@ -70,7 +70,9 @@ export function checkRateLimit(key: string): { allowed: boolean; retryAfter: num
 // the Vercel Firewall rate rules and the Anthropic account spending cap (Groq's too, while it
 // remains the fallback).
 const WIDGET_PER_IP_WINDOW_MS = 60_000      // 1 minute
-const WIDGET_PER_IP_MAX = 10                // 10 requests / min / IP
+// 30, not 10: the whole office reaches this endpoint through one shared connection, so this is a
+// limit for the team, not for one person. At 10 a minute a busy morning throttled everyone.
+const WIDGET_PER_IP_MAX = 30                // 30 requests / min / IP
 const WIDGET_GLOBAL_WINDOW_MS = 3_600_000   // 1 hour
 const WIDGET_GLOBAL_MAX = 300               // 300 requests / hour, all callers
 

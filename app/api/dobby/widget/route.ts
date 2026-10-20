@@ -45,6 +45,9 @@ function corsHeaders(origin: string | null): Record<string, string> {
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, x-dobby-key',
     'Access-Control-Max-Age': '86400',
+    // A browser hides every response header outside a short safe list unless it's exposed here.
+    // The widget reads Retry-After to say how long to wait after a 429.
+    'Access-Control-Expose-Headers': 'Retry-After, X-Dobby-Model',
   }
   if (isAllowedOrigin(origin)) headers['Access-Control-Allow-Origin'] = origin as string
   return headers
