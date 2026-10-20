@@ -6,7 +6,7 @@
 
 export interface WidgetEvent {
   clientId: string
-  event: string            // 'open' | 'tab' | 'dobby_ask' | 'sop_search'
+  event: string            // 'open' | 'engaged' | 'tab' | 'dobby_ask' | 'sop_search'
   tab: string | null       // 'sop' | 'dobby' | 'dash' | 'll' | 'prop'
   createdAt: string
 }
@@ -69,8 +69,12 @@ export interface WidgetUsageAggregate {
   periodLabel: string
   /** Distinct installs active at all in the window. */
   installs: number
-  /** 'open' events — how often the widget was shown on a job. */
+  /** 'open' events — how often the widget was shown on a job (raw reach). */
   opens: number
+  /** 'engaged' events — genuine use (open 10s+ or an interaction), not a glance. */
+  engaged: number
+  /** Distinct installs that genuinely used the widget at least once. */
+  engagedInstalls: number
   /** Questions sent to Ask Dobby. */
   dobbyAsks: number
   /** Distinct installs that asked Dobby at least once. */
@@ -129,6 +133,7 @@ export function aggregateWidgetUsage(events: WidgetEvent[], range: WidgetRange =
 
   const installs = new Set(inWindow.map(e => e.clientId)).size
   const opens = inWindow.filter(e => e.event === 'open').length
+  const engagedEvents = inWindow.filter(e => e.event === 'engaged')
   const dobbyAskEvents = inWindow.filter(e => e.event === 'dobby_ask')
   const sopSearchEvents = inWindow.filter(e => e.event === 'sop_search')
 
@@ -157,11 +162,13 @@ export function aggregateWidgetUsage(events: WidgetEvent[], range: WidgetRange =
     periodLabel: RANGE_PERIOD_LABEL[range],
     installs,
     opens,
+    engaged: engagedEvents.length,
+    engagedInstalls: new Set(engagedEvents.map(e => e.clientId)).size,
     dobbyAsks: dobbyAskEvents.length,
     dobbyInstalls: new Set(dobbyAskEvents.map(e => e.clientId)).size,
     sopSearches: sopSearchEvents.length,
     sopInstalls: new Set(sopSearchEvents.map(e => e.clientId)).size,
     tabs,
-    days: buildBuckets(inWindow.filter(e => e.event === 'open'), range, now),
+    days: buildBuckets(engagedEvents, range, now),
   }
 }

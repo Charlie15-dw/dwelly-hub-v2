@@ -88,7 +88,7 @@ export default async function AdminWidgetUsagePage({
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Active installs', value: stats.installs, hint: 'Distinct browsers using the widget' },
-          { label: 'Widget opens', value: stats.opens, hint: 'Times shown on a job' },
+          { label: 'Active sessions', value: stats.engaged, hint: `Genuine use · ${stats.opens.toLocaleString()} raw open${stats.opens === 1 ? '' : 's'}` },
           { label: 'Ask Dobby questions', value: stats.dobbyAsks, hint: `${stats.dobbyInstalls} install${stats.dobbyInstalls === 1 ? '' : 's'}` },
           { label: 'SOP searches', value: stats.sopSearches, hint: `${stats.sopInstalls} install${stats.sopInstalls === 1 ? '' : 's'}` },
         ].map(s => (
@@ -127,8 +127,8 @@ export default async function AdminWidgetUsagePage({
 
       {/* Opens per day */}
       <div className="card p-5">
-        <h2 className="text-sm font-bold text-navy">Widget opens over time</h2>
-        <p className="text-xs text-slate-400 mt-0.5 mb-4">{stats.periodLabel}.</p>
+        <h2 className="text-sm font-bold text-navy">Active sessions over time</h2>
+        <p className="text-xs text-slate-400 mt-0.5 mb-4">Genuine use (open 10s+ or an interaction), {stats.periodLabel}.</p>
         <div className="flex items-end gap-1 h-32">
           {stats.days.map(d => (
             <div key={d.key} className="flex-1 flex flex-col items-center justify-end h-full" title={`${d.count}`}>

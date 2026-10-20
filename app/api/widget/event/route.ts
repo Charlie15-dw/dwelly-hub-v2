@@ -37,7 +37,10 @@ function corsHeaders(origin: string | null): Record<string, string> {
 
 // The only event names and tab ids the widget sends — anything else is dropped so
 // the table can't be filled with arbitrary strings from a spoofed caller.
-const ALLOWED_EVENTS = new Set(['open', 'tab', 'dobby_ask', 'sop_search'])
+// 'open' fires the instant the widget is opened (raw reach); 'engaged' fires only
+// once the widget has been genuinely used — open for 10s or any interaction,
+// whichever comes first — so it reflects real usage rather than a glance.
+const ALLOWED_EVENTS = new Set(['open', 'engaged', 'tab', 'dobby_ask', 'sop_search'])
 const ALLOWED_TABS = new Set(['sop', 'dobby', 'dash', 'll', 'prop'])
 
 export function OPTIONS(req: NextRequest) {
