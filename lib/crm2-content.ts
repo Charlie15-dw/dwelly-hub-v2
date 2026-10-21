@@ -55,7 +55,7 @@ export interface Crm2Lesson {
 // Every lesson is checked against the live CRM 2.0 build on this date. Because
 // 2.0 is changing fast, the lesson pages show this as a "freshness" badge so
 // the team can see the material is current. Bump it whenever the set is reviewed.
-export const CRM2_LAST_REVIEWED = '20 Oct 2026'
+export const CRM2_LAST_REVIEWED = '21 Oct 2026'
 
 // The capstone is a single assessment that samples across every lesson quiz —
 // the "you're signed off on 2.0" check. It isn't a normal per-lesson quiz, so
@@ -407,6 +407,14 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Common mistake: don\u2019t automatically redirect a recommended remedial into the required path. On EICRs it\u2019s clear-cut (C1/C2/FI = required, C3 = recommended). On a CP12 there\u2019s no overall pass/fail stamp \u2014 \u201CSafe to use: YES\u201D on every appliance means no safety failure forcing a required remedial, but it doesn\u2019t make every noted item elective. Read the engineer\u2019s notes and judge each remedial (required vs recommended) on its own merits.',
       ]},
 
+      { type: 'heading', text: 'Alarm advisories — check the regs before you choose' },
+      { type: 'paragraph', text: 'When a gas or electrical result notes something about smoke or CO alarms, don\u2019t assume it\u2019s advisory. Test it against the Smoke and Carbon Monoxide Alarm (England) Regulations 2015 (as amended 2022): if the property falls short of the minimum below it\u2019s a breach, so it goes down the required-remedial path, not the recommended one.' },
+      { type: 'bullets', items: [
+        'Smoke alarms: at least one on every storey used as living accommodation, in working order at the start of each new tenancy. No interlinking or mains-power requirement.',
+        'CO alarms: required in any room with a fixed combustion appliance (gas/oil boilers, gas fires, wood burners) \u2014 gas cookers are specifically excluded.',
+        'In breach of any of the above \u2192 Need required remedial. Not in breach \u2192 Recommended remedial.',
+      ]},
+
       { type: 'heading', text: 'The remedial branch — required and recommended both take it' },
       { type: 'paragraph', text: 'Whichever you press, the job leaves the main path the same way: Quotation awaiting (the agent asks the provider for a quote) → Quotation review (your checkpoint) → Landlord quote approval (the landlord agrees to pay) → approved re-enters Scheduling for the repeat visit / rejected → Remedial terminated.' },
 
@@ -451,7 +459,14 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         'Check the \u201CSafe to use\u201D column. If every appliance is YES there\u2019s no safety failure forcing the required-remedial path — but that doesn\u2019t make every noted item elective. Read the engineer\u2019s notes and decide required vs recommended on the item\u2019s own merits.',
         '\u201CSafe to use\u201D is about immediate safety, not about whether the work should be done. A noted remedial (e.g. a missing flame supervision device on an old hob) can still matter without turning the whole record into a fail.',
       ]},
-      { type: 'image', src: '/crm2/cp12-safe-to-use.png', text: 'A CP12 with the \u201CSafe to use\u201D column — worked example: a missing flame supervision device on an old hob; the appliance is still safe to use, so the record passes with the item noted as a recommendation (request 248).' },
+      { type: 'image', src: '/crm2/cp12-safe-to-use.png', text: 'A CP12 with the \u201CSafe to use\u201D column — worked example: a missing flame supervision device on an old hob; the appliance is still safe to use, so the record passes with the item noted as a recommendation.' },
+
+      { type: 'heading', text: 'Forward-dating a gas certificate' },
+      { type: 'bullets', items: [
+        'The \u201Crenew by\u201D date an engineer writes on a CP12 has no legal force \u2014 some templates don\u2019t even have the field. What matters is the actual inspection date and the previous certificate\u2019s expiry.',
+        'Forward-dating is acceptable when the new inspection was carried out within the two months before the previous certificate expires. In that case the new expiry becomes the previous certificate\u2019s expiry date + 1 year, not inspection date + 1 year \u2014 so the annual cycle doesn\u2019t drift earlier each renewal.',
+        'This only holds if we keep a copy of the previous certificate on file as the evidence for that start date.',
+      ]},
 
       { type: 'heading', text: 'Reading an EICR' },
       { type: 'bullets', items: [
@@ -491,6 +506,9 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'paragraph', text: 'Unlike an EICR or a Gas Safety Certificate, an EPC does not have to be renewed during a live tenancy. It does have to be valid before you market the property, sign a new agreement with different tenants, formally change the tenancy agreement with existing tenants, or serve notice — so renewing is best practice.' },
       { type: 'callout', variant: 'warning', text: 'The exception: some properties fall under a selective licensing clause, which means they must have a valid EPC at all times — not just at the trigger points above. If a property is subject to selective licensing, treat the EPC as required and keep it in date.' },
 
+      { type: 'heading', text: 'Check the public register before you chase' },
+      { type: 'paragraph', text: 'A valid EPC can exist for a property without the certificate being on our system. Before chasing a landlord to renew, search the government register by postcode at find-energy-certificate.service.gov.uk to confirm whether one already exists and when it expires \u2014 it often saves an unnecessary chase.' },
+
       { type: 'heading', text: 'When the landlord doesn\u2019t respond' },
       { type: 'paragraph', text: 'Because an EPC isn\u2019t legally required mid-tenancy, an unresponsive landlord used to raise the question of whether to chase or cancel. That\u2019s now settled: we keep the EPC in date. If a renewal is due and the landlord doesn\u2019t reply, the job behaves like any other at Landlord approval — at +4 days it auto-advances to provider selection, and the system assigns a provider to carry out the renewal, following the landlord preferences the PM filled out (now embedded in CRM 2.0).' },
       { type: 'callout', variant: 'important', text: 'An unresponsive landlord doesn\u2019t block an EPC. The system auto-assigns the provider and the renewal proceeds — we don\u2019t leave it to lapse, cancel the job, or chase an emergency contact.' },
@@ -518,6 +536,12 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
 
       { type: 'heading', text: 'Jobs blocked by a third party' },
       { type: 'callout', variant: 'info', text: 'If a job is blocked by someone who isn\u2019t the tenant, landlord or provider — for example a block manager — divert the job to Manual. Manual mode in CRM 2.0 is the hold state: use it to sit the job outside the automated flow until the information arrives, rather than cancelling and re-creating it.' },
+
+      { type: 'heading', text: 'Blocked on an internal action? Use Postpone' },
+      { type: 'callout', variant: 'tip', text: 'When a job is waiting on something the Dwelly team needs to do — most commonly onboarding a contractor — press Postpone (come back in 1, 3 or 7 days with a note) rather than Manual. Manual is for third-party / off-system blocks; Postpone is for an internal action that will clear itself, and the task returns to your queue on its own.' },
+
+      { type: 'heading', text: 'A job in Manual won\u2019t take documents' },
+      { type: 'callout', variant: 'warning', text: 'A job sitting in Manual doesn\u2019t offer the certificate or invoice actions, so a document you\u2019ve already received can\u2019t be uploaded while it\u2019s there. Ask for the job to be moved to Result awaiting, then upload the certificate / invoice and let it close normally.' },
 
       { type: 'heading', text: '\u201CWait for response\u201D caps at 3 days' },
       { type: 'bullets', items: [
@@ -949,6 +973,9 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         { q: 'The Invoice Approved button won\u2019t fire \u2014 what do I check?', a: 'Check the invoice record for a blank Sub Total \u2014 it blocks approval and the system gives no message saying which field is missing. Fill it in and the button fires. If every field is populated and it still won\u2019t go, post the job link plus a screenshot.' },
         { q: 'I\u2019m waiting on a corrected invoice \u2014 should I press \u201Cinvalid invoice\u201D?', a: 'No. If the invoice is fine but unusable (blank details, cropped) and you\u2019ve asked the SP to re-send, don\u2019t mark it invalid \u2014 call the SP to chase, and when the clean copy arrives click \u201Cupload another invoice\u201D. Leave the job where it is in the meantime.' },
         { q: 'The invoice doesn\u2019t match the quote \u2014 do I reject it?', a: 'No, don\u2019t reject it outright (for compliance or maintenance). The numbers legitimately differ sometimes \u2014 the SP found something extra on site, the landlord or PM asked for additional work, or a compliance SP simply doesn\u2019t quote the same way before invoicing. Default to flagging the mismatch to the PM rather than auto-rejecting.' },
+        { q: 'The provider sent the invoice as a link, not a file \u2014 how do I process it?', a: 'CRM 2.0 can\u2019t read an invoice that arrives as a link in the provider\u2019s email, and a screenshot of the link isn\u2019t an acceptable substitute. Get the actual file: view the full email, open the original, view the invoice and download it, then upload the saved file to the job. If \u201Cview invoice\u201D appears to do nothing, right-click (or two-finger tap) the link and open it in a new tab.' },
+        { q: 'The provider isn\u2019t VAT registered \u2014 can I still approve the invoice?', a: 'Yes. Enter the VAT as zero so the subtotal and total match, then approve as normal. If \u201CInvoice approved\u201D still won\u2019t select after that, refresh the job page \u2014 the approve action stays greyed out on a stale page even once the figures are right.' },
+        { q: 'Part of the invoice needs to be pre-paid to the contractor \u2014 how does that work in 2.0?', a: 'A job can now hold as many invoices as you need. When a pre-paid invoice arrives at any stage before Result awaiting, upload it to the job and approve it; when the remaining part arrives after scheduling, upload that to the same job too.' },
       ] },
 
       { type: 'heading', text: 'Comms, Add Direct Info & flags' },
