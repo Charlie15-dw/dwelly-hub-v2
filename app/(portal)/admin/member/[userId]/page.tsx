@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowLeft, RefreshCw, Sparkles } from 'lucide-react'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { CRM2_LESSONS } from '@/lib/crm2-content'
+import { MAINTENANCE_LESSONS } from '@/lib/crm2-maintenance-content'
 import { cn } from '@/lib/utils'
 import ReassignButton from '@/components/ui/ReassignButton'
 import MemberAssessmentCard from '@/components/admin/MemberAssessmentCard'
@@ -43,7 +44,10 @@ const ASSESSMENT_LABELS: Record<string, string> = {
 // automatically as lessons are added or renamed — no second list to maintain.
 // (This is a server component, so importing the data module here has no cost to
 // the client bundle.)
-const CRM2_QUIZ_LESSONS = CRM2_LESSONS.filter(l => l.quizModuleId)
+// Maintenance is listed first, then Compliance, to match the onboarding order
+// (Stage 1 Maintenance → Stage 2 Compliance). Both lesson sets must be included
+// or the Maintenance knowledge checks (crm2-maint-*) never surface here.
+const CRM2_QUIZ_LESSONS = [...MAINTENANCE_LESSONS, ...CRM2_LESSONS].filter(l => l.quizModuleId)
 const CRM2_ASSESSMENT_IDS = CRM2_QUIZ_LESSONS.map(l => l.quizModuleId as string)
 const CRM2_ASSESSMENT_LABELS: Record<string, string> = Object.fromEntries(
   CRM2_QUIZ_LESSONS.map(l => [l.quizModuleId as string, l.title]),
@@ -336,7 +340,11 @@ export default async function AdminMemberDetailPage({
           with their own reassignment panel, mirroring the core programme. */}
       {(() => {
         const crm2Attempted = CRM2_ASSESSMENT_IDS.filter(id => byAssessment.has(id))
-        if (crm2Attempted.length === 0) return null
+        // Always show for property-managers (they go through the CRM 2.0 stages
+        // in onboarding) so the full checklist is visible even before they start.
+        // For anyone else, only show once they've actually attempted one.
+        const isPm = memberProfile.role === 'property-manager'
+        if (crm2Attempted.length === 0 && !isPm) return null
         const crm2Passed = CRM2_ASSESSMENT_IDS.filter(id => byAssessment.get(id)?.[0]?.passed).length
         const crm2Failed = CRM2_ASSESSMENT_IDS
           .filter(id => byAssessment.has(id))
@@ -345,6 +353,7 @@ export default async function AdminMemberDetailPage({
             return { assessmentId: id, score: latest.score, passed: latest.passed }
           })
           .filter(r => !r.passed)
+        const crm2NotAttempted = CRM2_ASSESSMENT_IDS.filter(id => !byAssessment.has(id))
         return (
           <div className="space-y-4">
             <div className="flex items-center gap-2 px-1">
@@ -363,6 +372,31 @@ export default async function AdminMemberDetailPage({
                 />
               )
             })}
+
+            {/* Not yet attempted — mirrors the core programme so the outstanding
+                CRM 2.0 knowledge checks are visible while a PM is still working
+                through onboarding. */}
+            {crm2NotAttempted.length > 0 && (
+              <div className="card p-5">
+                <p className="text-sm font-bold text-navy mb-3">Not yet attempted ({crm2NotAttempted.length})</p>
+                <div className="space-y-2">
+                  {crm2NotAttempted.map(id => (
+                    <div key={id} className="flex items-center justify-between gap-2.5 py-1.5">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-200 flex-shrink-0" />
+                        <span className="text-sm text-slate-400">{CRM2_ASSESSMENT_LABELS[id] ?? id}</span>
+                      </div>
+                      <ReassignButton
+                        userId={params.userId}
+                        moduleId={id}
+                        moduleName={CRM2_ASSESSMENT_LABELS[id] ?? id}
+                        pending={pendingResetIds.has(id)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Reassignment — failed CRM 2.0 assessments. Same control and reset
                 flow as the core programme (crm2-* ids work through the same
