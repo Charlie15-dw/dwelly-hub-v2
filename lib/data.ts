@@ -78,6 +78,14 @@ export const PHASES: { id: Phase; label: string; months: string; description: st
   { id: 'optimise',    label: 'Optimise',    months: 'Months 10–12', description: 'Refresh cycles, change management, ongoing knowledge library & performance review', color: 'navy' },
 ]
 
+// The old standalone maintenance and compliance quizzes have been retired from
+// the hub — CRM 2.0 now carries that assessment content. The video modules stay
+// available for optional viewing, but these IDs are no longer offered as
+// take-able assessments (the /assessments list and the module Assessment
+// Preview), and their questions are no longer pulled into the Full and Master
+// assessments. The Competency Passport is deliberately left untouched.
+export const RETIRED_ASSESSMENT_IDS: readonly string[] = ['mnt-01', 'mnt-02', 'cmp-01', 'cmp-02']
+
 // ─── Modules ──────────────────────────────────────────────────────────────────
 
 export const MODULES: Module[] = [

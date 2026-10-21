@@ -14,8 +14,27 @@ import { CRM2_LESSONS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/l
 import { MAINTENANCE_LESSONS } from '@/lib/crm2-maintenance-content'
 import QuizClient, { type QuizCategory } from './QuizClient'
 
-// Video module sections (3 questions each for combined assessments)
-const VIDEO_MODULE_IDS = ['mnt-02', 'cmp-02', 'mvt-02', 'ins-02', 'sup-02']
+// Video module sections (3 questions each for combined assessments). Maintenance
+// and compliance are no longer drawn from the retired mnt-02 / cmp-02 quizzes —
+// CRM 2.0 now carries that content (see the CRM 2.0 pools below).
+const VIDEO_MODULE_IDS = ['mvt-02', 'ins-02', 'sup-02']
+
+// CRM 2.0 now supplies the maintenance and compliance questions for the combined
+// Full and Master assessments. Three from each keeps the Full assessment at 5
+// sections / 15 questions and the Master at its 27-question total.
+const CRM2_MAINTENANCE_QUIZ_IDS = MAINTENANCE_LESSONS
+  .map(l => l.quizModuleId)
+  .filter((m): m is string => Boolean(m))
+const CRM2_COMPLIANCE_QUIZ_IDS = CRM2_LESSONS
+  .map(l => l.quizModuleId)
+  .filter((m): m is string => Boolean(m) && m !== CRM2_CAPSTONE_MODULE_ID)
+
+// First N base-tier questions across a set of CRM 2.0 lesson quizzes.
+function firstCrm2Questions(ids: readonly string[], n: number) {
+  return ids
+    .flatMap(mid => QUIZ_QUESTIONS.filter(q => q.moduleId === mid && !q.tier))
+    .slice(0, n)
+}
 // The knowledge base — the three knowledge modules plus the portal content
 // (Tenant, Landlord & Maintenance Provider portals). Used both for the combined
 // Knowledge Base assessment and for the knowledge half of the Master assessment.
@@ -149,15 +168,26 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   let questionPool = QUIZ_QUESTIONS.filter(() => false) // typed empty default
 
   if (isMasterAssessment) {
-    // Master spans every video module and the full knowledge base, including the
-    // portal content (kno-portals), at the harder 'master' tier.
-    questionPool = [...VIDEO_MODULE_IDS, ...KNOWLEDGE_ASSESSMENT_IDS].flatMap(mid =>
-      QUIZ_QUESTIONS.filter(q => q.moduleId === mid && q.tier === 'master')
-    )
+    // Master spans Move-Outs, Inspections and Support (master tier) and the full
+    // knowledge base including the portal content (kno-portals), plus CRM 2.0
+    // maintenance and compliance. 27 questions total.
+    questionPool = [
+      ...[...VIDEO_MODULE_IDS, ...KNOWLEDGE_ASSESSMENT_IDS].flatMap(mid =>
+        QUIZ_QUESTIONS.filter(q => q.moduleId === mid && q.tier === 'master')
+      ),
+      ...firstCrm2Questions(CRM2_MAINTENANCE_QUIZ_IDS, PER_SECTION),
+      ...firstCrm2Questions(CRM2_COMPLIANCE_QUIZ_IDS, PER_SECTION),
+    ]
   } else if (isFullAssessment) {
-    questionPool = VIDEO_MODULE_IDS.flatMap(mid =>
-      QUIZ_QUESTIONS.filter(q => q.moduleId === mid && !q.tier).slice(0, PER_SECTION)
-    )
+    // Move-Outs, Inspections and Support come from the video modules; maintenance
+    // and compliance now come from CRM 2.0. 5 sections / 15 questions.
+    questionPool = [
+      ...VIDEO_MODULE_IDS.flatMap(mid =>
+        QUIZ_QUESTIONS.filter(q => q.moduleId === mid && !q.tier).slice(0, PER_SECTION)
+      ),
+      ...firstCrm2Questions(CRM2_MAINTENANCE_QUIZ_IDS, PER_SECTION),
+      ...firstCrm2Questions(CRM2_COMPLIANCE_QUIZ_IDS, PER_SECTION),
+    ]
   } else if (isKnowledgeAssessment) {
     // Combined Knowledge Base assessment — the three knowledge modules plus the
     // portal content. The client shuffles and samples this down per learner.

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { ArrowRight, Check, ChevronRight, Lock, Info } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { clearLegacyLockData } from '@/lib/assessmentStorage'
-import { MODULES } from '@/lib/data'
+import { MODULES, RETIRED_ASSESSMENT_IDS } from '@/lib/data'
 import RequestRetakeButton from '@/components/assessments/RequestRetakeButton'
 
 // Elevated Assessments — "group by state, not taxonomy" (rule 03). The only
@@ -28,7 +28,10 @@ interface AssessmentMeta {
 // two programme milestones. Knowledge modules are excluded above because they
 // are represented by the combined assessment that sits just before the finals.
 const ASSESSMENTS: AssessmentMeta[] = [
-  ...MODULES.filter(m => m.quizCount > 0 && m.passmark > 0 && m.section !== 'knowledge').map(m => ({
+  ...MODULES.filter(m =>
+    m.quizCount > 0 && m.passmark > 0 && m.section !== 'knowledge' &&
+    !RETIRED_ASSESSMENT_IDS.includes(m.id),
+  ).map(m => ({
     id: m.id,
     title: m.title,
     questions: m.quizCount,

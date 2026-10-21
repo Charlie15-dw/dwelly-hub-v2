@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import ProgressBar from '@/components/ui/ProgressBar'
 import ConfidenceRating from '@/components/ui/ConfidenceRating'
-import { MODULES, SECTION_LABELS, QUIZ_QUESTIONS } from '@/lib/data'
+import { MODULES, SECTION_LABELS, QUIZ_QUESTIONS, RETIRED_ASSESSMENT_IDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
 
@@ -102,7 +102,12 @@ export default async function ModulePage({ params }: { params: { id: string } })
   const confidenceRating: number | null = progressRow?.confidence_rating ?? null
 
   const content = getModuleContent(params.id)
-  const moduleQuestions = QUIZ_QUESTIONS.filter(q => q.moduleId === params.id)
+  // The old maintenance/compliance quizzes are retired — keep the video and notes
+  // viewable, but don't offer the assessment from here anymore.
+  const assessmentRetired = RETIRED_ASSESSMENT_IDS.includes(params.id)
+  const moduleQuestions = assessmentRetired
+    ? []
+    : QUIZ_QUESTIONS.filter(q => q.moduleId === params.id)
   const sectionColorClass = SECTION_COLORS[module.section] ?? 'text-slate-600 bg-slate-100 border-slate-200'
 
   const prevModule = MODULES[MODULES.indexOf(module) - 1]

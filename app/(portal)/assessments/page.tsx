@@ -8,11 +8,10 @@ import { createClient } from '@/lib/supabase/client'
 import { isHubElevated } from '@/lib/preview'
 import ElevatedAssessments from '@/components/assessments/ElevatedAssessments'
 
+// Maintenance and compliance are no longer taken as standalone quizzes here —
+// CRM 2.0 carries that assessment content now. The video modules stay available
+// for optional viewing; these just aren't offered as take-able assessments.
 const VIDEO_MODULE_ASSESSMENTS = [
-  { label: 'Maintenance 1/2 — Creating a Repair Request',    icon: '🔧', id: 'mnt-01', questions: 6  },
-  { label: 'Maintenance 2/2 — Actioning the Maintenance Task', icon: '🔧', id: 'mnt-02', questions: 10 },
-  { label: 'Compliance 1/2 — Creating a Compliance Task',    icon: '⚖️', id: 'cmp-01', questions: 6  },
-  { label: 'Compliance 2/2 — Actioning the Compliance Task', icon: '⚖️', id: 'cmp-02', questions: 15 },
   { label: 'Inspections 1/2 — Creating an Inspection Task',  icon: '🔍', id: 'mnt-03', questions: 5  },
   { label: 'Inspections 2/2 — Completing the Inspection',    icon: '🔍', id: 'ins-02', questions: 6  },
   { label: 'Move-Outs 1/2 — Initiating the Move-Out Process', icon: '📦', id: 'sys-01', questions: 5 },
