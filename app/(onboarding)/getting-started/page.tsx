@@ -3,6 +3,7 @@ import { Check, Lock } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isGraduated } from '@/lib/onboarding-gate'
 import { ONBOARDING_STAGES, getStageState, FIRST_STAGE } from '@/lib/onboarding'
+import { KNOWLEDGE_COURSES, KNOWLEDGE_COURSE_IDS } from '@/lib/data'
 import { cn } from '@/lib/utils'
 import StageJourney from './StageJourney'
 
@@ -26,6 +27,22 @@ export default async function GettingStartedPage() {
 
   const firstName = profile?.full_name?.trim().split(' ')[0] ?? null
   const totalStages = ONBOARDING_STAGES.length
+
+  // Certified knowledge-base courses are available throughout onboarding, not
+  // tied to a stage. Resolve each course's passed state for the current user.
+  const { data: courseResults } = await supabase
+    .from('assessment_results')
+    .select('assessment_id, passed')
+    .eq('user_id', user.id)
+    .in('assessment_id', KNOWLEDGE_COURSE_IDS as string[])
+  const coursePassed = new Set((courseResults ?? []).filter(r => r.passed).map(r => r.assessment_id))
+  const courses = KNOWLEDGE_COURSES.map(c => ({
+    id: c.id,
+    title: c.title,
+    blurb: c.blurb,
+    href: `/quiz/${c.id}`,
+    passed: coursePassed.has(c.id),
+  }))
 
   return (
     <div className="space-y-8">
@@ -75,7 +92,7 @@ export default async function GettingStartedPage() {
       </ol>
 
       {/* Current stage */}
-      <StageJourney state={serialisable(state)} stage={stage} totalStages={totalStages} />
+      <StageJourney state={serialisable(state)} stage={stage} totalStages={totalStages} courses={courses} />
     </div>
   )
 }

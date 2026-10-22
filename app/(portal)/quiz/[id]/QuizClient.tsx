@@ -12,6 +12,7 @@ import { getInProgress, saveInProgress, clearInProgress } from '@/lib/assessment
 import { createClient } from '@/lib/supabase/client'
 import { hashStr, seededShuffle, getBrowserKey } from '@/lib/shuffle'
 import { scoreQuiz } from '@/lib/quiz-scoring'
+import CourseCertificate from '@/components/certificate/CourseCertificate'
 
 /** Shuffle the options of a question and recalculate the correct index */
 function shuffleOptions(q: QuizQuestion, seed: number): QuizQuestion {
@@ -40,7 +41,7 @@ function SaveErrorBanner() {
   )
 }
 
-export type QuizCategory = 'module' | 'full' | 'master' | 'knowledge' | 'recap' | 'recall' | 'release' | 'crm2'
+export type QuizCategory = 'module' | 'full' | 'master' | 'knowledge' | 'recap' | 'recall' | 'release' | 'crm2' | 'certified'
 
 // Confidence-based scoring (beta). Learners rate how sure they are before
 // seeing the answer. A confident mistake is a hidden gap worth flagging — much
@@ -81,6 +82,10 @@ export interface QuizClientProps {
   // elevated review variant (gated to the two review accounts) — turns on the
   // redesigned brief screen, mistakes-first results, and always-on confidence.
   elevated?: boolean
+  // certified knowledge courses — the credential name shown on the certificate
+  // and the learner's display name to print on it.
+  certTitle?: string
+  learnerName?: string
 }
 
 export default function QuizClient({
@@ -103,6 +108,8 @@ export default function QuizClient({
   lastAttempt,
   beta = false,
   elevated = false,
+  certTitle,
+  learnerName,
 }: QuizClientProps) {
   const isFullAssessment   = quizCategory === 'full'
   const isMasterAssessment = quizCategory === 'master'
@@ -119,6 +126,10 @@ export default function QuizClient({
   // grants a retake. They differ only in skipping the module_progress upsert and
   // recall scheduling (no backing video module or recall content).
   const isCrm2Quiz         = quizCategory === 'crm2'
+  // Certified knowledge-base courses — like the knowledge assessment, they have
+  // no backing video module, so they skip the module_progress upsert and recall
+  // scheduling. On a pass they award a downloadable Dwelly certificate.
+  const isCertified        = quizCategory === 'certified'
 
   // Confidence-based scoring is a beta trial; the elevated review variant turns
   // it on for everyone in the allow-list so it can be signed off.
@@ -367,7 +378,7 @@ export default function QuizClient({
       // CRM 2.0 quizzes have no backing video module and no recall content, so
       // skip the module_progress upsert and the recall scheduling — but they do
       // still lock and save a scored result above, like any other assessment.
-      if (passed && !isFullAssessment && !isMasterAssessment && !isKnowledgeAssessment && !isReleaseQuiz && !isCrm2Quiz) {
+      if (passed && !isFullAssessment && !isMasterAssessment && !isKnowledgeAssessment && !isReleaseQuiz && !isCrm2Quiz && !isCertified) {
         const { error: progressError } = await supabase.from('module_progress').upsert({
           user_id: user.id,
           module_id: moduleId,
@@ -381,7 +392,7 @@ export default function QuizClient({
         }
       }
 
-      if (passed && !isFullAssessment && !isMasterAssessment && !isKnowledgeAssessment && !isReleaseQuiz && !isCrm2Quiz) {
+      if (passed && !isFullAssessment && !isMasterAssessment && !isKnowledgeAssessment && !isReleaseQuiz && !isCrm2Quiz && !isCertified) {
         void fetch('/api/quiz/schedule-recall', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -727,6 +738,109 @@ export default function QuizClient({
               All Assessments <ArrowRight className="w-4 h-4" aria-hidden />
             </Link>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Certified knowledge-course results screen ─────────────────────────────
+  // On a pass, this awards a downloadable Dwelly certificate. On a near miss it
+  // shows the score and the full rationale review so the learner can resit after
+  // a manager reset. Takes priority over the elevated/standard screens so the
+  // certificate experience is identical for every account.
+  if (showResults && isCertified) {
+    return (
+      <div className="max-w-2xl mx-auto space-y-6">
+        {passed ? (
+          <>
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold text-navy">Congratulations — you&apos;re certified</h2>
+              <p className="text-[15px] text-[var(--text-secondary)]">
+                You scored {score}% on {moduleTitle}, above the {passmark}% pass mark. Here&apos;s your certificate.
+              </p>
+            </div>
+
+            {saveError && <SaveErrorBanner />}
+
+            <CourseCertificate
+              courseId={moduleId}
+              certificateTitle={certTitle ?? moduleTitle}
+              learnerName={learnerName ?? 'Dwelly Learner'}
+              completedAt={new Date()}
+            />
+          </>
+        ) : (
+          <div className="card p-8 text-center">
+            <div className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-4 bg-red-100">
+              <XCircle className="w-9 h-9 text-red-500" aria-hidden />
+            </div>
+            <h2 className="text-2xl font-bold text-navy mb-1">Not quite there yet</h2>
+            <p className="text-slate-500 text-sm mb-6">
+              You scored {score}%. The pass mark for the certificate is {passmark}%. Review the rationale
+              below — your manager can grant a retake.
+            </p>
+            {saveError && <SaveErrorBanner />}
+            <div className="flex items-center justify-center gap-8">
+              <div className="text-center">
+                <p className="text-4xl font-black tabular-nums text-red-500">{score}%</p>
+                <p className="text-xs text-slate-400 mt-1">Your Score</p>
+              </div>
+              <div className="text-center">
+                <p className="text-4xl font-black text-slate-300 tabular-nums">{passmark}%</p>
+                <p className="text-xs text-slate-400 mt-1">Pass Mark</p>
+              </div>
+              <div className="text-center">
+                <p className="text-4xl font-black text-navy tabular-nums">{correctCount}/{demoQuestions.length}</p>
+                <p className="text-xs text-slate-400 mt-1">Correct</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Rationale review */}
+        <div className="card p-6">
+          <h3 className="text-[13px] font-semibold uppercase tracking-widest text-[var(--text-secondary)] mb-4">
+            Review
+          </h3>
+          <div className="space-y-3">
+            {demoQuestions.map((q, i) => {
+              const userAns = answers[i]
+              const isCorrect = userAns === q.correct
+              return (
+                <div key={q.id} className={cn(
+                  'rounded-xl p-4 border text-left',
+                  isCorrect ? 'border-teal/30 bg-teal/5' : 'border-red-200 bg-red-50/50',
+                )}>
+                  <div className="flex items-start gap-2.5 mb-2">
+                    {isCorrect
+                      ? <CheckCircle2 className="w-4 h-4 text-teal flex-shrink-0 mt-0.5" aria-hidden />
+                      : <XCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" aria-hidden />
+                    }
+                    <p className="text-sm font-medium text-navy leading-snug">{q.question}</p>
+                  </div>
+                  {!isCorrect && (
+                    <>
+                      <p className="text-xs text-red-600 mb-1 ml-6">
+                        Your answer: {userAns !== null ? q.options[userAns] : 'No answer'}
+                      </p>
+                      <p className="text-xs text-teal font-medium mb-2 ml-6">
+                        Correct: {q.options[q.correct]}
+                      </p>
+                    </>
+                  )}
+                  <p className="text-xs text-slate-600 ml-6 bg-slate-50 rounded-lg p-2 border border-slate-100 leading-relaxed">
+                    <span className="font-semibold">Rationale: </span>{q.rationale}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <Link href={backHref} className="btn-secondary flex items-center gap-1.5">
+            <ArrowLeft className="w-4 h-4" aria-hidden /> {backLabel}
+          </Link>
         </div>
       </div>
     )

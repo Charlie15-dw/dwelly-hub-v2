@@ -4586,7 +4586,325 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     rationale: 'Use Take Over, then Provide Instructions, to put the request back on a stage.',
   },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // KNOWLEDGE BASE COURSE 1 — The Renters' Rights Act 2025
+  // A standalone, certificate-bearing assessment on the Renters' Rights Act 2025.
+  // ═══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'q-rra-1', moduleId: 'renters-rights-act',
+    question: 'What is the single biggest change the Renters\' Rights Act 2025 makes to how a landlord can end a tenancy?',
+    options: [
+      'It raises the minimum Section 21 notice period from two to four months',
+      'It keeps Section 21 but requires each notice to be registered with the council',
+      'It abolishes Section 21 evictions, so possession needs a valid Section 8 ground',
+      'It restricts Section 21 so it can only be used during the fixed term',
+    ],
+    correct: 2,
+    rationale: 'The Act abolishes Section 21 "no-fault" evictions. A landlord can no longer end a tenancy simply by giving notice without a reason — they must rely on one of the Section 8 grounds for possession and, where contested, prove that ground in court.',
+  },
+  {
+    id: 'q-rra-2', moduleId: 'renters-rights-act',
+    question: 'What happens to fixed-term assured shorthold tenancies under the Renters\' Rights Act?',
+    options: [
+      'They remain valid but are capped at a maximum fixed term of twelve months',
+      'They are converted into contractual licences outside the assured regime',
+      'They are replaced by periodic assured tenancies with no fixed end date',
+      'They survive only for purpose-built student accommodation',
+    ],
+    correct: 2,
+    rationale: 'The Act ends fixed-term ASTs and moves all tenancies to a single system of periodic assured tenancies. Tenancies roll on a periodic basis (typically month to month) with no fixed end date, giving tenants more flexibility and security.',
+  },
+  {
+    id: 'q-rra-3', moduleId: 'renters-rights-act',
+    question: 'How much notice must a tenant give to end their tenancy, and when can they first serve it?',
+    options: [
+      'One month\'s notice, which may be given from the first day of the tenancy',
+      'Two months\' notice, which cannot take effect within the first four months',
+      'Two months\' notice, which may be served at any point in the tenancy',
+      'Three months\' notice, timed to expire on a rent payment date',
+    ],
+    correct: 1,
+    rationale: 'Tenants give two months\' written notice to end a periodic assured tenancy. Crucially, that notice cannot take effect during the first four months, giving landlords a minimum effective occupancy of around six months before a tenant can leave.',
+  },
+  {
+    id: 'q-rra-4', moduleId: 'renters-rights-act',
+    question: 'Under the reformed Ground 8 (mandatory rent arrears), how much arrears must exist and what notice period applies?',
+    options: [
+      'Two months\' arrears at the notice date, with two weeks\' notice',
+      'Three months\' arrears at the hearing date, with two weeks\' notice',
+      'Two months\' arrears at the hearing date, with four weeks\' notice',
+      'Three months\' arrears at the notice date, with four weeks\' notice',
+    ],
+    correct: 3,
+    rationale: 'The Act raises the mandatory arrears threshold from two to three months (13 weeks where rent is paid weekly) and extends the notice period from two to four weeks. This gives tenants more room to recover from short-term financial difficulty before mandatory possession applies.',
+  },
+  {
+    id: 'q-rra-5', moduleId: 'renters-rights-act',
+    question: 'How can a landlord increase the rent under the Renters\' Rights Act?',
+    options: [
+      'Twice a year by agreement, provided a rent-review clause is included',
+      'Once a year by Section 13 notice, with the tenant able to challenge at Tribunal',
+      'Once a year automatically, tracking CPI inflation for the period',
+      'At any time, so long as two months\' written notice is given',
+    ],
+    correct: 1,
+    rationale: 'Rent can be increased once per year via a Section 13 notice with at least two months\' notice. Rent-review clauses and backdated increases are no longer permitted. Tenants can refer a proposed increase to the First-tier Tribunal, which cannot set a rent higher than the landlord proposed.',
+  },
+  {
+    id: 'q-rra-6', moduleId: 'renters-rights-act',
+    question: 'What does the Act say about "rental bidding"?',
+    options: [
+      'It is encouraged, so landlords can secure the best market rent',
+      'It is permitted but capped at ten per cent above the advertised rent',
+      'It is banned, so offers above the advertised rent cannot be accepted',
+      'It is restricted to lettings advertised through online portals',
+    ],
+    correct: 2,
+    rationale: 'The Act prohibits rental bidding. Landlords and agents must publish an asking rent and cannot ask for, encourage, or accept offers above that advertised figure — ending the practice of playing prospective tenants off against each other.',
+  },
+  {
+    id: 'q-rra-7', moduleId: 'renters-rights-act',
+    question: 'What is the new position on tenants keeping pets?',
+    options: [
+      'Tenants may request a pet and consent cannot be unreasonably refused',
+      'Landlords must allow pets without any conditions or added cover',
+      'Pets are prohibited across all assured tenancies for insurance reasons',
+      'Only registered assistance animals may be kept in a let home',
+    ],
+    correct: 0,
+    rationale: 'Tenants gain a right to request a pet, and landlords cannot unreasonably refuse. Landlords can require the tenant to hold pet damage insurance (or pay the landlord\'s reasonable cost of such cover) to protect against any damage.',
+  },
+  {
+    id: 'q-rra-8', moduleId: 'renters-rights-act',
+    question: 'Which quality standard does the Act extend to the private rented sector for the first time?',
+    options: [
+      'The Decent Homes Standard, applied to the private sector for the first time',
+      'The Gas Safe Register covering all heating and hot-water appliances',
+      'The NHBC build warranty previously limited to new-build homes',
+      'The BREEAM sustainability rating used mainly for commercial premises',
+    ],
+    correct: 0,
+    rationale: 'The Act applies the Decent Homes Standard to the private rented sector for the first time. Privately rented homes will have to be free of serious hazards, in a reasonable state of repair, and have reasonably modern facilities.',
+  },
+  {
+    id: 'q-rra-9', moduleId: 'renters-rights-act',
+    question: 'What does "Awaab\'s Law" require landlords to do once it applies to the private rented sector?',
+    options: [
+      'Fit smart meters and issue annual energy-use statements to tenants',
+      'Commission an independent air-quality survey for each new tenancy',
+      'Provide tenants with contents insurance covering mould-related damage',
+      'Investigate and fix reported hazards such as damp and mould to set timescales',
+    ],
+    correct: 3,
+    rationale: 'Awaab\'s Law, extended to the private rented sector by the Act, requires landlords to investigate and remedy reported hazards such as damp and mould within fixed statutory timescales. It was introduced following the death of two-year-old Awaab Ishak from prolonged mould exposure.',
+  },
+  {
+    id: 'q-rra-10', moduleId: 'renters-rights-act',
+    question: 'What does the Act say about discriminating against tenants on benefits or with children?',
+    options: [
+      'Landlords may decline such applicants if the restriction is stated upfront',
+      'Blanket "No DSS" and "No children" policies are made unlawful by the Act',
+      'The rules bind social landlords but not private landlords or agents',
+      'Refusal is allowed where a larger deposit or a guarantor is offered',
+    ],
+    correct: 1,
+    rationale: 'The Act outlaws blanket discrimination against prospective tenants because they receive benefits or have children. "No DSS" and "No children" policies are prohibited; landlords must still assess applicants fairly and individually on affordability.',
+  },
+  {
+    id: 'q-rra-11', moduleId: 'renters-rights-act',
+    question: 'What two new national structures must private landlords engage with under the Act?',
+    options: [
+      'A national Rent Control Board and a pooled National Deposit Fund',
+      'The PRS Database (Property Portal) and the PRS Landlord Ombudsman',
+      'The Land Registry and HMRC\'s Making Tax Digital for landlords',
+      'A Tenant Credit Bureau and a recognised Letting Agent Union',
+    ],
+    correct: 1,
+    rationale: 'The Act creates a Private Rented Sector Database (the Property Portal) on which landlords must register themselves and their properties, and a new Private Rented Sector Landlord Ombudsman that all private landlords must join, giving tenants a free route to redress.',
+  },
+  {
+    id: 'q-rra-12', moduleId: 'renters-rights-act',
+    question: 'How much rent can a landlord require in advance at the start of a tenancy under the Act?',
+    options: [
+      'Up to six months\' rent may be requested before the tenancy begins',
+      'Any amount the tenant volunteers to strengthen their application',
+      'No more than one month\'s rent, alongside the permitted deposit',
+      'Up to a year\'s rent where the tenant has no UK-based guarantor',
+    ],
+    correct: 2,
+    rationale: 'The Act restricts rent in advance to a maximum of one month once the tenancy has begun, alongside the permitted tenancy deposit. This prevents landlords using large advance payments to effectively price out tenants or sidestep the rental-bidding ban.',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // KNOWLEDGE BASE COURSE 2 — Property Management Induction
+  // A standalone, certificate-bearing assessment on core UK property management.
+  // ═══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'q-pmi-1', moduleId: 'pm-induction',
+    question: 'A tenancy deposit is taken on an assured shorthold tenancy. Within how long must it be protected in a government-approved scheme and the prescribed information served?',
+    options: ['14 days', '30 days', '60 days', '90 days'],
+    correct: 1,
+    rationale: 'A deposit must be protected in an approved scheme (TDS, DPS or mydeposits) and the prescribed information given to the tenant within 30 days of receipt. Failing to do so can bar a Section 21/possession claim and expose the landlord to a penalty of one to three times the deposit.',
+  },
+  {
+    id: 'q-pmi-2', moduleId: 'pm-induction',
+    question: 'Under the Tenant Fees Act 2019, what is the maximum tenancy deposit for a property where the annual rent is below £50,000?',
+    options: ['Four weeks\' rent', 'Six weeks\' rent', 'Five weeks\' rent', 'Two months\' rent'],
+    correct: 2,
+    rationale: 'The Tenant Fees Act 2019 caps the deposit at five weeks\' rent where the annual rent is under £50,000, and six weeks\' rent where it is £50,000 or more. The Act also bans most other fees charged to tenants.',
+  },
+  {
+    id: 'q-pmi-3', moduleId: 'pm-induction',
+    question: 'How often must a landlord obtain a Gas Safety Record (CP12) for a property with a gas appliance, and what must they do with it?',
+    options: [
+      'Annually, with a copy to the tenant within 28 days of the check',
+      'Every two years, with the record simply retained on file',
+      'Every five years, with a copy sent to the local authority',
+      'Only when a fault is reported, then displayed in the property',
+    ],
+    correct: 0,
+    rationale: 'A Gas Safety Record must be obtained every 12 months by a Gas Safe registered engineer. A copy must be given to existing tenants within 28 days of the check and to any new tenant before they move in.',
+  },
+  {
+    id: 'q-pmi-4', moduleId: 'pm-induction',
+    question: 'How frequently must an Electrical Installation Condition Report (EICR) be carried out on a private rented property?',
+    options: [
+      'Every year, with any defects remedied within 28 days',
+      'Every ten years, or sooner on a change of tenancy',
+      'Only before the first tenancy begins at the property',
+      'At least every five years, or sooner if the report requires',
+    ],
+    correct: 3,
+    rationale: 'Since 2020, landlords must have the fixed electrical installation inspected and tested at least every five years by a qualified person, and provide the EICR to tenants. Any remedial work flagged as C1 or C2 must be completed within 28 days.',
+  },
+  {
+    id: 'q-pmi-5', moduleId: 'pm-induction',
+    question: 'What is the minimum Energy Performance Certificate (EPC) rating currently required to lawfully let most residential properties in England and Wales?',
+    options: ['Band C', 'Band D', 'Band E', 'Band G'],
+    correct: 2,
+    rationale: 'Under the Minimum Energy Efficiency Standards (MEES), it is generally unlawful to let a property with an EPC rating below E unless a valid exemption is registered. An EPC is valid for 10 years and must be available to prospective tenants.',
+  },
+  {
+    id: 'q-pmi-6', moduleId: 'pm-induction',
+    question: 'What are the smoke and carbon monoxide alarm requirements for rented homes?',
+    options: [
+      'A single smoke alarm anywhere in the property is sufficient',
+      'A smoke alarm per living storey, plus a CO alarm by combustion appliances',
+      'One smoke alarm in the kitchen, with no CO alarm required',
+      'A CO alarm in every room regardless of the appliances present',
+    ],
+    correct: 1,
+    rationale: 'Landlords must fit at least one smoke alarm on every storey used as living accommodation, and a carbon monoxide alarm in any room containing a fixed combustion appliance (such as a boiler or wood burner; gas cookers are excluded). Alarms must be tested and working at the start of each tenancy.',
+  },
+  {
+    id: 'q-pmi-7', moduleId: 'pm-induction',
+    question: 'What does Section 11 of the Landlord and Tenant Act 1985 make the landlord responsible for?',
+    options: [
+      'The structure, exterior and installations for water, gas, heating and sanitation',
+      'The external walls and the roof structure of the building only',
+      'Redecoration and cosmetic repairs that the tenant requests',
+      'The tenant\'s own appliances, furniture and floor coverings',
+    ],
+    correct: 0,
+    rationale: 'Section 11 places a non-excludable repairing obligation on the landlord for the structure and exterior and for the installations supplying water, gas, electricity, sanitation, and space/water heating. This duty cannot be contracted out of in a standard residential tenancy.',
+  },
+  {
+    id: 'q-pmi-8', moduleId: 'pm-induction',
+    question: 'Before granting a tenancy of a property in England, what check must be completed on every adult who will live there as their only or main home?',
+    options: [
+      'A credit check confirming the applicant can afford the rent',
+      'A DBS criminal records check on every adult occupier',
+      'A Right to Rent check confirming each adult may rent in the UK',
+      'A reference from the applicant\'s most recent landlord',
+    ],
+    correct: 2,
+    rationale: 'Right to Rent checks require landlords/agents in England to confirm every adult occupier has the right to rent in the UK before the tenancy begins, by checking and recording acceptable documents or verifying status online. Letting to someone without the right to rent can lead to civil penalties or prosecution.',
+  },
+  {
+    id: 'q-pmi-9', moduleId: 'pm-induction',
+    question: 'A tenant reports a total loss of heating and hot water in December. How should this typically be prioritised?',
+    options: [
+      'As a routine repair to be scheduled within the next 28 days',
+      'As a cosmetic matter to note at the next property inspection',
+      'As the tenant\'s own responsibility to arrange and pay for',
+      'As an urgent repair, since loss of heating affects habitability',
+    ],
+    correct: 3,
+    rationale: 'Loss of heating and hot water is an urgent repair affecting the habitability of the home. It should be triaged as a priority — particularly in winter or where children, elderly or vulnerable occupants are present — with a temporary solution (e.g. heaters) offered if a full fix will take time.',
+  },
+  {
+    id: 'q-pmi-10', moduleId: 'pm-induction',
+    question: 'Why is a professional, photographic inventory and check-in report so important in property management?',
+    options: [
+      'It is only necessary for fully furnished lettings',
+      'It is the key evidence used to justify any deposit deductions',
+      'It removes the need for a written tenancy agreement',
+      'It is a statutory requirement enforced by the local authority',
+    ],
+    correct: 1,
+    rationale: 'A detailed, dated, photographic inventory signed at check-in is the baseline against which the property\'s condition is judged at checkout. In a deposit dispute, adjudicators place great weight on it; without one, a landlord will usually fail to justify deductions for damage beyond fair wear and tear.',
+  },
+  {
+    id: 'q-pmi-11', moduleId: 'pm-induction',
+    question: 'What is the difference between fair wear and tear and chargeable damage at the end of a tenancy?',
+    options: [
+      'Fair wear and tear is normal-use deterioration and cannot be charged',
+      'There is no distinction, so any mark may be charged to the tenant',
+      'Fair wear and tear applies only to the garden and outdoor areas',
+      'Tenants can be charged the full replacement cost of worn items',
+    ],
+    correct: 0,
+    rationale: 'Fair wear and tear is the natural deterioration expected from reasonable use over the length of the tenancy and cannot be charged to the tenant. Only damage beyond that — and then only on a fair, betterment-adjusted basis (not full "new for old" replacement) — can be deducted from the deposit.',
+  },
+  {
+    id: 'q-pmi-12', moduleId: 'pm-induction',
+    question: 'When handling client (landlord) money, what protection must a letting agent that holds such money have in place?',
+    options: [
+      'No specific protection, as client money may sit in any account',
+      'A personal guarantee provided by the agency\'s own director',
+      'Office buildings insurance covering the agency\'s premises',
+      'Client Money Protection membership with a separate client account',
+    ],
+    correct: 3,
+    rationale: 'Letting agents in England that hold client money must belong to an approved Client Money Protection scheme and keep client money in a separate, designated client bank account. This protects landlords\' and tenants\' money if the agent becomes insolvent or misappropriates funds.',
+  },
 ]
+
+// ─── Knowledge Base Courses ────────────────────────────────────────────────────
+// Standalone, certificate-bearing courses surfaced at the top of the Knowledge
+// Base and in onboarding. Each is backed by its own pool of QUIZ_QUESTIONS
+// (by moduleId) and, on passing, awards a Dwelly certificate.
+export interface KnowledgeCourse {
+  id: string            // assessment id (also the quiz moduleId and /quiz/[id])
+  title: string         // full course title
+  certificateTitle: string // what the certificate says the learner is certified in
+  blurb: string
+  passmark: number
+}
+
+export const KNOWLEDGE_COURSES: KnowledgeCourse[] = [
+  {
+    id: 'renters-rights-act',
+    title: 'The Renters\u2019 Rights Act 2025',
+    certificateTitle: 'the Renters\u2019 Rights Act 2025',
+    blurb: 'The reforms every property professional must know \u2014 the end of Section 21, periodic tenancies, rent increases, pets, the Decent Homes Standard and the new Ombudsman.',
+    passmark: 80,
+  },
+  {
+    id: 'pm-induction',
+    title: 'Property Management Induction',
+    certificateTitle: 'Property Management Fundamentals',
+    blurb: 'The core knowledge of UK residential property management \u2014 deposits, safety certificates, repairing obligations, Right to Rent and handling client money.',
+    passmark: 80,
+  },
+]
+
+export const KNOWLEDGE_COURSE_IDS: readonly string[] = KNOWLEDGE_COURSES.map(c => c.id)
+
+export function getKnowledgeCourse(id: string): KnowledgeCourse | undefined {
+  return KNOWLEDGE_COURSES.find(c => c.id === id)
+}
 
 
 // ─── Sign-Off Gates ────────────────────────────────────────────────────────────

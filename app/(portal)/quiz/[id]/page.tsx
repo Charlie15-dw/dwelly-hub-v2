@@ -5,6 +5,8 @@ import {
   RECAP_ROUNDS,
   PRODUCT_RELEASE_QUIZZES,
   PRODUCT_RELEASE_QUESTIONS,
+  KNOWLEDGE_COURSE_IDS,
+  getKnowledgeCourse,
 } from '@/lib/data'
 import { redirect } from 'next/navigation'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
@@ -57,6 +59,7 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   const isFullAssessment      = moduleId === 'full-assessment'
   const isMasterAssessment    = moduleId === 'master-assessment'
   const isKnowledgeAssessment = moduleId === 'knowledge-assessment'
+  const isKnowledgeCourse     = KNOWLEDGE_COURSE_IDS.includes(moduleId)
   const isRecapQuiz        = moduleId.startsWith('recap-')
   const isReleaseQuiz      = moduleId.startsWith('release-')
   const isRecallQuiz       = moduleId.startsWith('recall-')
@@ -83,6 +86,9 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   let passmark = 80
   let backHref = `/modules/${moduleId}`
   let backLabel = 'Back to Module'
+  // Certificate-bearing knowledge courses carry the credential name shown on the
+  // certificate awarded when the learner passes.
+  let certTitle: string | undefined
 
   // Recall: recall-{baseId}-{days}
   let recallLabel: string | undefined
@@ -112,6 +118,15 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     passmark     = 80
     backHref     = '/assessments'
     backLabel    = 'Back to Assessments'
+  } else if (isKnowledgeCourse) {
+    const course = getKnowledgeCourse(moduleId)
+    if (!course) notFound()
+    quizCategory = 'certified'
+    moduleTitle  = course.title
+    certTitle    = course.certificateTitle
+    passmark     = course.passmark
+    backHref     = '/knowledge'
+    backLabel    = 'Back to Knowledge Base'
   } else if (isRecapQuiz) {
     const recapRound = RECAP_ROUNDS.find(r => r.id === moduleId)
     if (!recapRound) notFound()
@@ -194,6 +209,9 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
     questionPool = KNOWLEDGE_ASSESSMENT_IDS.flatMap(mid =>
       QUIZ_QUESTIONS.filter(q => q.moduleId === mid && !q.tier)
     )
+  } else if (isKnowledgeCourse) {
+    // A certificate-bearing knowledge course — every question in its pool.
+    questionPool = QUIZ_QUESTIONS.filter(q => q.moduleId === moduleId && !q.tier)
   } else if (isRecapQuiz && recapQuestionModuleIds) {
     // Pass the full recap-tier pool — client will shuffle and sample down
     questionPool = recapQuestionModuleIds.flatMap(mid =>
@@ -232,11 +250,20 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   // Elevated gate — the two review accounts see the redesigned quiz flow.
   let beta = false
   let elevated = false
+  // The learner's display name, for the certificate awarded on certified courses.
+  let learnerName: string | undefined
   try {
     const auth = createServerClient()
     const { data: { user } } = await auth.auth.getUser()
     beta = isHubBeta(user?.email)
     elevated = isHubElevated(user?.email)
+    if (isKnowledgeCourse && user) {
+      const { data: profile } = await auth
+        .from('user_profiles').select('full_name').eq('id', user.id).maybeSingle()
+      learnerName = profile?.full_name?.trim()
+        || user.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+        || undefined
+    }
   } catch {
     // Non-critical — quiz still loads without the beta confidence UI.
   }
@@ -339,6 +366,8 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
       lastAttempt={lastAttempt}
       beta={beta}
       elevated={elevated}
+      certTitle={certTitle}
+      learnerName={learnerName}
       recapLabel={recapLabel}
       recapTheme={recapTheme}
       recapQuestionModuleIds={recapQuestionModuleIds}

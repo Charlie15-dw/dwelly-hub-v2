@@ -22,11 +22,11 @@ interface AssessmentMeta {
   passmark: number
 }
 
-// The canonical assessments: the system/video module assessments, then one
-// combined Knowledge Base assessment (the three knowledge modules + the Tenant,
-// Landlord and Maintenance Provider portal content rolled into one), then the
-// two programme milestones. Knowledge modules are excluded above because they
-// are represented by the combined assessment that sits just before the finals.
+// The canonical assessments: the system/video module assessments, then the two
+// programme milestones. The old combined "Knowledge Base Assessment" has been
+// retired — the Knowledge Base now carries two standalone certified courses
+// (Renters' Rights Act, Property Management Induction) surfaced on the Knowledge
+// Base page itself. Knowledge modules are excluded above as before.
 const ASSESSMENTS: AssessmentMeta[] = [
   ...MODULES.filter(m =>
     m.quizCount > 0 && m.passmark > 0 && m.section !== 'knowledge' &&
@@ -37,7 +37,6 @@ const ASSESSMENTS: AssessmentMeta[] = [
     questions: m.quizCount,
     passmark: m.passmark,
   })),
-  { id: 'knowledge-assessment', title: 'Knowledge Base Assessment — All Sections', questions: 24, passmark: 80 },
   { id: 'full-assessment', title: 'Full Assessment — All Sections', questions: 15, passmark: 80 },
   { id: 'master-assessment', title: 'Master Assessment', questions: 27, passmark: 80 },
 ]

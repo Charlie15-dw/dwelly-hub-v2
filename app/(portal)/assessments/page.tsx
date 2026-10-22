@@ -20,10 +20,9 @@ const VIDEO_MODULE_ASSESSMENTS = [
   { label: 'Support 2/2 — Actioning the Support Task',       icon: '🤝', id: 'sup-02', questions: 6  },
 ] as const
 
-// The knowledge base is assessed as one combined assessment — the three
-// knowledge modules plus the Tenant, Landlord and Maintenance Provider portal
-// content — rather than three separate quizzes.
-const KNOWLEDGE_ASSESSMENT_ID = 'knowledge-assessment'
+// The knowledge base is no longer assessed as a single combined quiz here. It
+// now carries two standalone certified courses (Renters' Rights Act, Property
+// Management Induction) surfaced on the Knowledge Base page itself.
 
 function SectionHeader({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
@@ -106,7 +105,6 @@ function ClassicAssessments() {
         const allIds = [
           'master-assessment',
           'full-assessment',
-          KNOWLEDGE_ASSESSMENT_ID,
           ...VIDEO_MODULE_ASSESSMENTS.map(a => a.id),
         ] as string[]
 
@@ -193,25 +191,7 @@ function ClassicAssessments() {
         </div>
       </div>
 
-      {/* ── 2. Knowledge Base Assessment (combined) ─────────────────────── */}
-      <div>
-        <SectionHeader icon={Library} label="Knowledge Base Assessment" />
-        <p className="text-xs text-[#6E6E73] mb-4">
-          One combined assessment across the whole knowledge base — Dwelly best practice,
-          repairs &amp; legal responsibilities, property finances, and the Tenant, Landlord
-          &amp; Maintenance Provider portals.
-        </p>
-        <div className="card overflow-hidden">
-          <AssessmentRow
-            icon="📚"
-            label="Knowledge Base Assessment — All Sections"
-            id={KNOWLEDGE_ASSESSMENT_ID}
-            questions={24}
-          />
-        </div>
-      </div>
-
-      {/* ── 3. Full Assessment ──────────────────────────────────────────── */}
+      {/* ── 2. Full Assessment ──────────────────────────────────────────── */}
       <div>
         <SectionHeader icon={ClipboardCheck} label="Full Video Module Assessment" />
         <p className="text-xs text-[#6E6E73] mb-4">
@@ -258,7 +238,7 @@ function ClassicAssessments() {
         </div>
       </div>
 
-      {/* ── 4. Master Assessment (final) ────────────────────────────────── */}
+      {/* ── 3. Master Assessment (final) ────────────────────────────────── */}
       <div>
         <SectionHeader icon={Trophy} label="Master Assessment" />
         <p className="text-xs text-[#6E6E73] mb-4">
