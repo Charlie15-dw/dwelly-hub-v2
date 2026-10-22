@@ -4,11 +4,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
-  BookOpen, PlayCircle, ClipboardCheck, Check, Lock, ArrowRight, Loader2, Award,
+  BookOpen, PlayCircle, ClipboardCheck, Check, Lock, ArrowRight, Loader2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-interface StageData {
+export interface StageData {
   label: string
   blurb: string
   guides: { title: string; href: string; done: boolean }[]
@@ -20,35 +20,23 @@ interface StageData {
   canAdvance: boolean
 }
 
-interface CourseData {
-  id: string
-  title: string
-  blurb: string
-  href: string
-  passed: boolean
-}
-
 export default function StageJourney({
   state,
   stage,
   totalStages,
-  courses,
 }: {
   state: StageData
   stage: number
   totalStages: number
-  courses: CourseData[]
 }) {
   const router = useRouter()
-  const [tab, setTab] = useState<'guides' | 'assessments' | 'courses'>('guides')
+  const [tab, setTab] = useState<'guides' | 'assessments'>('guides')
   const [advancing, setAdvancing] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const isLastStage = stage >= totalStages
   const doneCount = state.guides.filter((g) => g.done).length
   const hasAssessments = state.assessments.length > 0
-  const hasCourses = courses.length > 0
-  const coursesPassed = courses.filter((c) => c.passed).length
 
   async function advance() {
     if (!state.canAdvance || advancing) return
@@ -103,15 +91,6 @@ export default function StageJourney({
             {!state.assessmentsUnlocked && (
               <span className="ml-1 text-[12px] text-[var(--text-tertiary)]">Come back to this</span>
             )}
-          </TabButton>
-        )}
-        {hasCourses && (
-          <TabButton active={tab === 'courses'} onClick={() => setTab('courses')}>
-            <Award className="w-4 h-4" aria-hidden />
-            Knowledge Base Courses
-            <span className="ml-1 text-[12px] tabular-nums text-[var(--text-tertiary)]">
-              {coursesPassed}/{courses.length}
-            </span>
           </TabButton>
         )}
       </div>
@@ -196,43 +175,6 @@ export default function StageJourney({
                   <span className="text-[12.5px] font-medium text-[var(--text-tertiary)] group-hover:text-orange transition-colors flex items-center gap-1 flex-shrink-0">
                     {a.passed ? 'Passed' : 'Start'}
                     {!a.passed && <ArrowRight className="w-3.5 h-3.5" aria-hidden />}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Knowledge Base Courses tab */}
-      {tab === 'courses' && (
-        <div className="space-y-3">
-          <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed">
-            Pass each certified course to earn a downloadable Dwelly certificate. Take these any time
-            during your onboarding.
-          </p>
-          <ul className="flex flex-col gap-2.5">
-            {courses.map((c) => (
-              <li key={c.id}>
-                <Link
-                  href={c.href}
-                  className="flex items-center gap-3.5 rounded-2xl border border-navy-100 bg-white px-4 py-3.5 hover:border-orange/40 hover:bg-orange-50/30 transition-colors group"
-                >
-                  <span
-                    className={cn(
-                      'flex items-center justify-center w-8 h-8 rounded-xl flex-shrink-0',
-                      c.passed ? 'bg-teal/10 text-teal' : 'bg-navy-50 text-[var(--text-tertiary)]',
-                    )}
-                  >
-                    {c.passed ? <Check className="w-4 h-4" aria-hidden /> : <Award className="w-4 h-4" aria-hidden />}
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span className="block text-[15px] font-medium text-navy leading-snug">{c.title}</span>
-                    <span className="block text-[12.5px] text-[var(--text-tertiary)] mt-0.5 leading-snug">{c.blurb}</span>
-                  </span>
-                  <span className="text-[12.5px] font-medium text-[var(--text-tertiary)] group-hover:text-orange transition-colors flex items-center gap-1 flex-shrink-0">
-                    {c.passed ? 'Certified' : 'Start'}
-                    {!c.passed && <ArrowRight className="w-3.5 h-3.5" aria-hidden />}
                   </span>
                 </Link>
               </li>

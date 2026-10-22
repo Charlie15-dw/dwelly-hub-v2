@@ -1,11 +1,9 @@
 import { redirect } from 'next/navigation'
-import { Check, Lock } from 'lucide-react'
 import { createServerClient } from '@/lib/supabase/server'
 import { isGraduated } from '@/lib/onboarding-gate'
 import { ONBOARDING_STAGES, getStageState, FIRST_STAGE } from '@/lib/onboarding'
 import { KNOWLEDGE_COURSES, KNOWLEDGE_COURSE_IDS } from '@/lib/data'
-import { cn } from '@/lib/utils'
-import StageJourney from './StageJourney'
+import OnboardingTabs from './OnboardingTabs'
 
 export default async function GettingStartedPage() {
   const supabase = createServerClient()
@@ -60,39 +58,14 @@ export default async function GettingStartedPage() {
         </p>
       </div>
 
-      {/* Stepper */}
-      <ol className="flex flex-wrap gap-2">
-        {ONBOARDING_STAGES.map((s) => {
-          const done = s.n < stage
-          const current = s.n === stage
-          return (
-            <li
-              key={s.n}
-              className={cn(
-                'flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-medium',
-                current && 'border-navy bg-navy text-white',
-                done && 'border-teal/30 bg-teal/10 text-teal',
-                !current && !done && 'border-navy-100 bg-white text-[var(--text-tertiary)]',
-              )}
-            >
-              <span
-                className={cn(
-                  'flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-bold',
-                  current && 'bg-white/20',
-                  done && 'bg-teal text-white',
-                  !current && !done && 'bg-navy-50',
-                )}
-              >
-                {done ? <Check className="w-3 h-3" aria-hidden /> : !current ? <Lock className="w-2.5 h-2.5" aria-hidden /> : s.n}
-              </span>
-              {s.label}
-            </li>
-          )
-        })}
-      </ol>
-
-      {/* Current stage */}
-      <StageJourney state={serialisable(state)} stage={stage} totalStages={totalStages} courses={courses} />
+      {/* Tabs: guided training vs. certified Knowledge Base courses */}
+      <OnboardingTabs
+        stages={ONBOARDING_STAGES.map((s) => ({ n: s.n, label: s.label }))}
+        currentStage={stage}
+        state={serialisable(state)}
+        totalStages={totalStages}
+        courses={courses}
+      />
     </div>
   )
 }
