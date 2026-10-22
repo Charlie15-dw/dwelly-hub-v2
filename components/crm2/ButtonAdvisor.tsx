@@ -44,11 +44,11 @@ const CATEGORIES: Category[] = [
         q: 'A new time is agreed (in the thread, or one side proposed it and you confirmed the other by phone)',
         action: 'Reset Visit Date',
         why: 'Both parties have effectively agreed the new time, so you’re updating an existing booking — it notifies both sides automatically.',
-        watch: 'Only use this once the new time is actually agreed by both — otherwise Restart Scheduling.',
+        watch: 'Only use this once the new time is actually agreed by both — otherwise Reschedule.',
       },
       {
         q: 'No new time is agreed yet',
-        action: 'Restart Scheduling',
+        action: 'Reschedule',
         why: 'Kick the brokering off again — pick tenant or provider and write the opening message so the context carries over.',
       },
     ],
@@ -72,7 +72,7 @@ const CATEGORIES: Category[] = [
       {
         q: 'A CP12 where it’s unclear if they want the boiler service',
         action: 'Ask again before proceeding',
-        why: 'The “Add Boiler Service” option is easy to assume. If their response is unclear, confirm with the landlord rather than guessing.',
+        why: 'The “Approve, Add Boiler Service” option is easy to assume. If their response is unclear, confirm with the landlord rather than guessing.',
       },
     ],
   },
