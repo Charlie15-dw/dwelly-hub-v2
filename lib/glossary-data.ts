@@ -54,7 +54,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     id: 'ground-8',
     term: 'Ground 8',
     definition:
-      "A mandatory ground for possession under Schedule 2 of the Housing Act 1988, triggered when a tenant owes at least two months' rent (if paying monthly) both at the time the notice is served and at the date of the court hearing. Because it is mandatory, the court must grant possession if the ground is proven. Landlords often cite Ground 8 alongside the discretionary Grounds 10 and 11 to strengthen their case.",
+      "A mandatory ground for possession under Schedule 2 of the Housing Act 1988. Under the Renters' Rights Act 2025 it is triggered when a tenant owes at least three months' rent (if paying monthly, or 13 weeks' if paying weekly) both at the time the notice is served and at the date of the court hearing — raised from the previous two-month threshold — with a four-week notice period. Because it is mandatory, the court must grant possession if the ground is proven. Landlords often cite Ground 8 alongside the discretionary Grounds 10 and 11 to strengthen their case.",
     context:
       "The landlord's solicitor confirmed that Ground 8 was established because the tenant owed four months' arrears, making possession almost certain.",
     category: 'legal',
