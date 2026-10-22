@@ -234,15 +234,15 @@ That's the optional-remedial branch.
 
 ### Short 1: A Visit Was Booked but the Appointment Didn't Go Ahead
 
-[SCREEN: A job at Visit showing "Reset Visit Date" and "Restart Scheduling"]
+[SCREEN: A job at Visit showing "Reset Visit Date" and "Reschedule"]
 
 The visit didn't happen and you need to rebook. From the Visit stage — and also from Result awaiting — you've got two buttons, and picking the right one comes down to a single question: has a new time already been agreed?
 
 If yes — both sides have confirmed a new slot in the thread, or one proposed it and you confirmed the other by phone — use Reset Visit Date. It updates the booking and notifies both sides automatically.
 
-If no new time is agreed yet, use Restart Scheduling. Choose whether to restart with the tenant or the provider, and write the opening message so the context carries over — something like "can't do tomorrow, next Monday works." Any dates you put in your message are recognised and carried through the flow.
+If no new time is agreed yet, use Reschedule. Choose whether to restart with the tenant or the provider, and write the opening message so the context carries over — something like "can't do tomorrow, next Monday works." Any dates you put in your message are recognised and carried through the flow.
 
-[TIP] Same rule, every time: new time already agreed, Reset Visit Date. No time agreed yet, Restart Scheduling.
+[TIP] Same rule, every time: new time already agreed, Reset Visit Date. No time agreed yet, Reschedule.
 
 ---
 
