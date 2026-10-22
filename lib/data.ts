@@ -3895,7 +3895,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-crm2-bt-5', moduleId: 'crm2-buttons',
-    question: 'You\'re at Landlord approval on a CP12 and see the "Add Boiler Service" button. What\'s the right habit?',
+    question: 'You\'re at Landlord approval on a CP12 and see the "Approve, Add Boiler Service" button. What\'s the right habit?',
     options: [
       'Add it by default — a boiler service always goes with a CP12',
       'Always double-check the landlord actually wants it; if their response is unclear, ask again before proceeding',
@@ -3947,7 +3947,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: 'q-crm2-rs-1', moduleId: 'crm2-rescheduling',
     question: 'Both the tenant and provider have confirmed a new time in the thread. Which action?',
     options: [
-      'Restart Scheduling',
+      'Reschedule',
       'Reset Visit Date',
       'Take Over and email both parties',
       'Cancel and raise a new job',
@@ -3960,28 +3960,28 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'The original slot fell through and no new time has been agreed. Which action?',
     options: [
       'Reset Visit Date to a guess and adjust later',
-      'Restart Scheduling, writing the opening message so the context carries over',
+      'Reschedule, writing the opening message so the context carries over',
       'Take Over — rescheduling isn\'t built in at this stage',
       'Provide Instructions to the agent to find a new slot',
     ],
     correct: 1,
-    rationale: 'Restart Scheduling is for when a new appointment hasn\'t been agreed yet. You pick tenant or provider and write the opening message so context carries over.',
+    rationale: 'Reschedule is for when a new appointment hasn\'t been agreed yet. You pick tenant or provider and write the opening message so context carries over.',
   },
   {
     id: 'q-crm2-rs-3', moduleId: 'crm2-rescheduling',
     question: 'The provider proposed a new date and you phoned the tenant, who agreed. Which action — and why is it easy to get wrong?',
     options: [
-      'Restart Scheduling, because a phone agreement doesn\'t count',
+      'Reschedule, because a phone agreement doesn\'t count',
       'Reset Visit Date — both sides have agreed (one proposed, you confirmed the other by phone), even though it feels like a restart',
       'Take Over, because it happened partly off-system',
       'Cancel and rebook from scratch',
     ],
     correct: 1,
-    rationale: 'Reset Visit Date covers both "both confirmed in the thread" and "one proposed it and you confirmed the other by phone". Since both sides have agreed, it\'s a Reset, not a Restart.',
+    rationale: 'Reset Visit Date covers both "both confirmed in the thread" and "one proposed it and you confirmed the other by phone". Since both sides have agreed, it\'s a Reset Visit Date, not a Reschedule.',
   },
   {
     id: 'q-crm2-rs-4', moduleId: 'crm2-rescheduling',
-    question: 'When you Restart Scheduling and write "can\'t do tomorrow, next Monday works", what does the system do with the date?',
+    question: 'When you Reschedule and write "can\'t do tomorrow, next Monday works", what does the system do with the date?',
     options: [
       'Ignores it — you must set the date separately',
       'Recognises and uses it through the flow, and quotes it verbatim at the end of the email',
@@ -4368,13 +4368,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: 'q-crm2-maint-prov-3', moduleId: 'crm2-maint-provider',
     question: 'The provider will need to see the job before pricing it. Which button do you use?',
     options: [
-      'Assign provider & start online quoting',
-      'Go to Quotation Scheduling',
+      'Proceed to Online Quoting',
+      'Proceed to Scheduling',
       'Set Provider Quote',
       'Postpone',
     ],
     correct: 1,
-    rationale: 'Use "Go to Quotation Scheduling" when the provider will price on site. "Assign provider & start online quoting" is for a remote price.',
+    rationale: 'Use "Proceed to Scheduling" when the provider will price on site. "Proceed to Online Quoting" is for a remote price.',
   },
   {
     id: 'q-crm2-maint-prov-4', moduleId: 'crm2-maint-provider',
@@ -4540,15 +4540,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 'q-crm2-maint-branch-2', moduleId: 'crm2-maint-branches',
-    question: 'What\'s the difference between Cancel Request and No Works Needed?',
+    question: 'What\'s the difference between Cancel Request and Cancel & Notify?',
     options: [
       'They behave identically, just under two different names',
-      'Cancel Request cancels quietly with no letters; No Works Needed sends stand-down letters',
-      'Cancel Request sends stand-down letters; No Works Needed is silent',
-      'No Works Needed re-opens the job again a few days later',
+      'Cancel Request cancels quietly with no letters; Cancel & Notify sends stand-down letters',
+      'Cancel Request sends stand-down letters; Cancel & Notify is silent',
+      'Cancel & Notify re-opens the job again a few days later',
     ],
     correct: 1,
-    rationale: 'Cancel Request cancels quietly — reminders dropped, nobody written to. No Works Needed sends stand-down letters to the tenant, the provider, and the landlord in your own words.',
+    rationale: 'Cancel Request cancels quietly — reminders dropped, nobody written to. Cancel & Notify sends stand-down letters to the tenant, the provider, and the landlord in your own words.',
   },
   {
     id: 'q-crm2-maint-branch-3', moduleId: 'crm2-maint-branches',

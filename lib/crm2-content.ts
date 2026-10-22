@@ -93,7 +93,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
         rows: [
           ['Landlord approval', 'The agent asks the landlord to authorise the work.', 'Landlord approves \u2192 Provider selection (or auto-advances at +4 days; EPCs included).', 'Landlord says they\u2019ll arrange it \u2192 Landlord DIY; out of scope \u2192 cancelled.'],
           ['Provider selection', 'The agent finds a contractor.', 'A contractor accepts \u2192 Scheduling.', 'No contractor found \u2192 escalates to you.'],
-          ['Scheduling', 'The agent brokers a date between the parties.', 'A date is agreed and set \u2192 Visit.', 'Deadlock \u2192 escalates; tenant not home \u2192 Restart scheduling loops it back.'],
+          ['Scheduling', 'The agent brokers a date between the parties.', 'A date is agreed and set \u2192 Visit.', 'Deadlock \u2192 escalates; tenant not home \u2192 Reschedule loops it back.'],
           ['Visit', 'The agent confirms and sends a reminder the day before.', 'The visit date passes \u2192 Result awaiting (auto-advances).', 'Visit rearranged or didn\u2019t happen \u2192 Rescheduling, or re-set the visit date (back to scheduling).'],
           ['Result awaiting', 'The agent chases the certificate.', 'Certificate arrives and passes the AI check \u2192 Certificate review.', 'No cert \u2192 chases +1 / +2 days, escalates at +3.'],
           ['Certificate review', 'Your checkpoint: check the document and its dates.', 'Cert is clean \u2192 Invoice review.', 'Remedials found \u2192 remedial branch (Quotation awaiting).'],
@@ -207,7 +207,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
           ['Quotation review', 'Remedial branch, when a quote for extra works arrives', 'Check the amount and the work description'],
           ['Approval message', 'Any stage, when the agent drafts a free-text (non-template) email or a non-standard SMS', 'Read it, edit if needed, then confirm to send. To write your own, use Reject and Take Over — not just Reject (a plain reject only resolves the escalation, so the job is easily forgotten)'],
           ['Landlord quote approval', 'Remedial branch, the landlord\u2019s yes/no on paying', 'Usually nothing; if it escalates, record their response using Add Direct Info'],
-          ['Resolve a task', 'Any stage, when the agent hands a decision over — or when you Take Over', 'Pick a stage resolution (Wait / Cancel / Landlord DIY / Select another provider / Add direct info)'],
+          ['Resolve a task', 'Any stage, when the agent hands a decision over — or when you Take Over', 'Pick a stage resolution (Wait / Cancel / Landlord DIY / Change SP / Add direct info)'],
         ],
       },
 
@@ -242,15 +242,16 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
     minutes: 6,
     quizModuleId: 'crm2-buttons',
     content: [
+      { type: 'callout', variant: 'tip', text: 'Not sure what a button does? Hover over it and a pop-up explains what will happen before you click.' },
       { type: 'heading', text: 'Landlord approval buttons — by certificate type' },
-      { type: 'paragraph', text: 'Every job starts at Landlord approval, where you authorise the works once the landlord says yes. The buttons differ slightly by certificate type. If the landlord approves by phone, click the approval button directly (e.g. Approved, Use Dwelly SP) — not Add Direct Info.' },
+      { type: 'paragraph', text: 'Every job starts at Landlord approval, where you authorise the works once the landlord says yes. The buttons differ slightly by certificate type. If the landlord approves by phone, click the approval button directly (e.g. Approve, Use Default SP) — not Add Direct Info.' },
       { type: 'subheading', text: 'Gas Safety Certificate (CP12)' },
-      { type: 'callout', variant: 'warning', text: 'Note the \u201CAdd Boiler Service\u201D button — always double-check whether the landlord wants this done. If it\u2019s unclear from their response, ask again before proceeding.' },
-      { type: 'image', src: '/crm2/buttons-cp12.png', text: 'Landlord approval buttons for a CP12 job, including Add Boiler Service.',
+      { type: 'callout', variant: 'warning', text: 'Note the \u201CApprove, Add Boiler Service\u201D button — always double-check whether the landlord wants this done. If it\u2019s unclear from their response, ask again before proceeding.' },
+      { type: 'image', src: '/crm2/buttons-cp12.png', text: 'Landlord approval buttons for a CP12 job, including Approve, Add Boiler Service.',
         hotspots: [
-          { x: 7,  y: 50, label: 'Approved, Use Dwelly SP', detail: 'The default approval path — authorises the CP12 using our preferred provider.' },
-          { x: 20.5, y: 50, label: 'Proceed with Another Provider', detail: 'Use when the landlord names a specific provider. If they’re not on the preferred list, check the provider panel before onboarding a new one.' },
-          { x: 33.5, y: 50, label: 'Add Boiler Service', detail: 'An optional extra — always confirm the landlord actually wants it before proceeding. Ask again if their response is unclear.' },
+          { x: 7,  y: 50, label: 'Approve, Use Default SP', detail: 'The default approval path — authorises the CP12 using our preferred provider.' },
+          { x: 20.5, y: 50, label: 'Approve, Use Another Provider', detail: 'Use when the landlord names a specific provider. If they’re not on the preferred list, check the provider panel before onboarding a new one.' },
+          { x: 33.5, y: 50, label: 'Approve, Add Boiler Service', detail: 'An optional extra — always confirm the landlord actually wants it before proceeding. Ask again if their response is unclear.' },
           { x: 44, y: 50, label: 'Landlord DIY', detail: 'The landlord chooses to arrange the works themselves; the job follows the DIY route.' },
           { x: 64, y: 50, label: 'Provide Instructions', detail: 'Admin-only. The main accepted case is a closed job that needs a “do nothing” instruction.' },
           { x: 94.5, y: 50, label: 'Cancel Request', detail: 'Cancels the job — admin-only, so consult an admin first.' },
@@ -267,11 +268,11 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'image', src: '/crm2/providers-table.png', text: 'Preferred Compliance Providers reference.' },
       { type: 'subheading', text: 'If the landlord asks for a specific provider' },
       { type: 'steps', items: [
-        'Click \u201CProceed with another provider\u201D.',
+        'Click \u201CApprove, Use Another Provider\u201D.',
         'If they\u2019re not on the preferred list, check the provider panel at panel.dwelly.team/dw-admin/html/pm-providers.',
         'If they\u2019re not on the list, reach out to your TL so they can onboard the desired SP for you.',
       ]},
-      { type: 'image', src: '/crm2/provider-picker.png', text: 'Selecting an alternative provider via \u201CProceed with another provider\u201D.' },
+      { type: 'image', src: '/crm2/provider-picker.png', text: 'Selecting an alternative provider via \u201CApprove, Use Another Provider\u201D.' },
 
       { type: 'heading', text: 'Send Communication' },
       { type: 'bullets', items: [
@@ -329,13 +330,13 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'heading', text: 'Provide Instructions (admin-only)' },
       { type: 'callout', variant: 'warning', text: 'Never use Provide Instructions unless you\u2019ve consulted an admin. It\u2019s now admin-only, along with Reassign Job and Cancel Job — operators still see the button but will be asked to contact an admin. The main case — a job that\u2019s already closed and someone sends a thank-you or an unrelated email, where the instruction is simply \u201Cdo nothing\u201D — now has its own self-serve button (see No action needed, below).' },
 
-      { type: 'heading', text: 'No action needed & No works needed (self-serve)' },
+      { type: 'heading', text: 'No action needed & Cancel & Notify (self-serve)' },
       { type: 'paragraph', text: 'Two buttons let you close these situations out yourself, so you no longer have to route them through an admin (Elya).' },
       { type: 'bullets', items: [
         'No action needed — now available in the terminal stages (Cancelled and Completed). Use it to close out a job when nothing more is required, such as a landlord sending a \u201Cthank you\u201D after the job is already done. This is the \u201Cdo nothing\u201D case that previously had to go through an admin.',
-        'No works needed — cancels the job and lets everyone who has already been contacted know the ticket is closed, so no party is left expecting a visit.',
+        'Cancel & Notify — cancels the job and lets everyone who has already been contacted know the ticket is closed, so no party is left expecting a visit.',
       ]},
-      { type: 'callout', variant: 'important', text: 'Cancel itself still goes through an admin (Elya) only. \u201CNo works needed\u201D closes the job and notifies the people already contacted, but a full Cancel Request remains admin-only — along with Reassign Job and Provide Instructions.' },
+      { type: 'callout', variant: 'important', text: 'Cancel itself still goes through an admin (Elya) only. \u201CCancel & Notify\u201D closes the job and notifies the people already contacted, but a full Cancel Request remains admin-only — along with Reassign Job and Provide Instructions.' },
 
       { type: 'heading', text: 'Take Over \u2192 call' },
       { type: 'bullets', items: [
@@ -348,7 +349,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
   {
     slug: 'rescheduling',
     title: 'Rescheduling',
-    summary: 'Restart scheduling without a manual take-over — and let the system read the dates in your message.',
+    summary: 'Reschedule without a manual take-over — and let the system read the dates in your message.',
     icon: '📅',
     pillar: 'features',
     kind: 'guide',
@@ -358,12 +359,12 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'callout', variant: 'info', text: 'New: rescheduling is now built in for jobs already at the Visit or Result awaiting stage. Previously this needed a manual take-over.' },
       { type: 'image', src: '/crm2/visit-jobcard.png', text: 'A job at the Visit stage.' },
       { type: 'paragraph', text: 'You no longer need to call the provider, tenant or landlord to move a visit unless it\u2019s genuinely urgent — the agent can reschedule any visit for you. From Visit (and Result awaiting) you have two direct rescheduling actions, and the right one depends on whether a new time has already been agreed.' },
-      { type: 'image', src: '/crm2/buttons-visit.png', text: 'The two rescheduling actions: Reset Visit Date and Restart Scheduling.',
+      { type: 'image', src: '/crm2/buttons-visit.png', text: 'The two rescheduling actions: Reset Visit Date and Reschedule.',
         hotspots: [
           { x: 4.75, y: 50, label: 'Set New Visit Date', detail: 'Use when a new time is already agreed by both sides — it updates the booking and notifies both automatically.' },
           { x: 30, y: 50, label: 'Wait for Response', detail: 'Holds the job for a reply — capped at 3 days. If the wait needs to be longer, divert the job to Manual instead.' },
           { x: 39.5, y: 50, label: 'Provide Instructions', detail: 'Admin-only — consult an admin before using it.' },
-          { x: 49, y: 50, label: 'Restart Scheduling', detail: 'Use when no new time is agreed yet — pick tenant or provider and write the opening message so context carries over.' },
+          { x: 49, y: 50, label: 'Reschedule', detail: 'Use when no new time is agreed yet — pick tenant or provider and write the opening message so context carries over.' },
         ],
       },
 
@@ -371,12 +372,12 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'paragraph', text: 'Use this only when both parties have already agreed the new time — both confirmed in the thread, or one proposed it and you confirmed the other by phone. It updates the job and notifies both sides automatically.' },
       { type: 'image', src: '/crm2/reset-visit-example.png', text: 'Reset Visit Date — worked example.' },
 
-      { type: 'heading', text: 'Restart Scheduling' },
+      { type: 'heading', text: 'Reschedule' },
       { type: 'paragraph', text: 'Use this when a new appointment hasn\u2019t been agreed yet. It drops the current visit date and restarts the negotiation: you choose whether to restart with the tenant or the provider, and you write the opening message so the context carries over — for example, \u201Ccan\u2019t do tomorrow, next Monday works\u201D. The chosen party gets an availability request quoting your message, and the other party is asked to stand by.' },
       { type: 'callout', variant: 'tip', text: 'Dates you put in your message are recognised and used through the flow — so a natural message like \u201Cnext Monday works\u201D is enough to move things along, and they\u2019re quoted verbatim at the end of the email too.' },
 
       { type: 'heading', text: 'Always record the date in the system' },
-      { type: 'callout', variant: 'warning', text: 'A visit date must be agreed AND recorded in the system before the job proceeds — this is enforced strictly, not a nice-to-have. Confirming a new time on a call or by email and then letting the job carry on without pressing Reset Visit Date / Restart Scheduling is the single most common deviation logged — it shows up as \u201Crescheduled by hand\u201D. If a date changes, record it here.' },
+      { type: 'callout', variant: 'warning', text: 'A visit date must be agreed AND recorded in the system before the job proceeds — this is enforced strictly, not a nice-to-have. Confirming a new time on a call or by email and then letting the job carry on without pressing Reset Visit Date / Reschedule is the single most common deviation logged — it shows up as \u201Crescheduled by hand\u201D. If a date changes, record it here.' },
     ],
   },
   {
@@ -592,7 +593,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
           ['Sensitive ask \u2014 tenant data / a named contractor', 'Don\u2019t share tenant data or commit to a named contractor without checking. If you\u2019re not 100% sure, ask.'],
           ['Landlord hints DIY / changes mind', 'If the landlord signals they\u2019ll arrange it themselves, route to Landlord DIY; if it\u2019s unclear, call to confirm before changing the path.'],
           ['No contractor found / landlord named one', 'Provider selection needs a human — source a contractor, or record the one the landlord named.'],
-          ['Contractor declined / won\u2019t attend', 'Restart scheduling or select another provider. (See \u201CRescheduling\u201D.)'],
+          ['Contractor declined / won\u2019t attend', 'Reschedule or Change SP. (See \u201CRescheduling\u201D.)'],
           ['Document unreadable / wrong type / mixed', 'A \u201Cdocument problem\u201D escalation. Check the file and request a correct copy if needed. (See \u201CCertificate review\u201D for wrong-property certs.)'],
           ['Certificate shows faults \u2014 remedial needed', 'Decide required vs recommended at Certificate review. (See \u201CRemedial works\u201D.)'],
           ['Landlord refuses the quote', 'Record the response; the remedial branch ends at Remedial terminated and the satisfactory cert still stands.'],
@@ -788,9 +789,9 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
           ['You\u2019re passing on information you received from one party', 'Add Direct Info — write it as the party you got it from; choose the right source (e.g. From Provider).'],
           ['Both sides have already agreed the appointment', 'Set Visit Date — it records an agreed slot; it is not for passing on information.'],
           ['A party gives a relative time or window like \u201Cmorning\u201D', 'Set Visit Date manually and put the window in the Time note field (e.g. \u201Cin the morning\u201D) — it overrides the exact time. The AI won\u2019t accept a relative time as confirmation on its own.'],
-          ['The landlord approves the works by phone', 'Click the approval button directly (e.g. Approved, Use Dwelly SP) — not Add Direct Info.'],
+          ['The landlord approves the works by phone', 'Click the approval button directly (e.g. Approve, Use Default SP) — not Add Direct Info.'],
           ['A new time is agreed (both in the thread, or one proposed + you confirmed the other by phone)', 'Reset Visit Date.'],
-          ['No new time is agreed yet', 'Restart Scheduling — pick tenant or provider and write the opening message so context carries over.'],
+          ['No new time is agreed yet', 'Reschedule — pick tenant or provider and write the opening message so context carries over.'],
           ['You spot a problem with a cert (wrong date/address)', 'Invalid certificate.'],
           ['A new cert arrived that the agent didn\u2019t recognise', 'Upload another certificate.'],
           ['Faults that must be fixed for compliance', 'Need required remedial (mandatory remedial branch).'],
@@ -936,7 +937,7 @@ export const CRM2_LESSONS: Crm2Lesson[] = [
       { type: 'heading', text: 'Scheduling & visits' },
       { type: 'faq', faqs: [
         { q: 'A tenant rescheduled out-of-band (e.g. by email) \u2014 how do I handle it?', a: 'It arrives in 2.0 as an escalation. Just Set Visit Date to the agreed new slot \u2014 replying to the tenant won\u2019t break the automated flow, and no special handling is needed.' },
-        { q: 'The tenant wasn\u2019t home on the day \u2014 what\u2019s the right action?', a: 'Use \u201CRestart Scheduling\u201D. It puts the job back into the scheduling loop rather than needing a new job or an ops fix, so there\u2019s no need to flag it for help first.' },
+        { q: 'The tenant wasn\u2019t home on the day \u2014 what\u2019s the right action?', a: 'Use \u201CReschedule\u201D. It puts the job back into the scheduling loop rather than needing a new job or an ops fix, so there\u2019s no need to flag it for help first.' },
         { q: 'A visit is booked but no longer needed \u2014 what do I do first?', a: 'Tell the provider before you ask for the job to be cancelled \u2014 especially for same-day visits. Cancelling in the system doesn\u2019t reach the provider, so an uninformed SP will still attend and the visit becomes abortive. Confirm to ops that the SP has been told when you request the cancellation.' },
         { q: 'A cancelled job never reached the provider \u2014 how do I stop them booking it?', a: 'Cancelling doesn\u2019t notify the SP, so they can carry on booking a job that no longer exists. When Take Over is unavailable (the only button being \u201CProvide Instructions\u201D), use the Send comms option to email the SP directly and tell them to stand down, then confirm in the channel once they\u2019ve been emailed.' },
         { q: 'An empty property is being relet \u2014 how should I time the visit?', a: 'Date the certificate as close to the new move-in as possible. Don\u2019t force the timing through the scheduling loop \u2014 call the SP directly, agree a date, and set the visit date on the job manually.' },

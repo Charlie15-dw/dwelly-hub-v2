@@ -71,7 +71,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
         'Landlord quote approval \u2014 when a quote comes back over the property\u2019s threshold, the landlord has to agree to pay it before the works go ahead.',
         'Landlord DIY \u2014 the owner decides to arrange the repair with their own tradesman. We order nothing and wait for confirmation it\u2019s done.',
         'Manual \u2014 a human-owned pause for odd situations the flow can\u2019t model. The agent stops sending anything.',
-        'Cancelled \u2014 the job ends, either quietly (Cancel Request) or with stand-down letters (No Works Needed).',
+        'Cancelled \u2014 the job ends, either quietly (Cancel Request) or with stand-down letters (Cancel & Notify).',
       ]},
 
       { type: 'heading', text: 'Reading who is waiting' },
@@ -201,7 +201,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
 
       { type: 'heading', text: 'How the landlord\u2019s answer routes' },
       { type: 'bullets', items: [
-        'A clear yes \u2192 Approved, Use Dwelly SP, and on to the provider picker.',
+        'A clear yes \u2192 Approve, Use Default SP, and on to the provider picker.',
         'A clear \u201CI\u2019ll do it myself\u201D \u2192 Landlord DIY on its own.',
         'A vague answer \u2192 escalated to you to interpret.',
       ]},
@@ -217,7 +217,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
 
       { type: 'heading', text: 'Your buttons' },
       { type: 'table', headers: ['Button', 'What it does'], rows: [
-        ['Approved, Use Dwelly SP', 'On to the provider picker.'],
+        ['Approve, Use Default SP', 'On to the provider picker.'],
         ['Landlord DIY', 'The landlord takes the job on himself.'],
         ['Update Job Details', 'Saves edits only \u2014 no letters are re-sent.'],
         ['Wait for Response', 'Hold for the landlord to reply.'],
@@ -245,8 +245,8 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
 
       { type: 'heading', text: 'Your buttons' },
       { type: 'table', headers: ['Button', 'What it does'], rows: [
-        ['Assign provider & start online quoting', 'The picker\u2019s main submit \u2014 the provider will price remotely.'],
-        ['Go to Quotation Scheduling', 'The same picker\u2019s second submit \u2014 use it when the provider will price on site.'],
+        ['Proceed to Online Quoting', 'Use when you have photos and a report and want the provider\u2019s take on the assessment/price before they attend \u2014 avoiding a callout charge. The provider prices remotely.'],
+        ['Proceed to Scheduling', 'Go to scheduling, starting with the tenant as per usual \u2014 use it when the provider will price on site.'],
         ['Postpone', 'Come back in 1, 3 or 7 days with a note; the task returns by itself.'],
         ['Landlord DIY', 'The landlord takes it on instead.'],
         ['Cancel Request', 'End the job. A reason is required.'],
@@ -292,7 +292,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
         ['\u201CI can\u2019t price this without seeing it\u201D', 'Agent \u2014 moved to scheduling to arrange an inspection; the price comes afterwards.'],
         ['He replied about price, but no amount could be read', 'You \u2014 read the email and enter the figure with Set Provider Quote.'],
         ['He wants a call-out charge agreed first', 'You \u2014 stage doesn\u2019t change; record the sum as the price, or send it to Go to Offline Quotation Scheduling.'],
-        ['He asks a question, or turns the job down', 'You \u2014 escalated; a refusal comes with Select Another Provider offered.'],
+        ['He asks a question, or turns the job down', 'You \u2014 escalated; a refusal comes with Change SP offered.'],
       ]},
       { type: 'callout', variant: 'warning', text: 'A landlord writing in about DIY or his own contractor is always escalated to you, whatever the provider is doing.' },
 
@@ -300,7 +300,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
       { type: 'table', headers: ['Button', 'What it does'], rows: [
         ['Set Provider Quote', 'Enter the amount and scope by hand, as the provider said it. On submit the system compares it with the threshold: within \u2192 scheduling, over \u2192 the landlord. If it can\u2019t read your figure as a number, the task comes back explaining why.'],
         ['Go to Offline Quotation Scheduling', 'Stop waiting for a remote price \u2014 arrange a visit for the provider to price on site.'],
-        ['Select Another Provider', 'The old provider gets a polite stand-down, a new one is assigned, and the request stays on this stage to be priced.'],
+        ['Change SP', 'The old provider gets a polite stand-down, a new one is assigned, and the request stays on this stage to be priced.'],
         ['Update Job Details', 'Fix the title, description or photos. Save only \u2014 no letters re-sent. Telling the provider is a separate decision you make.'],
         ['Wait for Response', '1 or 3 days, naming who you\u2019re waiting for. A note is mandatory.'],
       ]},
@@ -339,7 +339,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
       { type: 'table', headers: ['Button', 'What it does'], rows: [
         ['Set Visit Date', 'Enter the agreed slot; the agent confirms it to both sides.'],
         ['Work Already Completed', 'He\u2019s already been \u2014 upload the invoice or quotation.'],
-        ['Set Provider Quote / Select Another Provider', 'Record a price, or swap the contractor.'],
+        ['Set Provider Quote / Change SP', 'Record a price, or swap the contractor.'],
         ['Add Direct Info / Wait for Response / Landlord DIY / Cancel Request', 'Record an off-system message, pause, hand to the landlord, or end the job.'],
       ]},
 
@@ -352,9 +352,9 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
       { type: 'heading', text: 'Visit buttons' },
       { type: 'table', headers: ['Button', 'What it does'], rows: [
         ['Set New Visit Date', 'The date moved.'],
-        ['Restart Scheduling', 'Start again \u2014 choose who to ask first, and your words go into the letter verbatim.'],
+        ['Reschedule', 'Start again \u2014 choose who to ask first, and your words go into the letter verbatim.'],
         ['Completed, Invoice Not Needed', 'Done, and no bill is coming.'],
-        ['Set Provider Quote / Select Another Provider / Add Direct Info / Cancel Request', 'Record a price, swap the contractor, log a message, or end the job.'],
+        ['Set Provider Quote / Change SP / Add Direct Info / Cancel Request', 'Record a price, swap the contractor, log a message, or end the job.'],
       ]},
       { type: 'callout', variant: 'tip', text: 'Any extra scope agreed for the same visit must be emailed to the provider before he attends.' },
     ],
@@ -373,9 +373,9 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
       { type: 'paragraph', text: 'The visit has happened \u2014 collect its result: an invoice for the work done, a quotation if further works were found, or both. In one line: get the documents out of the contractor.' },
       { type: 'callout', variant: 'info', text: 'What the agent does: it doesn\u2019t chase straight after the visit \u2014 paperwork takes a day. Reminders go at +1 and +2 working days, with an escalation at +3 (\u201Cthe provider has gone quiet\u201D). An invoice raises your review task and leaves the stage unchanged. A quotation with no invoice pending is read and routed by threshold, with no review by you.' },
       { type: 'bullets', items: [
-        'Work Complete \u2014 upload documents handed over outside the system.',
+        'Upload Docs \u2014 upload invoices and documents handed over outside the system; the job closes automatically after 24 hours if there is no further communication.',
         'No Further Works Expected \u2014 close off a promise of more works.',
-        'Set New Visit Date / Restart Scheduling \u2014 the visit fell through.',
+        'Set New Visit Date / Reschedule \u2014 the visit fell through.',
         'Completed, Invoice Not Needed / Set Provider Quote / Cancel Request.',
       ]},
 
@@ -413,7 +413,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
       { type: 'table', headers: ['Button', 'What it does'], rows: [
         ['Landlord Approved the Quote', 'On to scheduling the works (a follow-up visit if one already happened).'],
         ['Landlord Rejected the Quote', 'Back to the picker for a new provider.'],
-        ['Select Another Provider', 'Swap the provider without waiting for his answer.'],
+        ['Change SP', 'Swap the provider without waiting for his answer.'],
         ['Wait for Landlord', 'Hold 1, 3 or 7 days.'],
         ['Cancel Request', 'End the job. A reason is required.'],
       ]},
@@ -477,7 +477,7 @@ export const MAINTENANCE_LESSONS: Crm2Lesson[] = [
       { type: 'paragraph', text: 'Terminal. There are two ways in, and they behave differently:' },
       { type: 'table', headers: ['Route in', 'Behaviour'], rows: [
         ['Cancel Request', 'Cancels quietly \u2014 reminders are dropped and nobody is written to. A reason is required.'],
-        ['No Works Needed', 'The works turned out to be unnecessary. Stand-down letters go to the tenant and the assigned provider, and to the landlord in your own words, verbatim.'],
+        ['Cancel & Notify', 'The works turned out to be unnecessary. Stand-down letters go to the tenant and the assigned provider, and to the landlord in your own words, verbatim.'],
       ]},
     ],
   },
