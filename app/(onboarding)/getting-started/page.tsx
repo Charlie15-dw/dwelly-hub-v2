@@ -26,6 +26,17 @@ export default async function GettingStartedPage() {
   const firstName = profile?.full_name?.trim().split(' ')[0] ?? null
   const totalStages = ONBOARDING_STAGES.length
 
+  // Completed stages (everything before the current one) are resolved too, so the
+  // learner can click back into them for a read-only review of the guides/videos.
+  const completedStages = (
+    await Promise.all(
+      ONBOARDING_STAGES.filter((s) => s.n < stage).map(async (s) => {
+        const st = await getStageState(supabase, user.id, s.n)
+        return st ? { n: s.n, ...serialisable(st) } : null
+      }),
+    )
+  ).filter((s): s is NonNullable<typeof s> => s !== null)
+
   // Certified knowledge-base courses are available throughout onboarding, not
   // tied to a stage. Resolve each course's passed state for the current user.
   const { data: courseResults } = await supabase
@@ -63,6 +74,7 @@ export default async function GettingStartedPage() {
         stages={ONBOARDING_STAGES.map((s) => ({ n: s.n, label: s.label }))}
         currentStage={stage}
         state={serialisable(state)}
+        completedStages={completedStages}
         totalStages={totalStages}
         courses={courses}
       />

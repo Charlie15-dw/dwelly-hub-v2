@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Check, Lock, Award, GraduationCap, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import StageJourney, { type StageData } from './StageJourney'
+import StageReview, { type CompletedStage } from './StageReview'
 
 interface CourseData {
   id: string
@@ -18,17 +19,22 @@ export default function OnboardingTabs({
   stages,
   currentStage,
   state,
+  completedStages,
   totalStages,
   courses,
 }: {
   stages: { n: number; label: string }[]
   currentStage: number
   state: StageData
+  completedStages: CompletedStage[]
   totalStages: number
   courses: CourseData[]
 }) {
   const [view, setView] = useState<'training' | 'courses'>('training')
+  // null = viewing the live current stage; a number = reviewing that completed stage.
+  const [reviewStage, setReviewStage] = useState<number | null>(null)
   const coursesPassed = courses.filter((c) => c.passed).length
+  const reviewing = reviewStage !== null ? completedStages.find((s) => s.n === reviewStage) ?? null : null
 
   return (
     <div className="space-y-6">
@@ -51,38 +57,66 @@ export default function OnboardingTabs({
 
       {view === 'training' && (
         <div className="space-y-8">
-          {/* Stepper */}
+          {/* Stepper — completed and current steps are clickable to review/return */}
           <ol className="flex flex-wrap gap-2">
             {stages.map((s) => {
               const done = s.n < currentStage
               const current = s.n === currentStage
-              return (
-                <li
-                  key={s.n}
-                  className={cn(
-                    'flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-medium',
-                    current && 'border-navy bg-navy text-white',
-                    done && 'border-teal/30 bg-teal/10 text-teal',
-                    !current && !done && 'border-navy-100 bg-white text-[var(--text-tertiary)]',
-                  )}
-                >
+              const selected = reviewStage === null ? current : reviewStage === s.n
+              const clickable = done || current
+
+              const content = (
+                <>
                   <span
                     className={cn(
                       'flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-bold',
-                      current && 'bg-white/20',
-                      done && 'bg-teal text-white',
-                      !current && !done && 'bg-navy-50',
+                      selected && 'bg-white/20',
+                      !selected && done && 'bg-teal text-white',
+                      !selected && !done && 'bg-navy-50',
                     )}
                   >
                     {done ? <Check className="w-3 h-3" aria-hidden /> : !current ? <Lock className="w-2.5 h-2.5" aria-hidden /> : s.n}
                   </span>
                   {s.label}
+                </>
+              )
+
+              const className = cn(
+                'flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-colors',
+                // The selected pill (current stage when not reviewing, or the stage being reviewed) is navy-filled
+                selected && 'border-navy bg-navy text-white',
+                // Completed, not selected
+                !selected && done && 'border-teal/30 bg-teal/10 text-teal hover:border-teal/60',
+                // Future, not selected
+                !selected && !done && !current && 'border-navy-100 bg-white text-[var(--text-tertiary)]',
+                // Current, not selected (i.e. while reviewing an earlier stage)
+                !selected && current && 'border-navy-100 bg-white text-navy hover:border-navy/40',
+                clickable && 'cursor-pointer',
+              )
+
+              return (
+                <li key={s.n}>
+                  {clickable ? (
+                    <button
+                      type="button"
+                      onClick={() => setReviewStage(current ? null : s.n)}
+                      className={className}
+                    >
+                      {content}
+                    </button>
+                  ) : (
+                    <span className={className}>{content}</span>
+                  )}
                 </li>
               )
             })}
           </ol>
 
-          <StageJourney state={state} stage={currentStage} totalStages={totalStages} />
+          {reviewing ? (
+            <StageReview stage={reviewing} onBack={() => setReviewStage(null)} />
+          ) : (
+            <StageJourney state={state} stage={currentStage} totalStages={totalStages} />
+          )}
         </div>
       )}
 
