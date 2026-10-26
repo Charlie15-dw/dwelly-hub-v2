@@ -3,7 +3,7 @@ import Link from 'next/link'
 import {
   Sparkles, Search, Printer, ChevronRight, Target, Check,
   BookOpen, LayoutGrid, HelpCircle, Megaphone, BarChart3,
-  Wrench, ShieldCheck, Workflow, ArrowRight, Trophy, type LucideIcon,
+  Wrench, ShieldCheck, Workflow, ArrowRight, Trophy, SlidersHorizontal, type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createServerClient } from '@/lib/supabase/server'
@@ -34,6 +34,7 @@ const REFERENCE_ICONS: Record<string, LucideIcon> = {
   cheatsheet: LayoutGrid,
   faq: HelpCircle,
   'whats-new': Megaphone,
+  'compliance-preferences': SlidersHorizontal,
 }
 
 export default async function Crm2Page() {
