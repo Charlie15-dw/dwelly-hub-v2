@@ -68,7 +68,14 @@ Fallback stack after Inter: `-apple-system, BlinkMacSystemFont, Helvetica Neue, 
   property-specialist). Don't conflate them.
 - Non-PM departments skip PM's staged onboarding curriculum entirely
   (`isGraduated()` short-circuits on `department !== 'property-management'`).
-- `/welcome/navigation` and `/welcome/role` are referenced by the gate logic
-  but **do not exist yet** — known gap, next thing to build.
+- `/welcome/navigation` and `/welcome/role` (the two welcome-gate pages) and
+  department-aware assessment gating (`quiz/[id]`, `assessments/page.tsx`) are
+  built. Admin sets `department` and grants `assessment_overrides` from
+  `app/(portal)/admin/member/[userId]/page.tsx` (`ChangeDepartmentPanel` +
+  `AssessmentOverridesPanel`, via `app/api/admin/department` and
+  `app/api/admin/assessment-override`).
+- `components/assessments/ElevatedAssessments.tsx` (the 2-account review
+  variant) does NOT yet apply department gating — deliberately deferred,
+  lower priority since it's review-account only.
 - Keep `scripts/supabase-departments.sql` and `lib/departments.ts` in sync
   whenever department-gating logic changes.

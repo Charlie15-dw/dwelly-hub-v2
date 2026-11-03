@@ -11,7 +11,10 @@ import OnboardingControl from '@/components/admin/OnboardingControl'
 import WrongAnswersPanel from '@/components/ui/WrongAnswersPanel'
 import AssignManagerPanel from '@/components/ui/AssignManagerPanel'
 import ChangeRolePanel from '@/components/ui/ChangeRolePanel'
+import ChangeDepartmentPanel from '@/components/ui/ChangeDepartmentPanel'
+import AssessmentOverridesPanel from '@/components/ui/AssessmentOverridesPanel'
 import DeleteUserButton from '@/components/ui/DeleteUserButton'
+import { isValidDepartment, type Department } from '@/lib/departments'
 
 const ALL_ASSESSMENT_IDS = [
   'mnt-01', 'mnt-02', 'cmp-01', 'cmp-02', 'mnt-03', 'ins-02',
@@ -71,11 +74,17 @@ export default async function AdminMemberDetailPage({
 
   const { data: memberProfile } = await service
     .from('user_profiles')
-    .select('id, full_name, email, role, created_at, manager_id, onboarding_stage, onboarding_bypass')
+    .select('id, full_name, email, role, department, created_at, manager_id, onboarding_stage, onboarding_bypass')
     .eq('id', params.userId)
     .maybeSingle()
 
   if (!memberProfile) notFound()
+
+  const { data: overrides } = await service
+    .from('assessment_overrides')
+    .select('id, department, assessment_id, granted_at')
+    .eq('user_id', params.userId)
+    .order('granted_at', { ascending: false })
 
   const { data: managerProfile } = memberProfile.manager_id
     ? await service
@@ -200,6 +209,20 @@ export default async function AdminMemberDetailPage({
           currentRole={memberProfile.role as 'property-manager' | 'manager' | 'admin'}
         />
       )}
+
+      {/* Department — which track's content/training/assessments this person
+          gets. Separate axis from role above (see lib/departments.ts). */}
+      <ChangeDepartmentPanel
+        userId={params.userId}
+        currentDepartment={isValidDepartment(memberProfile.department) ? memberProfile.department as Department : 'property-management'}
+      />
+
+      {/* Cross-department assessment access — scoped, auditable exceptions to
+          the department lock (see scripts/supabase-departments.sql). */}
+      <AssessmentOverridesPanel
+        userId={params.userId}
+        overrides={overrides ?? []}
+      />
 
       {/* Staged onboarding — admin control over a new starter's journey.
           Only property-managers go through it (managers/admins skip). */}
