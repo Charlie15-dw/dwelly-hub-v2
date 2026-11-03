@@ -71,12 +71,12 @@ export default async function HubConnectPage() {
       {/* Header */}
       <div>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-indigo-100 text-indigo-700 border-indigo-200">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-orange-100 text-orange-700 border-orange-200">
             <Users className="w-5 h-5" aria-hidden />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-navy leading-tight">Connect</h2>
-            <p className="text-sm text-slate-500">Stay in the loop, raise your voice and see what changed.</p>
+            <p className="text-sm text-navy-500">Stay in the loop, raise your voice and see what changed.</p>
           </div>
         </div>
       </div>
@@ -87,22 +87,22 @@ export default async function HubConnectPage() {
           const inner = (
             <>
               <div className="flex items-start justify-between">
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center border bg-slate-50 text-navy border-slate-100">
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center border bg-navy-50 text-navy border-navy-100">
                   <Icon className="w-5 h-5" aria-hidden />
                 </div>
                 {comingSoon ? (
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-navy-100 text-navy-500 border border-navy-200">
                     Coming soon
                   </span>
                 ) : (
-                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-navy transition" aria-hidden />
+                  <ArrowRight className="w-4 h-4 text-navy-300 group-hover:text-navy transition" aria-hidden />
                 )}
               </div>
               <h3 className="text-base font-bold text-navy mt-4">{label}</h3>
-              <p className="text-sm text-slate-500 mt-1 leading-relaxed">{description}</p>
+              <p className="text-sm text-navy-500 mt-1 leading-relaxed">{description}</p>
               {href === '/hub/updates' && latest && (
-                <p className="text-xs text-slate-400 mt-3">
-                  Latest: <span className="font-medium text-slate-500">{latest.title}</span> · {formatDate(latest.date)}
+                <p className="text-xs text-navy-400 mt-3">
+                  Latest: <span className="font-medium text-navy-500">{latest.title}</span> · {formatDate(latest.date)}
                 </p>
               )}
             </>

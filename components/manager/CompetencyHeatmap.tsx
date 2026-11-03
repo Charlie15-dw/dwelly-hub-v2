@@ -17,7 +17,7 @@ interface Member { id: string; displayName: string; initials: string }
 interface ResultRow { user_id: string; assessment_id: string; score: number }
 
 function cellStyle(score: number | null): { className: string; label: string } {
-  if (score === null) return { className: 'bg-slate-50 text-slate-300 border-slate-100', label: '–' }
+  if (score === null) return { className: 'bg-navy-50 text-navy-300 border-navy-100', label: '–' }
   if (score >= 80) return { className: 'bg-emerald-500 text-white border-emerald-500', label: `${score}` }
   if (score >= 60) return { className: 'bg-amber-400 text-white border-amber-400', label: `${score}` }
   return { className: 'bg-rose-500 text-white border-rose-500', label: `${score}` }
@@ -43,12 +43,12 @@ export default function CompetencyHeatmap({ members, results }: { members: Membe
   return (
     <section className="card p-5">
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center border bg-indigo-100 text-indigo-700 border-indigo-200 flex-shrink-0">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center border bg-orange-100 text-orange-700 border-orange-200 flex-shrink-0">
           <LayoutGrid className="w-4.5 h-4.5" aria-hidden />
         </div>
         <div>
           <h2 className="text-base font-bold text-navy">Team competency heatmap</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-navy-500 mt-0.5">
             Latest scores by skill area. Spot gaps at a glance, then raise a training request to close them.
           </p>
         </div>
@@ -58,9 +58,9 @@ export default function CompetencyHeatmap({ members, results }: { members: Membe
         <table className="w-full border-separate border-spacing-1">
           <thead>
             <tr>
-              <th className="text-left text-[11px] font-bold uppercase tracking-wide text-slate-400 pb-1 pr-3">Team member</th>
+              <th className="text-left text-[11px] font-bold uppercase tracking-wide text-navy-400 pb-1 pr-3">Team member</th>
               {COMPETENCY_AREAS.map(area => (
-                <th key={area.id} className="text-center text-[11px] font-semibold text-slate-500 pb-1 px-1" title={area.label}>
+                <th key={area.id} className="text-center text-[11px] font-semibold text-navy-500 pb-1 px-1" title={area.label}>
                   {area.short}
                 </th>
               ))}
@@ -102,9 +102,9 @@ export default function CompetencyHeatmap({ members, results }: { members: Membe
           { c: 'bg-emerald-500', t: 'Strong (80%+)' },
           { c: 'bg-amber-400', t: 'Developing (60–79%)' },
           { c: 'bg-rose-500', t: 'Needs support (<60%)' },
-          { c: 'bg-slate-100 border border-slate-200', t: 'Not started' },
+          { c: 'bg-navy-100 border border-navy-200', t: 'Not started' },
         ].map(({ c, t }) => (
-          <span key={t} className="inline-flex items-center gap-1.5 text-[11px] text-slate-500">
+          <span key={t} className="inline-flex items-center gap-1.5 text-[11px] text-navy-500">
             <span className={`w-3 h-3 rounded ${c}`} aria-hidden />
             {t}
           </span>

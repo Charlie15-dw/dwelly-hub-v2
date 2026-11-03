@@ -96,7 +96,7 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
         </div>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-navy">{title}</h1>
-          <p className="text-sm text-slate-500 mt-0.5">{subtitle}</p>
+          <p className="text-sm text-navy-500 mt-0.5">{subtitle}</p>
         </div>
         <div className="flex-shrink-0 flex items-center gap-2">
           <label>
@@ -104,7 +104,7 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
             <select
               value={range}
               onChange={e => setRange(e.target.value as UsageRange)}
-              className="text-sm font-medium text-navy bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-200"
+              className="text-sm font-medium text-navy bg-white border border-navy-200 rounded-lg px-3 py-1.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-200"
             >
               {USAGE_RANGES.map(r => (
                 <option key={r.value} value={r.value}>{r.label}</option>
@@ -115,7 +115,7 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
             type="button"
             onClick={downloadReport}
             disabled={totalViews === 0}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-navy bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-sm hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-navy bg-white border border-navy-200 rounded-lg px-3 py-1.5 shadow-sm hover:bg-navy-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title="Download this report as a CSV"
           >
             <Download className="w-4 h-4" aria-hidden />
@@ -126,9 +126,9 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
 
       {totalViews === 0 ? (
         <div className="card p-10 text-center">
-          <Activity className="w-10 h-10 text-slate-300 mx-auto mb-3" aria-hidden />
-          <p className="text-sm font-semibold text-slate-500">No activity recorded yet</p>
-          <p className="text-xs text-slate-400 mt-1">{emptyHint ?? 'Page views will appear here as people use the Hub.'}</p>
+          <Activity className="w-10 h-10 text-navy-300 mx-auto mb-3" aria-hidden />
+          <p className="text-sm font-semibold text-navy-500">No activity recorded yet</p>
+          <p className="text-xs text-navy-400 mt-1">{emptyHint ?? 'Page views will appear here as people use the Hub.'}</p>
         </div>
       ) : (
         <>
@@ -136,7 +136,7 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {stats.map(({ label, value, icon: Icon }) => (
               <div key={label} className="card p-4">
-                <div className="flex items-center gap-2 text-slate-400">
+                <div className="flex items-center gap-2 text-navy-400">
                   <Icon className="w-4 h-4" aria-hidden />
                   <span className="text-xs font-medium">{label}</span>
                 </div>
@@ -148,7 +148,7 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Most viewed areas */}
             <div className="card overflow-hidden">
-              <div className="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
+              <div className="px-5 py-3 border-b border-navy-100 flex items-center gap-2">
                 <Layers className="w-4 h-4 text-teal" aria-hidden />
                 <h2 className="text-sm font-bold text-navy">Most viewed areas</h2>
               </div>
@@ -157,11 +157,11 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
                   <div key={area.label}>
                     <div className="flex items-center justify-between text-xs mb-1">
                       <span className="font-medium text-navy">{area.label}</span>
-                      <span className="text-slate-400 tabular-nums">
-                        {area.count} <span className="text-slate-300">· {area.pct}%</span>
+                      <span className="text-navy-400 tabular-nums">
+                        {area.count} <span className="text-navy-300">· {area.pct}%</span>
                       </span>
                     </div>
-                    <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                    <div className="h-2 rounded-full bg-navy-100 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-teal"
                         style={{ width: `${areas[0].count ? Math.round((area.count / areas[0].count) * 100) : 0}%` }}
@@ -174,8 +174,8 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
 
             {/* Activity — selected range */}
             <div className="card overflow-hidden">
-              <div className="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-indigo-500" aria-hidden />
+              <div className="px-5 py-3 border-b border-navy-100 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-orange-500" aria-hidden />
                 <h2 className="text-sm font-bold text-navy">Activity — {periodLabel}</h2>
               </div>
               <div className="p-5">
@@ -186,13 +186,13 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
                       className="flex-1 flex flex-col items-center gap-2 h-full justify-end"
                       title={day.label ? `${day.label}: ${day.count}` : `${day.count} views`}
                     >
-                      {!dense && <span className="text-[11px] font-semibold text-slate-500 tabular-nums">{day.count}</span>}
+                      {!dense && <span className="text-[11px] font-semibold text-navy-500 tabular-nums">{day.count}</span>}
                       <div
-                        className={cn('w-full rounded-t-md min-h-[4px]', day.count > 0 ? 'bg-indigo-500' : 'bg-slate-100')}
+                        className={cn('w-full rounded-t-md min-h-[4px]', day.count > 0 ? 'bg-orange-500' : 'bg-navy-100')}
                         style={{ height: `${Math.round((day.count / maxDay) * 100)}%` }}
                         aria-hidden
                       />
-                      <span className="text-[11px] text-slate-400 whitespace-nowrap">{day.label}</span>
+                      <span className="text-[11px] text-navy-400 whitespace-nowrap">{day.label}</span>
                     </div>
                   ))}
                 </div>
@@ -202,15 +202,15 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
 
           {/* Per-user table — the full report for the selected range */}
           <div className="card overflow-hidden">
-            <div className="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
-              <Users className="w-4 h-4 text-slate-400" aria-hidden />
+            <div className="px-5 py-3 border-b border-navy-100 flex items-center gap-2">
+              <Users className="w-4 h-4 text-navy-400" aria-hidden />
               <h2 className="text-sm font-bold text-navy">Usage per person — {periodLabel}</h2>
-              <span className="ml-auto text-xs text-slate-400">{users.length} active</span>
+              <span className="ml-auto text-xs text-navy-400">{users.length} active</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100 text-xs text-slate-500 uppercase tracking-wide">
+                  <tr className="bg-navy-50 border-b border-navy-100 text-xs text-navy-500 uppercase tracking-wide">
                     <th className="px-5 py-2.5 text-left font-semibold">User</th>
                     <th className="px-5 py-2.5 text-right font-semibold">Views</th>
                     <th className="px-5 py-2.5 text-right font-semibold">Pages</th>
@@ -219,18 +219,18 @@ export default function UsageDashboard({ events, title, subtitle, emptyHint }: P
                     <th className="px-5 py-2.5 text-right font-semibold">Last active</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
+                <tbody className="divide-y divide-navy-50">
                   {users.map(u => (
-                    <tr key={u.userId} className="hover:bg-slate-50/60 transition-colors">
+                    <tr key={u.userId} className="hover:bg-navy-50/60 transition-colors">
                       <td className="px-5 py-3">
                         <p className="font-semibold text-navy">{u.name ?? u.email}</p>
-                        {u.name && <p className="text-xs text-slate-400">{u.email}</p>}
+                        {u.name && <p className="text-xs text-navy-400">{u.email}</p>}
                       </td>
-                      <td className="px-5 py-3 text-right text-slate-600 tabular-nums">{u.views}</td>
-                      <td className="px-5 py-3 text-right text-slate-600 tabular-nums">{u.distinctPages}</td>
-                      <td className="px-5 py-3 text-left text-slate-600">{u.topArea ?? '—'}</td>
-                      <td className="px-5 py-3 text-right text-slate-500">{timeAgo(u.firstActive)}</td>
-                      <td className="px-5 py-3 text-right text-slate-500">{timeAgo(u.lastActive)}</td>
+                      <td className="px-5 py-3 text-right text-navy-600 tabular-nums">{u.views}</td>
+                      <td className="px-5 py-3 text-right text-navy-600 tabular-nums">{u.distinctPages}</td>
+                      <td className="px-5 py-3 text-left text-navy-600">{u.topArea ?? '—'}</td>
+                      <td className="px-5 py-3 text-right text-navy-500">{timeAgo(u.firstActive)}</td>
+                      <td className="px-5 py-3 text-right text-navy-500">{timeAgo(u.lastActive)}</td>
                     </tr>
                   ))}
                 </tbody>

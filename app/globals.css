@@ -48,10 +48,10 @@
     --border-subtle:  #7D7C86;
   }
   html.high-contrast .card { border-color: #7D7C86; }
-  html.high-contrast .text-slate-400,
-  html.high-contrast .text-slate-500 { color: #404044 !important; }
-  html.high-contrast .border-slate-100,
-  html.high-contrast .border-slate-200 { border-color: #86868B !important; }
+  html.high-contrast .text-navy-400,
+  html.high-contrast .text-navy-500 { color: #404044 !important; }
+  html.high-contrast .border-navy-100,
+  html.high-contrast .border-navy-200 { border-color: #86868B !important; }
 
   body {
     @apply antialiased;

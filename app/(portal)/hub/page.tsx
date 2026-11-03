@@ -97,42 +97,42 @@ export default async function HubPage() {
 
       {/* 4 — Explore the Hub */}
       <div className="space-y-3">
-        <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-400">Explore the Hub</h3>
+        <h3 className="text-xs font-semibold uppercase tracking-widest text-navy-400">Explore the Hub</h3>
         <div className="card overflow-hidden">
           {/* Dwelly Updates */}
-          <Link href="/hub/updates" className="flex items-center gap-3.5 px-[22px] py-[15px] hover:bg-slate-50 transition-colors">
-            <Megaphone className="w-4 h-4 text-slate-400 flex-shrink-0" aria-hidden />
+          <Link href="/hub/updates" className="flex items-center gap-3.5 px-[22px] py-[15px] hover:bg-navy-50 transition-colors">
+            <Megaphone className="w-4 h-4 text-navy-400 flex-shrink-0" aria-hidden />
             <div className="min-w-0 flex-1">
               <p className="text-[15px] font-semibold text-navy">Dwelly Updates</p>
               {latest && (
-                <p className="text-[13px] text-slate-500 truncate">{latest.title} · {formatDate(latest.date)}</p>
+                <p className="text-[13px] text-navy-500 truncate">{latest.title} · {formatDate(latest.date)}</p>
               )}
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" aria-hidden />
+            <ChevronRight className="w-4 h-4 text-navy-300 flex-shrink-0" aria-hidden />
           </Link>
 
           {/* Ask Dobby */}
-          <Link href="/dobby" className="flex items-center gap-3.5 px-[22px] py-[15px] border-t border-slate-100 hover:bg-slate-50 transition-colors">
-            <MessageCircle className="w-4 h-4 text-slate-400 flex-shrink-0" aria-hidden />
+          <Link href="/dobby" className="flex items-center gap-3.5 px-[22px] py-[15px] border-t border-navy-100 hover:bg-navy-50 transition-colors">
+            <MessageCircle className="w-4 h-4 text-navy-400 flex-shrink-0" aria-hidden />
             <div className="min-w-0 flex-1">
               <p className="text-[15px] font-semibold text-navy">Ask Dobby</p>
-              <p className="text-[13px] text-slate-500 truncate">Your portal assistant — answers from Dwelly’s training content</p>
+              <p className="text-[13px] text-navy-500 truncate">Your portal assistant — answers from Dwelly’s training content</p>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" aria-hidden />
+            <ChevronRight className="w-4 h-4 text-navy-300 flex-shrink-0" aria-hidden />
           </Link>
 
           {/* Recap & Refresh */}
-          <Link href="/recap" className="flex items-center gap-3.5 px-[22px] py-[15px] border-t border-slate-100 hover:bg-slate-50 transition-colors">
-            <RefreshCw className="w-4 h-4 text-slate-400 flex-shrink-0" aria-hidden />
+          <Link href="/recap" className="flex items-center gap-3.5 px-[22px] py-[15px] border-t border-navy-100 hover:bg-navy-50 transition-colors">
+            <RefreshCw className="w-4 h-4 text-navy-400 flex-shrink-0" aria-hidden />
             <div className="min-w-0 flex-1">
               <p className="text-[15px] font-semibold text-navy">Recap &amp; Refresh</p>
-              <p className="text-[13px] text-slate-500 truncate">Spaced refreshers that keep knowledge sharp</p>
+              <p className="text-[13px] text-navy-500 truncate">Spaced refreshers that keep knowledge sharp</p>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" aria-hidden />
+            <ChevronRight className="w-4 h-4 text-navy-300 flex-shrink-0" aria-hidden />
           </Link>
 
           {/* Tools & Reference — pills carry the variety */}
-          <div className="px-[22px] py-[15px] border-t border-slate-100">
+          <div className="px-[22px] py-[15px] border-t border-navy-100">
             <p className="text-[13px] font-semibold text-navy mb-2.5">Tools &amp; Reference</p>
             <div className="flex flex-wrap gap-2">
               {TOOL_PILLS.map(pill => (

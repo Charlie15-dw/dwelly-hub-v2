@@ -82,12 +82,12 @@ export default function FirstRunWelcome({ firstName }: { firstName: string }) {
         <div className="px-7 py-6 space-y-4">
           {POINTS.map(({ icon: Icon, title, body }) => (
             <div key={title} className="flex gap-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-slate-50 border border-slate-100 text-navy flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-navy-50 border border-navy-100 text-navy flex-shrink-0">
                 <Icon className="w-4 h-4" aria-hidden />
               </div>
               <div>
                 <p className="text-sm font-bold text-navy">{title}</p>
-                <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{body}</p>
+                <p className="text-xs text-navy-500 mt-0.5 leading-relaxed">{body}</p>
               </div>
             </div>
           ))}

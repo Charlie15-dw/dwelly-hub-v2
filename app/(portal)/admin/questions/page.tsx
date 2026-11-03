@@ -38,7 +38,7 @@ export default async function AdminQuestionsPage() {
         </div>
         <div>
           <h1 className="text-xl font-bold text-navy">Anonymous Questions</h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-navy-500 mt-0.5">
             Submissions from the team. These are anonymous — the author isn't shown here.
           </p>
         </div>
@@ -46,7 +46,7 @@ export default async function AdminQuestionsPage() {
 
       <div className="flex gap-2 flex-wrap">
         {HUB_QUESTION_STATUSES.map(s => (
-          <span key={s} className="text-xs font-medium text-slate-500 px-3 py-1.5 rounded-lg bg-white border border-slate-200">
+          <span key={s} className="text-xs font-medium text-navy-500 px-3 py-1.5 rounded-lg bg-white border border-navy-200">
             {HUB_STATUS_LABELS[s]}: <span className="font-bold text-navy">{counts[s] ?? 0}</span>
           </span>
         ))}
@@ -54,7 +54,7 @@ export default async function AdminQuestionsPage() {
 
       {all.length === 0 ? (
         <div className="card p-8 text-center">
-          <p className="text-sm text-slate-400">No submissions yet.</p>
+          <p className="text-sm text-navy-400">No submissions yet.</p>
         </div>
       ) : (
         <div className="space-y-3">

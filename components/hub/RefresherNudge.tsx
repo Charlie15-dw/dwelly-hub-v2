@@ -46,7 +46,7 @@ export default async function RefresherNudge() {
           <h3 id="refresher-heading" className="text-sm font-bold text-navy">
             Time for a quick refresher
           </h3>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-navy-500 mt-0.5">
             A short recall check keeps what you&apos;ve learned fresh. Two minutes, no pressure — it won&apos;t affect your results.
           </p>
           <div className="mt-3 space-y-2">
@@ -56,7 +56,7 @@ export default async function RefresherNudge() {
                 <Link
                   key={item.assessment_id}
                   href={`/quiz/recall-${item.assessment_id}-${item.interval_days}`}
-                  className="flex items-center gap-2 justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 group hover:border-orange/40 hover:shadow-sm transition"
+                  className="flex items-center gap-2 justify-between rounded-lg border border-navy-200 bg-white px-3 py-2.5 group hover:border-orange/40 hover:shadow-sm transition"
                 >
                   <span className="text-sm font-semibold text-navy truncate">{title}</span>
                   <span className="inline-flex items-center gap-1 text-xs font-semibold text-orange flex-shrink-0 group-hover:gap-1.5 transition-all">

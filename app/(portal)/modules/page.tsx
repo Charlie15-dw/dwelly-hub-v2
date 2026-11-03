@@ -109,24 +109,24 @@ export default async function ModulesPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="card p-4">
           <p className="text-2xl font-black text-navy tabular-nums">{completedCount}</p>
-          <p className="text-xs text-slate-500 mt-0.5">Completed</p>
+          <p className="text-xs text-navy-500 mt-0.5">Completed</p>
           <ProgressBar value={completedCount} max={totalCount} color="teal" className="mt-2" />
         </div>
         <div className="card p-4">
           <p className="text-2xl font-black text-orange tabular-nums">
             {modules.filter(m => m.progress > 0 && !m.completed).length}
           </p>
-          <p className="text-xs text-slate-500 mt-0.5">In Progress</p>
+          <p className="text-xs text-navy-500 mt-0.5">In Progress</p>
         </div>
         <div className="card p-4">
-          <p className="text-2xl font-black text-slate-400 tabular-nums">
+          <p className="text-2xl font-black text-navy-400 tabular-nums">
             {modules.filter(m => m.locked).length}
           </p>
-          <p className="text-xs text-slate-500 mt-0.5">Locked</p>
+          <p className="text-xs text-navy-500 mt-0.5">Locked</p>
         </div>
         <div className="card p-4">
           <p className="text-2xl font-black text-navy tabular-nums">{totalCount}</p>
-          <p className="text-xs text-slate-500 mt-0.5">Total Modules</p>
+          <p className="text-xs text-navy-500 mt-0.5">Total Modules</p>
         </div>
       </div>
 
@@ -162,7 +162,7 @@ export default async function ModulesPage() {
                   <span className="text-lg" aria-hidden>{meta.icon}</span>
                   <div>
                     <h2 className="text-base font-bold text-navy">{meta.title}</h2>
-                    <p className="text-xs text-slate-500">{sectionCompleted}/{sectionModules.length} completed</p>
+                    <p className="text-xs text-navy-500">{sectionCompleted}/{sectionModules.length} completed</p>
                   </div>
                 </div>
                 <ProgressBar
@@ -225,7 +225,7 @@ function ModuleCard({ module, section }: { module: Module & { completed: boolean
       <div className="flex items-start justify-between gap-2 mb-3">
         <Badge variant={badgeVariant}>{SECTION_LABELS[section as keyof typeof SECTION_LABELS]}</Badge>
         <div className="flex items-center gap-1.5 flex-shrink-0">
-          {module.locked && <Lock className="w-3.5 h-3.5 text-slate-400" aria-label="Module locked" />}
+          {module.locked && <Lock className="w-3.5 h-3.5 text-navy-400" aria-label="Module locked" />}
           {module.completed && <CheckCircle2 className="w-3.5 h-3.5 text-teal" aria-label="Completed" />}
           {module.passmark === 100 && !module.completed && (
             <span className="text-[10px] font-semibold text-red-600 bg-red-50 border border-red-100 px-1.5 py-0.5 rounded">
@@ -237,10 +237,10 @@ function ModuleCard({ module, section }: { module: Module & { completed: boolean
 
       {/* Title */}
       <h3 className="text-sm font-bold text-navy leading-snug mb-1.5">{module.title}</h3>
-      <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">{module.description}</p>
+      <p className="text-xs text-navy-500 leading-relaxed line-clamp-2 mb-3">{module.description}</p>
 
       {/* Meta */}
-      <div className="flex items-center gap-3 text-xs text-slate-400 mb-3">
+      <div className="flex items-center gap-3 text-xs text-navy-400 mb-3">
         <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" aria-hidden /> {module.duration}
         </span>
@@ -256,14 +256,14 @@ function ModuleCard({ module, section }: { module: Module & { completed: boolean
       {module.progress > 0 && !module.completed && (
         <div className="mb-3">
           <ProgressBar value={module.progress} color="orange" size="sm" />
-          <p className="text-[11px] text-slate-400 mt-1">{module.progress}% complete</p>
+          <p className="text-[11px] text-navy-400 mt-1">{module.progress}% complete</p>
         </div>
       )}
 
 
       {/* CTA */}
       <div className="flex items-center justify-between mt-auto pt-1">
-        <span className="text-[11px] text-slate-400">
+        <span className="text-[11px] text-navy-400">
           Pass mark: {module.passmark}%
         </span>
         {module.completed ? (
@@ -271,7 +271,7 @@ function ModuleCard({ module, section }: { module: Module & { completed: boolean
             <CheckCircle2 className="w-3 h-3" /> Complete
           </span>
         ) : module.locked ? (
-          <span className="text-xs text-slate-400 flex items-center gap-1">
+          <span className="text-xs text-navy-400 flex items-center gap-1">
             <Lock className="w-3 h-3" /> Locked
           </span>
         ) : module.progress > 0 ? (

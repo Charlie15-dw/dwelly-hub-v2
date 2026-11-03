@@ -19,8 +19,8 @@ function TaskRow({ task }: { task: GuidedTask }) {
           'w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0',
           isDone && 'bg-teal text-white',
           isCurrent && 'bg-orange text-white ring-4 ring-orange/15',
-          task.state === 'todo' && 'bg-slate-100 text-slate-400',
-          isLocked && 'bg-slate-100 text-slate-300',
+          task.state === 'todo' && 'bg-navy-100 text-navy-400',
+          isLocked && 'bg-navy-100 text-navy-300',
         )}
       >
         {isDone ? <Check className="w-3.5 h-3.5" aria-hidden />
@@ -28,21 +28,21 @@ function TaskRow({ task }: { task: GuidedTask }) {
           : <Circle className="w-2.5 h-2.5 fill-current" aria-hidden />}
       </span>
       <div className="flex-1 min-w-0">
-        <p className={cn('text-sm font-semibold truncate', isLocked ? 'text-slate-400' : 'text-navy')}>
+        <p className={cn('text-sm font-semibold truncate', isLocked ? 'text-navy-400' : 'text-navy')}>
           {task.label}
-          {!task.required && <span className="ml-2 text-[10px] font-medium text-slate-400">Optional</span>}
+          {!task.required && <span className="ml-2 text-[10px] font-medium text-navy-400">Optional</span>}
         </p>
-        <p className="text-xs text-slate-400 mt-0.5">{task.detail}</p>
+        <p className="text-xs text-navy-400 mt-0.5">{task.detail}</p>
       </div>
       {isCurrent && <span className="text-[11px] font-semibold text-orange flex-shrink-0">Do this next</span>}
       {isDone && <span className="text-[11px] font-semibold text-teal flex-shrink-0">Done</span>}
-      {!isLocked && <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-navy transition flex-shrink-0" aria-hidden />}
+      {!isLocked && <ChevronRight className="w-4 h-4 text-navy-300 group-hover:text-navy transition flex-shrink-0" aria-hidden />}
     </>
   )
 
   if (isLocked) {
     return (
-      <li className="flex items-center gap-3 rounded-2xl border border-slate-100 p-3 opacity-60 cursor-not-allowed">
+      <li className="flex items-center gap-3 rounded-2xl border border-navy-100 p-3 opacity-60 cursor-not-allowed">
         {inner}
       </li>
     )
@@ -53,7 +53,7 @@ function TaskRow({ task }: { task: GuidedTask }) {
         href={task.href}
         className={cn(
           'flex items-center gap-3 rounded-2xl border p-3 transition group',
-          isCurrent ? 'border-orange/30 bg-orange/5 hover:bg-orange/10' : 'border-slate-100 hover:shadow-sm hover:border-slate-200',
+          isCurrent ? 'border-orange/30 bg-orange/5 hover:bg-orange/10' : 'border-navy-100 hover:shadow-sm hover:border-navy-200',
         )}
       >
         {inner}
@@ -69,8 +69,8 @@ function StageCard({ stage }: { stage: GuidedStage }) {
         'rounded-3xl border p-5 transition',
         stage.current && 'border-orange/30 shadow-panel',
         stage.complete && 'border-teal/30 bg-teal/[0.03]',
-        stage.locked && 'border-slate-100 bg-slate-50/60',
-        !stage.current && !stage.complete && !stage.locked && 'border-slate-100',
+        stage.locked && 'border-navy-100 bg-navy-50/60',
+        !stage.current && !stage.complete && !stage.locked && 'border-navy-100',
       )}
     >
       <div className="flex items-start gap-3">
@@ -79,8 +79,8 @@ function StageCard({ stage }: { stage: GuidedStage }) {
             'w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold',
             stage.complete && 'bg-teal text-white',
             stage.current && 'bg-orange text-white ring-4 ring-orange/15',
-            stage.locked && 'bg-slate-200 text-slate-400',
-            !stage.current && !stage.complete && !stage.locked && 'bg-slate-100 text-slate-500',
+            stage.locked && 'bg-navy-200 text-navy-400',
+            !stage.current && !stage.complete && !stage.locked && 'bg-navy-100 text-navy-500',
           )}
         >
           {stage.complete ? <Check className="w-4 h-4" aria-hidden />
@@ -89,14 +89,14 @@ function StageCard({ stage }: { stage: GuidedStage }) {
         </span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h4 className={cn('text-base font-bold', stage.locked ? 'text-slate-400' : 'text-navy')}>
+            <h4 className={cn('text-base font-bold', stage.locked ? 'text-navy-400' : 'text-navy')}>
               Stage {stage.n} · {stage.title}
             </h4>
             {stage.current && <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-orange/10 text-orange">In progress</span>}
             {stage.complete && <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-teal/10 text-teal">Complete</span>}
-            {stage.locked && <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-100 text-slate-400">Locked</span>}
+            {stage.locked && <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-navy-100 text-navy-400">Locked</span>}
           </div>
-          <p className={cn('text-xs mt-0.5', stage.locked ? 'text-slate-400' : 'text-slate-500')}>{stage.blurb}</p>
+          <p className={cn('text-xs mt-0.5', stage.locked ? 'text-navy-400' : 'text-navy-500')}>{stage.blurb}</p>
         </div>
         {!stage.locked && (
           <span className="text-xs font-bold text-navy flex-shrink-0">{stage.pct}%</span>
@@ -104,7 +104,7 @@ function StageCard({ stage }: { stage: GuidedStage }) {
       </div>
 
       {stage.locked ? (
-        <p className="mt-4 text-xs text-slate-400 flex items-center gap-1.5">
+        <p className="mt-4 text-xs text-navy-400 flex items-center gap-1.5">
           <Lock className="w-3 h-3" aria-hidden /> Finish the previous stage to unlock this.
         </p>
       ) : (
@@ -130,7 +130,7 @@ export default function GuidedJourney({
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h3 className="text-lg font-bold text-navy">Your journey</h3>
-            <p className="text-sm text-slate-500 mt-0.5 max-w-xl">
+            <p className="text-sm text-navy-500 mt-0.5 max-w-xl">
               {allComplete
                 ? `You\u2019ve completed every stage${firstName ? `, ${firstName}` : ''}. You\u2019re fully signed off — keep your knowledge sharp with Recap & Refresh.`
                 : isNewStarter
@@ -152,10 +152,10 @@ export default function GuidedJourney({
 
         <div className="mt-5">
           <div className="flex justify-between items-center mb-1.5">
-            <span className="text-xs font-medium text-slate-500">Overall progress</span>
+            <span className="text-xs font-medium text-navy-500">Overall progress</span>
             <span className="text-sm font-bold text-navy">{pct}%</span>
           </div>
-          <div className="h-2 rounded-full overflow-hidden bg-slate-100">
+          <div className="h-2 rounded-full overflow-hidden bg-navy-100">
             <div className="h-full bg-orange rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
           </div>
         </div>

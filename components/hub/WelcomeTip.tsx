@@ -15,7 +15,7 @@ export default function WelcomeTip() {
   return (
     <div className="mt-5 flex items-start gap-3 rounded-2xl border border-orange/20 bg-orange/5 px-4 py-3">
       <Sparkles className="w-4 h-4 text-orange flex-shrink-0 mt-0.5" aria-hidden />
-      <p className="text-sm text-slate-600 flex-1">
+      <p className="text-sm text-navy-600 flex-1">
         New here? Start with your <span className="font-semibold text-navy">Learning Profile</span> —
         it takes a couple of minutes and tailors the rest of your training to how you learn best.
       </p>

@@ -89,7 +89,7 @@ export const TRAINING_PAGES: TrainingPage[] = [
     subtitle: 'How to navigate the Dwelly platform — menus, shortcuts, and key areas.',
     notionUrl: 'https://spark-motion-ef3.notion.site/Dwelly-General-Navigation-2c6f87e8ff728095b68bd0ab2b9ab130',
     icon: '🧭',
-    colour: 'bg-zinc-100 text-zinc-700',
+    colour: 'bg-navy-100 text-navy-700',
     readTime: '8 min read',
     order: 2,
     content: [
@@ -165,7 +165,7 @@ export const TRAINING_PAGES: TrainingPage[] = [
     subtitle: 'Logging, managing and resolving maintenance requests from start to finish.',
     notionUrl: 'https://spark-motion-ef3.notion.site/Maintenance-29df87e8ff728051845cf19cbcd49c4a',
     icon: '🔧',
-    colour: 'bg-zinc-100 text-zinc-700',
+    colour: 'bg-navy-100 text-navy-700',
     readTime: '12 min read',
     order: 3,
     content: [
@@ -309,7 +309,7 @@ export const TRAINING_PAGES: TrainingPage[] = [
     subtitle: 'End of tenancy process — checkouts, deposits, and property turnaround.',
     notionUrl: 'https://spark-motion-ef3.notion.site/Move-outs-2a8f87e8ff72806c97a1f0bd7e3a8047',
     icon: '🏠',
-    colour: 'bg-zinc-100 text-zinc-700',
+    colour: 'bg-navy-100 text-navy-700',
     readTime: '10 min read',
     order: 5,
     content: [
@@ -384,7 +384,7 @@ export const TRAINING_PAGES: TrainingPage[] = [
     subtitle: 'Property inspection standards, reporting, and follow-up procedures.',
     notionUrl: 'https://spark-motion-ef3.notion.site/Inspections-2abf87e8ff7280449826da2c2048a986',
     icon: '🔍',
-    colour: 'bg-zinc-100 text-zinc-700',
+    colour: 'bg-navy-100 text-navy-700',
     readTime: '10 min read',
     order: 6,
     content: [
@@ -514,7 +514,7 @@ export const TRAINING_PAGES: TrainingPage[] = [
     subtitle: 'How to raise, track and resolve support issues within the Dwelly platform.',
     notionUrl: 'https://spark-motion-ef3.notion.site/Support-2abf87e8ff728047939cfb2a7637ae9d',
     icon: '💬',
-    colour: 'bg-zinc-100 text-zinc-700',
+    colour: 'bg-navy-100 text-navy-700',
     readTime: '6 min read',
     order: 8,
     content: [
@@ -557,7 +557,7 @@ export const TRAINING_PAGES: TrainingPage[] = [
     subtitle: 'Dwelly standards, communication guidelines, and professional expectations.',
     notionUrl: 'https://spark-motion-ef3.notion.site/Best-practises-2c5f87e8ff7280bd8c14cd4fb8c16331',
     icon: '⭐',
-    colour: 'bg-zinc-100 text-zinc-700',
+    colour: 'bg-navy-100 text-navy-700',
     readTime: '8 min read',
     order: 10,
     content: [
@@ -606,7 +606,7 @@ export const TRAINING_PAGES: TrainingPage[] = [
     subtitle: 'When to use Auto mode versus On Hold — and why getting this right reduces your manual admin significantly.',
     notionUrl: '',
     icon: '⚡',
-    colour: 'bg-zinc-100 text-zinc-700',
+    colour: 'bg-navy-100 text-navy-700',
     readTime: '7 min read',
     order: 11,
     content: [

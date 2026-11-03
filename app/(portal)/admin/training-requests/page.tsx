@@ -68,7 +68,7 @@ export default async function AdminTrainingRequestsPage() {
         </div>
         <div>
           <h1 className="text-xl font-bold text-navy">Training requests</h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-navy-500 mt-0.5">
             Requests from managers — further training for existing team members and new starter setups.
           </p>
         </div>
@@ -76,7 +76,7 @@ export default async function AdminTrainingRequestsPage() {
 
       <div className="flex gap-2 flex-wrap">
         {TRAINING_REQUEST_STATUSES.map(s => (
-          <span key={s} className="text-xs font-medium text-slate-500 px-3 py-1.5 rounded-lg bg-white border border-slate-200">
+          <span key={s} className="text-xs font-medium text-navy-500 px-3 py-1.5 rounded-lg bg-white border border-navy-200">
             {TRAINING_STATUS_LABELS[s]}: <span className="font-bold text-navy">{counts[s] ?? 0}</span>
           </span>
         ))}
@@ -84,7 +84,7 @@ export default async function AdminTrainingRequestsPage() {
 
       {requests.length === 0 ? (
         <div className="card p-8 text-center">
-          <p className="text-sm text-slate-400">No training requests yet.</p>
+          <p className="text-sm text-navy-400">No training requests yet.</p>
         </div>
       ) : (
         <div className="space-y-3">

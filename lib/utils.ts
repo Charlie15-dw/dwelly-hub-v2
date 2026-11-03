@@ -31,7 +31,7 @@ export function getPhaseColor(phase: string): string {
     embedding:  'phase-embedding',
     optimise:   'phase-optimise',
   }
-  return map[phase] ?? 'bg-slate-100 text-slate-600 border-slate-200'
+  return map[phase] ?? 'bg-navy-100 text-navy-600 border-navy-200'
 }
 
 export function getRAGColor(status: string): string {
@@ -40,7 +40,7 @@ export function getRAGColor(status: string): string {
     amber: 'rag-amber',
     green: 'rag-green',
   }
-  return map[status] ?? 'bg-slate-100 text-slate-600'
+  return map[status] ?? 'bg-navy-100 text-navy-600'
 }
 
 export function getRAGLabel(status: string): string {

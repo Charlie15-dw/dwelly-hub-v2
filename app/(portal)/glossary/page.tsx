@@ -20,7 +20,7 @@ const CATEGORIES: { value: CategoryFilter; label: string }[] = [
 
 const CATEGORY_BADGE: Record<GlossaryCategory, string> = {
   legal:            'bg-blue-50 text-blue-700 border border-blue-200',
-  operational:      'bg-slate-100 text-slate-600 border border-slate-200',
+  operational:      'bg-navy-100 text-navy-600 border border-navy-200',
   financial:        'bg-green-50 text-green-700 border border-green-200',
   compliance:       'bg-amber-50 text-amber-700 border border-amber-200',
   'tenant-relations': 'bg-purple-50 text-purple-700 border border-purple-200',
@@ -64,18 +64,18 @@ function TermCard({ term, allTerms }: { term: GlossaryTerm; allTerms: GlossaryTe
         </span>
       </div>
 
-      <p className="text-sm text-slate-600 leading-relaxed mb-3">{term.definition}</p>
+      <p className="text-sm text-navy-600 leading-relaxed mb-3">{term.definition}</p>
 
       {term.context && (
-        <p className="text-sm text-slate-500 italic leading-relaxed mb-3">
-          <span className="font-semibold not-italic text-slate-600">Example: </span>
+        <p className="text-sm text-navy-500 italic leading-relaxed mb-3">
+          <span className="font-semibold not-italic text-navy-600">Example: </span>
           {term.context}
         </p>
       )}
 
       {term.relatedTerms.length > 0 && (
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mr-1">Related:</span>
+          <span className="text-[11px] font-medium text-navy-400 uppercase tracking-wide mr-1">Related:</span>
           {term.relatedTerms.map((relatedName) => {
             const related = allTerms.find(t => t.term === relatedName || t.id === relatedName)
             return related ? (
@@ -93,7 +93,7 @@ function TermCard({ term, allTerms }: { term: GlossaryTerm; allTerms: GlossaryTe
               <span
                 key={relatedName}
                 className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium
-                           bg-slate-50 text-slate-400 border border-slate-200"
+                           bg-navy-50 text-navy-400 border border-navy-200"
               >
                 {relatedName}
               </span>
@@ -148,28 +148,28 @@ export default function GlossaryPage() {
     <div className="space-y-6 pb-12">
 
       {/* Hero */}
-      <div className="rounded-2xl p-6 bg-white border border-slate-100 shadow-sm">
+      <div className="rounded-2xl p-6 bg-white border border-navy-100 shadow-sm">
         <div className="flex items-start gap-4 flex-wrap">
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">
+            <p className="text-xs font-semibold uppercase tracking-widest text-navy-400 mb-1">
               Reference
             </p>
             <h1 className="text-3xl font-bold text-navy tracking-tight">Glossary</h1>
-            <p className="text-slate-500 mt-2 text-sm leading-relaxed max-w-prose">
+            <p className="text-navy-500 mt-2 text-sm leading-relaxed max-w-prose">
               {GLOSSARY_TERMS.length} essential property management terms — from legal notices to compliance
               requirements. Use the search or A–Z jump to find what you need fast.
             </p>
           </div>
           <div className="flex-shrink-0 flex items-center gap-2 bg-orange/8 border border-orange/20 px-4 py-2 rounded-xl">
             <span className="text-2xl font-black text-orange tabular-nums">{GLOSSARY_TERMS.length}</span>
-            <span className="text-xs text-slate-500 leading-tight">terms<br />defined</span>
+            <span className="text-xs text-navy-500 leading-tight">terms<br />defined</span>
           </div>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" aria-hidden />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400 pointer-events-none" aria-hidden />
         <input
           type="text"
           value={query}
@@ -182,10 +182,10 @@ export default function GlossaryPage() {
           <button
             onClick={() => setQuery('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center
-                       rounded-full bg-slate-100 hover:bg-slate-200 transition-colors"
+                       rounded-full bg-navy-100 hover:bg-navy-200 transition-colors"
             aria-label="Clear search"
           >
-            <X className="w-3.5 h-3.5 text-slate-500" />
+            <X className="w-3.5 h-3.5 text-navy-500" />
           </button>
         )}
       </div>
@@ -199,7 +199,7 @@ export default function GlossaryPage() {
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
               activeCategory === cat.value
                 ? 'bg-orange text-white shadow-sm'
-                : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                : 'bg-white border border-navy-200 text-navy-600 hover:border-navy-300 hover:bg-navy-50'
             }`}
           >
             {cat.label}
@@ -222,8 +222,8 @@ export default function GlossaryPage() {
                   hasFilteredTerms
                     ? 'text-orange hover:bg-orange/10 cursor-pointer'
                     : hasTerms
-                    ? 'text-slate-300 cursor-default'
-                    : 'text-slate-200 cursor-default'
+                    ? 'text-navy-300 cursor-default'
+                    : 'text-navy-200 cursor-default'
                 }`}
                 aria-label={`Jump to ${letter}`}
                 aria-disabled={!hasFilteredTerms}
@@ -244,8 +244,8 @@ export default function GlossaryPage() {
                 <div className="w-9 h-9 rounded-xl bg-navy flex items-center justify-center flex-shrink-0">
                   <span className="text-white font-black text-base">{letter}</span>
                 </div>
-                <div className="h-px flex-1 bg-slate-100" />
-                <span className="text-xs text-slate-400 font-medium">
+                <div className="h-px flex-1 bg-navy-100" />
+                <span className="text-xs text-navy-400 font-medium">
                   {grouped[letter].length} {grouped[letter].length === 1 ? 'term' : 'terms'}
                 </span>
               </div>
@@ -260,11 +260,11 @@ export default function GlossaryPage() {
       ) : (
         /* Empty state */
         <div className="card p-12 flex flex-col items-center text-center">
-          <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
-            <Search className="w-6 h-6 text-slate-400" aria-hidden />
+          <div className="w-14 h-14 rounded-2xl bg-navy-100 flex items-center justify-center mb-4">
+            <Search className="w-6 h-6 text-navy-400" aria-hidden />
           </div>
           <h3 className="text-base font-bold text-navy mb-1">No terms found</h3>
-          <p className="text-sm text-slate-500 max-w-xs">
+          <p className="text-sm text-navy-500 max-w-xs">
             No glossary terms match your search for <span className="font-semibold text-navy">"{query}"</span>.
             Try a different word or clear the search to browse all terms.
           </p>

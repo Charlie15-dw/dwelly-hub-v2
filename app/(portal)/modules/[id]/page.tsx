@@ -108,7 +108,7 @@ export default async function ModulePage({ params }: { params: { id: string } })
   const moduleQuestions = assessmentRetired
     ? []
     : QUIZ_QUESTIONS.filter(q => q.moduleId === params.id)
-  const sectionColorClass = SECTION_COLORS[module.section] ?? 'text-slate-600 bg-slate-100 border-slate-200'
+  const sectionColorClass = SECTION_COLORS[module.section] ?? 'text-navy-600 bg-navy-100 border-navy-200'
 
   const prevModule = MODULES[MODULES.indexOf(module) - 1]
   const nextModule = MODULES[MODULES.indexOf(module) + 1]
@@ -121,12 +121,12 @@ export default async function ModulePage({ params }: { params: { id: string } })
     <div className="max-w-4xl space-y-6">
       {/* Back */}
       <div className="flex items-center gap-2">
-        <Link href="/modules" className="text-sm text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
+        <Link href="/modules" className="text-sm text-navy-500 hover:text-navy flex items-center gap-1.5 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Modules
         </Link>
-        <span className="text-slate-300">/</span>
-        <span className="text-sm text-slate-500">{SECTION_LABELS[module.section]}</span>
-        <span className="text-slate-300">/</span>
+        <span className="text-navy-300">/</span>
+        <span className="text-sm text-navy-500">{SECTION_LABELS[module.section]}</span>
+        <span className="text-navy-300">/</span>
         <span className="text-sm text-navy font-medium truncate">{module.title}</span>
       </div>
 
@@ -150,12 +150,12 @@ export default async function ModulePage({ params }: { params: { id: string } })
               )}
             </div>
             <h1 className="text-xl font-bold text-navy mb-2">{module.title}</h1>
-            <p className="text-sm text-slate-600 leading-relaxed">{module.description}</p>
+            <p className="text-sm text-navy-600 leading-relaxed">{module.description}</p>
           </div>
         </div>
 
         {/* Meta row */}
-        <div className="flex items-center gap-6 mt-5 pt-5 border-t border-slate-100 flex-wrap">
+        <div className="flex items-center gap-6 mt-5 pt-5 border-t border-navy-100 flex-wrap">
           {[
             { icon: Clock,         label: module.duration,    sub: 'Total time' },
             ...(hasVideo ? [{ icon: Play, label: module.videoLength, sub: 'Video guide' }] : []),
@@ -163,12 +163,12 @@ export default async function ModulePage({ params }: { params: { id: string } })
             { icon: Star,          label: `${module.passmark}%`,           sub: 'Pass mark' },
           ].map(({ icon: Icon, label, sub }) => (
             <div key={sub} className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center">
-                <Icon className="w-4 h-4 text-slate-500" aria-hidden />
+              <div className="w-8 h-8 rounded-lg bg-navy-50 border border-navy-100 flex items-center justify-center">
+                <Icon className="w-4 h-4 text-navy-500" aria-hidden />
               </div>
               <div>
                 <p className="text-sm font-semibold text-navy">{label}</p>
-                <p className="text-[11px] text-slate-400">{sub}</p>
+                <p className="text-[11px] text-navy-400">{sub}</p>
               </div>
             </div>
           ))}
@@ -184,7 +184,7 @@ export default async function ModulePage({ params }: { params: { id: string } })
         {/* Tags */}
         <div className="flex flex-wrap gap-1.5 mt-4">
           {module.tags.map(tag => (
-            <span key={tag} className="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-full">
+            <span key={tag} className="text-[11px] text-navy-500 bg-navy-50 border border-navy-200 px-2 py-0.5 rounded-full">
               #{tag}
             </span>
           ))}
@@ -240,7 +240,7 @@ export default async function ModulePage({ params }: { params: { id: string } })
             <h2 className="text-base font-bold text-navy mb-3 flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-teal" /> Overview
             </h2>
-            <p className="text-sm text-slate-700 leading-relaxed">{content.overview}</p>
+            <p className="text-sm text-navy-700 leading-relaxed">{content.overview}</p>
           </div>
 
           {/* Step-by-step */}
@@ -252,7 +252,7 @@ export default async function ModulePage({ params }: { params: { id: string } })
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-orange text-white text-xs font-bold flex items-center justify-center mt-0.5">
                     {i + 1}
                   </span>
-                  <p className="text-sm text-slate-700 leading-relaxed">{step}</p>
+                  <p className="text-sm text-navy-700 leading-relaxed">{step}</p>
                 </li>
               ))}
             </ol>
@@ -267,7 +267,7 @@ export default async function ModulePage({ params }: { params: { id: string } })
               {content.watchFor.map((item, i) => (
                 <li key={i} className="flex gap-2.5">
                   <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5" />
-                  <p className="text-sm text-slate-700 leading-relaxed">{item}</p>
+                  <p className="text-sm text-navy-700 leading-relaxed">{item}</p>
                 </li>
               ))}
             </ul>
@@ -278,19 +278,19 @@ export default async function ModulePage({ params }: { params: { id: string } })
             <div className="card p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-bold text-navy">Assessment Preview</h2>
-                <span className="text-xs text-slate-500">{module.quizCount} questions total</span>
+                <span className="text-xs text-navy-500">{module.quizCount} questions total</span>
               </div>
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
+              <div className="bg-navy-50 border border-navy-200 rounded-xl p-4 mb-4">
                 <p className="text-sm font-medium text-navy mb-3">{moduleQuestions[0].question}</p>
                 <div className="space-y-2">
                   {moduleQuestions[0].options.map((opt, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200
+                      className="flex items-center gap-2.5 p-2.5 rounded-lg bg-white border border-navy-200
                                  hover:border-orange/40 hover:bg-orange/3 cursor-pointer transition-colors"
                     >
-                      <div className="w-4 h-4 rounded-full border-2 border-slate-300 flex-shrink-0" />
-                      <span className="text-sm text-slate-700">{opt}</span>
+                      <div className="w-4 h-4 rounded-full border-2 border-navy-300 flex-shrink-0" />
+                      <span className="text-sm text-navy-700">{opt}</span>
                     </div>
                   ))}
                 </div>
@@ -314,11 +314,11 @@ export default async function ModulePage({ params }: { params: { id: string } })
             {prevModule && (
               <Link
                 href={`/modules/${prevModule.id}`}
-                className="flex items-center gap-2 p-2.5 rounded-lg border border-slate-100 hover:border-slate-200 transition-colors"
+                className="flex items-center gap-2 p-2.5 rounded-lg border border-navy-100 hover:border-navy-200 transition-colors"
               >
-                <ArrowLeft className="w-3.5 h-3.5 text-slate-400" />
+                <ArrowLeft className="w-3.5 h-3.5 text-navy-400" />
                 <div className="min-w-0">
-                  <p className="text-[11px] text-slate-400">Previous</p>
+                  <p className="text-[11px] text-navy-400">Previous</p>
                   <p className="text-xs font-medium text-navy truncate">{prevModule.title}</p>
                 </div>
               </Link>
@@ -326,13 +326,13 @@ export default async function ModulePage({ params }: { params: { id: string } })
             {nextModule && !nextModule.locked && (
               <Link
                 href={`/modules/${nextModule.id}`}
-                className="flex items-center gap-2 p-2.5 rounded-lg border border-slate-100 hover:border-slate-200 transition-colors"
+                className="flex items-center gap-2 p-2.5 rounded-lg border border-navy-100 hover:border-navy-200 transition-colors"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-[11px] text-slate-400">Next</p>
+                  <p className="text-[11px] text-navy-400">Next</p>
                   <p className="text-xs font-medium text-navy truncate">{nextModule.title}</p>
                 </div>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                <ChevronRight className="w-3.5 h-3.5 text-navy-400" />
               </Link>
             )}
           </div>

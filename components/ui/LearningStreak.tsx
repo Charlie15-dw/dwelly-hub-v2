@@ -21,9 +21,9 @@ export default function LearningStreak({
 
       <div className="flex items-center gap-3 mb-4">
         <span className="text-3xl font-black text-navy tabular-nums">{currentStreak}</span>
-        <span className="text-xs text-slate-500 leading-tight">
+        <span className="text-xs text-navy-500 leading-tight">
           day streak<br />
-          <span className="text-[10px] text-slate-400">Keep it going!</span>
+          <span className="text-[10px] text-navy-400">Keep it going!</span>
         </span>
       </div>
 
@@ -36,11 +36,11 @@ export default function LearningStreak({
                 'w-5 h-5 rounded-full transition-colors',
                 active
                   ? 'bg-orange shadow-sm'
-                  : 'bg-slate-100 border border-slate-200',
+                  : 'bg-navy-100 border border-navy-200',
               )}
               aria-label={`${DAY_LABELS[i]}: ${active ? 'Active' : 'Inactive'}`}
             />
-            <span className="text-[9px] font-medium text-slate-400">{DAY_LABELS[i]}</span>
+            <span className="text-[9px] font-medium text-navy-400">{DAY_LABELS[i]}</span>
           </div>
         ))}
       </div>

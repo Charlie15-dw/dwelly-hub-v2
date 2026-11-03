@@ -84,7 +84,7 @@ function SetPasswordForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center p-8 bg-navy-50">
       <div className="w-full max-w-sm">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.svg" alt="Dwelly" width={100} height={26} className="block mb-8" />
@@ -92,18 +92,18 @@ function SetPasswordForm() {
         <div className="card p-8">
           {verifying ? (
             <div className="text-center py-4">
-              <p className="text-sm text-slate-500">Verifying your invite link…</p>
+              <p className="text-sm text-navy-500">Verifying your invite link…</p>
             </div>
           ) : !verified ? (
             <div>
               <h2 className="text-xl font-bold text-navy mb-2">Link expired or invalid</h2>
-              <p className="text-sm text-slate-500">{error ?? 'This invite link is no longer valid. Please ask an admin to send a new one.'}</p>
+              <p className="text-sm text-navy-500">{error ?? 'This invite link is no longer valid. Please ask an admin to send a new one.'}</p>
             </div>
           ) : (
             <>
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-navy">Set your password</h2>
-                <p className="text-sm text-slate-500 mt-1">Choose a password to access your training portal.</p>
+                <p className="text-sm text-navy-500 mt-1">Choose a password to access your training portal.</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -131,7 +131,7 @@ function SetPasswordForm() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-navy-400 hover:text-navy-600 focus:outline-none"
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -156,7 +156,7 @@ function SetPasswordForm() {
                     <button
                       type="button"
                       onClick={() => setShowConfirm(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-navy-400 hover:text-navy-600 focus:outline-none"
                       aria-label={showConfirm ? 'Hide password' : 'Show password'}
                     >
                       {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -174,10 +174,10 @@ function SetPasswordForm() {
                 </button>
               </form>
 
-              <div className="mt-6 pt-6 border-t border-slate-100">
+              <div className="mt-6 pt-6 border-t border-navy-100">
                 <div className="flex items-start gap-2.5">
                   <Shield className="w-4 h-4 text-teal mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-slate-500 leading-relaxed">
+                  <p className="text-xs text-navy-500 leading-relaxed">
                     Your password is encrypted and stored securely. Choose something memorable but strong.
                   </p>
                 </div>
@@ -193,8 +193,8 @@ function SetPasswordForm() {
 export default function SetPasswordPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <p className="text-sm text-slate-500">Loading…</p>
+      <div className="min-h-screen flex items-center justify-center bg-navy-50">
+        <p className="text-sm text-navy-500">Loading…</p>
       </div>
     }>
       <SetPasswordForm />

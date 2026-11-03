@@ -60,12 +60,12 @@ export default function ComplianceCalendar({ deadlines }: { deadlines: Complianc
   return (
     <div className="card p-5">
       <h3 className="text-sm font-bold text-navy mb-1">Compliance Calendar</h3>
-      <p className="text-xs text-slate-500 mb-4">Upcoming deadlines across your portfolio — next 90 days</p>
+      <p className="text-xs text-navy-500 mb-4">Upcoming deadlines across your portfolio — next 90 days</p>
 
       <div className="space-y-5">
         {Object.entries(byMonth).map(([month, items]) => (
           <div key={month}>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-2">{month}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-navy-400 mb-2">{month}</p>
             <div className="space-y-2">
               {items.map(d => (
                 <div
@@ -76,16 +76,16 @@ export default function ComplianceCalendar({ deadlines }: { deadlines: Complianc
                       ? 'border-red-200 bg-red-50/40'
                       : d.status === 'due-soon'
                         ? 'border-amber-200 bg-amber-50/40'
-                        : 'border-slate-100 bg-white',
+                        : 'border-navy-100 bg-white',
                   )}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     {/* Date */}
-                    <div className="w-10 h-10 rounded-lg bg-slate-100 flex flex-col items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-navy-100 flex flex-col items-center justify-center flex-shrink-0">
                       <span className="text-xs font-black text-navy leading-none">
                         {new Date(d.dueDate).getDate()}
                       </span>
-                      <span className="text-[8px] font-semibold text-slate-400 uppercase leading-none mt-0.5">
+                      <span className="text-[8px] font-semibold text-navy-400 uppercase leading-none mt-0.5">
                         {new Date(d.dueDate).toLocaleDateString('en-GB', { month: 'short' })}
                       </span>
                     </div>
@@ -94,7 +94,7 @@ export default function ComplianceCalendar({ deadlines }: { deadlines: Complianc
                       <p className="text-sm font-semibold text-navy truncate">
                         {AREA_LABELS[d.areaId] ?? d.areaId}
                       </p>
-                      <p className="text-xs text-slate-500 truncate">
+                      <p className="text-xs text-navy-500 truncate">
                         {d.propertyAddress} · {TYPE_LABEL[d.type] ?? d.type}
                       </p>
                     </div>

@@ -429,7 +429,7 @@ export default function Sidebar() {
                 <Link href="/recap" className={cn('sidebar-link', active && 'active')} aria-current={active ? 'page' : undefined}>
                   <RefreshCw className="w-4 h-4 flex-shrink-0" aria-hidden />
                   <span className="flex-1">Recap &amp; Refresh</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
                     Monthly
                   </span>
                   {active && <ChevronRight className="w-3 h-3 flex-shrink-0 text-white/40" aria-hidden />}

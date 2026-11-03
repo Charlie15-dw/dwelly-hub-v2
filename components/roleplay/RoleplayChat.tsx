@@ -20,7 +20,7 @@ const CATEGORY_COLOURS: Record<string, string> = {
   complaint:  'bg-amber-50 text-amber-700 border-amber-200',
   maintenance:'bg-orange-50 text-orange-700 border-orange-200',
   noise:      'bg-violet-50 text-violet-700 border-violet-200',
-  eviction:   'bg-slate-100 text-slate-700 border-slate-200',
+  eviction:   'bg-navy-100 text-navy-700 border-navy-200',
   renewal:    'bg-[#EEF3FE] text-[#2C68ED] border-[#D5E1FB]',
   deposit:    'bg-emerald-50 text-emerald-700 border-emerald-200',
 }

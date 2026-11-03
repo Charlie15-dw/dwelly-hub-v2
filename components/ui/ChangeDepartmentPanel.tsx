@@ -61,7 +61,7 @@ export default function ChangeDepartmentPanel({
         <select
           value={selected}
           onChange={e => { setSelected(e.target.value as Department); setSaved(false) }}
-          className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+          className="flex-1 text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
         >
           {DEPARTMENTS.map(d => (
             <option key={d} value={d}>{DEPARTMENT_META[d].label}</option>
@@ -77,7 +77,7 @@ export default function ChangeDepartmentPanel({
         </button>
       </div>
 
-      <p className="text-[11px] text-slate-400 mt-2">
+      <p className="text-[11px] text-navy-400 mt-2">
         Decides which role-overview and training content this person sees, and locks their
         assessment access to this track. Separate from their permission role above.
       </p>

@@ -92,15 +92,15 @@ export default async function AnalyticsPage() {
     <div className="space-y-6 pb-12">
 
       {/* Hero */}
-      <div className="rounded-2xl p-6 bg-white border border-slate-100 shadow-sm">
+      <div className="rounded-2xl p-6 bg-white border border-navy-100 shadow-sm">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-orange/10 flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-orange" aria-hidden />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-0.5">Personal</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-navy-400 mb-0.5">Personal</p>
             <h1 className="text-3xl font-bold text-navy tracking-tight">My Analytics</h1>
-            <p className="text-slate-500 mt-1 text-sm leading-relaxed">
+            <p className="text-navy-500 mt-1 text-sm leading-relaxed">
               Track your learning journey and identify areas for development.
             </p>
           </div>
@@ -132,9 +132,9 @@ export default async function AnalyticsPage() {
 
       {!hasAnyData ? (
         <div className="card p-10 text-center">
-          <BarChart3 className="w-10 h-10 text-slate-300 mx-auto mb-3" aria-hidden />
-          <p className="text-sm font-semibold text-slate-500">No data yet</p>
-          <p className="text-xs text-slate-400 mt-1">
+          <BarChart3 className="w-10 h-10 text-navy-300 mx-auto mb-3" aria-hidden />
+          <p className="text-sm font-semibold text-navy-500">No data yet</p>
+          <p className="text-xs text-navy-400 mt-1">
             Complete a module assessment to start tracking your progress here.
           </p>
         </div>
@@ -149,13 +149,13 @@ export default async function AnalyticsPage() {
               <div className="flex items-start justify-between gap-4 mb-1">
                 <div>
                   <h2 className="text-sm font-bold text-navy">Skills Overview</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-navy-500 mt-0.5">
                     Average assessment score per training area.
                   </p>
                 </div>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
                   <div className="w-2.5 h-2.5 rounded-full bg-orange/20 border border-orange/40" />
-                  <span className="text-[11px] text-slate-400">Your score</span>
+                  <span className="text-[11px] text-navy-400">Your score</span>
                 </div>
               </div>
               <SkillsRadar scores={radarScores} />
@@ -168,7 +168,7 @@ export default async function AnalyticsPage() {
                   <TrendingUp className="w-4 h-4 text-orange" aria-hidden />
                   <h2 className="text-sm font-bold text-navy">Assessment Score History</h2>
                 </div>
-                <p className="text-xs text-slate-500 mb-5">Most recent attempt per assessment</p>
+                <p className="text-xs text-navy-500 mb-5">Most recent attempt per assessment</p>
                 <div className="space-y-4">
                   {recentResults.map((r) => {
                     const meta = ASSESSMENT_META[r.assessment_id]
@@ -181,7 +181,7 @@ export default async function AnalyticsPage() {
                             {r.score}%
                           </span>
                         </div>
-                        <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-2.5 bg-navy-100 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-500 ${scoreColour(r.score)}`}
                             style={{ width: `${r.score}%` }}
@@ -195,18 +195,18 @@ export default async function AnalyticsPage() {
                     )
                   })}
                 </div>
-                <div className="flex items-center gap-4 mt-5 pt-4 border-t border-slate-100">
+                <div className="flex items-center gap-4 mt-5 pt-4 border-t border-navy-100">
                   <div className="flex items-center gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                    <span className="text-[11px] text-slate-500">80%+ Pass</span>
+                    <span className="text-[11px] text-navy-500">80%+ Pass</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-orange" />
-                    <span className="text-[11px] text-slate-500">65–79% Near pass</span>
+                    <span className="text-[11px] text-navy-500">65–79% Near pass</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                    <span className="text-[11px] text-slate-500">Below 65%</span>
+                    <span className="text-[11px] text-navy-500">Below 65%</span>
                   </div>
                 </div>
               </div>
@@ -227,13 +227,13 @@ export default async function AnalyticsPage() {
                   <div key={label} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className={`w-2.5 h-2.5 rounded-full ${color}`} />
-                      <span className="text-xs text-slate-600">{label}</span>
+                      <span className="text-xs text-navy-600">{label}</span>
                     </div>
                     <span className="text-sm font-bold text-navy tabular-nums">{count}</span>
                   </div>
                 ))}
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-xs text-slate-500">Pass rate</span>
+                <div className="pt-2 border-t border-navy-100 flex items-center justify-between">
+                  <span className="text-xs text-navy-500">Pass rate</span>
                   <span className="text-sm font-bold text-navy tabular-nums">
                     {allResults.length > 0
                       ? `${Math.round((allResults.filter(r => r.passed).length / allResults.length) * 100)}%`
@@ -248,9 +248,9 @@ export default async function AnalyticsPage() {
               <h2 className="text-sm font-bold text-navy mb-4">Module Progress</h2>
               <div className="text-center py-2">
                 <p className="text-3xl font-black text-navy tabular-nums">{completedModules}</p>
-                <p className="text-xs text-slate-500 mt-1">of {TOTAL_ASSESSMENTS} modules completed</p>
+                <p className="text-xs text-navy-500 mt-1">of {TOTAL_ASSESSMENTS} modules completed</p>
               </div>
-              <div className="mt-3 h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="mt-3 h-2 bg-navy-100 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-teal rounded-full transition-all"
                   style={{ width: `${TOTAL_ASSESSMENTS > 0 ? Math.round((completedModules / TOTAL_ASSESSMENTS) * 100) : 0}%` }}

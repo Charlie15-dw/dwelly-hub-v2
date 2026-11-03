@@ -97,13 +97,13 @@ export default function LearningStreak() {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-bold text-navy">{headline}</p>
-        <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{sub}</p>
+        <p className="text-xs text-navy-500 mt-0.5 leading-relaxed">{sub}</p>
       </div>
       <div className="hidden sm:flex items-end gap-1.5 flex-shrink-0" aria-hidden>
         {week.map(({ key, active, label }) => (
           <div key={key} className="flex flex-col items-center gap-1">
-            <div className={`w-2.5 h-2.5 rounded-full ${active ? 'bg-orange' : 'bg-slate-200'}`} />
-            <span className="text-[10px] text-slate-400">{label}</span>
+            <div className={`w-2.5 h-2.5 rounded-full ${active ? 'bg-orange' : 'bg-navy-200'}`} />
+            <span className="text-[10px] text-navy-400">{label}</span>
           </div>
         ))}
       </div>

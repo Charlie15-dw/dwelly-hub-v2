@@ -116,8 +116,8 @@ export default async function MemberDetailPage({
 
       {/* Header */}
       <div className="flex items-start gap-4">
-        <Link href="/manager" className="mt-1 p-2 rounded-lg hover:bg-slate-100 transition-colors flex-shrink-0" aria-label="Back to manager dashboard">
-          <ArrowLeft className="w-4 h-4 text-slate-500" />
+        <Link href="/manager" className="mt-1 p-2 rounded-lg hover:bg-navy-100 transition-colors flex-shrink-0" aria-label="Back to manager dashboard">
+          <ArrowLeft className="w-4 h-4 text-navy-500" />
         </Link>
         <div className="flex items-center gap-4 flex-1 min-w-0">
           <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
@@ -125,12 +125,12 @@ export default async function MemberDetailPage({
           </div>
           <div className="min-w-0">
             <h1 className="text-xl font-bold text-navy">{displayName}</h1>
-            <p className="text-sm text-slate-400 mt-0.5">{memberProfile.email ?? '—'} · Joined {joinDate}</p>
+            <p className="text-sm text-navy-400 mt-0.5">{memberProfile.email ?? '—'} · Joined {joinDate}</p>
           </div>
           <div className="ml-auto flex items-center gap-4 text-center flex-shrink-0">
             <div>
               <p className="text-2xl font-black text-navy tabular-nums">{completedCount}/{ALL_ASSESSMENT_IDS.length}</p>
-              <p className="text-xs text-slate-400 mt-0.5">Assessments passed</p>
+              <p className="text-xs text-navy-400 mt-0.5">Assessments passed</p>
             </div>
             {avgScore !== null && (
               <div>
@@ -139,7 +139,7 @@ export default async function MemberDetailPage({
                   'text-amber-500': avgScore >= 65 && avgScore < 80,
                   'text-red-500': avgScore < 65,
                 })}>{avgScore}%</p>
-                <p className="text-xs text-slate-400 mt-0.5">Avg score</p>
+                <p className="text-xs text-navy-400 mt-0.5">Avg score</p>
               </div>
             )}
           </div>
@@ -149,8 +149,8 @@ export default async function MemberDetailPage({
       {/* No results state */}
       {allResults.length === 0 && (
         <div className="card p-10 text-center">
-          <p className="text-sm font-semibold text-slate-500">No assessments completed yet</p>
-          <p className="text-xs text-slate-400 mt-1">{displayName} has not submitted any assessments.</p>
+          <p className="text-sm font-semibold text-navy-500">No assessments completed yet</p>
+          <p className="text-xs text-navy-400 mt-1">{displayName} has not submitted any assessments.</p>
         </div>
       )}
 
@@ -163,10 +163,10 @@ export default async function MemberDetailPage({
           return (
             <div key={assessmentId} className="card overflow-hidden">
               {/* Assessment header */}
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4">
+              <div className="px-5 py-4 border-b border-navy-100 flex items-center justify-between gap-4">
                 <div className="min-w-0">
                   <p className="text-sm font-bold text-navy truncate">{ASSESSMENT_LABELS[assessmentId] ?? assessmentId}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{attempts.length} attempt{attempts.length !== 1 ? 's' : ''}</p>
+                  <p className="text-xs text-navy-400 mt-0.5">{attempts.length} attempt{attempts.length !== 1 ? 's' : ''}</p>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   {attempts[0].passed ? (
@@ -210,10 +210,10 @@ export default async function MemberDetailPage({
                 const correctCount = answers.filter(a => a.isCorrect).length
 
                 return (
-                  <div key={attemptIdx} className={cn('border-b border-slate-50 last:border-b-0', attemptIdx > 0 && 'bg-slate-50/40')}>
+                  <div key={attemptIdx} className={cn('border-b border-navy-50 last:border-b-0', attemptIdx > 0 && 'bg-navy-50/40')}>
                     {/* Attempt subheader */}
-                    <div className="px-5 py-3 flex items-center justify-between text-xs text-slate-400">
-                      <span className="font-medium text-slate-500">
+                    <div className="px-5 py-3 flex items-center justify-between text-xs text-navy-400">
+                      <span className="font-medium text-navy-500">
                         {attempts.length > 1 ? `Attempt ${attempts.length - attemptIdx}` : 'Latest attempt'} · {completedDate}
                       </span>
                       {answers.length > 0 && (
@@ -245,21 +245,21 @@ export default async function MemberDetailPage({
                                 <p className="text-sm font-semibold text-navy leading-snug">{ans.question}</p>
                                 <div className="mt-2 space-y-1.5">
                                   <div className="flex items-start gap-2">
-                                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Their answer</span>
+                                    <span className="text-[10px] font-semibold uppercase tracking-wide text-navy-400 w-20 flex-shrink-0 mt-0.5">Their answer</span>
                                     <span className={cn('text-xs leading-relaxed', ans.isCorrect ? 'text-teal font-medium' : 'text-red-600 font-medium')}>
                                       {ans.yourAnswer}
                                     </span>
                                   </div>
                                   {!ans.isCorrect && (
                                     <div className="flex items-start gap-2">
-                                      <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Correct</span>
+                                      <span className="text-[10px] font-semibold uppercase tracking-wide text-navy-400 w-20 flex-shrink-0 mt-0.5">Correct</span>
                                       <span className="text-xs text-teal font-medium leading-relaxed">{ans.correctAnswer}</span>
                                     </div>
                                   )}
                                   {ans.rationale && (
-                                    <div className="flex items-start gap-2 mt-1 pt-2 border-t border-slate-100">
-                                      <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Rationale</span>
-                                      <span className="text-xs text-slate-500 leading-relaxed">{ans.rationale}</span>
+                                    <div className="flex items-start gap-2 mt-1 pt-2 border-t border-navy-100">
+                                      <span className="text-[10px] font-semibold uppercase tracking-wide text-navy-400 w-20 flex-shrink-0 mt-0.5">Rationale</span>
+                                      <span className="text-xs text-navy-500 leading-relaxed">{ans.rationale}</span>
                                     </div>
                                   )}
                                 </div>
@@ -269,7 +269,7 @@ export default async function MemberDetailPage({
                         ))}
                       </div>
                     ) : (
-                      <p className="px-5 pb-4 text-xs text-slate-400">No answer detail available for this attempt.</p>
+                      <p className="px-5 pb-4 text-xs text-navy-400">No answer detail available for this attempt.</p>
                     )}
                   </div>
                 )
@@ -292,12 +292,12 @@ export default async function MemberDetailPage({
         const rounds = Array.from(bestByRound.values()).sort((a, b) => b.completed_at.localeCompare(a.completed_at))
         return (
           <div className="card overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-              <RefreshCw className="w-4 h-4 text-indigo-500" aria-hidden />
+            <div className="px-5 py-4 border-b border-navy-100 flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-orange-500" aria-hidden />
               <h2 className="text-sm font-bold text-navy">Recap &amp; Refresh</h2>
-              <span className="ml-auto text-xs text-slate-400">{rounds.length} round{rounds.length !== 1 ? 's' : ''} completed</span>
+              <span className="ml-auto text-xs text-navy-400">{rounds.length} round{rounds.length !== 1 ? 's' : ''} completed</span>
             </div>
-            <div className="divide-y divide-slate-50">
+            <div className="divide-y divide-navy-50">
               {rounds.map(r => {
                 const label = r.assessment_id.replace('recap-', '').replace(/-(\d+)$/, ' $1').replace(/\b\w/g, (c: string) => c.toUpperCase())
                 const date = r.completed_at ? new Date(r.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'
@@ -305,7 +305,7 @@ export default async function MemberDetailPage({
                   <div key={r.assessment_id} className="flex items-center justify-between px-5 py-3">
                     <div>
                       <p className="text-sm font-semibold text-navy">{label}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">{date}</p>
+                      <p className="text-xs text-navy-400 mt-0.5">{date}</p>
                     </div>
                     <span className={cn('text-sm font-bold tabular-nums px-3 py-1 rounded-full', {
                       'bg-teal/10 text-teal border border-teal/20': r.score >= 80,
@@ -332,8 +332,8 @@ export default async function MemberDetailPage({
             <div className="space-y-2">
               {notAttempted.map(id => (
                 <div key={id} className="flex items-center gap-2.5 py-1.5">
-                  <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-200 flex-shrink-0" />
-                  <span className="text-sm text-slate-400">{ASSESSMENT_LABELS[id] ?? id}</span>
+                  <div className="w-3.5 h-3.5 rounded-full border-2 border-navy-200 flex-shrink-0" />
+                  <span className="text-sm text-navy-400">{ASSESSMENT_LABELS[id] ?? id}</span>
                 </div>
               ))}
             </div>

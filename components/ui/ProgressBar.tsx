@@ -42,7 +42,7 @@ export default function ProgressBar({
     <div className={cn('w-full', className)}>
       {showLabel && (
         <div className="flex justify-between items-center mb-1.5">
-          <span className="text-xs text-slate-500">Progress</span>
+          <span className="text-xs text-navy-500">Progress</span>
           <span className="text-xs font-semibold text-navy">{pct}%</span>
         </div>
       )}

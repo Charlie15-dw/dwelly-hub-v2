@@ -75,12 +75,12 @@ export default function InviteUserButton() {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm" onClick={close}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/40 backdrop-blur-sm" onClick={close}>
           <div
-            className="w-full max-w-md bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden"
+            className="w-full max-w-md bg-white rounded-xl shadow-xl border border-navy-200 overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-navy-100">
               <div className="flex items-center gap-2">
                 <UserPlus className="w-4 h-4 text-navy" />
                 <h3 className="text-sm font-bold text-navy">Invite a new user</h3>
@@ -88,7 +88,7 @@ export default function InviteUserButton() {
               <button
                 onClick={close}
                 disabled={loading}
-                className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition disabled:opacity-50"
+                className="p-1 rounded-md text-navy-400 hover:text-navy-700 hover:bg-navy-100 transition disabled:opacity-50"
                 aria-label="Close"
               >
                 <X className="w-4 h-4" />
@@ -129,13 +129,13 @@ export default function InviteUserButton() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+                  className="w-full text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
                 />
               </div>
 
               <div>
                 <label htmlFor="invite-name" className="block text-xs font-semibold text-navy mb-1.5">
-                  Full name <span className="text-slate-400 font-normal">(optional)</span>
+                  Full name <span className="text-navy-400 font-normal">(optional)</span>
                 </label>
                 <input
                   id="invite-name"
@@ -143,7 +143,7 @@ export default function InviteUserButton() {
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
                   placeholder="Jane Smith"
-                  className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+                  className="w-full text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
                 />
               </div>
 
@@ -155,7 +155,7 @@ export default function InviteUserButton() {
                   id="invite-role"
                   value={role}
                   onChange={e => setRole(e.target.value as Role)}
-                  className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+                  className="w-full text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
                 >
                   <option value="property-manager">Property Manager</option>
                   <option value="manager">Manager</option>
@@ -168,7 +168,7 @@ export default function InviteUserButton() {
                   type="button"
                   onClick={close}
                   disabled={loading}
-                  className="px-4 py-2 text-sm font-semibold text-slate-600 rounded-lg hover:bg-slate-100 transition disabled:opacity-50"
+                  className="px-4 py-2 text-sm font-semibold text-navy-600 rounded-lg hover:bg-navy-100 transition disabled:opacity-50"
                 >
                   Cancel
                 </button>

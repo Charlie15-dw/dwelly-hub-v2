@@ -35,7 +35,7 @@ export default async function DepositSimulatorPage() {
 
   return (
     <div className="space-y-5">
-      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-navy transition">
+      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-navy-500 hover:text-navy transition">
         <ArrowLeft className="w-4 h-4" aria-hidden />
         Back to Hub
       </Link>
@@ -46,7 +46,7 @@ export default async function DepositSimulatorPage() {
         </div>
         <div>
           <h1 className="text-xl font-bold text-navy">Deposit Dispute Simulator</h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-navy-500 mt-0.5">
             Build a deduction case, choose your evidence, and see how a TDS adjudicator would rule.
             A safe place to practise before it matters for real.
           </p>

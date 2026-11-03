@@ -16,7 +16,7 @@ const UPDATE_CATEGORY_META = {
   system:     { label: 'System',     colour: 'bg-blue-50 text-blue-700 border-blue-200' },
   compliance: { label: 'Compliance', colour: 'bg-amber-50 text-amber-700 border-amber-200' },
   content:    { label: 'Content',    colour: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  process:    { label: 'Process',    colour: 'bg-slate-100 text-slate-600 border-slate-200' },
+  process:    { label: 'Process',    colour: 'bg-navy-100 text-navy-600 border-navy-200' },
 } as const
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -232,7 +232,7 @@ export default async function RecapPage() {
                   {currentRound.focus.map(f => (
                     <span
                       key={f}
-                      className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/90 border border-indigo-100 text-indigo-700"
+                      className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/90 border border-orange-100 text-orange-700"
                     >
                       {f}
                     </span>
@@ -378,7 +378,7 @@ export default async function RecapPage() {
                     {update.title}
                   </span>
                   {update.isNew && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200 flex-shrink-0">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200 flex-shrink-0">
                       New
                     </span>
                   )}

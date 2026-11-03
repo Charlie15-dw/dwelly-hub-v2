@@ -57,7 +57,7 @@ export default function WrongAnswersPanel({ userId, moduleId, moduleName, score 
     <div className="mt-2">
       <button
         onClick={load}
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-navy transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-medium text-navy-500 hover:text-navy transition-colors"
       >
         <BookOpen className="w-3.5 h-3.5" aria-hidden />
         Review incorrect answers
@@ -65,16 +65,16 @@ export default function WrongAnswersPanel({ userId, moduleId, moduleName, score 
       </button>
 
       {open && (
-        <div className="mt-2 rounded-xl border border-slate-100 bg-white overflow-hidden">
-          <div className="px-3 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
+        <div className="mt-2 rounded-xl border border-navy-100 bg-white overflow-hidden">
+          <div className="px-3 py-2 bg-navy-50 border-b border-navy-100 flex items-center justify-between">
+            <p className="text-[11px] font-semibold text-navy-500 uppercase tracking-wide">
               {moduleName} — {score}% — Incorrect answers
             </p>
           </div>
 
           {loading && (
             <div className="px-4 py-6 text-center">
-              <p className="text-xs text-slate-400">Loading…</p>
+              <p className="text-xs text-navy-400">Loading…</p>
             </div>
           )}
 
@@ -87,12 +87,12 @@ export default function WrongAnswersPanel({ userId, moduleId, moduleName, score 
           {!loading && !error && wrongAnswers !== null && wrongAnswers.length === 0 && (
             <div className="px-4 py-4 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
-              <p className="text-xs text-slate-500">No wrong answers recorded for this attempt.</p>
+              <p className="text-xs text-navy-500">No wrong answers recorded for this attempt.</p>
             </div>
           )}
 
           {!loading && !error && wrongAnswers && wrongAnswers.length > 0 && (
-            <div className="divide-y divide-slate-50">
+            <div className="divide-y divide-navy-50">
               {wrongAnswers.map((wa, i) => (
                 <div key={i} className="px-4 py-3 space-y-1.5">
                   <div className="flex items-start gap-2">
@@ -107,10 +107,10 @@ export default function WrongAnswersPanel({ userId, moduleId, moduleName, score 
                       <span>Correct: </span>{wa.correctAnswer}
                     </p>
                     <p className={cn(
-                      'text-[11px] text-slate-500 leading-relaxed bg-slate-50 rounded-lg px-2.5 py-1.5',
-                      'border border-slate-100',
+                      'text-[11px] text-navy-500 leading-relaxed bg-navy-50 rounded-lg px-2.5 py-1.5',
+                      'border border-navy-100',
                     )}>
-                      <span className="font-semibold text-slate-600">Why: </span>{wa.rationale}
+                      <span className="font-semibold text-navy-600">Why: </span>{wa.rationale}
                     </p>
                   </div>
                 </div>

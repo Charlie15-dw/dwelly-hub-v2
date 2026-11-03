@@ -77,7 +77,7 @@ export default function AssessmentOverridesPanel({
         <KeyRound className="w-4 h-4 text-navy" />
         <h3 className="text-sm font-bold text-navy">Assessment Overrides</h3>
       </div>
-      <p className="text-[11px] text-slate-400 mb-4">
+      <p className="text-[11px] text-navy-400 mb-4">
         Grant this person access to a department&apos;s assessments without changing their own
         department. Leave the assessment id blank to unlock the whole department.
       </p>
@@ -91,14 +91,14 @@ export default function AssessmentOverridesPanel({
       {overrides.length > 0 && (
         <div className="space-y-2 mb-4">
           {overrides.map(o => (
-            <div key={o.id} className="flex items-center justify-between gap-3 rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+            <div key={o.id} className="flex items-center justify-between gap-3 rounded-lg bg-navy-50 border border-navy-100 px-3 py-2">
               <div className="min-w-0">
                 <p className="text-xs font-semibold text-navy">
                   {DEPARTMENT_META[o.department]?.label ?? o.department}
-                  <span className="text-slate-400 font-normal"> · {o.assessment_id ?? 'whole department'}</span>
+                  <span className="text-navy-400 font-normal"> · {o.assessment_id ?? 'whole department'}</span>
                 </p>
                 {o.granted_at && (
-                  <p className="text-[10px] text-slate-400 mt-0.5">
+                  <p className="text-[10px] text-navy-400 mt-0.5">
                     Granted {new Date(o.granted_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </p>
                 )}
@@ -106,7 +106,7 @@ export default function AssessmentOverridesPanel({
               <button
                 onClick={() => handleRevoke(o.id)}
                 disabled={revokingId === o.id}
-                className="p-1.5 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition disabled:opacity-50 flex-shrink-0"
+                className="p-1.5 rounded-md text-navy-400 hover:text-red-600 hover:bg-red-50 transition disabled:opacity-50 flex-shrink-0"
                 aria-label="Revoke override"
               >
                 <X className="w-3.5 h-3.5" />
@@ -120,7 +120,7 @@ export default function AssessmentOverridesPanel({
         <select
           value={department}
           onChange={e => setDepartment(e.target.value as Department)}
-          className="text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+          className="text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
         >
           {DEPARTMENTS.map(d => (
             <option key={d} value={d}>{DEPARTMENT_META[d].label}</option>
@@ -131,7 +131,7 @@ export default function AssessmentOverridesPanel({
           value={assessmentId}
           onChange={e => setAssessmentId(e.target.value)}
           placeholder="Assessment id (optional)"
-          className="flex-1 min-w-[160px] text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+          className="flex-1 min-w-[160px] text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
         />
         <button
           onClick={handleGrant}

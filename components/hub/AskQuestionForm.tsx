@@ -42,7 +42,7 @@ export default function AskQuestionForm() {
       <div className="card p-6 text-center">
         <CheckCircle2 className="w-10 h-10 text-teal mx-auto mb-3" aria-hidden />
         <h3 className="text-base font-bold text-navy">Thanks — that's been submitted</h3>
-        <p className="text-sm text-slate-500 mt-1 max-w-md mx-auto">
+        <p className="text-sm text-navy-500 mt-1 max-w-md mx-auto">
           Your submission is anonymous and goes straight to the admin team. You won't be identified.
         </p>
         <button
@@ -59,7 +59,7 @@ export default function AskQuestionForm() {
     <div className="card p-6 space-y-4">
       <div className="flex items-start gap-2 rounded-lg bg-teal/5 border border-teal/15 px-3 py-2.5">
         <ShieldCheck className="w-4 h-4 text-teal flex-shrink-0 mt-0.5" aria-hidden />
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-navy-500">
           This is anonymous. Your name isn't shown to anyone reviewing it — only the admin team sees
           submissions, and they see the text, not who wrote it.
         </p>
@@ -67,13 +67,13 @@ export default function AskQuestionForm() {
 
       <div>
         <label htmlFor="category" className="block text-sm font-semibold text-navy mb-1.5">
-          Area <span className="font-normal text-slate-400">(optional)</span>
+          Area <span className="font-normal text-navy-400">(optional)</span>
         </label>
         <select
           id="category"
           value={category}
           onChange={e => setCategory(e.target.value)}
-          className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+          className="w-full text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
         >
           <option value="">— Select an area —</option>
           {HUB_QUESTION_CATEGORIES.map(c => (
@@ -93,9 +93,9 @@ export default function AskQuestionForm() {
           maxLength={HUB_QUESTION_MAX_LENGTH}
           rows={6}
           placeholder="Ask a question, raise an idea, or flag something that feels broken…"
-          className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange resize-y"
+          className="w-full text-sm border border-navy-200 rounded-lg px-3 py-2.5 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange resize-y"
         />
-        <p className="text-[11px] text-slate-400 mt-1 text-right">
+        <p className="text-[11px] text-navy-400 mt-1 text-right">
           {body.length} / {HUB_QUESTION_MAX_LENGTH}
         </p>
       </div>

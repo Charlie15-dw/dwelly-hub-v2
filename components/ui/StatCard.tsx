@@ -30,9 +30,9 @@ export default function StatCard({ label, value, sub, icon, trend, accent = 'ora
     <div className={cn('card p-5 border-l-4', accentMap[accent], className)}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">{label}</p>
+          <p className="text-xs font-medium text-navy-500 uppercase tracking-wide mb-1">{label}</p>
           <p className="text-2xl font-bold text-navy tabular-nums leading-none">{value}</p>
-          {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+          {sub && <p className="text-xs text-navy-400 mt-1">{sub}</p>}
           {trend && (
             <p className={cn('text-xs font-medium mt-1.5', trend.positive !== false ? 'text-green-600' : 'text-red-500')}>
               {trend.positive !== false ? '↑' : '↓'} {trend.value}

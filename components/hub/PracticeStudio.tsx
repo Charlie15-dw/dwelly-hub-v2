@@ -128,7 +128,7 @@ export default function PracticeStudio() {
               </span>
             </div>
             <p className="text-sm font-bold text-navy">{s.title}</p>
-            <p className="text-xs text-slate-500 mt-1 leading-relaxed">{s.summary}</p>
+            <p className="text-xs text-navy-500 mt-1 leading-relaxed">{s.summary}</p>
             <span className="inline-flex items-center gap-1 text-xs font-semibold text-orange mt-3 group-hover:gap-1.5 transition-all">
               Start practising
             </span>
@@ -144,7 +144,7 @@ export default function PracticeStudio() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <button onClick={reset} className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-navy transition">
+        <button onClick={reset} className="inline-flex items-center gap-1.5 text-sm text-navy-500 hover:text-navy transition">
           <ArrowLeft className="w-4 h-4" aria-hidden />
           Choose another scenario
         </button>
@@ -155,7 +155,7 @@ export default function PracticeStudio() {
 
       <div className="card p-4">
         <p className="text-sm font-bold text-navy">{scenario.title}</p>
-        <p className="text-xs text-slate-500 mt-0.5">You&apos;re speaking with <span className="font-semibold">{personaName}</span>. Respond as you would in real life.</p>
+        <p className="text-xs text-navy-500 mt-0.5">You&apos;re speaking with <span className="font-semibold">{personaName}</span>. Respond as you would in real life.</p>
       </div>
 
       {/* Thread */}
@@ -163,7 +163,7 @@ export default function PracticeStudio() {
         {messages.map((msg, i) => (
           <div key={i} className={cn('flex', msg.role === 'user' ? 'justify-end' : 'justify-start')}>
             {msg.role === 'assistant' && (
-              <div className="w-7 h-7 rounded-lg bg-slate-700 flex items-center justify-center flex-shrink-0 mr-2.5 mt-0.5 shadow-sm">
+              <div className="w-7 h-7 rounded-lg bg-navy-700 flex items-center justify-center flex-shrink-0 mr-2.5 mt-0.5 shadow-sm">
                 <span className="text-[10px] font-bold text-white leading-none">{personaName.slice(0, 2).toUpperCase()}</span>
               </div>
             )}
@@ -171,7 +171,7 @@ export default function PracticeStudio() {
               'max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-relaxed',
               msg.role === 'user'
                 ? 'bg-navy text-white rounded-tr-sm'
-                : 'bg-white border border-slate-100 text-slate-700 rounded-tl-sm shadow-sm',
+                : 'bg-white border border-navy-100 text-navy-700 rounded-tl-sm shadow-sm',
             )}>
               {msg.content}
             </div>
@@ -180,14 +180,14 @@ export default function PracticeStudio() {
 
         {loading && (
           <div className="flex justify-start">
-            <div className="w-7 h-7 rounded-lg bg-slate-700 flex items-center justify-center flex-shrink-0 mr-2.5 mt-0.5 shadow-sm">
+            <div className="w-7 h-7 rounded-lg bg-navy-700 flex items-center justify-center flex-shrink-0 mr-2.5 mt-0.5 shadow-sm">
               <span className="text-[10px] font-bold text-white leading-none">{personaName.slice(0, 2).toUpperCase()}</span>
             </div>
-            <div className="bg-white border border-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+            <div className="bg-white border border-navy-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
               <div className="flex gap-1 items-center h-4">
-                <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:0ms]" />
-                <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:150ms]" />
-                <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:300ms]" />
+                <span className="w-1.5 h-1.5 bg-navy-300 rounded-full animate-bounce [animation-delay:0ms]" />
+                <span className="w-1.5 h-1.5 bg-navy-300 rounded-full animate-bounce [animation-delay:150ms]" />
+                <span className="w-1.5 h-1.5 bg-navy-300 rounded-full animate-bounce [animation-delay:300ms]" />
               </div>
             </div>
           </div>
@@ -202,7 +202,7 @@ export default function PracticeStudio() {
               </div>
               <p className="text-sm font-bold text-navy">Coaching feedback</p>
             </div>
-            <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{coaching}</p>
+            <p className="text-sm text-navy-700 whitespace-pre-wrap leading-relaxed">{coaching}</p>
             <button
               onClick={reset}
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange mt-4 hover:gap-2 transition-all"
@@ -220,7 +220,7 @@ export default function PracticeStudio() {
               <span className="w-1.5 h-1.5 bg-orange/50 rounded-full animate-bounce [animation-delay:150ms]" />
               <span className="w-1.5 h-1.5 bg-orange/50 rounded-full animate-bounce [animation-delay:300ms]" />
             </div>
-            <span className="text-sm text-slate-500">Reviewing how you handled that…</span>
+            <span className="text-sm text-navy-500">Reviewing how you handled that…</span>
           </div>
         )}
 
@@ -236,14 +236,14 @@ export default function PracticeStudio() {
       {/* Input + feedback action */}
       {!coaching && (
         <div className="space-y-3">
-          <div className="flex items-end gap-2 bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-sm focus-within:border-navy/30 focus-within:ring-2 focus-within:ring-navy/10 transition-all">
+          <div className="flex items-end gap-2 bg-white border border-navy-200 rounded-2xl px-4 py-3 shadow-sm focus-within:border-navy/30 focus-within:ring-2 focus-within:ring-navy/10 transition-all">
             <textarea
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={`Reply to ${personaName}…`}
               rows={1}
-              className="flex-1 resize-none bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none leading-relaxed max-h-32"
+              className="flex-1 resize-none bg-transparent text-sm text-navy-700 placeholder:text-navy-400 focus:outline-none leading-relaxed max-h-32"
               style={{ scrollbarWidth: 'none' }}
               disabled={loading || coachLoading}
             />
@@ -254,7 +254,7 @@ export default function PracticeStudio() {
                 'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors',
                 input.trim() && !loading && !coachLoading
                   ? 'bg-navy text-white hover:bg-navy/80'
-                  : 'bg-slate-100 text-slate-300 cursor-not-allowed',
+                  : 'bg-navy-100 text-navy-300 cursor-not-allowed',
               )}
               aria-label="Send reply"
             >

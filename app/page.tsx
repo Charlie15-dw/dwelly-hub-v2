@@ -184,7 +184,7 @@ export default function LoginPage() {
                   <span className="text-[11px] font-semibold text-orange-700">The Hub is now live</span>
                 </div>
                 <h2 className="text-2xl font-bold text-navy tracking-tight">Sign in to continue</h2>
-                <p className="text-sm text-slate-500 mt-1.5">Use your Dwelly work email to enter the Hub.</p>
+                <p className="text-sm text-navy-500 mt-1.5">Use your Dwelly work email to enter the Hub.</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4" aria-label="Sign in form">
@@ -226,7 +226,7 @@ export default function LoginPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none focus:text-navy"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-navy-400 hover:text-navy-600 focus:outline-none focus:text-navy"
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword
@@ -247,10 +247,10 @@ export default function LoginPage() {
                 </button>
               </form>
 
-              <div className="mt-6 pt-6 border-t border-slate-100">
+              <div className="mt-6 pt-6 border-t border-navy-100">
                 <div className="flex items-start gap-2.5">
                   <Shield className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" aria-hidden />
-                  <p className="text-xs text-slate-500 leading-relaxed">
+                  <p className="text-xs text-navy-500 leading-relaxed">
                     Access is restricted to authorised Dwelly team members. All activity is logged
                     for compliance purposes.
                   </p>

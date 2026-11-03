@@ -43,7 +43,7 @@ export default async function AskPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-navy transition">
+      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-navy-500 hover:text-navy transition">
         <ArrowLeft className="w-4 h-4" aria-hidden />
         Back to Hub
       </Link>
@@ -54,7 +54,7 @@ export default async function AskPage() {
         </div>
         <div>
           <h1 className="text-xl font-bold text-navy">Anonymous Q&amp;A</h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-navy-500 mt-0.5">
             Raise questions, ideas and sticking points honestly — no name attached.
           </p>
         </div>
@@ -62,7 +62,7 @@ export default async function AskPage() {
 
       <AskQuestionForm />
 
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-navy-400">
         Answered questions are published on the{' '}
         <Link href="/hub/answered" className="text-teal hover:underline">You said, we did</Link> feed.
       </p>

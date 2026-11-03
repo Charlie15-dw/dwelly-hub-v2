@@ -199,7 +199,7 @@ export default function DobbyPage() {
 
   const historyList = (
     <>
-      <div className="px-3 py-3 border-b border-slate-100">
+      <div className="px-3 py-3 border-b border-navy-100">
         <button
           onClick={newChat}
           className="w-full flex items-center gap-2 rounded-xl bg-navy text-white text-sm font-semibold px-3 py-2.5 hover:bg-navy/80 transition-colors"
@@ -209,7 +209,7 @@ export default function DobbyPage() {
       </div>
       <div className="flex-1 overflow-y-auto p-2">
         {conversations.length === 0 ? (
-          <p className="text-xs text-slate-400 px-2 py-3 text-center">No previous chats yet.</p>
+          <p className="text-xs text-navy-400 px-2 py-3 text-center">No previous chats yet.</p>
         ) : (
           <ul className="space-y-0.5">
             {conversations.map(c => (
@@ -218,17 +218,17 @@ export default function DobbyPage() {
                   onClick={() => openConversation(c.id)}
                   className={cn(
                     'group w-full flex items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors',
-                    c.id === currentId ? 'bg-navy/5 text-navy font-medium' : 'text-slate-600 hover:bg-slate-50',
+                    c.id === currentId ? 'bg-navy/5 text-navy font-medium' : 'text-navy-600 hover:bg-navy-50',
                   )}
                 >
-                  <MessageSquare className="w-3.5 h-3.5 flex-shrink-0 text-slate-400" aria-hidden />
+                  <MessageSquare className="w-3.5 h-3.5 flex-shrink-0 text-navy-400" aria-hidden />
                   <span className="truncate flex-1" title={c.title}>{c.title}</span>
                   <span
                     role="button"
                     tabIndex={0}
                     onClick={(e) => deleteConversation(c.id, e)}
                     onKeyDown={(e) => { if (e.key === 'Enter') deleteConversation(c.id, e as unknown as React.MouseEvent) }}
-                    className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-all flex-shrink-0"
+                    className="opacity-0 group-hover:opacity-100 text-navy-300 hover:text-red-500 transition-all flex-shrink-0"
                     aria-label={`Delete chat: ${c.title}`}
                   >
                     <Trash2 className="w-3.5 h-3.5" aria-hidden />
@@ -250,9 +250,9 @@ export default function DobbyPage() {
         <>
           <div className="md:hidden fixed inset-0 z-40 bg-navy/30" onClick={() => setShowHistory(false)} />
           <aside className="md:hidden fixed inset-y-0 right-0 z-50 w-72 flex flex-col bg-white shadow-xl">
-            <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100">
+            <div className="flex items-center justify-between px-3 py-2 border-b border-navy-100">
               <span className="text-sm font-bold text-navy">Chats</span>
-              <button onClick={() => setShowHistory(false)} aria-label="Close history" className="text-slate-400 hover:text-navy">
+              <button onClick={() => setShowHistory(false)} aria-label="Close history" className="text-navy-400 hover:text-navy">
                 <X className="w-4 h-4" aria-hidden />
               </button>
             </div>
@@ -265,10 +265,10 @@ export default function DobbyPage() {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Mobile top bar */}
-        <div className="md:hidden flex items-center justify-between px-4 py-2 border-b border-slate-100">
+        <div className="md:hidden flex items-center justify-between px-4 py-2 border-b border-navy-100">
           <button
             onClick={() => setShowHistory(true)}
-            className="flex items-center gap-1.5 text-sm font-medium text-slate-600"
+            className="flex items-center gap-1.5 text-sm font-medium text-navy-600"
           >
             <MessageSquare className="w-4 h-4" aria-hidden /> Chats
           </button>
@@ -287,7 +287,7 @@ export default function DobbyPage() {
               <span className="text-3xl" role="img" aria-label="Dobby">🐾</span>
             </div>
             <h2 className="text-xl font-bold text-navy mb-2">Ask Dobby</h2>
-            <p className="text-sm text-slate-500 max-w-sm mb-8 leading-relaxed">
+            <p className="text-sm text-navy-500 max-w-sm mb-8 leading-relaxed">
               Ask me anything about UK residential lettings and how Dwelly works. Your chats are saved, so you can come back and pick up where you left off.
             </p>
             <div className="w-full max-w-lg grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -295,7 +295,7 @@ export default function DobbyPage() {
                 <button
                   key={q}
                   onClick={() => sendMessage(q)}
-                  className="text-left text-sm text-slate-600 bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-navy/30 hover:bg-navy/3 hover:text-navy transition-colors leading-snug"
+                  className="text-left text-sm text-navy-600 bg-white border border-navy-200 rounded-xl px-4 py-3 hover:border-navy/30 hover:bg-navy/3 hover:text-navy transition-colors leading-snug"
                 >
                   {q}
                 </button>
@@ -322,7 +322,7 @@ export default function DobbyPage() {
                     'max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap',
                     msg.role === 'user'
                       ? 'bg-navy text-white rounded-tr-sm'
-                      : 'bg-white border border-slate-100 text-slate-700 rounded-tl-sm shadow-sm',
+                      : 'bg-white border border-navy-100 text-navy-700 rounded-tl-sm shadow-sm',
                   )}
                 >
                   {msg.content}
@@ -336,11 +336,11 @@ export default function DobbyPage() {
                 <div className="w-7 h-7 rounded-lg bg-navy flex items-center justify-center flex-shrink-0 mr-2.5 mt-0.5 shadow-sm">
                   <span className="text-sm" role="img" aria-label="Dobby">🐾</span>
                 </div>
-                <div className="bg-white border border-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+                <div className="bg-white border border-navy-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
                   <div className="flex gap-1 items-center h-4">
-                    <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:0ms]" />
-                    <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:150ms]" />
-                    <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:300ms]" />
+                    <span className="w-1.5 h-1.5 bg-navy-300 rounded-full animate-bounce [animation-delay:0ms]" />
+                    <span className="w-1.5 h-1.5 bg-navy-300 rounded-full animate-bounce [animation-delay:150ms]" />
+                    <span className="w-1.5 h-1.5 bg-navy-300 rounded-full animate-bounce [animation-delay:300ms]" />
                   </div>
                 </div>
               </div>
@@ -361,7 +361,7 @@ export default function DobbyPage() {
 
         {/* Input bar */}
         <div className={cn('px-4 pb-4', isEmpty && 'pb-6 max-w-lg mx-auto w-full')}>
-          <div className="flex items-end gap-2 bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-sm focus-within:border-navy/30 focus-within:ring-2 focus-within:ring-navy/10 transition-all">
+          <div className="flex items-end gap-2 bg-white border border-navy-200 rounded-2xl px-4 py-3 shadow-sm focus-within:border-navy/30 focus-within:ring-2 focus-within:ring-navy/10 transition-all">
             <textarea
               ref={inputRef}
               value={input}
@@ -369,7 +369,7 @@ export default function DobbyPage() {
               onKeyDown={handleKeyDown}
               placeholder="Ask Dobby a question..."
               rows={1}
-              className="flex-1 resize-none bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none leading-relaxed max-h-32"
+              className="flex-1 resize-none bg-transparent text-sm text-navy-700 placeholder:text-navy-400 focus:outline-none leading-relaxed max-h-32"
               style={{ scrollbarWidth: 'none' }}
               disabled={loading}
             />
@@ -380,21 +380,21 @@ export default function DobbyPage() {
                 'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors',
                 input.trim() && !loading
                   ? 'bg-navy text-white hover:bg-navy/80'
-                  : 'bg-slate-100 text-slate-300 cursor-not-allowed',
+                  : 'bg-navy-100 text-navy-300 cursor-not-allowed',
               )}
               aria-label="Send message"
             >
               <Send className="w-3.5 h-3.5" aria-hidden />
             </button>
           </div>
-          <p className="text-center text-[10px] text-slate-400 mt-2">
+          <p className="text-center text-[10px] text-navy-400 mt-2">
             Dobby is an assistant and can make mistakes. Check anything important. Press Enter to send.
           </p>
         </div>
       </div>
 
       {/* History sidebar — desktop (right) */}
-      <aside className="hidden md:flex md:flex-col w-64 flex-shrink-0 border-l border-slate-200 bg-white">
+      <aside className="hidden md:flex md:flex-col w-64 flex-shrink-0 border-l border-navy-200 bg-white">
         {historyList}
       </aside>
     </div>

@@ -68,7 +68,7 @@ export default function ChangeRolePanel({
         <select
           value={selectedRole}
           onChange={e => { setSelectedRole(e.target.value as Role); setSaved(false) }}
-          className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+          className="flex-1 text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
         >
           <option value="property-manager">Property Manager</option>
           <option value="manager">Manager</option>
@@ -84,7 +84,7 @@ export default function ChangeRolePanel({
         </button>
       </div>
 
-      <p className="text-[11px] text-slate-400 mt-2">
+      <p className="text-[11px] text-navy-400 mt-2">
         {selectedRole === 'property-manager'
           ? 'Property Managers go through staged onboarding and can be assigned to a manager.'
           : `${ROLE_LABELS[selectedRole]}s skip onboarding and land straight on the full Hub.`}

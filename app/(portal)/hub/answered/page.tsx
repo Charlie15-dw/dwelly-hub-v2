@@ -26,7 +26,7 @@ export default async function AnsweredPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-navy transition">
+      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-navy-500 hover:text-navy transition">
         <ArrowLeft className="w-4 h-4" aria-hidden />
         Back to Hub
       </Link>
@@ -37,7 +37,7 @@ export default async function AnsweredPage() {
         </div>
         <div>
           <h1 className="text-xl font-bold text-navy">You said, we did</h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-navy-500 mt-0.5">
             Questions and ideas the team raised, with what we did about them.
           </p>
         </div>
@@ -45,7 +45,7 @@ export default async function AnsweredPage() {
 
       {items.length === 0 ? (
         <div className="card p-8 text-center">
-          <p className="text-sm text-slate-400">Nothing published yet. Answered questions will appear here.</p>
+          <p className="text-sm text-navy-400">Nothing published yet. Answered questions will appear here.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -57,22 +57,22 @@ export default async function AnsweredPage() {
               <div key={item.id} className="card p-5 space-y-3">
                 <div className="flex items-center gap-2">
                   {item.category && (
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-navy-100 text-navy-600 border border-navy-200">
                       {item.category}
                     </span>
                   )}
-                  {published && <span className="text-[11px] text-slate-400">{published}</span>}
+                  {published && <span className="text-[11px] text-navy-400">{published}</span>}
                 </div>
 
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">You said</p>
-                  <p className="text-sm text-slate-700 whitespace-pre-wrap">{item.body}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-navy-400 mb-1">You said</p>
+                  <p className="text-sm text-navy-700 whitespace-pre-wrap">{item.body}</p>
                 </div>
 
                 {item.admin_response && (
                   <div className="rounded-lg bg-teal/5 border border-teal/15 px-3 py-2.5">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-teal mb-1">We did</p>
-                    <p className="text-sm text-slate-700 whitespace-pre-wrap">{item.admin_response}</p>
+                    <p className="text-sm text-navy-700 whitespace-pre-wrap">{item.admin_response}</p>
                   </div>
                 )}
               </div>

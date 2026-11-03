@@ -16,12 +16,12 @@ interface BadgeProps {
 // Structural variants stay inline; the colour-carrying ones defer to the
 // shared globals.css classes so status colour is defined exactly once.
 const variantMap: Record<string, string> = {
-  default:  'bg-slate-100 text-slate-600 border-slate-200',
+  default:  'bg-navy-100 text-navy-600 border-navy-200',
   teal:     'bg-teal/10 text-teal border-teal/20',
   orange:   'bg-orange/10 text-orange border-orange/20',
   gold:     'bg-gold/20 text-yellow-700 border-gold/30',
   navy:     'bg-navy/10 text-navy border-navy/20',
-  outline:  'bg-transparent text-slate-600 border-slate-200',
+  outline:  'bg-transparent text-navy-600 border-navy-200',
   red:      'rag-red',
   amber:    'rag-amber',
   green:    'rag-green',

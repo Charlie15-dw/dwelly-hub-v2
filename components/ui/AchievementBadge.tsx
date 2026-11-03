@@ -27,8 +27,8 @@ export default function AchievementBadge({
         'group relative rounded-2xl border text-center overflow-hidden transition-all duration-200',
         isSm ? 'p-3' : 'p-4',
         earned
-          ? 'bg-white border-slate-200 shadow-sm hover:-translate-y-1 hover:shadow-lg'
-          : 'bg-slate-50 border-slate-100',
+          ? 'bg-white border-navy-200 shadow-sm hover:-translate-y-1 hover:shadow-lg'
+          : 'bg-navy-50 border-navy-100',
       )}
     >
       {/* Gold sheen strip + glow — earned only */}
@@ -79,8 +79,8 @@ export default function AchievementBadge({
             </div>
           </>
         ) : (
-          <div className="absolute inset-0 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">
-            <Lock className={cn('text-slate-300', isSm ? 'w-4 h-4' : 'w-5 h-5')} aria-hidden />
+          <div className="absolute inset-0 rounded-full bg-navy-100 border border-navy-200 flex items-center justify-center">
+            <Lock className={cn('text-navy-300', isSm ? 'w-4 h-4' : 'w-5 h-5')} aria-hidden />
           </div>
         )}
       </div>
@@ -88,7 +88,7 @@ export default function AchievementBadge({
       {/* Title */}
       <p className={cn(
         'font-semibold mt-2.5 leading-tight',
-        earned ? 'text-navy' : 'text-slate-400',
+        earned ? 'text-navy' : 'text-navy-400',
         isSm ? 'text-[11px]' : 'text-xs',
       )}>
         {achievement.title}
@@ -105,7 +105,7 @@ export default function AchievementBadge({
             : 'UNLOCKED'}
         </p>
       ) : (
-        <p className="text-[10px] text-slate-300 mt-1">Locked</p>
+        <p className="text-[10px] text-navy-300 mt-1">Locked</p>
       )}
     </div>
   )

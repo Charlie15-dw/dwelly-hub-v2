@@ -135,18 +135,18 @@ function ClassicAssessments() {
 
   if (!ready) return (
     <div className="space-y-8 max-w-5xl animate-pulse">
-      <div className="h-8 bg-slate-100 rounded-full w-48" />
+      <div className="h-8 bg-navy-100 rounded-full w-48" />
       <div className="card divide-y divide-[#F2F2F3]">
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-slate-100" />
+              <div className="w-8 h-8 rounded-full bg-navy-100" />
               <div className="space-y-1.5">
-                <div className="h-3 bg-slate-100 rounded w-48" />
-                <div className="h-2.5 bg-slate-100 rounded w-32" />
+                <div className="h-3 bg-navy-100 rounded w-48" />
+                <div className="h-2.5 bg-navy-100 rounded w-32" />
               </div>
             </div>
-            <div className="h-5 bg-slate-100 rounded-full w-16" />
+            <div className="h-5 bg-navy-100 rounded-full w-16" />
           </div>
         ))}
       </div>
@@ -174,12 +174,12 @@ function ClassicAssessments() {
         </div>
         <div className="flex items-center gap-2">
           {blocked ? (
-            <span className="flex items-center gap-1 text-[10px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
+            <span className="flex items-center gap-1 text-[10px] font-semibold text-navy-500 bg-navy-100 border border-navy-200 px-2 py-0.5 rounded-full">
               <Lock className="w-3 h-3" aria-hidden />
               Different track
             </span>
           ) : locked ? (
-            <span className="flex items-center gap-1 text-[10px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
+            <span className="flex items-center gap-1 text-[10px] font-semibold text-navy-500 bg-navy-100 border border-navy-200 px-2 py-0.5 rounded-full">
               <Lock className="w-3 h-3" aria-hidden />
               Locked
             </span>

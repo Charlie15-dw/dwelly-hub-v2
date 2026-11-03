@@ -104,7 +104,7 @@ function ScoreCell({ attempt }: { attempt: Crm2Attempt | undefined }) {
   if (!attempt) {
     return (
       <td className="px-2 py-2 text-center">
-        <span className="inline-block w-8 text-sm text-slate-300 tabular-nums" aria-label="Not taken">–</span>
+        <span className="inline-block w-8 text-sm text-navy-300 tabular-nums" aria-label="Not taken">–</span>
       </td>
     )
   }
@@ -133,7 +133,7 @@ function formatDate(iso: string | null) {
 // The question-by-question breakdown for a single attempt.
 function AnswerList({ answers }: { answers: AnswerEntry[] }) {
   if (answers.length === 0) {
-    return <p className="px-4 py-4 text-xs text-slate-400">No answer detail available for this attempt.</p>
+    return <p className="px-4 py-4 text-xs text-navy-400">No answer detail available for this attempt.</p>
   }
   return (
     <div className="p-4 space-y-3">
@@ -155,21 +155,21 @@ function AnswerList({ answers }: { answers: AnswerEntry[] }) {
               <p className="text-sm font-semibold text-navy leading-snug">{ans.question}</p>
               <div className="mt-2 space-y-1.5">
                 <div className="flex items-start gap-2">
-                  <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Their answer</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wide text-navy-400 w-20 flex-shrink-0 mt-0.5">Their answer</span>
                   <span className={cn('text-xs leading-relaxed font-medium', ans.isCorrect ? 'text-teal' : 'text-red-600')}>
                     {ans.yourAnswer}
                   </span>
                 </div>
                 {!ans.isCorrect && (
                   <div className="flex items-start gap-2">
-                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Correct</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-navy-400 w-20 flex-shrink-0 mt-0.5">Correct</span>
                     <span className="text-xs text-teal font-medium leading-relaxed">{ans.correctAnswer}</span>
                   </div>
                 )}
                 {ans.rationale && (
-                  <div className="flex items-start gap-2 mt-1 pt-2 border-t border-slate-100">
-                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 w-20 flex-shrink-0 mt-0.5">Rationale</span>
-                    <span className="text-xs text-slate-500 leading-relaxed">{ans.rationale}</span>
+                  <div className="flex items-start gap-2 mt-1 pt-2 border-t border-navy-100">
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-navy-400 w-20 flex-shrink-0 mt-0.5">Rationale</span>
+                    <span className="text-xs text-navy-500 leading-relaxed">{ans.rationale}</span>
                   </div>
                 )}
               </div>
@@ -195,12 +195,12 @@ function AssessmentDetail({
 }) {
   const latest = attempts[0]
   return (
-    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-      <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between gap-3 flex-wrap">
+    <div className="rounded-xl border border-navy-200 bg-white overflow-hidden">
+      <div className="px-4 py-3 border-b border-navy-100 flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2 min-w-0">
           <p className="text-sm font-bold text-navy truncate">{assessment.title}</p>
           <ScoreBadge passed={latest.passed} score={latest.score} />
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-navy-400">
             {attempts.length} attempt{attempts.length !== 1 ? 's' : ''}
           </span>
         </div>
@@ -217,13 +217,13 @@ function AssessmentDetail({
       {attempts.map((attempt, idx) => {
         const date = formatDate(attempt.completedAt)
         return (
-          <div key={idx} className={cn('border-b border-slate-50 last:border-b-0', idx > 0 && 'bg-slate-50/50')}>
+          <div key={idx} className={cn('border-b border-navy-50 last:border-b-0', idx > 0 && 'bg-navy-50/50')}>
             <div className="px-4 py-2.5 flex items-center gap-2 text-xs">
-              <span className="font-semibold text-slate-500">
+              <span className="font-semibold text-navy-500">
                 {attempts.length > 1 ? `Attempt ${attempts.length - idx}${idx === 0 ? ' · latest' : ''}` : 'Attempt'}
               </span>
               <ScoreBadge passed={attempt.passed} score={attempt.score} />
-              {date && <span className="text-slate-400">{date}</span>}
+              {date && <span className="text-navy-400">{date}</span>}
             </div>
             <AnswerList answers={attempt.answers} />
           </div>
@@ -280,14 +280,14 @@ function Scoreboard({
 
   return (
     <div className="card overflow-hidden">
-      <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2 flex-wrap">
+      <div className="px-5 py-4 border-b border-navy-100 flex items-center gap-2 flex-wrap">
         <div>
           <h2 className="text-sm font-bold text-navy">{title}</h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-navy-400 mt-0.5">
             Latest score per person, per assessment. Click a name to open their full breakdown.
           </p>
         </div>
-        <div className="ml-auto flex items-center gap-3 text-[11px] font-medium text-slate-500">
+        <div className="ml-auto flex items-center gap-3 text-[11px] font-medium text-navy-500">
           <span className="inline-flex items-center gap-1.5">
             <span className="inline-block w-3 h-3 rounded bg-teal/10 border border-teal/20" aria-hidden />
             Passed
@@ -297,14 +297,14 @@ function Scoreboard({
             Failed
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="inline-block w-3 h-3 rounded bg-slate-50 border border-slate-200" aria-hidden />
+            <span className="inline-block w-3 h-3 rounded bg-navy-50 border border-navy-200" aria-hidden />
             Not taken
           </span>
         </div>
       </div>
 
       {people.length === 0 ? (
-        <p className="px-5 py-8 text-center text-xs text-slate-400">
+        <p className="px-5 py-8 text-center text-xs text-navy-400">
           Nobody has sat a {title.toLowerCase()} knowledge check yet.
         </p>
       ) : (
@@ -312,27 +312,27 @@ function Scoreboard({
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-sm">
               <thead>
-                <tr className="border-b border-slate-100">
-                  <th className="sticky left-0 z-10 bg-white px-5 py-2.5 text-left text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                <tr className="border-b border-navy-100">
+                  <th className="sticky left-0 z-10 bg-white px-5 py-2.5 text-left text-[11px] font-bold uppercase tracking-wide text-navy-400">
                     Person
                   </th>
                   {perAssessment.map((a, i) => (
                     <th
                       key={a.id}
                       title={a.title}
-                      className="px-2 py-2.5 text-center text-xs font-bold text-slate-500 tabular-nums"
+                      className="px-2 py-2.5 text-center text-xs font-bold text-navy-500 tabular-nums"
                     >
                       {i + 1}
                     </th>
                   ))}
-                  <th className="px-4 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">
+                  <th className="px-4 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-navy-400 whitespace-nowrap">
                     Passed
                   </th>
                   <th className="w-8 px-2 py-2.5" aria-hidden />
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y divide-navy-50">
                 {people.map((person) => {
                   const attempted = attemptedFor(person)
                   const passedCount = attempted.filter((x) => x.latest.passed).length
@@ -342,10 +342,10 @@ function Scoreboard({
                     <Fragment key={person.id}>
                       <tr
                         onClick={() => setExpandedPerson(isOpen ? null : person.id)}
-                        className={cn('cursor-pointer transition-colors', isOpen ? 'bg-slate-50' : 'hover:bg-slate-50/70')}
+                        className={cn('cursor-pointer transition-colors', isOpen ? 'bg-navy-50' : 'hover:bg-navy-50/70')}
                         aria-expanded={isOpen}
                       >
-                        <td className={cn('sticky left-0 z-10 px-5 py-2.5', isOpen ? 'bg-slate-50' : 'bg-white')}>
+                        <td className={cn('sticky left-0 z-10 px-5 py-2.5', isOpen ? 'bg-navy-50' : 'bg-white')}>
                           <div className="flex items-center gap-2.5">
                             <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
                               <span className="text-white text-[10px] font-bold">{person.initials}</span>
@@ -361,22 +361,22 @@ function Scoreboard({
                         {perAssessment.map((a) => (
                           <ScoreCell key={a.id} attempt={person.attempts[a.id]?.[0]} />
                         ))}
-                        <td className="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 tabular-nums whitespace-nowrap">
+                        <td className="px-4 py-2.5 text-right text-xs font-semibold text-navy-500 tabular-nums whitespace-nowrap">
                           {passedCount}/{attempted.length}
                         </td>
                         <td className="px-2 py-2.5 text-center">
                           {isOpen
-                            ? <ChevronDown className="w-4 h-4 text-slate-400 inline" aria-hidden />
-                            : <ChevronRight className="w-4 h-4 text-slate-400 inline" aria-hidden />}
+                            ? <ChevronDown className="w-4 h-4 text-navy-400 inline" aria-hidden />
+                            : <ChevronRight className="w-4 h-4 text-navy-400 inline" aria-hidden />}
                         </td>
                       </tr>
 
                       {isOpen && (
                         <tr>
-                          <td colSpan={perAssessment.length + 3} className="px-5 py-4 bg-slate-50/60">
+                          <td colSpan={perAssessment.length + 3} className="px-5 py-4 bg-navy-50/60">
                             <div className="space-y-3">
                               {attempted.length === 0 ? (
-                                <p className="text-xs text-slate-400">No assessments attempted yet.</p>
+                                <p className="text-xs text-navy-400">No assessments attempted yet.</p>
                               ) : (
                                 attempted.map(({ assessment, attempts }) => (
                                   <AssessmentDetail
@@ -398,8 +398,8 @@ function Scoreboard({
 
               {/* Pass rate per column */}
               <tfoot>
-                <tr className="border-t-2 border-slate-100 bg-slate-50/40">
-                  <td className="sticky left-0 z-10 bg-slate-50/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                <tr className="border-t-2 border-navy-100 bg-navy-50/40">
+                  <td className="sticky left-0 z-10 bg-navy-50/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-navy-400">
                     Pass rate
                   </td>
                   {perAssessment.map((a) => {
@@ -426,12 +426,12 @@ function Scoreboard({
           </div>
 
           {/* Legend: column number → assessment title */}
-          <div className="px-5 py-4 border-t border-slate-100">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-2">Assessments</p>
+          <div className="px-5 py-4 border-t border-navy-100">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-navy-400 mb-2">Assessments</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1.5">
               {perAssessment.map((a, i) => (
                 <div key={a.id} className="flex items-baseline gap-2 text-xs">
-                  <span className="font-bold text-slate-400 tabular-nums w-4 flex-shrink-0">{i + 1}</span>
+                  <span className="font-bold text-navy-400 tabular-nums w-4 flex-shrink-0">{i + 1}</span>
                   <span className="text-navy font-medium truncate">{a.title}</span>
                 </div>
               ))}
@@ -459,18 +459,18 @@ function TrackUsage({
   const maxReads = Math.max(1, ...guides.map((g) => g.reads))
   return (
     <div className="card overflow-hidden">
-      <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2.5">
+      <div className="px-5 py-4 border-b border-navy-100 flex items-center gap-2.5">
         <Icon className="w-4 h-4 text-orange" aria-hidden />
         <h3 className="text-sm font-bold text-navy">{label}</h3>
-        <span className="ml-auto text-xs text-slate-400 tabular-nums">
+        <span className="ml-auto text-xs text-navy-400 tabular-nums">
           {totalReads} {totalReads === 1 ? 'read' : 'reads'} · {guides.length} guides
         </span>
       </div>
-      <div className="divide-y divide-slate-50">
+      <div className="divide-y divide-navy-50">
         {guides.map((g) => (
           <div key={g.slug} className="px-5 py-2.5 flex items-center gap-3">
             <p className="text-xs font-medium text-navy truncate flex-1 min-w-0" title={g.title}>{g.title}</p>
-            <div className="w-24 h-1.5 rounded-full bg-slate-100 overflow-hidden flex-shrink-0" aria-hidden>
+            <div className="w-24 h-1.5 rounded-full bg-navy-100 overflow-hidden flex-shrink-0" aria-hidden>
               <div className="h-full rounded-full bg-orange" style={{ width: `${(g.reads / maxReads) * 100}%` }} />
             </div>
             <span className="text-xs font-bold text-navy tabular-nums w-6 text-right flex-shrink-0">{g.reads}</span>
@@ -490,8 +490,8 @@ function UsagePanel({ usage }: { usage: Crm2Usage }) {
   if (usage.peopleEngaged === 0) {
     return (
       <div className="card p-10 text-center">
-        <p className="text-sm font-semibold text-slate-500">No reading activity yet</p>
-        <p className="text-xs text-slate-400 mt-1">
+        <p className="text-sm font-semibold text-navy-500">No reading activity yet</p>
+        <p className="text-xs text-navy-400 mt-1">
           Once someone opens a CRM 2.0 guide and marks it read, their progress will show here.
         </p>
       </div>
@@ -512,8 +512,8 @@ function UsagePanel({ usage }: { usage: Crm2Usage }) {
         ].map(({ label, value, sub }) => (
           <div key={label} className="card p-5">
             <p className="text-3xl font-black tabular-nums text-navy">{value}</p>
-            <p className="text-xs font-semibold text-slate-600 mt-0.5">{label}</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">{sub}</p>
+            <p className="text-xs font-semibold text-navy-600 mt-0.5">{label}</p>
+            <p className="text-[11px] text-navy-400 mt-0.5">{sub}</p>
           </div>
         ))}
       </div>
@@ -526,23 +526,23 @@ function UsagePanel({ usage }: { usage: Crm2Usage }) {
 
       {/* Per-person progress across both tracks */}
       <div className="card overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-100">
+        <div className="px-5 py-4 border-b border-navy-100">
           <h2 className="text-sm font-bold text-navy">Who&rsquo;s reading</h2>
-          <p className="text-xs text-slate-400 mt-0.5">Guides marked read per person, per track.</p>
+          <p className="text-xs text-navy-400 mt-0.5">Guides marked read per person, per track.</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="border-b border-slate-100">
-                <th className="px-5 py-2.5 text-left text-[11px] font-bold uppercase tracking-wide text-slate-400">Person</th>
-                <th className="px-4 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">Compliance</th>
-                <th className="px-4 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">Maintenance</th>
-                <th className="px-5 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">Total</th>
+              <tr className="border-b border-navy-100">
+                <th className="px-5 py-2.5 text-left text-[11px] font-bold uppercase tracking-wide text-navy-400">Person</th>
+                <th className="px-4 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-navy-400 whitespace-nowrap">Compliance</th>
+                <th className="px-4 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-navy-400 whitespace-nowrap">Maintenance</th>
+                <th className="px-5 py-2.5 text-right text-[11px] font-bold uppercase tracking-wide text-navy-400 whitespace-nowrap">Total</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-navy-50">
               {usage.people.map((p) => (
-                <tr key={p.id} className="hover:bg-slate-50/70">
+                <tr key={p.id} className="hover:bg-navy-50/70">
                   <td className="px-5 py-2.5">
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
@@ -551,10 +551,10 @@ function UsagePanel({ usage }: { usage: Crm2Usage }) {
                       <p className="text-sm font-semibold text-navy truncate">{p.displayName}</p>
                     </div>
                   </td>
-                  <td className="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 tabular-nums whitespace-nowrap">
+                  <td className="px-4 py-2.5 text-right text-xs font-semibold text-navy-500 tabular-nums whitespace-nowrap">
                     {p.complianceRead}/{usage.complianceGuideCount}
                   </td>
-                  <td className="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 tabular-nums whitespace-nowrap">
+                  <td className="px-4 py-2.5 text-right text-xs font-semibold text-navy-500 tabular-nums whitespace-nowrap">
                     {p.maintenanceRead}/{usage.maintenanceGuideCount}
                   </td>
                   <td className="px-5 py-2.5 text-right text-xs font-bold text-navy tabular-nums whitespace-nowrap">
@@ -627,15 +627,15 @@ export default function Crm2AdminOverview({ assessments, people, usage }: Props)
         ].map(({ label, value, sub, accent }) => (
           <div key={label} className="card p-5">
             <p className={cn('text-3xl font-black tabular-nums', accent ?? 'text-navy')}>{value}</p>
-            <p className="text-xs font-semibold text-slate-600 mt-0.5">{label}</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">{sub}</p>
+            <p className="text-xs font-semibold text-navy-600 mt-0.5">{label}</p>
+            <p className="text-[11px] text-navy-400 mt-0.5">{sub}</p>
           </div>
         ))}
       </div>
       )}
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl w-fit">
+      <div className="flex items-center gap-1 p-1 bg-navy-100 rounded-xl w-fit">
         {([
           { key: 'usage' as const, label: 'Usage', icon: BookOpen },
           { key: 'results' as const, label: 'Results', icon: LayoutGrid },
@@ -647,7 +647,7 @@ export default function Crm2AdminOverview({ assessments, people, usage }: Props)
             onClick={() => setTab(key)}
             className={cn(
               'flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors',
-              tab === key ? 'bg-white text-navy shadow-sm' : 'text-slate-500 hover:text-navy',
+              tab === key ? 'bg-white text-navy shadow-sm' : 'text-navy-500 hover:text-navy',
             )}
             aria-current={tab === key}
           >
@@ -656,7 +656,7 @@ export default function Crm2AdminOverview({ assessments, people, usage }: Props)
             {typeof count === 'number' && count > 0 && (
               <span className={cn(
                 'text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded-full',
-                tab === key ? 'bg-red-100 text-red-600' : 'bg-slate-200 text-slate-500',
+                tab === key ? 'bg-red-100 text-red-600' : 'bg-navy-200 text-navy-500',
               )}>
                 {count}
               </span>
@@ -673,8 +673,8 @@ export default function Crm2AdminOverview({ assessments, people, usage }: Props)
       {/* ── Results ──────────────────────────────────────────────────────── */}
       {tab === 'results' && people.length === 0 && (
         <div className="card p-10 text-center">
-          <p className="text-sm font-semibold text-slate-500">No assessments completed yet</p>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-sm font-semibold text-navy-500">No assessments completed yet</p>
+          <p className="text-xs text-navy-400 mt-1">
             Once someone in the CRM 2.0 group sits a knowledge check, their results will appear here.
           </p>
         </div>
@@ -710,13 +710,13 @@ export default function Crm2AdminOverview({ assessments, people, usage }: Props)
               <div className="w-11 h-11 rounded-full bg-teal/10 text-teal flex items-center justify-center mx-auto mb-3">
                 <CheckCircle2 className="w-5 h-5" aria-hidden />
               </div>
-              <p className="text-sm font-semibold text-slate-500">Nobody needs a retake</p>
-              <p className="text-xs text-slate-400 mt-1">Everyone who has sat a CRM 2.0 assessment has passed it.</p>
+              <p className="text-sm font-semibold text-navy-500">Nobody needs a retake</p>
+              <p className="text-xs text-navy-400 mt-1">Everyone who has sat a CRM 2.0 assessment has passed it.</p>
             </div>
           ) : (
             reassignQueue.map(({ person, fails }) => (
               <div key={person.id} className="card overflow-hidden">
-                <div className="px-5 py-3.5 border-b border-slate-100 flex items-center gap-3">
+                <div className="px-5 py-3.5 border-b border-navy-100 flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
                     <span className="text-white text-xs font-bold">{person.initials}</span>
                   </div>

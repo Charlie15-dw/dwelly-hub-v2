@@ -36,7 +36,7 @@ export default async function RequestTrainingPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-navy transition">
+      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-navy-500 hover:text-navy transition">
         <ArrowLeft className="w-4 h-4" aria-hidden />
         Back to Hub
       </Link>
@@ -47,7 +47,7 @@ export default async function RequestTrainingPage() {
         </div>
         <div>
           <h1 className="text-xl font-bold text-navy">Request training</h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-navy-500 mt-0.5">
             Ask for further training for an existing team member, or set up training for a new starter.
             Requests go straight to the Dwelly team.
           </p>

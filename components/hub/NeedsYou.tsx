@@ -25,12 +25,12 @@ export default function NeedsYou({ items }: { items: NeedsYouItem[] }) {
     <section id="needs-you" className="card overflow-hidden scroll-mt-6">
       <div className="px-6 py-[18px] flex items-center justify-between">
         <h3 className="text-[17px] font-semibold text-navy">Needs you</h3>
-        <span className="text-sm text-slate-400">Clears as you go</span>
+        <span className="text-sm text-navy-400">Clears as you go</span>
       </div>
 
       {shown.length === 0 ? (
-        <div className="border-t border-slate-100 py-8 text-center">
-          <p className="text-sm text-slate-500">Nothing needs you today.</p>
+        <div className="border-t border-navy-100 py-8 text-center">
+          <p className="text-sm text-navy-500">Nothing needs you today.</p>
         </div>
       ) : (
         <>
@@ -38,12 +38,12 @@ export default function NeedsYou({ items }: { items: NeedsYouItem[] }) {
             <Link
               key={item.id}
               href={item.href}
-              className="group flex items-center gap-[18px] px-6 py-[18px] border-t border-slate-100 hover:bg-slate-50 transition-colors"
+              className="group flex items-center gap-[18px] px-6 py-[18px] border-t border-navy-100 hover:bg-navy-50 transition-colors"
             >
               <span className={`w-2 h-2 rounded-full flex-shrink-0 ${DOT[item.stage]}`} aria-hidden />
               <div className="min-w-0 flex-1">
                 <p className="text-[15.5px] font-semibold text-navy truncate">{item.title}</p>
-                <p className="text-[13px] text-slate-500 mt-0.5 truncate">{item.meta}</p>
+                <p className="text-[13px] text-navy-500 mt-0.5 truncate">{item.meta}</p>
               </div>
               <span className={(i === 0 ? 'btn-primary' : 'btn-outline') + ' text-[13px] flex-shrink-0'}>
                 {item.cta}
@@ -54,7 +54,7 @@ export default function NeedsYou({ items }: { items: NeedsYouItem[] }) {
           {extra > 0 && (
             <Link
               href="/recap"
-              className="block border-t border-slate-100 px-6 py-[14px] text-[13px] font-semibold text-orange hover:bg-slate-50 transition-colors"
+              className="block border-t border-navy-100 px-6 py-[14px] text-[13px] font-semibold text-orange hover:bg-navy-50 transition-colors"
             >
               See all {items.length}
             </Link>

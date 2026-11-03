@@ -129,16 +129,16 @@ export default function SearchBar() {
   return (
     <div ref={containerRef} className="relative hidden md:block w-56">
       <div className={cn(
-        'flex items-center gap-2 bg-slate-50 border rounded-lg px-3 py-2 transition-colors',
-        open ? 'border-teal/40 bg-white ring-2 ring-teal/10' : 'border-slate-200',
+        'flex items-center gap-2 bg-navy-50 border rounded-lg px-3 py-2 transition-colors',
+        open ? 'border-teal/40 bg-white ring-2 ring-teal/10' : 'border-navy-200',
       )}>
-        <Search className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" aria-hidden />
+        <Search className="w-3.5 h-3.5 text-navy-400 flex-shrink-0" aria-hidden />
         <input
           ref={inputRef}
           type="search"
           value={query}
           placeholder="Search portal…"
-          className="bg-transparent text-sm text-slate-700 placeholder:text-slate-400 outline-none w-full"
+          className="bg-transparent text-sm text-navy-700 placeholder:text-navy-400 outline-none w-full"
           aria-label="Search portal"
           aria-expanded={open}
           aria-autocomplete="list"
@@ -149,7 +149,7 @@ export default function SearchBar() {
         {query && (
           <button
             onClick={() => { setQuery(''); setOpen(false); inputRef.current?.focus() }}
-            className="text-slate-400 hover:text-slate-600"
+            className="text-navy-400 hover:text-navy-600"
             aria-label="Clear search"
           >
             <X className="w-3 h-3" />
@@ -158,7 +158,7 @@ export default function SearchBar() {
       </div>
 
       {open && results.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-navy-200 rounded-xl shadow-lg overflow-hidden z-50">
           <ul role="listbox">
             {results.map((item, i) => {
               const Icon = TYPE_ICON[item.type]
@@ -169,7 +169,7 @@ export default function SearchBar() {
                     onClick={() => navigate(item)}
                     className={cn(
                       'w-full flex items-start gap-3 px-3 py-2.5 text-left transition-colors',
-                      i === activeIndex ? 'bg-slate-50' : 'hover:bg-slate-50',
+                      i === activeIndex ? 'bg-navy-50' : 'hover:bg-navy-50',
                     )}
                   >
                     <div className={cn('mt-0.5 w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0', TYPE_COLOUR[item.type])}>
@@ -177,7 +177,7 @@ export default function SearchBar() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-navy truncate">{item.label}</p>
-                      <p className="text-[11px] text-slate-400 truncate">{TYPE_LABEL[item.type]} · {item.sublabel}</p>
+                      <p className="text-[11px] text-navy-400 truncate">{TYPE_LABEL[item.type]} · {item.sublabel}</p>
                     </div>
                   </button>
                 </li>
@@ -188,8 +188,8 @@ export default function SearchBar() {
       )}
 
       {open && trimmed.length >= 2 && results.length === 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-lg px-4 py-3 z-50">
-          <p className="text-sm text-slate-500">No results for <span className="font-medium text-navy">"{query}"</span></p>
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-navy-200 rounded-xl shadow-lg px-4 py-3 z-50">
+          <p className="text-sm text-navy-500">No results for <span className="font-medium text-navy">"{query}"</span></p>
         </div>
       )}
     </div>

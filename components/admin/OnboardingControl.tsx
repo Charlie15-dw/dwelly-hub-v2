@@ -56,7 +56,7 @@ export default function OnboardingControl({
             <GraduationCap className="w-4 h-4 text-navy" aria-hidden />
             <h2 className="text-sm font-bold text-navy">Onboarding</h2>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-navy-500 mt-1">
             {graduated
               ? bypass
                 ? 'Skipped by an admin — has full Hub access.'

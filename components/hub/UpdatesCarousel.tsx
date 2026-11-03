@@ -20,11 +20,11 @@ function UpdateContent({ update }: { update: HubUpdate }) {
   return (
     <article className="space-y-5">
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-indigo-700">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-orange-700">
           {formatDate(update.date)}
         </p>
         <h2 className="text-lg font-bold text-navy mt-1">{update.title}</h2>
-        {update.intro && <p className="text-sm text-slate-600 mt-2">{update.intro}</p>}
+        {update.intro && <p className="text-sm text-navy-600 mt-2">{update.intro}</p>}
       </div>
 
       {update.notes && update.notes.length > 0 && (
@@ -41,19 +41,19 @@ function UpdateContent({ update }: { update: HubUpdate }) {
         {update.sections.map(section => (
           <div key={section.heading}>
             <h3 className="text-sm font-semibold text-navy">{section.heading}</h3>
-            {section.intro && <p className="text-sm text-slate-500 mt-1">{section.intro}</p>}
+            {section.intro && <p className="text-sm text-navy-500 mt-1">{section.intro}</p>}
             <ul className="mt-1.5 space-y-1.5">
               {section.items.map((item, i) => (
-                <li key={i} className="text-sm text-slate-600">
+                <li key={i} className="text-sm text-navy-600">
                   <div className="flex gap-2">
-                    <span className="mt-1.5 w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0" aria-hidden />
+                    <span className="mt-1.5 w-1 h-1 rounded-full bg-orange-400 flex-shrink-0" aria-hidden />
                     <span>{item.text}</span>
                   </div>
                   {item.children && item.children.length > 0 && (
                     <ul className="mt-1.5 ml-5 space-y-1">
                       {item.children.map((child, j) => (
-                        <li key={j} className="flex gap-2 text-slate-500">
-                          <span className="mt-1.5 w-1 h-1 rounded-full bg-slate-300 flex-shrink-0" aria-hidden />
+                        <li key={j} className="flex gap-2 text-navy-500">
+                          <span className="mt-1.5 w-1 h-1 rounded-full bg-navy-300 flex-shrink-0" aria-hidden />
                           <span>{child}</span>
                         </li>
                       ))}
@@ -68,7 +68,7 @@ function UpdateContent({ update }: { update: HubUpdate }) {
                 <img
                   src={section.image.src}
                   alt={section.image.alt}
-                  className="w-full rounded-lg border border-slate-200"
+                  className="w-full rounded-lg border border-navy-200"
                 />
               </figure>
             )}
@@ -84,7 +84,7 @@ function UpdateContent({ update }: { update: HubUpdate }) {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition"
+              className="inline-flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-medium text-orange-700 hover:bg-orange-100 transition"
             >
               <ExternalLink className="w-4 h-4 flex-shrink-0" aria-hidden />
               <span>{link.label}</span>
@@ -101,9 +101,9 @@ function UpdateContent({ update }: { update: HubUpdate }) {
                 src={video.src}
                 controls
                 preload="metadata"
-                className="w-full rounded-lg border border-slate-200 bg-black"
+                className="w-full rounded-lg border border-navy-200 bg-black"
               />
-              {video.label && <figcaption className="text-xs text-slate-400">{video.label}</figcaption>}
+              {video.label && <figcaption className="text-xs text-navy-400">{video.label}</figcaption>}
             </figure>
           ))}
         </div>
@@ -139,7 +139,7 @@ export default function UpdatesCarousel({ updates }: { updates: HubUpdate[] }) {
   if (count === 0) {
     return (
       <div className="card p-8 text-center">
-        <p className="text-sm text-slate-400">No updates yet. New releases will appear here.</p>
+        <p className="text-sm text-navy-400">No updates yet. New releases will appear here.</p>
       </div>
     )
   }
@@ -157,14 +157,14 @@ export default function UpdatesCarousel({ updates }: { updates: HubUpdate[] }) {
             type="button"
             onClick={() => go(active - 1)}
             disabled={atStart}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-700 hover:bg-orange-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             <ChevronLeft className="w-4 h-4" aria-hidden />
             Newer
           </button>
 
           <div className="flex flex-col items-center gap-1.5">
-            <span className="text-xs font-medium text-slate-500">Update {active + 1} of {count}</span>
+            <span className="text-xs font-medium text-navy-500">Update {active + 1} of {count}</span>
             <div className="flex gap-1.5">
               {updates.map((u, i) => (
                 <button
@@ -173,7 +173,7 @@ export default function UpdatesCarousel({ updates }: { updates: HubUpdate[] }) {
                   onClick={() => go(i)}
                   aria-label={`Go to update ${i + 1}`}
                   aria-current={i === active}
-                  className={`w-2 h-2 rounded-full transition ${i === active ? 'bg-indigo-600' : 'bg-slate-300 hover:bg-slate-400'}`}
+                  className={`w-2 h-2 rounded-full transition ${i === active ? 'bg-orange-600' : 'bg-navy-300 hover:bg-navy-400'}`}
                 />
               ))}
             </div>
@@ -183,7 +183,7 @@ export default function UpdatesCarousel({ updates }: { updates: HubUpdate[] }) {
             type="button"
             onClick={() => go(active + 1)}
             disabled={atEnd}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-700 hover:bg-orange-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             Older
             <ChevronRight className="w-4 h-4" aria-hidden />
@@ -196,8 +196,8 @@ export default function UpdatesCarousel({ updates }: { updates: HubUpdate[] }) {
       </div>
 
       {/* Quick links */}
-      <div className="border-t border-slate-100 pt-5">
-        <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-2.5">Jump to an update</p>
+      <div className="border-t border-navy-100 pt-5">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-navy-400 mb-2.5">Jump to an update</p>
         <ul className="space-y-1.5">
           {updates.map((u, i) => (
             <li key={u.id}>
@@ -206,12 +206,12 @@ export default function UpdatesCarousel({ updates }: { updates: HubUpdate[] }) {
                 onClick={() => jumpTo(i)}
                 className={`w-full text-left flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm transition border ${
                   i === active
-                    ? 'bg-indigo-50 border-indigo-200 text-navy font-medium'
-                    : 'border-transparent text-slate-600 hover:bg-slate-50'
+                    ? 'bg-orange-50 border-orange-200 text-navy font-medium'
+                    : 'border-transparent text-navy-600 hover:bg-navy-50'
                 }`}
               >
                 <span>{u.title}</span>
-                <span className="text-xs text-slate-400 flex-shrink-0">{formatDateShort(u.date)}</span>
+                <span className="text-xs text-navy-400 flex-shrink-0">{formatDateShort(u.date)}</span>
               </button>
             </li>
           ))}

@@ -104,7 +104,7 @@ export default function AdminDashboard({
           </div>
           <div>
             <h1 className="text-xl font-bold text-navy">Organisation Overview</h1>
-            <p className="text-sm text-slate-500 mt-0.5">All teams · Training Programme</p>
+            <p className="text-sm text-navy-500 mt-0.5">All teams · Training Programme</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ export default function AdminDashboard({
 
       {/* Segmented section nav — jump instead of scroll */}
       <div className="sticky top-0 z-10 -mx-4 px-4 py-2 bg-white/80 backdrop-blur-sm">
-        <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl w-full overflow-x-auto sm:w-fit">
+        <div className="flex items-center gap-1 p-1 bg-navy-100 rounded-xl w-full overflow-x-auto sm:w-fit">
           {tabs.map(({ key, label, icon: Icon, count }) => (
             <button
               key={key}
@@ -130,7 +130,7 @@ export default function AdminDashboard({
               onClick={() => setTab(key)}
               className={cn(
                 'flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors',
-                tab === key ? 'bg-white text-navy shadow-sm' : 'text-slate-500 hover:text-navy',
+                tab === key ? 'bg-white text-navy shadow-sm' : 'text-navy-500 hover:text-navy',
               )}
               aria-current={tab === key}
             >
@@ -139,7 +139,7 @@ export default function AdminDashboard({
               {typeof count === 'number' && (
                 <span className={cn(
                   'text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded-full',
-                  tab === key ? 'bg-navy/10 text-navy' : 'bg-slate-200 text-slate-500',
+                  tab === key ? 'bg-navy/10 text-navy' : 'bg-navy-200 text-navy-500',
                 )}>
                   {count}
                 </span>
@@ -161,8 +161,8 @@ export default function AdminDashboard({
             ].map(({ label, value, sub, accent }) => (
               <div key={label} className="card p-5">
                 <p className={cn('text-3xl font-black tabular-nums', accent ?? 'text-navy')}>{value}</p>
-                <p className="text-xs font-semibold text-slate-600 mt-0.5">{label}</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">{sub}</p>
+                <p className="text-xs font-semibold text-navy-600 mt-0.5">{label}</p>
+                <p className="text-[11px] text-navy-400 mt-0.5">{sub}</p>
               </div>
             ))}
           </div>
@@ -200,7 +200,7 @@ export default function AdminDashboard({
             <div key={mgr.id} className="card overflow-hidden">
 
               {/* Supervisor header — clickable to view their scores */}
-              <Link href={`/admin/member/${mgr.id}`} className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4 flex-wrap hover:bg-slate-50/60 transition-colors">
+              <Link href={`/admin/member/${mgr.id}`} className="px-5 py-4 border-b border-navy-100 flex items-center justify-between gap-4 flex-wrap hover:bg-navy-50/60 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
                     <span className="text-white text-sm font-bold">{mgr.initials}</span>
@@ -212,18 +212,18 @@ export default function AdminDashboard({
                         'text-[10px] font-semibold px-1.5 py-0.5 rounded-full border',
                         mgr.role === 'admin'
                           ? 'text-purple-700 bg-purple-100 border-purple-200'
-                          : 'text-indigo-700 bg-indigo-100 border-indigo-200',
+                          : 'text-orange-700 bg-orange-100 border-orange-200',
                       )}>
                         {mgr.role === 'admin' ? 'Admin' : 'Manager'}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400">{mgr.email} · {mgr.teamCount} {mgr.teamCount === 1 ? 'member' : 'members'} · <span className="text-teal">View scores →</span></p>
+                    <p className="text-xs text-navy-400">{mgr.email} · {mgr.teamCount} {mgr.teamCount === 1 ? 'member' : 'members'} · <span className="text-teal">View scores →</span></p>
                   </div>
                 </div>
                 <div className="flex items-center gap-6 flex-shrink-0">
                   <div className="text-center">
                     <p className="text-lg font-black text-navy tabular-nums">{mgr.avgProgress}%</p>
-                    <p className="text-[11px] text-slate-400">Team avg</p>
+                    <p className="text-[11px] text-navy-400">Team avg</p>
                   </div>
                   {mgr.avgScore !== null && (
                     <div className="text-center">
@@ -232,14 +232,14 @@ export default function AdminDashboard({
                         'text-amber-500': mgr.avgScore >= 65 && mgr.avgScore < 80,
                         'text-red-500': mgr.avgScore < 65,
                       })}>{mgr.avgScore}%</p>
-                      <p className="text-[11px] text-slate-400">Avg score</p>
+                      <p className="text-[11px] text-navy-400">Avg score</p>
                     </div>
                   )}
                   <div className="flex gap-3">
                     {(['green', 'amber', 'red'] as const).map(r => (
                       <div key={r} className="flex items-center gap-1.5">
                         <div className={cn('w-2 h-2 rounded-full', RAG_DOT[r])} />
-                        <span className="text-sm font-semibold text-slate-500">{mgr.ragCounts[r]}</span>
+                        <span className="text-sm font-semibold text-navy-500">{mgr.ragCounts[r]}</span>
                       </div>
                     ))}
                   </div>
@@ -249,28 +249,28 @@ export default function AdminDashboard({
               {/* Team rows */}
               {mgr.teamCount === 0 ? (
                 <div className="px-5 py-4">
-                  <p className="text-xs text-slate-400">No team members assigned yet.</p>
+                  <p className="text-xs text-navy-400">No team members assigned yet.</p>
                 </div>
               ) : (
-                <div className="divide-y divide-slate-50">
+                <div className="divide-y divide-navy-50">
                   {mgr.team.map(member => (
                     <Link
                       key={member.id}
                       href={`/admin/member/${member.id}`}
-                      className={cn('flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/80 transition-colors', RAG_ROW[member.rag])}
+                      className={cn('flex items-center gap-4 px-5 py-3.5 hover:bg-navy-50/80 transition-colors', RAG_ROW[member.rag])}
                     >
                       <div className="w-8 h-8 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
                         <span className="text-white text-xs font-bold">{member.initials}</span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-navy">{member.displayName}</p>
-                        <p className="text-xs text-slate-400 truncate">{member.email}</p>
+                        <p className="text-xs text-navy-400 truncate">{member.email}</p>
                       </div>
                       <div className="flex items-center gap-6 flex-shrink-0">
                         <div className="w-28">
                           <div className="flex justify-between text-xs mb-1.5">
                             <span className="font-bold text-navy">{member.progressPct}%</span>
-                            <span className="text-slate-400">{member.completedCount}/{totalAssessments}</span>
+                            <span className="text-navy-400">{member.completedCount}/{totalAssessments}</span>
                           </div>
                           <ProgressBar
                             value={member.progressPct}
@@ -293,25 +293,25 @@ export default function AdminDashboard({
           {/* Unassigned */}
           {unassigned.length > 0 && (
             <div className="card overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100">
+              <div className="px-5 py-4 border-b border-navy-100">
                 <p className="text-sm font-bold text-navy">Unassigned Learners</p>
-                <p className="text-xs text-slate-400 mt-0.5">{unassigned.length} {unassigned.length === 1 ? 'user' : 'users'} not yet assigned to a manager or admin</p>
+                <p className="text-xs text-navy-400 mt-0.5">{unassigned.length} {unassigned.length === 1 ? 'user' : 'users'} not yet assigned to a manager or admin</p>
               </div>
-              <div className="divide-y divide-slate-50">
+              <div className="divide-y divide-navy-50">
                 {unassigned.map(member => (
                   <Link
                     key={member.id}
                     href={`/admin/member/${member.id}`}
-                    className="flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/80 transition-colors"
+                    className="flex items-center gap-4 px-5 py-3.5 hover:bg-navy-50/80 transition-colors"
                   >
-                    <div className="w-8 h-8 rounded-full bg-slate-300 flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-navy-300 flex items-center justify-center flex-shrink-0">
                       <span className="text-white text-xs font-bold">{member.initials}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-navy">{member.displayName}</p>
-                      <p className="text-xs text-slate-400">{member.email}</p>
+                      <p className="text-xs text-navy-400">{member.email}</p>
                     </div>
-                    <span className="text-xs text-slate-400">No manager assigned</span>
+                    <span className="text-xs text-navy-400">No manager assigned</span>
                   </Link>
                 ))}
               </div>

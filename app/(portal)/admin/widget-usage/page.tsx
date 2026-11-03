@@ -64,18 +64,18 @@ export default async function AdminWidgetUsagePage({
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-xl font-bold text-navy">Widget usage</h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-navy-500 mt-0.5">
             Anonymous use of the Context Widget inside the CRM — {stats.periodLabel}.
           </p>
         </div>
-        <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl">
+        <div className="flex items-center gap-1 p-1 bg-navy-100 rounded-xl">
           {WIDGET_RANGES.map(r => (
             <Link
               key={r.value}
               href={`/admin/widget-usage?range=${r.value}`}
               className={
                 'px-3 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors ' +
-                (r.value === range ? 'bg-white text-navy shadow-sm' : 'text-slate-500 hover:text-navy')
+                (r.value === range ? 'bg-white text-navy shadow-sm' : 'text-navy-500 hover:text-navy')
               }
             >
               {r.label}
@@ -94,8 +94,8 @@ export default async function AdminWidgetUsagePage({
         ].map(s => (
           <div key={s.label} className="card p-5">
             <div className="text-3xl font-bold text-navy">{s.value.toLocaleString()}</div>
-            <div className="text-sm font-semibold text-slate-700 mt-1">{s.label}</div>
-            <div className="text-xs text-slate-400 mt-0.5">{s.hint}</div>
+            <div className="text-sm font-semibold text-navy-700 mt-1">{s.label}</div>
+            <div className="text-xs text-navy-400 mt-0.5">{s.hint}</div>
           </div>
         ))}
       </div>
@@ -103,20 +103,20 @@ export default async function AdminWidgetUsagePage({
       {/* Section split — the SOP vs Dobby picture */}
       <div className="card p-5">
         <h2 className="text-sm font-bold text-navy">Which sections people use</h2>
-        <p className="text-xs text-slate-400 mt-0.5 mb-4">Share of tab opens across the widget, {stats.periodLabel}.</p>
+        <p className="text-xs text-navy-400 mt-0.5 mb-4">Share of tab opens across the widget, {stats.periodLabel}.</p>
         {stats.tabs.length === 0 ? (
-          <p className="text-sm text-slate-500">No tab activity yet in this period.</p>
+          <p className="text-sm text-navy-500">No tab activity yet in this period.</p>
         ) : (
           <div className="space-y-3">
             {stats.tabs.map(t => (
               <div key={t.tab}>
                 <div className="flex items-center justify-between text-sm mb-1">
-                  <span className="font-semibold text-slate-700">{t.label}</span>
-                  <span className="text-slate-500">
+                  <span className="font-semibold text-navy-700">{t.label}</span>
+                  <span className="text-navy-500">
                     {t.opens.toLocaleString()} opens · {t.installs} install{t.installs === 1 ? '' : 's'} · {t.pct}%
                   </span>
                 </div>
-                <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden">
+                <div className="h-2.5 rounded-full bg-navy-100 overflow-hidden">
                   <div className="h-full rounded-full bg-navy" style={{ width: `${t.pct}%` }} />
                 </div>
               </div>
@@ -128,7 +128,7 @@ export default async function AdminWidgetUsagePage({
       {/* Opens per day */}
       <div className="card p-5">
         <h2 className="text-sm font-bold text-navy">Active sessions over time</h2>
-        <p className="text-xs text-slate-400 mt-0.5 mb-4">Genuine use (open 10s+ or an interaction), {stats.periodLabel}.</p>
+        <p className="text-xs text-navy-400 mt-0.5 mb-4">Genuine use (open 10s+ or an interaction), {stats.periodLabel}.</p>
         <div className="flex items-end gap-1 h-32">
           {stats.days.map(d => (
             <div key={d.key} className="flex-1 flex flex-col items-center justify-end h-full" title={`${d.count}`}>
@@ -136,13 +136,13 @@ export default async function AdminWidgetUsagePage({
                 className="w-full rounded-t bg-navy/80"
                 style={{ height: `${Math.round((d.count / maxDay) * 100)}%` }}
               />
-              <span className="text-[10px] text-slate-400 mt-1 whitespace-nowrap">{d.label}</span>
+              <span className="text-[10px] text-navy-400 mt-1 whitespace-nowrap">{d.label}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-navy-400">
         No personal data is collected — installs are counted by an anonymous random id only.
       </p>
     </div>

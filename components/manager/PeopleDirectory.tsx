@@ -158,11 +158,11 @@ export default function PeopleDirectory({
   return (
     <div className="card overflow-hidden">
       {/* Toolbar */}
-      <div className="px-5 py-4 border-b border-slate-100 space-y-3">
+      <div className="px-5 py-4 border-b border-navy-100 space-y-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
             <h2 className="text-base font-bold text-navy">{title}</h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-navy-400 mt-0.5">
               {filtered.length} of {people.length} {people.length === 1 ? 'person' : 'people'}
               {' · '}{totalAssessments} assessments in programme
             </p>
@@ -170,12 +170,12 @@ export default function PeopleDirectory({
 
           {/* Sort */}
           <label className="flex items-center gap-2 text-sm">
-            <ArrowUpDown className="w-4 h-4 text-slate-400" aria-hidden />
+            <ArrowUpDown className="w-4 h-4 text-navy-400" aria-hidden />
             <span className="sr-only">Sort by</span>
             <select
               value={sort}
               onChange={e => setSort(e.target.value as SortKey)}
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-navy
+              className="rounded-lg border border-navy-200 bg-white px-3 py-2 text-sm font-medium text-navy
                          focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal"
             >
               {SORT_OPTIONS.map(o => (
@@ -188,13 +188,13 @@ export default function PeopleDirectory({
         <div className="flex items-center justify-between gap-3 flex-wrap">
           {/* Search */}
           <div className="relative flex-1 min-w-[220px] max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" aria-hidden />
             <input
               type="search"
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Search by name or email…"
-              className="w-full rounded-lg border border-slate-200 bg-white pl-9 pr-9 py-2 text-sm
+              className="w-full rounded-lg border border-navy-200 bg-white pl-9 pr-9 py-2 text-sm
                          focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal"
             />
             {query && (
@@ -202,7 +202,7 @@ export default function PeopleDirectory({
                 type="button"
                 onClick={() => setQuery('')}
                 aria-label="Clear search"
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-navy"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-navy-400 hover:text-navy"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -220,14 +220,14 @@ export default function PeopleDirectory({
                   'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
                   statusFilter === chip.key
                     ? 'border-navy bg-navy text-white'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
+                    : 'border-navy-200 bg-white text-navy-600 hover:border-navy-300',
                 )}
               >
                 {chip.key !== 'all' && (
                   <span className={cn('w-2 h-2 rounded-full', RAG_DOT[chip.key as RagStatus])} aria-hidden />
                 )}
                 {chip.label}
-                <span className={cn('tabular-nums', statusFilter === chip.key ? 'text-white/70' : 'text-slate-400')}>
+                <span className={cn('tabular-nums', statusFilter === chip.key ? 'text-white/70' : 'text-navy-400')}>
                   {chip.count}
                 </span>
               </button>
@@ -239,9 +239,9 @@ export default function PeopleDirectory({
       {/* Results */}
       {filtered.length === 0 ? (
         <div className="px-6 py-16 text-center">
-          <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <p className="text-sm font-semibold text-slate-500">No matches</p>
-          <p className="text-xs text-slate-400 mt-1">
+          <Search className="w-10 h-10 text-navy-300 mx-auto mb-3" />
+          <p className="text-sm font-semibold text-navy-500">No matches</p>
+          <p className="text-xs text-navy-400 mt-1">
             {query ? `Nothing matches “${query}”.` : 'No people for this filter.'}
           </p>
         </div>
@@ -249,20 +249,20 @@ export default function PeopleDirectory({
         <div className="overflow-x-auto">
           <table className="w-full" role="table">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">
+              <tr className="border-b border-navy-100 bg-navy-50/80">
+                <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-navy-400 whitespace-nowrap" scope="col">
                   Name
                 </th>
                 {headers.map(h => (
-                  <th key={h} className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">
+                  <th key={h} className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-navy-400 whitespace-nowrap" scope="col">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-navy-100">
               {filtered.map(person => (
-                <tr key={person.id} className={cn('transition-colors hover:bg-slate-50/60', RAG_ROW[person.rag])}>
+                <tr key={person.id} className={cn('transition-colors hover:bg-navy-50/60', RAG_ROW[person.rag])}>
                   {/* Name */}
                   <td className="px-5 py-4 whitespace-nowrap">
                     <Link href={person.href} className="flex items-center gap-3 group/name">
@@ -271,14 +271,14 @@ export default function PeopleDirectory({
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-navy group-hover/name:text-teal transition-colors">{person.displayName}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">{person.email ?? '—'}</p>
+                        <p className="text-xs text-navy-400 mt-0.5">{person.email ?? '—'}</p>
                       </div>
                     </Link>
                   </td>
 
                   {/* Role or Manager */}
                   <td className="px-5 py-4 whitespace-nowrap">
-                    <span className="text-sm text-slate-600 capitalize">
+                    <span className="text-sm text-navy-600 capitalize">
                       {secondaryColumn === 'manager'
                         ? (person.managerName ?? '—')
                         : person.roleLabel}
@@ -288,7 +288,7 @@ export default function PeopleDirectory({
                   {/* Assessments */}
                   <td className="px-5 py-4 whitespace-nowrap">
                     <span className="text-base font-bold tabular-nums text-navy">
-                      {person.completedCount}<span className="text-slate-300 font-normal text-sm">/{totalAssessments}</span>
+                      {person.completedCount}<span className="text-navy-300 font-normal text-sm">/{totalAssessments}</span>
                     </span>
                   </td>
 
@@ -317,7 +317,7 @@ export default function PeopleDirectory({
                         {person.avgScore}%
                       </span>
                     ) : (
-                      <span className="text-sm text-slate-400">No attempts</span>
+                      <span className="text-sm text-navy-400">No attempts</span>
                     )}
                   </td>
 
@@ -335,10 +335,10 @@ export default function PeopleDirectory({
                   {showActivity && (
                     <>
                       <td className="px-5 py-4 whitespace-nowrap">
-                        <span className="text-sm text-slate-400">{fmtDate(person.lastActiveTs)}</span>
+                        <span className="text-sm text-navy-400">{fmtDate(person.lastActiveTs)}</span>
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap">
-                        <span className="text-sm text-slate-400">{fmtDate(person.joinedTs)}</span>
+                        <span className="text-sm text-navy-400">{fmtDate(person.joinedTs)}</span>
                       </td>
                     </>
                   )}

@@ -152,10 +152,10 @@ export default async function AdminMemberDetailPage({
       <div className="flex items-start gap-4">
         <Link
           href="/admin"
-          className="mt-1 p-2 rounded-lg hover:bg-slate-100 transition-colors flex-shrink-0"
+          className="mt-1 p-2 rounded-lg hover:bg-navy-100 transition-colors flex-shrink-0"
           aria-label="Back to admin overview"
         >
-          <ArrowLeft className="w-4 h-4 text-slate-500" />
+          <ArrowLeft className="w-4 h-4 text-navy-500" />
         </Link>
         <div className="flex items-center gap-4 flex-1 min-w-0">
           <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
@@ -163,17 +163,17 @@ export default async function AdminMemberDetailPage({
           </div>
           <div className="min-w-0">
             <h1 className="text-xl font-bold text-navy">{displayName}</h1>
-            <p className="text-sm text-slate-400 mt-0.5">
+            <p className="text-sm text-navy-400 mt-0.5">
               {memberProfile.email ?? '—'} · Joined {joinDate}
             </p>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Manager: <span className="text-slate-500 font-medium">{managerName}</span>
+            <p className="text-xs text-navy-400 mt-0.5">
+              Manager: <span className="text-navy-500 font-medium">{managerName}</span>
             </p>
           </div>
           <div className="ml-auto flex items-center gap-4 text-center flex-shrink-0">
             <div>
               <p className="text-2xl font-black text-navy tabular-nums">{completedCount}/{ALL_ASSESSMENT_IDS.length}</p>
-              <p className="text-xs text-slate-400 mt-0.5">Assessments passed</p>
+              <p className="text-xs text-navy-400 mt-0.5">Assessments passed</p>
             </div>
             {avgScore !== null && (
               <div>
@@ -182,7 +182,7 @@ export default async function AdminMemberDetailPage({
                   'text-amber-500': avgScore >= 65 && avgScore < 80,
                   'text-red-500': avgScore < 65,
                 })}>{avgScore}%</p>
-                <p className="text-xs text-slate-400 mt-0.5">Avg score</p>
+                <p className="text-xs text-navy-400 mt-0.5">Avg score</p>
               </div>
             )}
           </div>
@@ -195,7 +195,7 @@ export default async function AdminMemberDetailPage({
         <div className="flex items-center justify-between gap-4 rounded-2xl border border-red-100 bg-red-50/40 px-5 py-3.5">
           <div className="min-w-0">
             <p className="text-sm font-semibold text-navy">Delete this user</p>
-            <p className="text-xs text-slate-500 mt-0.5">Permanently removes {displayName} and all of their records. This cannot be undone.</p>
+            <p className="text-xs text-navy-500 mt-0.5">Permanently removes {displayName} and all of their records. This cannot be undone.</p>
           </div>
           <DeleteUserButton userId={params.userId} userName={displayName} userEmail={memberProfile.email ?? null} />
         </div>
@@ -247,11 +247,11 @@ export default async function AdminMemberDetailPage({
       {/* Learning Profile */}
       {learningProfile ? (
         <div className="card overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+          <div className="px-5 py-4 border-b border-navy-100 flex items-center gap-2">
             <span className="text-lg leading-none">{learningProfile.style_icon}</span>
             <div>
               <h2 className="text-sm font-bold text-navy">Learning Profile</h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-navy-400 mt-0.5">
                 Completed {learningProfile.completed_at
                   ? new Date(learningProfile.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
                   : '—'}
@@ -261,23 +261,23 @@ export default async function AdminMemberDetailPage({
           <div className="p-5 space-y-5">
             {/* Style + Confidence */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="rounded-xl bg-slate-50 border border-slate-100 p-4">
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-1">Learning Style</p>
+              <div className="rounded-xl bg-navy-50 border border-navy-100 p-4">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-navy-400 mb-1">Learning Style</p>
                 <div className="flex items-center gap-2">
                   <span className="text-2xl leading-none">{learningProfile.style_icon}</span>
                   <p className="text-sm font-bold text-navy">{learningProfile.style_label}</p>
                 </div>
               </div>
-              <div className="rounded-xl bg-slate-50 border border-slate-100 p-4">
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-1">Starting Confidence</p>
+              <div className="rounded-xl bg-navy-50 border border-navy-100 p-4">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-navy-400 mb-1">Starting Confidence</p>
                 <p className="text-sm font-bold text-navy mb-2">{learningProfile.confidence_label}</p>
-                <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div className="h-2 bg-navy-200 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-teal rounded-full"
                     style={{ width: `${learningProfile.confidence_pct}%` }}
                   />
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1">{learningProfile.confidence_pct}%</p>
+                <p className="text-[11px] text-navy-400 mt-1">{learningProfile.confidence_pct}%</p>
               </div>
             </div>
 
@@ -301,10 +301,10 @@ export default async function AdminMemberDetailPage({
                     if (!letterAnswer) return null
                     const fullAnswer = options[letterAnswer as keyof typeof options] ?? letterAnswer
                     return (
-                      <div key={id} className="flex items-start gap-3 rounded-lg bg-slate-50 border border-slate-100 px-3 py-2.5">
-                        <span className="text-[10px] font-bold text-slate-400 mt-0.5 flex-shrink-0 w-4">Q{id}</span>
+                      <div key={id} className="flex items-start gap-3 rounded-lg bg-navy-50 border border-navy-100 px-3 py-2.5">
+                        <span className="text-[10px] font-bold text-navy-400 mt-0.5 flex-shrink-0 w-4">Q{id}</span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs text-slate-500 leading-snug">{question}</p>
+                          <p className="text-xs text-navy-500 leading-snug">{question}</p>
                           <p className="text-xs font-semibold text-navy mt-0.5">{fullAnswer}</p>
                         </div>
                       </div>
@@ -316,29 +316,29 @@ export default async function AdminMemberDetailPage({
 
             {/* Manager note */}
             {learningProfile.manager_note && (
-              <div className="rounded-xl bg-white border border-slate-100 px-4 py-3">
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-1">Manager Note</p>
-                <p className="text-xs text-slate-600 leading-relaxed">{learningProfile.manager_note}</p>
+              <div className="rounded-xl bg-white border border-navy-100 px-4 py-3">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-navy-400 mb-1">Manager Note</p>
+                <p className="text-xs text-navy-600 leading-relaxed">{learningProfile.manager_note}</p>
               </div>
             )}
           </div>
         </div>
       ) : (
         <div className="card p-5 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-full bg-navy-100 flex items-center justify-center flex-shrink-0">
             <span className="text-base">🧠</span>
           </div>
           <div>
-            <p className="text-sm font-semibold text-slate-500">Learning profile not completed</p>
-            <p className="text-xs text-slate-400 mt-0.5">{displayName} has not yet completed the learning profile quiz.</p>
+            <p className="text-sm font-semibold text-navy-500">Learning profile not completed</p>
+            <p className="text-xs text-navy-400 mt-0.5">{displayName} has not yet completed the learning profile quiz.</p>
           </div>
         </div>
       )}
 
       {allResults.length === 0 && (
         <div className="card p-10 text-center">
-          <p className="text-sm font-semibold text-slate-500">No assessments completed yet</p>
-          <p className="text-xs text-slate-400 mt-1">{displayName} has not submitted any assessments.</p>
+          <p className="text-sm font-semibold text-navy-500">No assessments completed yet</p>
+          <p className="text-xs text-navy-400 mt-1">{displayName} has not submitted any assessments.</p>
         </div>
       )}
 
@@ -380,9 +380,9 @@ export default async function AdminMemberDetailPage({
         return (
           <div className="space-y-4">
             <div className="flex items-center gap-2 px-1">
-              <Sparkles className="w-4 h-4 text-indigo-500" aria-hidden />
+              <Sparkles className="w-4 h-4 text-orange-500" aria-hidden />
               <h2 className="text-sm font-bold text-navy">CRM 2.0 Assessments</h2>
-              <span className="ml-auto text-xs text-slate-400">{crm2Passed}/{CRM2_ASSESSMENT_IDS.length} passed</span>
+              <span className="ml-auto text-xs text-navy-400">{crm2Passed}/{CRM2_ASSESSMENT_IDS.length} passed</span>
             </div>
             {CRM2_ASSESSMENT_IDS.map(id => {
               const attempts = byAssessment.get(id) ?? []
@@ -406,8 +406,8 @@ export default async function AdminMemberDetailPage({
                   {crm2NotAttempted.map(id => (
                     <div key={id} className="flex items-center justify-between gap-2.5 py-1.5">
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-200 flex-shrink-0" />
-                        <span className="text-sm text-slate-400">{CRM2_ASSESSMENT_LABELS[id] ?? id}</span>
+                        <div className="w-3.5 h-3.5 rounded-full border-2 border-navy-200 flex-shrink-0" />
+                        <span className="text-sm text-navy-400">{CRM2_ASSESSMENT_LABELS[id] ?? id}</span>
                       </div>
                       <ReassignButton
                         userId={params.userId}
@@ -426,10 +426,10 @@ export default async function AdminMemberDetailPage({
                 /api/manager/reassign endpoint and quiz unlock logic). */}
             {crm2Failed.length > 0 && (
               <div className="card overflow-hidden">
-                <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+                <div className="px-5 py-4 border-b border-navy-100 flex items-center gap-2">
                   <RefreshCw className="w-4 h-4 text-amber-500" aria-hidden />
                   <h2 className="text-sm font-bold text-navy">CRM 2.0 Reassignment Actions</h2>
-                  <span className="ml-auto text-xs text-slate-400">Grant a retake for failed CRM 2.0 assessments</span>
+                  <span className="ml-auto text-xs text-navy-400">Grant a retake for failed CRM 2.0 assessments</span>
                 </div>
                 <div className="p-5 flex flex-wrap gap-3">
                   {crm2Failed.map(f => (
@@ -467,10 +467,10 @@ export default async function AdminMemberDetailPage({
         if (failedModules.length === 0) return null
         return (
           <div className="card overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+            <div className="px-5 py-4 border-b border-navy-100 flex items-center gap-2">
               <RefreshCw className="w-4 h-4 text-amber-500" aria-hidden />
               <h2 className="text-sm font-bold text-navy">Reassignment Actions</h2>
-              <span className="ml-auto text-xs text-slate-400">Grant a retake for failed assessments</span>
+              <span className="ml-auto text-xs text-navy-400">Grant a retake for failed assessments</span>
             </div>
             <div className="p-5 flex flex-wrap gap-3">
               {failedModules.map(f => (
@@ -516,12 +516,12 @@ export default async function AdminMemberDetailPage({
         const rounds = Array.from(bestByRound.values()).sort((a, b) => b.completed_at.localeCompare(a.completed_at))
         return (
           <div className="card overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-              <RefreshCw className="w-4 h-4 text-indigo-500" aria-hidden />
+            <div className="px-5 py-4 border-b border-navy-100 flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-orange-500" aria-hidden />
               <h2 className="text-sm font-bold text-navy">Recap &amp; Refresh</h2>
-              <span className="ml-auto text-xs text-slate-400">{rounds.length} round{rounds.length !== 1 ? 's' : ''} completed</span>
+              <span className="ml-auto text-xs text-navy-400">{rounds.length} round{rounds.length !== 1 ? 's' : ''} completed</span>
             </div>
-            <div className="divide-y divide-slate-50">
+            <div className="divide-y divide-navy-50">
               {rounds.map(r => {
                 const label = r.assessment_id.replace('recap-', '').replace(/-(\d+)$/, ' $1').replace(/\b\w/g, (c: string) => c.toUpperCase())
                 const date = r.completed_at ? new Date(r.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'
@@ -529,7 +529,7 @@ export default async function AdminMemberDetailPage({
                   <div key={r.assessment_id} className="flex items-center justify-between px-5 py-3">
                     <div>
                       <p className="text-sm font-semibold text-navy">{label}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">{date}</p>
+                      <p className="text-xs text-navy-400 mt-0.5">{date}</p>
                     </div>
                     <span className={cn('text-sm font-bold tabular-nums px-3 py-1 rounded-full', {
                       'bg-teal/10 text-teal border border-teal/20': r.score >= 80,
@@ -557,8 +557,8 @@ export default async function AdminMemberDetailPage({
               {notAttempted.map(id => (
                 <div key={id} className="flex items-center justify-between gap-2.5 py-1.5">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-200 flex-shrink-0" />
-                    <span className="text-sm text-slate-400">{ASSESSMENT_LABELS[id] ?? id}</span>
+                    <div className="w-3.5 h-3.5 rounded-full border-2 border-navy-200 flex-shrink-0" />
+                    <span className="text-sm text-navy-400">{ASSESSMENT_LABELS[id] ?? id}</span>
                   </div>
                   <ReassignButton
                     userId={params.userId}

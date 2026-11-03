@@ -67,7 +67,7 @@ export default function RequestTrainingForm() {
       <div className="card p-6 text-center">
         <CheckCircle2 className="w-10 h-10 text-teal mx-auto mb-3" aria-hidden />
         <h3 className="text-base font-bold text-navy">Request sent</h3>
-        <p className="text-sm text-slate-500 mt-1 max-w-md mx-auto">
+        <p className="text-sm text-navy-500 mt-1 max-w-md mx-auto">
           Your training request has gone straight to the Dwelly team. We&rsquo;ll pick it up and be in touch.
         </p>
         <button
@@ -99,12 +99,12 @@ export default function RequestTrainingForm() {
                 aria-pressed={active}
                 className={cn(
                   'flex items-start gap-3 p-3.5 rounded-xl border text-left transition',
-                  active ? 'bg-orange/8 border-orange text-navy' : 'bg-white border-slate-200 hover:border-orange/40',
+                  active ? 'bg-orange/8 border-orange text-navy' : 'bg-white border-navy-200 hover:border-orange/40',
                 )}
               >
                 <span className={cn(
                   'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0',
-                  active ? 'bg-orange text-white' : 'bg-slate-100 text-slate-500',
+                  active ? 'bg-orange text-white' : 'bg-navy-100 text-navy-500',
                 )}>
                   <Icon className="w-4 h-4" aria-hidden />
                 </span>
@@ -119,7 +119,7 @@ export default function RequestTrainingForm() {
       <div>
         <label htmlFor="subjectName" className="block text-sm font-semibold text-navy mb-1.5">
           {isNewStarter ? 'New starter\u2019s name' : 'Who is this for?'}
-          {' '}<span className="font-normal text-slate-400">(optional)</span>
+          {' '}<span className="font-normal text-navy-400">(optional)</span>
         </label>
         <input
           id="subjectName"
@@ -127,7 +127,7 @@ export default function RequestTrainingForm() {
           value={subjectName}
           onChange={e => setSubjectName(e.target.value)}
           placeholder={isNewStarter ? 'e.g. Jordan Smith, starting soon' : 'Leave blank if it\u2019s for you'}
-          className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+          className="w-full text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
         />
       </div>
 
@@ -135,13 +135,13 @@ export default function RequestTrainingForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label htmlFor="focusArea" className="block text-sm font-semibold text-navy mb-1.5">
-            Focus area <span className="font-normal text-slate-400">(optional)</span>
+            Focus area <span className="font-normal text-navy-400">(optional)</span>
           </label>
           <select
             id="focusArea"
             value={focusArea}
             onChange={e => setFocusArea(e.target.value)}
-            className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+            className="w-full text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
           >
             <option value="">— Select an area —</option>
             {TRAINING_FOCUS_AREAS.map(a => (
@@ -155,7 +155,7 @@ export default function RequestTrainingForm() {
             id="urgency"
             value={urgency}
             onChange={e => setUrgency(e.target.value)}
-            className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
+            className="w-full text-sm border border-navy-200 rounded-lg px-3 py-2 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange"
           >
             {TRAINING_URGENCIES.map(u => (
               <option key={u} value={u}>{TRAINING_URGENCY_LABELS[u]}</option>
@@ -178,9 +178,9 @@ export default function RequestTrainingForm() {
           placeholder={isNewStarter
             ? 'Tell us about the new starter — their role, start date, and what they\u2019ll need to get up to speed…'
             : 'Describe the training or areas of the system the person needs more support with…'}
-          className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange resize-y"
+          className="w-full text-sm border border-navy-200 rounded-lg px-3 py-2.5 text-navy-700 focus:outline-none focus:ring-2 focus:ring-orange/30 focus:border-orange resize-y"
         />
-        <p className="text-[11px] text-slate-400 mt-1 text-right">
+        <p className="text-[11px] text-navy-400 mt-1 text-right">
           {details.length} / {TRAINING_REQUEST_MAX_LENGTH}
         </p>
       </div>

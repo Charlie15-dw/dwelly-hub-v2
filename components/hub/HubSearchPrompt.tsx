@@ -10,12 +10,12 @@ export default function HubSearchPrompt() {
     <button
       type="button"
       onClick={() => window.dispatchEvent(new Event('hub:open-search'))}
-      className="group w-full flex items-center gap-3 h-11 px-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition text-left"
+      className="group w-full flex items-center gap-3 h-11 px-4 rounded-xl border border-navy-200 bg-white hover:border-navy-300 hover:shadow-sm transition text-left"
       aria-label="Search the Hub"
     >
-      <Search className="w-4 h-4 text-slate-400 flex-shrink-0" aria-hidden />
-      <span className="flex-1 text-sm text-slate-400">Search modules, guides, knowledge, glossary…</span>
-      <kbd className="hidden sm:flex items-center text-[10px] font-sans font-semibold text-slate-400 bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5">
+      <Search className="w-4 h-4 text-navy-400 flex-shrink-0" aria-hidden />
+      <span className="flex-1 text-sm text-navy-400">Search modules, guides, knowledge, glossary…</span>
+      <kbd className="hidden sm:flex items-center text-[10px] font-sans font-semibold text-navy-400 bg-navy-50 border border-navy-200 rounded px-1.5 py-0.5">
         ⌘K
       </kbd>
     </button>

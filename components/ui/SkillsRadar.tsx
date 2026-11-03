@@ -38,7 +38,7 @@ export default function SkillsRadar({ scores }: { scores: SkillScore[] }) {
   return (
     <div className="card p-5">
       <h3 className="text-sm font-bold text-navy mb-1">Skills Overview</h3>
-      <p className="text-xs text-slate-500 mb-4">Competency across all areas based on assessment scores</p>
+      <p className="text-xs text-navy-500 mb-4">Competency across all areas based on assessment scores</p>
 
       <div className="flex justify-center">
         <svg viewBox={`0 0 ${SIZE} ${SIZE}`} width={SIZE} height={SIZE} className="max-w-full" aria-label="Skills radar chart">
@@ -91,7 +91,7 @@ export default function SkillsRadar({ scores }: { scores: SkillScore[] }) {
                 x={x} y={y}
                 textAnchor="middle"
                 dominantBaseline="central"
-                className="fill-slate-500"
+                className="fill-navy-500"
                 style={{ fontSize: '9px', fontWeight: 600 }}
               >
                 {s.label}

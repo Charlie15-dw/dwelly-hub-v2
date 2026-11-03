@@ -69,26 +69,26 @@ export default function Crm2AssessmentPanel({
     if (rows.length === 0) return null
     return (
       <div>
-        <div className="px-5 py-2.5 bg-slate-50/60 border-b border-slate-100">
-          <h3 className="text-[11px] font-bold uppercase tracking-wide text-slate-500">{label}</h3>
+        <div className="px-5 py-2.5 bg-navy-50/60 border-b border-navy-100">
+          <h3 className="text-[11px] font-bold uppercase tracking-wide text-navy-500">{label}</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm" role="table">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">
+              <tr className="border-b border-navy-100 bg-navy-50/80">
+                <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-navy-400 whitespace-nowrap" scope="col">
                   Team Member
                 </th>
                 {quizzes.map((q) => (
-                  <th key={q.id} className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400 whitespace-nowrap" scope="col">
+                  <th key={q.id} className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-navy-400 whitespace-nowrap" scope="col">
                     {q.title}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-navy-50">
               {rows.map((person) => (
-                <tr key={person.id} className="hover:bg-slate-50/60 transition-colors">
+                <tr key={person.id} className="hover:bg-navy-50/60 transition-colors">
                   <td className="px-4 py-3 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-full bg-navy flex items-center justify-center flex-shrink-0">
@@ -114,7 +114,7 @@ export default function Crm2AssessmentPanel({
                             </span>
                           )
                         ) : (
-                          <span className="text-xs text-slate-300">Not completed</span>
+                          <span className="text-xs text-navy-300">Not completed</span>
                         )}
                       </td>
                     )
@@ -130,12 +130,12 @@ export default function Crm2AssessmentPanel({
 
   return (
     <div className="card overflow-hidden">
-      <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
+      <div className="px-5 py-4 border-b border-navy-100 flex items-center gap-2">
         <Sparkles className="w-4 h-4 text-[#2C68ED]" aria-hidden />
         <h2 className="text-sm font-bold text-navy">CRM 2.0 Assessments</h2>
-        <span className="ml-auto text-xs text-slate-400">Private preview · 80% to pass</span>
+        <span className="ml-auto text-xs text-navy-400">Private preview · 80% to pass</span>
       </div>
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-navy-100">
         {track('Compliance', complianceQuizzes, complianceRows)}
         {track('Maintenance', maintenanceQuizzes, maintenanceRows)}
       </div>

@@ -25,7 +25,7 @@ const KIND_ACCENT: Record<SearchKind, string> = {
   knowledge: 'text-gold-700 bg-gold/10',
   glossary: 'text-blue-700 bg-blue-50',
   emergency: 'text-red-600 bg-red-50',
-  update: 'text-indigo-700 bg-indigo-100',
+  update: 'text-orange-700 bg-orange-100',
   crm2: 'text-[#2C68ED] bg-[#2C68ED]/10',
 }
 
@@ -110,38 +110,38 @@ export default function CommandPalette() {
       aria-label="Search the Hub"
     >
       <div
-        className="w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden"
+        className="w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-navy-200 overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Search input */}
-        <div className="flex items-center gap-3 px-4 border-b border-slate-100">
-          <Search className="w-5 h-5 text-slate-400 flex-shrink-0" aria-hidden />
+        <div className="flex items-center gap-3 px-4 border-b border-navy-100">
+          <Search className="w-5 h-5 text-navy-400 flex-shrink-0" aria-hidden />
           <input
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={onInputKeyDown}
             placeholder={crm2Only ? 'Search CRM 2.0…' : 'Search modules, guides, knowledge, glossary…'}
-            className="flex-1 py-4 text-sm text-navy placeholder:text-slate-400 outline-none bg-transparent"
+            className="flex-1 py-4 text-sm text-navy placeholder:text-navy-400 outline-none bg-transparent"
             aria-label="Search query"
           />
           <button
             onClick={() => setOpen(false)}
-            className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 transition flex-shrink-0"
+            className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-navy-100 transition flex-shrink-0"
             aria-label="Close search"
           >
-            <X className="w-4 h-4 text-slate-500" aria-hidden />
+            <X className="w-4 h-4 text-navy-500" aria-hidden />
           </button>
         </div>
 
         {/* Results */}
         <div className="max-h-[50vh] overflow-y-auto py-2">
           {query.trim() === '' ? (
-            <p className="px-4 py-6 text-center text-sm text-slate-400">
+            <p className="px-4 py-6 text-center text-sm text-navy-400">
               {crm2Only ? 'Start typing to search CRM 2.0.' : 'Start typing to search across the Hub.'}
             </p>
           ) : results.length === 0 ? (
-            <p className="px-4 py-6 text-center text-sm text-slate-400">
+            <p className="px-4 py-6 text-center text-sm text-navy-400">
               No results for <span className="font-semibold text-navy">&ldquo;{query}&rdquo;</span>.
             </p>
           ) : (
@@ -156,7 +156,7 @@ export default function CommandPalette() {
                       onMouseEnter={() => setActive(i)}
                       onClick={() => go(r.href)}
                       className={`w-full text-left flex items-center gap-3 px-4 py-2.5 transition ${
-                        isActive ? 'bg-indigo-50' : 'hover:bg-slate-50'
+                        isActive ? 'bg-orange-50' : 'hover:bg-navy-50'
                       }`}
                     >
                       <span className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${KIND_ACCENT[r.kind]}`}>
@@ -164,12 +164,12 @@ export default function CommandPalette() {
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block text-sm font-medium text-navy truncate">{r.title}</span>
-                        <span className="block text-xs text-slate-400 truncate">{r.description}</span>
+                        <span className="block text-xs text-navy-400 truncate">{r.description}</span>
                       </span>
-                      <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 flex-shrink-0">
+                      <span className="text-[10px] font-semibold uppercase tracking-wide text-navy-400 flex-shrink-0">
                         {r.kindLabel}
                       </span>
-                      {isActive && <CornerDownLeft className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" aria-hidden />}
+                      {isActive && <CornerDownLeft className="w-3.5 h-3.5 text-navy-300 flex-shrink-0" aria-hidden />}
                     </button>
                   </li>
                 )
@@ -179,11 +179,11 @@ export default function CommandPalette() {
         </div>
 
         {/* Footer hint */}
-        <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-t border-slate-100 bg-slate-50">
-          <span className="text-[11px] text-slate-400">
+        <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-t border-navy-100 bg-navy-50">
+          <span className="text-[11px] text-navy-400">
             <kbd className="font-sans font-semibold">↑↓</kbd> navigate · <kbd className="font-sans font-semibold">↵</kbd> open · <kbd className="font-sans font-semibold">esc</kbd> close
           </span>
-          <span className="text-[11px] text-slate-400">{crm2Only ? 'CRM 2.0' : 'The Hub'}</span>
+          <span className="text-[11px] text-navy-400">{crm2Only ? 'CRM 2.0' : 'The Hub'}</span>
         </div>
       </div>
     </div>

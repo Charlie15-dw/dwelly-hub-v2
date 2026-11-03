@@ -416,15 +416,15 @@ export default function QuizClient({
   if (departmentBlocked) {
     return (
       <div className="max-w-2xl mx-auto space-y-5">
-        <Link href={backHref} className="text-sm text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
+        <Link href={backHref} className="text-sm text-navy-500 hover:text-navy flex items-center gap-1.5 transition-colors">
           <ArrowLeft className="w-4 h-4" /> {backLabel}
         </Link>
         <div className="card p-10 text-center">
-          <div className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-5 bg-slate-100">
-            <Lock className="w-9 h-9 text-slate-400" aria-hidden />
+          <div className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-5 bg-navy-100">
+            <Lock className="w-9 h-9 text-navy-400" aria-hidden />
           </div>
           <h2 className="text-xl font-bold text-navy mb-2">Not part of your training track</h2>
-          <p className="text-sm text-slate-500 mb-6 max-w-sm mx-auto leading-relaxed">
+          <p className="text-sm text-navy-500 mb-6 max-w-sm mx-auto leading-relaxed">
             This assessment belongs to a different department&apos;s track. If you need access,
             ask an admin to grant you an override.
           </p>
@@ -441,20 +441,20 @@ export default function QuizClient({
   if (lockedByDb || runtimeLocked) {
     return (
       <div className="max-w-2xl mx-auto space-y-5">
-        <Link href={backHref} className="text-sm text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
+        <Link href={backHref} className="text-sm text-navy-500 hover:text-navy flex items-center gap-1.5 transition-colors">
           <ArrowLeft className="w-4 h-4" /> {backLabel}
         </Link>
         <div className="card p-10 text-center">
-          <div className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-5 bg-slate-100">
-            <Lock className="w-9 h-9 text-slate-400" aria-hidden />
+          <div className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-5 bg-navy-100">
+            <Lock className="w-9 h-9 text-navy-400" aria-hidden />
           </div>
           <h2 className="text-xl font-bold text-navy mb-2">Assessment Locked</h2>
-          <p className="text-sm text-slate-500 mb-6 max-w-sm mx-auto leading-relaxed">
+          <p className="text-sm text-navy-500 mb-6 max-w-sm mx-auto leading-relaxed">
             You&apos;ve already completed this assessment. Your manager will unlock a retake
             once they&apos;ve reviewed your result.
           </p>
           {lockScreenAttempt && (
-            <div className="inline-flex items-center gap-5 bg-slate-50 border border-slate-200 rounded-2xl px-7 py-4 mb-6">
+            <div className="inline-flex items-center gap-5 bg-navy-50 border border-navy-200 rounded-2xl px-7 py-4 mb-6">
               <div className="text-center">
                 <p className={cn(
                   'text-3xl font-black tabular-nums',
@@ -462,9 +462,9 @@ export default function QuizClient({
                 )}>
                   {lockScreenAttempt.score}%
                 </p>
-                <p className="text-xs text-slate-400 mt-0.5">Last Score</p>
+                <p className="text-xs text-navy-400 mt-0.5">Last Score</p>
               </div>
-              <div className="w-px h-10 bg-slate-200" />
+              <div className="w-px h-10 bg-navy-200" />
               <div className="text-center">
                 <p className={cn(
                   'text-sm font-semibold',
@@ -472,7 +472,7 @@ export default function QuizClient({
                 )}>
                   {lockScreenAttempt.passed ? 'Passed' : 'Failed'}
                 </p>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-navy-400 mt-0.5">
                   {new Date(lockScreenAttempt.completedAt).toLocaleDateString('en-GB', {
                     day: 'numeric', month: 'short', year: 'numeric',
                   })}
@@ -480,7 +480,7 @@ export default function QuizClient({
               </div>
             </div>
           )}
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-navy-400">
             Speak to your manager to request a retake for this assessment.
           </p>
         </div>
@@ -492,13 +492,13 @@ export default function QuizClient({
   if (demoQuestions.length === 0) {
     return (
       <div className="max-w-2xl mx-auto space-y-5">
-        <Link href="/assessments" className="text-sm text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
+        <Link href="/assessments" className="text-sm text-navy-500 hover:text-navy flex items-center gap-1.5 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Assessments
         </Link>
         <div className="card p-10 text-center">
-          <ClipboardCheck className="w-10 h-10 text-slate-300 mx-auto mb-4" aria-hidden />
+          <ClipboardCheck className="w-10 h-10 text-navy-300 mx-auto mb-4" aria-hidden />
           <h2 className="text-base font-semibold text-navy mb-2">No questions found</h2>
-          <p className="text-sm text-slate-500 mb-6">
+          <p className="text-sm text-navy-500 mb-6">
             This assessment has no questions yet. Complete the module first, then return here.
           </p>
           <Link href="/assessments" className="btn-primary inline-flex">Go to Assessments</Link>
@@ -586,7 +586,7 @@ export default function QuizClient({
           </div>
 
           <h2 className="text-2xl font-bold text-navy mb-1 text-center">Monthly Recap Complete</h2>
-          <p className="text-slate-500 text-sm mb-6 text-center">
+          <p className="text-navy-500 text-sm mb-6 text-center">
             {recapLabel} — {recapTheme}
           </p>
 
@@ -595,11 +595,11 @@ export default function QuizClient({
           <div className="flex items-center justify-center gap-8 mb-6">
             <div className="text-center">
               <p className="text-4xl font-black tabular-nums" style={{ color: '#4F46E5' }}>{score}%</p>
-              <p className="text-xs text-slate-400 mt-1">Your Score</p>
+              <p className="text-xs text-navy-400 mt-1">Your Score</p>
             </div>
             <div className="text-center">
               <p className="text-4xl font-black text-navy tabular-nums">{correctCount}/{demoQuestions.length}</p>
-              <p className="text-xs text-slate-400 mt-1">Correct</p>
+              <p className="text-xs text-navy-400 mt-1">Correct</p>
             </div>
           </div>
 
@@ -657,7 +657,7 @@ export default function QuizClient({
                       </p>
                     </>
                   )}
-                  <p className="text-xs text-slate-600 ml-6 bg-white/80 rounded-lg p-2 border border-slate-100 leading-relaxed">
+                  <p className="text-xs text-navy-600 ml-6 bg-white/80 rounded-lg p-2 border border-navy-100 leading-relaxed">
                     <span className="font-semibold">Rationale: </span>{q.rationale}
                   </p>
                 </div>
@@ -696,25 +696,25 @@ export default function QuizClient({
             {recallLabel} recall check
           </p>
           <h2 className="text-2xl font-bold text-navy mb-1">Recall Check Complete</h2>
-          <p className="text-slate-500 text-sm mb-6">{recallModuleTitle}</p>
+          <p className="text-navy-500 text-sm mb-6">{recallModuleTitle}</p>
 
           {saveError && <SaveErrorBanner />}
 
           <div className="flex items-center justify-center gap-8 mb-6">
             <div className="text-center">
               <p className="text-4xl font-black tabular-nums" style={{ color: '#f97316' }}>{score}%</p>
-              <p className="text-xs text-slate-400 mt-1">Your Score</p>
+              <p className="text-xs text-navy-400 mt-1">Your Score</p>
             </div>
             <div className="text-center">
               <p className="text-4xl font-black text-navy tabular-nums">{correctCount}/{demoQuestions.length}</p>
-              <p className="text-xs text-slate-400 mt-1">Correct</p>
+              <p className="text-xs text-navy-400 mt-1">Correct</p>
             </div>
           </div>
 
           {allCorrect ? (
             <div className="rounded-xl border border-teal/30 bg-teal/5 p-4 mb-6 text-left">
               <p className="text-sm font-bold text-teal mb-1">Knowledge retained ✓</p>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-navy-600 leading-relaxed">
                 You answered every question correctly — the knowledge from this module is firmly embedded.
               </p>
             </div>
@@ -754,7 +754,7 @@ export default function QuizClient({
                       </p>
                     </>
                   )}
-                  <p className="text-xs text-slate-600 ml-6 bg-white/80 rounded-lg p-2 border border-slate-100 leading-relaxed">
+                  <p className="text-xs text-navy-600 ml-6 bg-white/80 rounded-lg p-2 border border-navy-100 leading-relaxed">
                     <span className="font-semibold">Rationale: </span>{q.rationale}
                   </p>
                 </div>
@@ -804,7 +804,7 @@ export default function QuizClient({
               <XCircle className="w-9 h-9 text-red-500" aria-hidden />
             </div>
             <h2 className="text-2xl font-bold text-navy mb-1">Not quite there yet</h2>
-            <p className="text-slate-500 text-sm mb-6">
+            <p className="text-navy-500 text-sm mb-6">
               You scored {score}%. The pass mark for the certificate is {passmark}%. Review the rationale
               below — your manager can grant a retake.
             </p>
@@ -812,15 +812,15 @@ export default function QuizClient({
             <div className="flex items-center justify-center gap-8">
               <div className="text-center">
                 <p className="text-4xl font-black tabular-nums text-red-500">{score}%</p>
-                <p className="text-xs text-slate-400 mt-1">Your Score</p>
+                <p className="text-xs text-navy-400 mt-1">Your Score</p>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-black text-slate-300 tabular-nums">{passmark}%</p>
-                <p className="text-xs text-slate-400 mt-1">Pass Mark</p>
+                <p className="text-4xl font-black text-navy-300 tabular-nums">{passmark}%</p>
+                <p className="text-xs text-navy-400 mt-1">Pass Mark</p>
               </div>
               <div className="text-center">
                 <p className="text-4xl font-black text-navy tabular-nums">{correctCount}/{demoQuestions.length}</p>
-                <p className="text-xs text-slate-400 mt-1">Correct</p>
+                <p className="text-xs text-navy-400 mt-1">Correct</p>
               </div>
             </div>
           </div>
@@ -857,7 +857,7 @@ export default function QuizClient({
                       </p>
                     </>
                   )}
-                  <p className="text-xs text-slate-600 ml-6 bg-slate-50 rounded-lg p-2 border border-slate-100 leading-relaxed">
+                  <p className="text-xs text-navy-600 ml-6 bg-navy-50 rounded-lg p-2 border border-navy-100 leading-relaxed">
                     <span className="font-semibold">Rationale: </span>{q.rationale}
                   </p>
                 </div>
@@ -1004,7 +1004,7 @@ export default function QuizClient({
           <h2 className="text-2xl font-bold text-navy mb-1">
             {passed ? 'Assessment Passed!' : 'Not Quite There Yet'}
           </h2>
-          <p className="text-slate-500 text-sm mb-6">
+          <p className="text-navy-500 text-sm mb-6">
             {passed
               ? `Great work. You scored ${score}% — above the ${passmark}% pass threshold.`
               : `You scored ${score}%. The pass threshold is ${passmark}%. Review the module and try again.`
@@ -1018,15 +1018,15 @@ export default function QuizClient({
               <p className="text-4xl font-black tabular-nums" style={{ color: passed ? '#1D7874' : '#ef4444' }}>
                 {score}%
               </p>
-              <p className="text-xs text-slate-400 mt-1">Your Score</p>
+              <p className="text-xs text-navy-400 mt-1">Your Score</p>
             </div>
             <div className="text-center">
-              <p className="text-4xl font-black text-slate-300 tabular-nums">{passmark}%</p>
-              <p className="text-xs text-slate-400 mt-1">Pass Mark</p>
+              <p className="text-4xl font-black text-navy-300 tabular-nums">{passmark}%</p>
+              <p className="text-xs text-navy-400 mt-1">Pass Mark</p>
             </div>
             <div className="text-center">
               <p className="text-4xl font-black text-navy tabular-nums">{correctCount}/{demoQuestions.length}</p>
-              <p className="text-xs text-slate-400 mt-1">Correct</p>
+              <p className="text-xs text-navy-400 mt-1">Correct</p>
             </div>
           </div>
 
@@ -1084,7 +1084,7 @@ export default function QuizClient({
                       </p>
                     </>
                   )}
-                  <p className="text-xs text-slate-600 ml-6 bg-slate-50 rounded-lg p-2 border border-slate-100 leading-relaxed">
+                  <p className="text-xs text-navy-600 ml-6 bg-navy-50 rounded-lg p-2 border border-navy-100 leading-relaxed">
                     <span className="font-semibold">Rationale: </span>{q.rationale}
                   </p>
                 </div>
@@ -1095,7 +1095,7 @@ export default function QuizClient({
           {passed && !isReleaseQuiz && !isCrm2Quiz && (
             <div className="bg-gold/10 border border-gold/30 rounded-xl p-4 mb-6 text-left">
               <p className="text-sm font-bold text-navy mb-1">Recall checks scheduled ✓</p>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-navy-600 leading-relaxed">
                 To beat the forgetting curve, you&apos;ll receive a 3-question email recall check in{' '}
                 <strong>3 days</strong>, <strong>7 days</strong>, and <strong>30 days</strong>.
                 Each check takes under 2 minutes and won&apos;t affect your score.
@@ -1174,7 +1174,7 @@ export default function QuizClient({
   return (
     <div className="max-w-2xl mx-auto space-y-5">
       {!quizStarted && (
-        <Link href={backHref} className="text-sm text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
+        <Link href={backHref} className="text-sm text-navy-500 hover:text-navy flex items-center gap-1.5 transition-colors">
           <ArrowLeft className="w-4 h-4" /> {backLabel}
         </Link>
       )}
@@ -1182,15 +1182,15 @@ export default function QuizClient({
       <div className="card p-5">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <p className="text-xs text-slate-500 mb-0.5">{isRecapQuiz ? 'Monthly Recap' : isRecallQuiz ? `${recallLabel} Recall Check` : 'Assessment'}</p>
+            <p className="text-xs text-navy-500 mb-0.5">{isRecapQuiz ? 'Monthly Recap' : isRecallQuiz ? `${recallLabel} Recall Check` : 'Assessment'}</p>
             <h1 className="text-base font-bold text-navy">{moduleTitle}</h1>
           </div>
           <div className="flex items-center gap-4 text-sm">
-            <div className="flex items-center gap-1.5 text-slate-500">
+            <div className="flex items-center gap-1.5 text-navy-500">
               <Clock className="w-4 h-4" aria-hidden />
               <span>~{demoQuestions.length * 1.5} min</span>
             </div>
-            <div className="flex items-center gap-1.5 text-slate-500">
+            <div className="flex items-center gap-1.5 text-navy-500">
               <span className="font-semibold text-navy">{currentQ + 1}</span>
               <span>/ {demoQuestions.length}</span>
             </div>
@@ -1207,20 +1207,20 @@ export default function QuizClient({
                   ? (answers[i] === demoQuestions[i]?.correct ? 'bg-teal' : 'bg-red-400')
                   : i === currentQ
                     ? 'bg-orange'
-                    : 'bg-slate-100',
+                    : 'bg-navy-100',
               )}
               aria-hidden
             />
           ))}
         </div>
-        <div className="flex justify-between text-[11px] text-slate-400 mt-1">
+        <div className="flex justify-between text-[11px] text-navy-400 mt-1">
           <span>Q{currentQ + 1} of {demoQuestions.length}</span>
           <span>{isRecapQuiz || isRecallQuiz ? 'Knowledge check — no pass mark' : `Pass mark: ${passmark}%`}</span>
         </div>
       </div>
 
       <div className="card p-6">
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
+        <p className="text-xs font-semibold text-navy-400 uppercase tracking-wide mb-3">
           Question {currentQ + 1}
         </p>
         <h2 className="text-base font-bold text-navy leading-snug mb-6">
@@ -1241,21 +1241,21 @@ export default function QuizClient({
                 className={cn(
                   'w-full flex items-center gap-3 p-4 rounded-xl border text-left transition-all duration-150',
                   'focus:outline-none focus:ring-2 focus:ring-navy/20',
-                  !submitted && !isSelected && 'bg-white border-slate-200 hover:border-orange/40 hover:bg-orange/3',
+                  !submitted && !isSelected && 'bg-white border-navy-200 hover:border-orange/40 hover:bg-orange/3',
                   !submitted && isSelected  && 'bg-orange/8 border-orange text-navy',
                   submitted && isCorrect                   && 'bg-teal/8 border-teal',
                   submitted && isSelected && !isCorrect    && 'bg-red-50 border-red-400',
-                  submitted && !isSelected && !isCorrect   && 'bg-white border-slate-100 opacity-60',
+                  submitted && !isSelected && !isCorrect   && 'bg-white border-navy-100 opacity-60',
                 )}
                 aria-pressed={isSelected}
               >
                 <div className={cn(
                   'w-7 h-7 rounded-full border-2 flex items-center justify-center flex-shrink-0 text-xs font-bold transition-all',
-                  !submitted && !isSelected && 'border-slate-300 text-slate-400',
+                  !submitted && !isSelected && 'border-navy-300 text-navy-400',
                   !submitted && isSelected  && 'border-orange bg-orange text-white',
                   submitted && isCorrect    && 'border-teal bg-teal text-white',
                   submitted && isSelected && !isCorrect && 'border-red-500 bg-red-500 text-white',
-                  submitted && !isSelected && !isCorrect && 'border-slate-200 text-slate-300',
+                  submitted && !isSelected && !isCorrect && 'border-navy-200 text-navy-300',
                 )}>
                   {showResult && isCorrect    ? <CheckCircle2 className="w-4 h-4" /> :
                    showResult && isSelected && !isCorrect ? <XCircle className="w-4 h-4" /> :
@@ -1263,10 +1263,10 @@ export default function QuizClient({
                 </div>
                 <span className={cn(
                   'text-sm leading-snug flex-1',
-                  !submitted && 'text-slate-700',
+                  !submitted && 'text-navy-700',
                   submitted && isCorrect && 'text-teal font-semibold',
                   submitted && isSelected && !isCorrect && 'text-red-600',
-                  submitted && !isSelected && !isCorrect && 'text-slate-400',
+                  submitted && !isSelected && !isCorrect && 'text-navy-400',
                 )}>
                   {opt}
                 </span>
@@ -1276,8 +1276,8 @@ export default function QuizClient({
         </div>
 
         {showConfidence && !submitted && selected !== null && (
-          <div className="mt-5 pt-5 border-t border-slate-100">
-            <p className="text-xs font-semibold text-slate-500 mb-2.5">How sure are you?</p>
+          <div className="mt-5 pt-5 border-t border-navy-100">
+            <p className="text-xs font-semibold text-navy-500 mb-2.5">How sure are you?</p>
             <div className="flex items-center gap-2" role="group" aria-label="Confidence level">
               {CONFIDENCE_OPTIONS.map(({ value, label }) => {
                 const active = confidence === value
@@ -1289,7 +1289,7 @@ export default function QuizClient({
                     className={cn(
                       'flex-1 px-3 py-2 rounded-xl border text-xs font-semibold transition-all',
                       'focus:outline-none focus:ring-2 focus:ring-navy/20',
-                      active ? 'bg-navy text-white border-navy' : 'bg-white text-slate-500 border-slate-200 hover:border-navy/40',
+                      active ? 'bg-navy text-white border-navy' : 'bg-white text-navy-500 border-navy-200 hover:border-navy/40',
                     )}
                     aria-pressed={active}
                   >
@@ -1317,7 +1317,7 @@ export default function QuizClient({
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-navy-400">
           {submitted && selected !== question.correct ? 'Review the rationale before moving on.' : ''}
         </p>
         {!submitted ? (

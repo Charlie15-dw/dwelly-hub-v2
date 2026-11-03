@@ -20,18 +20,18 @@ export default async function UpdatesPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-navy transition">
+      <Link href="/hub" className="inline-flex items-center gap-1.5 text-sm text-navy-500 hover:text-navy transition">
         <ArrowLeft className="w-4 h-4" aria-hidden />
         Back to Hub
       </Link>
 
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center border text-indigo-700 bg-indigo-100 border-indigo-200">
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center border text-orange-700 bg-orange-100 border-orange-200">
           <Megaphone className="w-5 h-5" aria-hidden />
         </div>
         <div>
           <h1 className="text-xl font-bold text-navy">Dwelly Updates</h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-navy-500 mt-0.5">
             What&rsquo;s changing across Dwelly &mdash; newest first. Use the arrows to browse.
           </p>
         </div>

@@ -71,7 +71,7 @@ export default async function ToolsPage() {
           </div>
           <div className="card overflow-hidden">
             {g.tools.map(t => (
-              <Link key={t.href} href={t.href} className="group flex items-center gap-4 px-6 py-[18px] border-t border-slate-100 first:border-t-0 hover:bg-slate-50 transition-colors">
+              <Link key={t.href} href={t.href} className="group flex items-center gap-4 px-6 py-[18px] border-t border-navy-100 first:border-t-0 hover:bg-navy-50 transition-colors">
                 <span className="w-10 h-10 rounded-xl bg-[#F2F2F3] flex items-center justify-center flex-shrink-0">
                   <t.icon className="w-5 h-5 text-[var(--text-secondary)]" aria-hidden />
                 </span>
@@ -79,7 +79,7 @@ export default async function ToolsPage() {
                   <p className="text-[15.5px] font-semibold text-navy">{t.label}</p>
                   <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">{t.blurb}</p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
+                <ChevronRight className="w-4 h-4 text-navy-300 group-hover:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
               </Link>
             ))}
           </div>

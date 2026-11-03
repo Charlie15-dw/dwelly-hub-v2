@@ -30,7 +30,7 @@ export default function WelcomeGreeting({
     <>
       <p className="text-sm mb-1 text-orange">Welcome back,</p>
       <h2 className="text-2xl font-bold text-navy">{firstName || '…'}</h2>
-      <p className="text-sm mt-1 text-slate-500">{roleLabel}</p>
+      <p className="text-sm mt-1 text-navy-500">{roleLabel}</p>
     </>
   )
 }

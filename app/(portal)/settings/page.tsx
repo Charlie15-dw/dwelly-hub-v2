@@ -27,7 +27,7 @@ function Toggle({
       />
       <span
         className={`relative inline-flex w-10 h-5 rounded-full transition-colors duration-200 ${
-          checked ? 'bg-[#2C68ED]' : 'bg-slate-200'
+          checked ? 'bg-[#2C68ED]' : 'bg-navy-200'
         }`}
       >
         <span
@@ -59,7 +59,7 @@ function ToggleRow({
     <div className="flex justify-between items-center py-2">
       <div className="pr-4">
         <p className="text-sm font-semibold text-navy">{label}</p>
-        <p className="text-xs text-slate-500 mt-0.5">{description}</p>
+        <p className="text-xs text-navy-500 mt-0.5">{description}</p>
       </div>
       <Toggle id={id} checked={checked} onChange={onChange} />
     </div>
@@ -103,7 +103,7 @@ export default function SettingsPage() {
         <SettingsIcon className="w-5 h-5 text-[#2C68ED]" />
         <div>
           <h1 className="text-xl font-bold text-navy">Settings</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Manage your profile and preferences</p>
+          <p className="text-xs text-navy-500 mt-0.5">Manage your profile and preferences</p>
         </div>
       </div>
 
@@ -115,32 +115,32 @@ export default function SettingsPage() {
 
         <div className="flex items-start gap-5">
           {/* Avatar */}
-          <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0">
-            <span className="text-lg font-semibold text-slate-600">{initials}</span>
+          <div className="w-16 h-16 rounded-full bg-navy-200 flex items-center justify-center flex-shrink-0">
+            <span className="text-lg font-semibold text-navy-600">{initials}</span>
           </div>
 
           {/* Fields */}
           <div className="flex-1 grid grid-cols-2 gap-4">
             <div>
-              <p className="text-xs text-slate-500">Name</p>
+              <p className="text-xs text-navy-500">Name</p>
               <p className="text-sm font-medium text-navy mt-0.5">{displayName}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-500">Role</p>
+              <p className="text-xs text-navy-500">Role</p>
               <p className="text-sm font-medium text-navy mt-0.5">{roleLabel}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-500">Email</p>
+              <p className="text-xs text-navy-500">Email</p>
               <p className="text-sm font-medium text-navy mt-0.5">{email}</p>
             </div>
           </div>
         </div>
 
-        <div className="mt-5 pt-4 border-t border-slate-100">
+        <div className="mt-5 pt-4 border-t border-navy-100">
           <button
             disabled
             title="Coming soon"
-            className="text-sm border border-slate-200 rounded-lg px-4 py-2 opacity-50 cursor-not-allowed text-navy"
+            className="text-sm border border-navy-200 rounded-lg px-4 py-2 opacity-50 cursor-not-allowed text-navy"
           >
             Edit Profile
           </button>
@@ -153,7 +153,7 @@ export default function SettingsPage() {
       <div className="card p-6">
         <SectionHeader icon={Bell} title="Notification Preferences" />
 
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-navy-100">
           <ToggleRow
             id="notif-email-digest"
             label="Email Digest"
@@ -226,9 +226,9 @@ export default function SettingsPage() {
               max={10}
               value={settings.learning.weeklyGoal}
               onChange={(e) => setLearning('weeklyGoal', Number(e.target.value))}
-              className="w-full h-1.5 rounded-full appearance-none bg-slate-200 accent-[#2C68ED] cursor-pointer"
+              className="w-full h-1.5 rounded-full appearance-none bg-navy-200 accent-[#2C68ED] cursor-pointer"
             />
-            <div className="flex justify-between text-xs text-slate-400 mt-1">
+            <div className="flex justify-between text-xs text-navy-400 mt-1">
               <span>1 hr</span>
               <span>10 hrs</span>
             </div>
@@ -238,7 +238,7 @@ export default function SettingsPage() {
           <div className="flex justify-between items-center py-1">
             <div>
               <p className="text-sm font-semibold text-navy">Auto-play Videos</p>
-              <p className="text-xs text-slate-500 mt-0.5">Automatically play the next video in a module</p>
+              <p className="text-xs text-navy-500 mt-0.5">Automatically play the next video in a module</p>
             </div>
             <Toggle
               id="learning-autoplay"
@@ -267,7 +267,7 @@ export default function SettingsPage() {
                   className={`px-4 py-1.5 rounded-lg text-sm border transition-colors capitalize ${
                     settings.accessibility.textSize === size
                       ? 'bg-[#2C68ED] text-white border-[#2C68ED] font-semibold'
-                      : 'bg-white text-navy border-slate-200 hover:border-slate-300'
+                      : 'bg-white text-navy border-navy-200 hover:border-navy-300'
                   }`}
                 >
                   {size}
@@ -277,7 +277,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Reduced Motion */}
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-navy-100">
             <ToggleRow
               id="a11y-reduced-motion"
               label="Reduced Motion"
@@ -306,7 +306,7 @@ export default function SettingsPage() {
           <button
             disabled
             title="Coming soon"
-            className="btn-outline text-sm px-4 py-2 opacity-50 cursor-not-allowed rounded-lg border border-slate-200 text-navy"
+            className="btn-outline text-sm px-4 py-2 opacity-50 cursor-not-allowed rounded-lg border border-navy-200 text-navy"
           >
             Change Password
           </button>

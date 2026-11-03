@@ -174,10 +174,10 @@ export default async function PassportPage() {
           <div key={label} className="card p-4">
             <div className="flex items-center gap-2 mb-2">
               <Icon className="w-4 h-4 text-orange" aria-hidden />
-              <p className="text-xs font-semibold text-slate-500">{label}</p>
+              <p className="text-xs font-semibold text-navy-500">{label}</p>
             </div>
             <p className="text-2xl font-black text-navy tabular-nums leading-none">{value}</p>
-            <p className="text-[11px] text-slate-400 mt-1">{sub}</p>
+            <p className="text-[11px] text-navy-400 mt-1">{sub}</p>
           </div>
         ))}
       </div>
@@ -191,7 +191,7 @@ export default async function PassportPage() {
             <Layers className="w-4 h-4 text-orange" aria-hidden />
             <h3 className="text-sm font-bold text-navy">Competency by Area</h3>
           </div>
-          <p className="text-xs text-slate-500 mb-4">Progress across the six core competency areas</p>
+          <p className="text-xs text-navy-500 mb-4">Progress across the six core competency areas</p>
 
           <div className="space-y-3">
             {SECTION_ORDER.map(sectionName => {
@@ -203,10 +203,10 @@ export default async function PassportPage() {
                 : { label: 'Not started', color: '#94949C' }
               const pct = Math.round((s.passed / s.total) * 100)
               return (
-                <div key={sectionName} className="rounded-xl border border-slate-100 p-3">
+                <div key={sectionName} className="rounded-xl border border-navy-100 p-3">
                   <div className="flex items-center justify-between gap-2 mb-2">
                     <div className="flex items-center gap-2 min-w-0">
-                      <Icon className="w-4 h-4 text-slate-400 flex-shrink-0" aria-hidden />
+                      <Icon className="w-4 h-4 text-navy-400 flex-shrink-0" aria-hidden />
                       <span className="text-sm font-semibold text-navy truncate">{sectionName}</span>
                     </div>
                     <span
@@ -216,11 +216,11 @@ export default async function PassportPage() {
                       {statusMeta.label}
                     </span>
                   </div>
-                  <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                  <div className="h-1.5 rounded-full bg-navy-100 overflow-hidden">
                     <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: statusMeta.color }} />
                   </div>
                   <div className="flex items-center justify-between mt-1.5">
-                    <span className="text-[11px] text-slate-500">{s.passed}/{s.total} passed</span>
+                    <span className="text-[11px] text-navy-500">{s.passed}/{s.total} passed</span>
                     <span className="text-[11px] font-semibold" style={{ color: scoreColor(s.avgScore) }}>
                       {s.avgScore !== null ? `${s.avgScore}% avg` : 'No attempts'}
                     </span>
@@ -238,7 +238,7 @@ export default async function PassportPage() {
           <ClipboardList className="w-4 h-4 text-orange" aria-hidden />
           <h3 className="text-sm font-bold text-navy">Assessment Record</h3>
         </div>
-        <p className="text-xs text-slate-500 mb-4">Every programme assessment · latest attempt</p>
+        <p className="text-xs text-navy-500 mb-4">Every programme assessment · latest attempt</p>
 
         <div className="space-y-4">
           {SECTION_ORDER.map(sectionName => {
@@ -246,7 +246,7 @@ export default async function PassportPage() {
             if (items.length === 0) return null
             return (
               <div key={sectionName}>
-                <p className="text-[11px] uppercase tracking-wide font-bold text-slate-400 mb-1.5">{sectionName}</p>
+                <p className="text-[11px] uppercase tracking-wide font-bold text-navy-400 mb-1.5">{sectionName}</p>
                 <div className="space-y-1">
                   {items.map(r => (
                     <AssessmentRow key={r.id} label={PASSPORT_ASSESSMENTS.find(a => a.id === r.id)?.label ?? r.label} attempted={r.attempted} passed={r.passed} score={r.score} completedAt={r.completedAt} />
@@ -258,7 +258,7 @@ export default async function PassportPage() {
 
           {milestoneRecord.length > 0 && (
             <div>
-              <p className="text-[11px] uppercase tracking-wide font-bold text-slate-400 mb-1.5">Milestone</p>
+              <p className="text-[11px] uppercase tracking-wide font-bold text-navy-400 mb-1.5">Milestone</p>
               <div className="space-y-1">
                 {milestoneRecord.map(r => (
                   <AssessmentRow key={r.id} label={PASSPORT_MILESTONES.find(m => m.id === r.id)?.label ?? r.label} attempted={r.attempted} passed={r.passed} score={r.score} completedAt={r.completedAt} />
@@ -275,11 +275,11 @@ export default async function PassportPage() {
           <Shield className="w-4 h-4 text-orange mt-0.5 flex-shrink-0" aria-hidden />
           <div>
             <h3 className="text-sm font-bold text-navy">Annual Re-Certification</h3>
-            <p className="text-xs text-slate-500 mt-0.5">{recertLabel}</p>
-            <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+            <p className="text-xs text-navy-500 mt-0.5">{recertLabel}</p>
+            <p className="text-xs text-navy-600 mt-2 leading-relaxed">
               Compliance-critical re-certification covering deposit protection, gas safety, and tenancy legislation.
             </p>
-            <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">
+            <div className="mt-3 flex items-center gap-1.5 text-xs text-navy-500">
               <Clock className="w-3 h-3" aria-hidden />
               <span>{daysUntilRecert > 0 ? `${daysUntilRecert} days until re-certification` : 'Re-certification due'}</span>
             </div>
@@ -294,7 +294,7 @@ export default async function PassportPage() {
             <Trophy className="w-4 h-4 text-orange" aria-hidden />
             <h3 className="text-sm font-bold text-navy">Achievement Badges</h3>
           </div>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-navy-500">
             {earnedBadges} of {achievements.length} earned
           </span>
         </div>
@@ -320,13 +320,13 @@ function AssessmentRow({
   const StatusIcon = !attempted ? MinusCircle : passed ? CheckCircle2 : Circle
   const statusColor = !attempted ? '#C7C7CC' : passed ? '#059669' : '#DC2626'
   return (
-    <div className="flex items-center justify-between gap-3 py-1.5 px-2 rounded-lg hover:bg-slate-50">
+    <div className="flex items-center justify-between gap-3 py-1.5 px-2 rounded-lg hover:bg-navy-50">
       <div className="flex items-center gap-2 min-w-0">
         <StatusIcon className="w-4 h-4 flex-shrink-0" style={{ color: statusColor }} aria-hidden />
         <span className="text-sm text-navy truncate">{label}</span>
       </div>
       <div className="flex items-center gap-3 flex-shrink-0">
-        {completedAt && <span className="text-[11px] text-slate-400 hidden sm:inline">{formatDate(completedAt)}</span>}
+        {completedAt && <span className="text-[11px] text-navy-400 hidden sm:inline">{formatDate(completedAt)}</span>}
         <span className="text-sm font-bold tabular-nums w-12 text-right" style={{ color: scoreColor(score) }}>
           {score !== null ? `${score}%` : '—'}
         </span>

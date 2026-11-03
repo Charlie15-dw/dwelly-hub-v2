@@ -201,7 +201,7 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
 function ArticleRow({ article, saved }: { article: KnowledgeArticle; saved: boolean }) {
   const cat = CATEGORY_META[article.category]
   return (
-    <Link href={`/knowledge/${article.id}`} className="group flex items-center gap-4 px-6 py-[18px] border-t border-slate-100 first:border-t-0 hover:bg-slate-50 transition-colors">
+    <Link href={`/knowledge/${article.id}`} className="group flex items-center gap-4 px-6 py-[18px] border-t border-navy-100 first:border-t-0 hover:bg-navy-50 transition-colors">
       <span className="w-8 h-8 rounded-lg bg-[#F2F2F3] flex items-center justify-center flex-shrink-0">
         <cat.icon className="w-4 h-4 text-[var(--text-secondary)]" aria-hidden />
       </span>
@@ -213,7 +213,7 @@ function ArticleRow({ article, saved }: { article: KnowledgeArticle; saved: bool
       <span className="hidden sm:flex items-center gap-1.5 text-xs text-[var(--text-tertiary)] flex-shrink-0">
         <Clock className="w-3.5 h-3.5" aria-hidden /> {article.readTime}
       </span>
-      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
+      <ChevronRight className="w-4 h-4 text-navy-300 group-hover:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
     </Link>
   )
 }

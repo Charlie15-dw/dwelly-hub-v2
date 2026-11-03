@@ -81,18 +81,18 @@ export default function TeamAssignmentPanel({
 
         {/* Unassigned users */}
         <div>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+          <p className="text-xs font-semibold text-navy-500 uppercase tracking-wide mb-3">
             Unassigned ({localUnassigned.length})
           </p>
           {localUnassigned.length === 0 ? (
-            <p className="text-xs text-slate-400">No unassigned users.</p>
+            <p className="text-xs text-navy-400">No unassigned users.</p>
           ) : (
             <div className="space-y-2">
               {localUnassigned.map(u => (
-                <div key={u.id} className="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-100 bg-slate-50/50">
+                <div key={u.id} className="flex items-center justify-between gap-3 p-3 rounded-xl border border-navy-100 bg-navy-50/50">
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-navy truncate">{u.displayName}</p>
-                    <p className="text-[11px] text-slate-400 truncate">{u.email ?? '—'}</p>
+                    <p className="text-[11px] text-navy-400 truncate">{u.email ?? '—'}</p>
                   </div>
                   <button
                     onClick={() => assign(u)}
@@ -113,23 +113,23 @@ export default function TeamAssignmentPanel({
 
         {/* My team */}
         <div>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+          <p className="text-xs font-semibold text-navy-500 uppercase tracking-wide mb-3">
             Your Team ({localTeam.length})
           </p>
           {localTeam.length === 0 ? (
-            <p className="text-xs text-slate-400">No one assigned yet — add from the left.</p>
+            <p className="text-xs text-navy-400">No one assigned yet — add from the left.</p>
           ) : (
             <div className="space-y-2">
               {localTeam.map(u => (
                 <div key={u.id} className="flex items-center justify-between gap-3 p-3 rounded-xl border border-teal/20 bg-teal/3">
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-navy truncate">{u.displayName}</p>
-                    <p className="text-[11px] text-slate-400 truncate">{u.email ?? '—'}</p>
+                    <p className="text-[11px] text-navy-400 truncate">{u.email ?? '—'}</p>
                   </div>
                   <button
                     onClick={() => unassign(u)}
                     disabled={loadingId === u.id || pending}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 bg-white hover:bg-red-50 hover:text-red-600 border border-slate-200 hover:border-red-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-navy-500 bg-white hover:bg-red-50 hover:text-red-600 border border-navy-200 hover:border-red-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
                   >
                     {loadingId === u.id
                       ? <Loader2 className="w-3 h-3 animate-spin" />
