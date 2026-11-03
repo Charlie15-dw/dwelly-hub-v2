@@ -5,7 +5,7 @@
 
 export default function PrintLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-white text-[#1D1D1F]">
+    <div className="min-h-screen bg-white text-[#101010]">
       <div className="mx-auto max-w-3xl px-8 py-10 print:px-0 print:py-0">
         {children}
       </div>

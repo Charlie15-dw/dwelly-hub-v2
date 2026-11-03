@@ -135,8 +135,8 @@ export default function ElevatedAssessments() {
           <span className="text-[15px] text-[var(--text-tertiary)]">/ {total}</span>
         </div>
         <div className="flex-1 min-w-0 space-y-2">
-          <div className="h-2 rounded-full bg-[#E8E8ED] overflow-hidden">
-            <span className="hub-bar block h-full bg-[#0071E3]" style={{ width: `${pct}%` }} />
+          <div className="h-2 rounded-full bg-[#E2E2E4] overflow-hidden">
+            <span className="hub-bar block h-full bg-[#2C68ED]" style={{ width: `${pct}%` }} />
           </div>
           <p className="text-[13.5px] text-[var(--text-secondary)]">
             {ready.length} ready to take{locked.length > 0 ? ` · ${locked.length} locked` : ''} · {passed.length} passed
@@ -190,7 +190,7 @@ export default function ElevatedAssessments() {
                 <p className="text-[15.5px] font-semibold text-navy truncate">{r.title}</p>
                 <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">Passed{r.score != null ? ` · scored ${r.score}%` : ''} · pass mark {r.passmark}%</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
+              <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
             </Link>
           ))}
         </Group>
@@ -215,7 +215,7 @@ function Group({ title, children, fade = 'hub-fade-2' }: { title: string; childr
 function RowLink({ row, primary }: { row: Row; primary: boolean }) {
   return (
     <Link href={`/quiz/${row.id}`} className="group flex items-center gap-4 px-6 py-[18px] border-t border-navy-100 first:border-t-0 hover:bg-navy-50 transition-colors">
-      <span className="w-2 h-2 rounded-full bg-[#0071E3] flex-shrink-0" aria-hidden />
+      <span className="w-2 h-2 rounded-full bg-[#2C68ED] flex-shrink-0" aria-hidden />
       <div className="min-w-0 flex-1">
         <p className="text-[15.5px] font-semibold text-navy truncate">{row.title}</p>
         <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">{row.questions} questions · pass mark {row.passmark}%</p>

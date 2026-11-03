@@ -66,7 +66,7 @@ export default function TeamAssignmentPanel({
   return (
     <div className="card p-5 space-y-5">
       <div className="flex items-center gap-2">
-        <UserPlus className="w-4 h-4 text-[#0071E3]" aria-hidden />
+        <UserPlus className="w-4 h-4 text-[#2C68ED]" aria-hidden />
         <h2 className="text-sm font-bold text-navy">Team Assignment</h2>
       </div>
 
@@ -97,7 +97,7 @@ export default function TeamAssignmentPanel({
                   <button
                     onClick={() => assign(u)}
                     disabled={loadingId === u.id || pending}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-white bg-[#0071E3] hover:bg-[#0071E3]/90 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-white bg-[#2C68ED] hover:bg-[#2C68ED]/90 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
                   >
                     {loadingId === u.id
                       ? <Loader2 className="w-3 h-3 animate-spin" />

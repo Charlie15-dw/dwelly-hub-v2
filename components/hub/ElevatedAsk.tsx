@@ -86,13 +86,13 @@ export default function ElevatedAsk({ yours }: { yours: YourQuestion[] }) {
             maxLength={HUB_QUESTION_MAX_LENGTH}
             rows={5}
             placeholder="Ask a question, raise an idea, or flag something that feels broken…"
-            className="w-full text-[15px] rounded-2xl border border-[#D2D2D7] px-4 py-3.5 text-navy focus:outline-none focus:ring-2 focus:ring-[#0071E3]/15 focus:border-[#0071E3] resize-y"
+            className="w-full text-[15px] rounded-2xl border border-[#C8C8CC] px-4 py-3.5 text-navy focus:outline-none focus:ring-2 focus:ring-[#2C68ED]/15 focus:border-[#2C68ED] resize-y"
           />
         </div>
 
         {/* Anonymity promise sits right where you type */}
-        <div className="flex items-start gap-2.5 rounded-xl bg-[#0071E3]/6 border border-[#0071E3]/15 px-3.5 py-3">
-          <ShieldCheck className="w-4 h-4 text-[#0071E3] flex-shrink-0 mt-0.5" aria-hidden />
+        <div className="flex items-start gap-2.5 rounded-xl bg-[#2C68ED]/6 border border-[#2C68ED]/15 px-3.5 py-3">
+          <ShieldCheck className="w-4 h-4 text-[#2C68ED] flex-shrink-0 mt-0.5" aria-hidden />
           <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
             Anonymous. Reviewers see the text, never who wrote it. Your name is never attached to what you send.
           </p>
@@ -110,7 +110,7 @@ export default function ElevatedAsk({ yours }: { yours: YourQuestion[] }) {
                 'text-[13px] font-medium px-3 py-1.5 rounded-full border transition-colors ' +
                 (category === c
                   ? 'bg-navy text-white border-navy'
-                  : 'bg-white text-[var(--text-secondary)] border-[#D2D2D7] hover:border-[#0071E3] hover:text-navy')
+                  : 'bg-white text-[var(--text-secondary)] border-[#C8C8CC] hover:border-[#2C68ED] hover:text-navy')
               }
             >
               {c}
@@ -179,7 +179,7 @@ export default function ElevatedAsk({ yours }: { yours: YourQuestion[] }) {
           <p className="text-[15px] font-semibold text-navy">You said, we did</p>
           <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">See what the team raised — and what we actually did about it.</p>
         </div>
-        <ArrowRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
+        <ArrowRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
       </Link>
     </div>
   )

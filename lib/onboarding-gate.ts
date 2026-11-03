@@ -14,9 +14,11 @@ export const GRADUATED_STAGE = 7
 export const ONBOARDING_HOME = '/getting-started'
 
 export type OnboardingRole = string | null | undefined
+export type OnboardingDepartment = string | null | undefined
 
 export interface OnboardingProfile {
   role: OnboardingRole
+  department?: OnboardingDepartment
   onboarding_stage: number | null | undefined
   onboarding_bypass: boolean | null | undefined
 }
@@ -27,13 +29,39 @@ export function roleSkipsOnboarding(role: OnboardingRole): boolean {
   return role === 'manager' || role === 'admin'
 }
 
-// Has this user finished (or been excused from) onboarding? A missing stage is
-// treated as graduated so a failed profile read never traps anyone.
+// The staged journey below (ONBOARDING_STAGES in lib/onboarding.ts — Maintenance
+// → Compliance → Move-outs → Inspections → Support → Right to Rent) is
+// Property Management's own curriculum. It doesn't apply to Tenant Find,
+// Finance or Property Specialists — they have no staged onboarding yet, so
+// they're treated as graduated from THIS gate and go straight to their own
+// /training/[department] once the welcome steps below are done.
 export function isGraduated(profile: OnboardingProfile | null | undefined): boolean {
   if (!profile) return true
   if (profile.onboarding_bypass) return true
   if (roleSkipsOnboarding(profile.role)) return true
+  if (profile.department && profile.department !== 'property-management') return true
   return (profile.onboarding_stage ?? GRADUATED_STAGE) >= GRADUATED_STAGE
+}
+
+// ─── Welcome gate (new, department-general) ────────────────────────────────
+// Before ANY department-specific content, every new starter (not managers or
+// admins — same exemption as above, they're existing staff, not new hires)
+// goes through two shared steps: the Dwelly-wide navigation rundown, then
+// their department's role overview (what good looks like, expectations,
+// crossovers). Completion is tracked the same way written guides already are
+// (content_completions, content_type='onboarding'), so no new table is needed.
+export const WELCOME_STEPS = ['navigation', 'role'] as const
+export type WelcomeStep = typeof WELCOME_STEPS[number]
+export const WELCOME_HOME = `/welcome/${WELCOME_STEPS[0]}`
+
+export function hasCompletedWelcome(completedIds: string[], role: OnboardingRole): boolean {
+  if (roleSkipsOnboarding(role)) return true
+  return WELCOME_STEPS.every((step) => completedIds.includes(step))
+}
+
+export function nextWelcomeStep(completedIds: string[]): string {
+  const next = WELCOME_STEPS.find((step) => !completedIds.includes(step))
+  return `/welcome/${next ?? WELCOME_STEPS[0]}`
 }
 
 // Content areas an onboarding user may reach (the real lesson/guide/quiz pages
@@ -67,4 +95,24 @@ export function onboardingRedirect(
   if (isGraduated(profile)) return null
   if (onboardingPathAllowed(pathname)) return null
   return ONBOARDING_HOME
+}
+
+// The single gate decision used by middleware, combining both layers:
+//   1. Welcome (navigation + role) — everyone, regardless of department
+//   2. PM's staged onboarding — property-management department only
+// Returns a path to redirect to, or null to let the request through.
+export function resolveGateRedirect(
+  pathname: string,
+  profile: OnboardingProfile | null | undefined,
+  completedWelcomeIds: string[],
+): string | null {
+  const role = profile?.role
+  if (roleSkipsOnboarding(role)) return null
+
+  if (!hasCompletedWelcome(completedWelcomeIds, role)) {
+    if (matchesPrefix(pathname, '/welcome')) return null
+    return nextWelcomeStep(completedWelcomeIds)
+  }
+
+  return onboardingRedirect(pathname, profile)
 }

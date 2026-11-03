@@ -9,7 +9,7 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
   return (
     <UserProvider>
       <SettingsProvider>
-        <div className="relative min-h-[100dvh] bg-[#F5F5F7]">
+        <div className="relative min-h-[100dvh] bg-[#F2F2F3]">
           <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
             <div className="hub-orb-a absolute -top-32 -right-24 w-[32rem] h-[32rem] rounded-full bg-orange-500/[0.06] blur-3xl" />
             <div className="hub-orb-b absolute top-1/3 -left-32 w-[28rem] h-[28rem] rounded-full bg-orange-400/[0.05] blur-3xl" />

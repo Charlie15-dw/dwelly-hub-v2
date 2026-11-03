@@ -100,11 +100,11 @@ export default function ElevatedUpdates({ updates }: { updates: HubUpdate[] }) {
                     onClick={() => setActiveId(u.id)}
                     className={
                       'w-full text-left flex items-start gap-3 px-4 py-3.5 border-t border-navy-100 first:border-t-0 transition-colors ' +
-                      (on ? 'bg-[#0071E3]/6' : 'hover:bg-navy-50')
+                      (on ? 'bg-[#2C68ED]/6' : 'hover:bg-navy-50')
                     }
                   >
                     <span className="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full" aria-hidden>
-                      <span className={'block w-1.5 h-1.5 rounded-full ' + (isUnread(u.id) ? 'bg-[#0071E3]' : 'bg-transparent')} />
+                      <span className={'block w-1.5 h-1.5 rounded-full ' + (isUnread(u.id) ? 'bg-[#2C68ED]' : 'bg-transparent')} />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className={'block text-[14px] leading-snug truncate ' + (on ? 'font-semibold text-navy' : isUnread(u.id) ? 'font-semibold text-navy' : 'font-medium text-[var(--text-secondary)]')}>
@@ -138,8 +138,8 @@ function Header({ unread, onMarkAll, showMarkAll }: { unread: number; onMarkAll:
 
       <section className="hub-fade relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#0071E3]/30 blur-3xl" />
-          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#0071E3]/12 blur-3xl" />
+          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#2C68ED]/30 blur-3xl" />
+          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#2C68ED]/12 blur-3xl" />
           <div
             className="absolute inset-0 opacity-[0.12]"
             style={{
@@ -185,7 +185,7 @@ function UpdateDetail({ update }: { update: HubUpdate }) {
   return (
     <article className="card p-7 space-y-5">
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-[#0071E3]">{fmtLong(update.date)}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[#2C68ED]">{fmtLong(update.date)}</p>
         <h2 className="text-xl font-semibold text-navy mt-1">{update.title}</h2>
         {update.intro && <p className="text-sm text-[var(--text-secondary)] mt-2 leading-relaxed">{update.intro}</p>}
       </div>
@@ -209,7 +209,7 @@ function UpdateDetail({ update }: { update: HubUpdate }) {
               {section.items.map((item, i) => (
                 <li key={i} className="text-sm text-[var(--text-secondary)]">
                   <div className="flex gap-2">
-                    <span className="mt-1.5 w-1 h-1 rounded-full bg-[#0071E3] flex-shrink-0" aria-hidden />
+                    <span className="mt-1.5 w-1 h-1 rounded-full bg-[#2C68ED] flex-shrink-0" aria-hidden />
                     <span>{item.text}</span>
                   </div>
                   {item.children && item.children.length > 0 && (

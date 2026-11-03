@@ -49,7 +49,7 @@ export default function ProgressRing({
                   className="progress-fill"
                   style={{
                     width: `${pct}%`,
-                    background: complete ? '#1A7F37' : started ? '#0071E3' : 'transparent',
+                    background: complete ? '#1A7F37' : started ? '#2C68ED' : 'transparent',
                   }}
                 />
               </div>

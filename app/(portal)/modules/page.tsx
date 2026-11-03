@@ -84,14 +84,14 @@ export default async function ModulesPage() {
     <div className="space-y-6">
 
       {/* Pre-training prompt banner */}
-      <div className="rounded-2xl bg-[#0071E3]/6 border border-[#0071E3]/20 p-5 flex items-start sm:items-center justify-between gap-4 flex-wrap">
+      <div className="rounded-2xl bg-[#2C68ED]/6 border border-[#2C68ED]/20 p-5 flex items-start sm:items-center justify-between gap-4 flex-wrap">
         <div className="flex items-start sm:items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-[#0071E3]/10 flex items-center justify-center flex-shrink-0">
-            <Brain className="w-5 h-5 text-[#0071E3]" aria-hidden />
+          <div className="w-10 h-10 rounded-xl bg-[#2C68ED]/10 flex items-center justify-center flex-shrink-0">
+            <Brain className="w-5 h-5 text-[#2C68ED]" aria-hidden />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#1D1D1F]">Complete your Learning Profile first</p>
-            <p className="text-xs text-[#6E6E73] mt-0.5 leading-relaxed">
+            <p className="text-sm font-bold text-[#101010]">Complete your Learning Profile first</p>
+            <p className="text-xs text-[#7D7C86] mt-0.5 leading-relaxed">
               8 quick questions that help us tailor your training — and give your manager useful context to support you.
             </p>
           </div>
@@ -185,14 +185,14 @@ export default async function ModulesPage() {
       </div>
 
       {/* Assessments CTA */}
-      <div className="rounded-2xl border border-[#E8E8ED] bg-[#F5F5F7] p-5 flex items-center justify-between gap-4 flex-wrap">
+      <div className="rounded-2xl border border-[#E2E2E4] bg-[#F2F2F3] p-5 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#0071E3]/10 flex items-center justify-center flex-shrink-0">
-            <ClipboardCheck className="w-4.5 h-4.5 text-[#0071E3]" aria-hidden />
+          <div className="w-9 h-9 rounded-xl bg-[#2C68ED]/10 flex items-center justify-center flex-shrink-0">
+            <ClipboardCheck className="w-4.5 h-4.5 text-[#2C68ED]" aria-hidden />
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#1D1D1F]">Ready to test your knowledge?</p>
-            <p className="text-xs text-[#6E6E73] mt-0.5">Section assessments and the full assessment are in the Assessments tab.</p>
+            <p className="text-sm font-semibold text-[#101010]">Ready to test your knowledge?</p>
+            <p className="text-xs text-[#7D7C86] mt-0.5">Section assessments and the full assessment are in the Assessments tab.</p>
           </div>
         </div>
         <Link href="/assessments" className="btn-primary flex-shrink-0">

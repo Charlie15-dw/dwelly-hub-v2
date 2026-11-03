@@ -125,9 +125,9 @@ export default async function RecapPage() {
                       {completed ? 'Completed' : 'Mandatory'}
                     </span>
                   </div>
-                  <h2 className="text-base font-bold text-[#1D1D1F]">{quiz.title}</h2>
-                  <p className="text-sm text-[#1D1D1F]/60 mt-0.5">{quiz.subtitle}</p>
-                  <div className="flex items-center gap-3 mt-2 text-xs text-[#6E6E73]">
+                  <h2 className="text-base font-bold text-[#101010]">{quiz.title}</h2>
+                  <p className="text-sm text-[#101010]/60 mt-0.5">{quiz.subtitle}</p>
+                  <div className="flex items-center gap-3 mt-2 text-xs text-[#7D7C86]">
                     <span>12 questions</span>
                     <span>·</span>
                     <span>Pass mark {quiz.passmark}%</span>
@@ -174,8 +174,8 @@ export default async function RecapPage() {
               </span>
             </div>
 
-            <h1 className="text-2xl font-bold text-[#1D1D1F] mb-1">Recap &amp; Refresh</h1>
-            <p className="text-sm text-[#1D1D1F]/60">Stay sharp. Stay current. Keep your knowledge up to date.</p>
+            <h1 className="text-2xl font-bold text-[#101010] mb-1">Recap &amp; Refresh</h1>
+            <p className="text-sm text-[#101010]/60">Stay sharp. Stay current. Keep your knowledge up to date.</p>
           </div>
 
           {/* Streak + last check-in pills */}
@@ -184,8 +184,8 @@ export default async function RecapPage() {
               <div className="flex items-center gap-2 bg-white/80 border border-white rounded-xl px-4 py-2.5 shadow-sm">
                 <Calendar className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#4F46E5' }} aria-hidden />
                 <div>
-                  <p className="text-[10px] text-[#6E6E73] leading-none mb-0.5">Last check-in</p>
-                  <p className="text-xs font-semibold text-[#1D1D1F]">
+                  <p className="text-[10px] text-[#7D7C86] leading-none mb-0.5">Last check-in</p>
+                  <p className="text-xs font-semibold text-[#101010]">
                     {new Date(lastCheckIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                   </p>
                 </div>
@@ -194,8 +194,8 @@ export default async function RecapPage() {
             <div className="flex items-center gap-2 bg-white/80 border border-white rounded-xl px-4 py-2.5 shadow-sm">
               <Flame className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" aria-hidden />
               <div>
-                <p className="text-[10px] text-[#6E6E73] leading-none mb-0.5">Monthly streak</p>
-                <p className="text-xs font-semibold text-[#1D1D1F]">{streak} month{streak !== 1 ? 's' : ''}</p>
+                <p className="text-[10px] text-[#7D7C86] leading-none mb-0.5">Monthly streak</p>
+                <p className="text-xs font-semibold text-[#101010]">{streak} month{streak !== 1 ? 's' : ''}</p>
               </div>
             </div>
           </div>
@@ -204,7 +204,7 @@ export default async function RecapPage() {
 
       {/* ── 2. This month's check-in ─────────────────────────────────────────── */}
       <div className="card p-6" style={{ borderLeft: '4px solid #4F46E5' }}>
-        <p className="text-xs font-bold text-[#1D1D1F] uppercase tracking-widest mb-5">
+        <p className="text-xs font-bold text-[#101010] uppercase tracking-widest mb-5">
           This Month&apos;s Check-In
         </p>
 
@@ -227,7 +227,7 @@ export default async function RecapPage() {
                     Available now
                   </span>
                 </div>
-                <h2 className="text-lg font-bold text-[#1D1D1F] mb-2">{currentRound.theme}</h2>
+                <h2 className="text-lg font-bold text-[#101010] mb-2">{currentRound.theme}</h2>
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {currentRound.focus.map(f => (
                     <span
@@ -238,7 +238,7 @@ export default async function RecapPage() {
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center gap-4 text-xs text-[#6E6E73]">
+                <div className="flex items-center gap-4 text-xs text-[#7D7C86]">
                   <span>{currentRound.questionCount} questions</span>
                   <span>·</span>
                   <span>~20 min</span>
@@ -269,23 +269,23 @@ export default async function RecapPage() {
         {/* Past rounds */}
         {pastRounds.length > 0 && (
           <div>
-            <p className="text-[10px] font-semibold text-[#AEAEB2] uppercase tracking-widest mb-3">
+            <p className="text-[10px] font-semibold text-[#AEAEB4] uppercase tracking-widest mb-3">
               Previous Check-Ins
             </p>
             <div className="space-y-2">
               {pastRounds.map(round => (
                 <div
                   key={round.id}
-                  className="flex items-center justify-between p-3.5 rounded-xl border border-[#E8E8ED] bg-[#F9F9FB]"
+                  className="flex items-center justify-between p-3.5 rounded-xl border border-[#E2E2E4] bg-[#F9F9FB]"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" aria-hidden />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-[#1D1D1F] truncate">
+                      <p className="text-sm font-semibold text-[#101010] truncate">
                         {round.label} — {round.theme}
                       </p>
                       {round.completedDate && (
-                        <p className="text-xs text-[#AEAEB2] mt-0.5">
+                        <p className="text-xs text-[#AEAEB4] mt-0.5">
                           Completed {new Date(round.completedDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
                         </p>
                       )}
@@ -315,9 +315,9 @@ export default async function RecapPage() {
         <div className="card p-6" style={{ borderLeft: '4px solid #EA580C' }}>
           <div className="flex items-center gap-2 mb-2">
             <Target className="w-4 h-4 flex-shrink-0 text-orange-600" aria-hidden />
-            <p className="text-xs font-bold text-[#1D1D1F] uppercase tracking-widest">Your Focus Areas</p>
+            <p className="text-xs font-bold text-[#101010] uppercase tracking-widest">Your Focus Areas</p>
           </div>
-          <p className="text-xs text-[#6E6E73] mb-5">
+          <p className="text-xs text-[#7D7C86] mb-5">
             Based on your latest assessment scores — the areas where a quick refresh would help most.
           </p>
           <div className="space-y-2">
@@ -335,12 +335,12 @@ export default async function RecapPage() {
                       Last score {area.score}%
                     </span>
                   </div>
-                  <p className="text-sm font-semibold text-[#1D1D1F] truncate">{area.title}</p>
+                  <p className="text-sm font-semibold text-[#101010] truncate">{area.title}</p>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <Link
                     href={`/modules/${area.moduleId}`}
-                    className="text-xs font-semibold px-3 py-2 rounded-lg border border-[#E8E8ED] bg-white text-[#6E6E73] hover:border-[#1D1D1F]/30 transition"
+                    className="text-xs font-semibold px-3 py-2 rounded-lg border border-[#E2E2E4] bg-white text-[#7D7C86] hover:border-[#101010]/30 transition"
                   >
                     Rewatch
                   </Link>
@@ -362,19 +362,19 @@ export default async function RecapPage() {
       <div className="card p-5">
         <div className="flex items-center gap-2 mb-5">
           <Newspaper className="w-4 h-4 flex-shrink-0" style={{ color: '#4F46E5' }} aria-hidden />
-          <p className="text-xs font-bold text-[#1D1D1F] uppercase tracking-widest">What&apos;s New</p>
+          <p className="text-xs font-bold text-[#101010] uppercase tracking-widest">What&apos;s New</p>
         </div>
 
         <div className="space-y-2">
           {PORTAL_UPDATES.map(update => {
             const meta = UPDATE_CATEGORY_META[update.category]
             return (
-              <details key={update.id} className="group rounded-xl border border-[#E8E8ED] overflow-hidden">
-                <summary className="flex items-center gap-3 px-4 py-3.5 cursor-pointer hover:bg-[#F5F5F7] transition-colors list-none">
+              <details key={update.id} className="group rounded-xl border border-[#E2E2E4] overflow-hidden">
+                <summary className="flex items-center gap-3 px-4 py-3.5 cursor-pointer hover:bg-[#F2F2F3] transition-colors list-none">
                   <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border flex-shrink-0', meta.colour)}>
                     {meta.label}
                   </span>
-                  <span className="flex-1 text-sm font-semibold text-[#1D1D1F] leading-snug min-w-0">
+                  <span className="flex-1 text-sm font-semibold text-[#101010] leading-snug min-w-0">
                     {update.title}
                   </span>
                   {update.isNew && (
@@ -382,15 +382,15 @@ export default async function RecapPage() {
                       New
                     </span>
                   )}
-                  <span className="text-xs text-[#AEAEB2] flex-shrink-0 hidden sm:block">
+                  <span className="text-xs text-[#AEAEB4] flex-shrink-0 hidden sm:block">
                     {new Date(update.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                   </span>
                   <ChevronRight
-                    className="w-3.5 h-3.5 text-[#D2D2D7] flex-shrink-0 transition-transform duration-200 group-open:rotate-90"
+                    className="w-3.5 h-3.5 text-[#C8C8CC] flex-shrink-0 transition-transform duration-200 group-open:rotate-90"
                     aria-hidden
                   />
                 </summary>
-                <div className="px-4 py-3 text-sm text-[#6E6E73] leading-relaxed border-t border-[#E8E8ED] bg-[#F9F9FB]">
+                <div className="px-4 py-3 text-sm text-[#7D7C86] leading-relaxed border-t border-[#E2E2E4] bg-[#F9F9FB]">
                   {update.description}
                 </div>
               </details>
@@ -403,9 +403,9 @@ export default async function RecapPage() {
       <div className="card p-5">
         <div className="flex items-center gap-2 mb-1">
           <BookOpen className="w-4 h-4 flex-shrink-0" style={{ color: '#4F46E5' }} aria-hidden />
-          <p className="text-xs font-bold text-[#1D1D1F] uppercase tracking-widest">Video Library</p>
+          <p className="text-xs font-bold text-[#101010] uppercase tracking-widest">Video Library</p>
         </div>
-        <p className="text-xs text-[#6E6E73] mb-5">
+        <p className="text-xs text-[#7D7C86] mb-5">
           Rewatch any module at any time — click a section to filter.
         </p>
         <VideoLibraryTabs />
@@ -413,14 +413,14 @@ export default async function RecapPage() {
 
       {/* ── 5. Quick Refreshers ───────────────────────────────────────────────── */}
       <div className="card p-5">
-        <p className="text-xs font-bold text-[#1D1D1F] uppercase tracking-widest mb-5">
+        <p className="text-xs font-bold text-[#101010] uppercase tracking-widest mb-5">
           Quick Refreshers
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {refresherCols.map(col => (
             <div key={col.label}>
-              <p className="text-[10px] font-semibold text-[#AEAEB2] uppercase tracking-widest mb-3">
+              <p className="text-[10px] font-semibold text-[#AEAEB4] uppercase tracking-widest mb-3">
                 {col.label}
               </p>
               <div className="space-y-1">
@@ -428,17 +428,17 @@ export default async function RecapPage() {
                   <Link
                     key={article.id}
                     href={`/knowledge/${article.id}`}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#F5F5F7] transition-colors group"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#F2F2F3] transition-colors group"
                   >
                     <span className="text-lg leading-none flex-shrink-0" aria-hidden>{article.icon}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#1D1D1F] leading-snug line-clamp-1">
+                      <p className="text-sm font-semibold text-[#101010] leading-snug line-clamp-1">
                         {article.title}
                       </p>
-                      <p className="text-[11px] text-[#AEAEB2] mt-0.5">{article.readTime}</p>
+                      <p className="text-[11px] text-[#AEAEB4] mt-0.5">{article.readTime}</p>
                     </div>
                     <ChevronRight
-                      className="w-3.5 h-3.5 text-[#D2D2D7] group-hover:text-[#4F46E5] transition-colors flex-shrink-0"
+                      className="w-3.5 h-3.5 text-[#C8C8CC] group-hover:text-[#4F46E5] transition-colors flex-shrink-0"
                       aria-hidden
                     />
                   </Link>

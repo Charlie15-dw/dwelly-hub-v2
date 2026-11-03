@@ -43,7 +43,7 @@ const CERT_PILL: Record<string, { label: string; bg: string; color: string }> = 
 }
 
 function scoreColor(score: number | null): string {
-  if (score === null) return '#8E8E93'
+  if (score === null) return '#94949C'
   if (score >= PASS_MARK) return '#059669'
   if (score >= 65) return '#D97706'
   return '#DC2626'
@@ -117,7 +117,7 @@ export default async function PassportPage() {
             <div className="flex items-center gap-4">
               <div
                 className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-xl font-black"
-                style={{ background: 'linear-gradient(135deg, #0071E3, #6ECFCC)', color: '#fff' }}
+                style={{ background: 'linear-gradient(135deg, #2C68ED, #6ECFCC)', color: '#fff' }}
               >
                 {monogram}
               </div>
@@ -200,7 +200,7 @@ export default async function PassportPage() {
               const statusMeta =
                 s.status === 'proficient' ? { label: 'Proficient', color: '#059669' }
                 : s.status === 'developing' ? { label: 'Developing', color: '#D97706' }
-                : { label: 'Not started', color: '#8E8E93' }
+                : { label: 'Not started', color: '#94949C' }
               const pct = Math.round((s.passed / s.total) * 100)
               return (
                 <div key={sectionName} className="rounded-xl border border-slate-100 p-3">

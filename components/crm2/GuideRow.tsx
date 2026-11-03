@@ -34,7 +34,7 @@ export default function GuideRow({
       className={cn(
         'flex items-center gap-4 pr-5 py-4 border-b border-navy-100 last:border-b-0 border-l-[3px] transition-colors',
         read ? 'bg-[#FAFAFB]' : 'hover:bg-navy-50/60',
-        inProgress ? 'border-l-orange bg-[#F0F7FF]/40' : 'border-l-transparent',
+        inProgress ? 'border-l-orange bg-[#EEF3FE]/40' : 'border-l-transparent',
         'pl-[17px]',
       )}
     >

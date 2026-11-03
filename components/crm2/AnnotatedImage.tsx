@@ -26,7 +26,7 @@ export default function AnnotatedImage({
           images the panel opens below the pin, past the image edge, and gets
           clipped away — which reads as "the pins don't do anything". */}
       <div className="relative">
-        <div className="rounded-xl border border-[#E8E8ED] overflow-hidden bg-[#F5F5F7]">
+        <div className="rounded-xl border border-[#E2E2E4] overflow-hidden bg-[#F2F2F3]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={src} alt={caption ?? ''} className="w-full h-auto block" loading="lazy" />
         </div>
@@ -47,7 +47,7 @@ export default function AnnotatedImage({
                 aria-expanded={isActive}
                 className={cn(
                   'w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center shadow-md ring-2 ring-white transition',
-                  isActive ? 'bg-[#1D1D1F] text-white scale-110' : 'bg-[#0071E3] text-white hover:scale-110',
+                  isActive ? 'bg-[#101010] text-white scale-110' : 'bg-[#2C68ED] text-white hover:scale-110',
                 )}
               >
                 {i + 1}
@@ -55,9 +55,9 @@ export default function AnnotatedImage({
 
               {isActive && (
                 <div className="absolute left-1/2 top-full mt-2 -translate-x-1/2 w-56 z-10 hub-fade">
-                  <div className="rounded-xl border border-[#E8E8ED] bg-white shadow-lg p-3">
-                    <p className="text-xs font-bold text-[#1D1D1F]">{h.label}</p>
-                    <p className="text-xs text-[#6E6E73] leading-relaxed mt-1">{h.detail}</p>
+                  <div className="rounded-xl border border-[#E2E2E4] bg-white shadow-lg p-3">
+                    <p className="text-xs font-bold text-[#101010]">{h.label}</p>
+                    <p className="text-xs text-[#7D7C86] leading-relaxed mt-1">{h.detail}</p>
                   </div>
                 </div>
               )}
@@ -69,9 +69,9 @@ export default function AnnotatedImage({
       {/* Legend + caption */}
       <figcaption className="mt-2 space-y-1.5">
         {caption && (
-          <p className="text-xs text-[#6E6E73] text-center leading-relaxed">{caption}</p>
+          <p className="text-xs text-[#7D7C86] text-center leading-relaxed">{caption}</p>
         )}
-        <p className="text-[11px] text-[#AEAEB2] text-center">
+        <p className="text-[11px] text-[#AEAEB4] text-center">
           Tap a numbered pin to see what each control does.
         </p>
       </figcaption>

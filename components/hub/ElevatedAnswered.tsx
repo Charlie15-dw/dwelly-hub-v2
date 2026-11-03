@@ -65,8 +65,8 @@ export default async function ElevatedAnswered({ userId }: { userId: string }) {
       {/* Hero — count shipped this year */}
       <section className="hub-fade relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#0071E3]/30 blur-3xl" />
-          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#0071E3]/12 blur-3xl" />
+          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#2C68ED]/30 blur-3xl" />
+          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#2C68ED]/12 blur-3xl" />
           <div
             className="absolute inset-0 opacity-[0.12]"
             style={{
@@ -112,7 +112,7 @@ export default async function ElevatedAnswered({ userId }: { userId: string }) {
                 <div key={q.id} className="card p-6 space-y-4">
                   <div className="flex items-center gap-2">
                     {q.category && (
-                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#F5F5F7] text-[var(--text-secondary)] border border-[#D2D2D7]">{q.category}</span>
+                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#F2F2F3] text-[var(--text-secondary)] border border-[#C8C8CC]">{q.category}</span>
                     )}
                     <span className="text-[11px] text-[var(--text-tertiary)]">{fmt(q.created_at)}</span>
                   </div>
@@ -126,11 +126,11 @@ export default async function ElevatedAnswered({ userId }: { userId: string }) {
                   <div className="flex items-center gap-1.5">
                     {STAGES.map((s, i) => (
                       <div key={s.key} className="flex items-center gap-1.5 flex-1 last:flex-none">
-                        <span className={`flex items-center justify-center w-5 h-5 rounded-full flex-shrink-0 ${i <= idx ? 'bg-[#0071E3] text-white' : 'bg-[#E8E8ED] text-[var(--text-tertiary)]'}`}>
+                        <span className={`flex items-center justify-center w-5 h-5 rounded-full flex-shrink-0 ${i <= idx ? 'bg-[#2C68ED] text-white' : 'bg-[#E2E2E4] text-[var(--text-tertiary)]'}`}>
                           {i < idx ? <Check className="w-3 h-3" strokeWidth={3} aria-hidden /> : <span className="text-[10px] font-bold">{i + 1}</span>}
                         </span>
                         <span className={`text-[11.5px] font-medium whitespace-nowrap ${i <= idx ? 'text-navy' : 'text-[var(--text-tertiary)]'}`}>{s.label}</span>
-                        {i < STAGES.length - 1 && <span className={`hidden sm:block h-px flex-1 ${i < idx ? 'bg-[#0071E3]' : 'bg-[#E8E8ED]'}`} />}
+                        {i < STAGES.length - 1 && <span className={`hidden sm:block h-px flex-1 ${i < idx ? 'bg-[#2C68ED]' : 'bg-[#E2E2E4]'}`} />}
                       </div>
                     ))}
                   </div>

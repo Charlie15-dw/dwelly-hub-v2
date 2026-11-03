@@ -5,19 +5,19 @@
 @layer base {
   :root {
     /* Apple design tokens */
-    --navy:   #1D1D1F;
-    --teal:   #6E6E73;
-    --gold:   #3A3A3C;
-    --orange: #0071E3;
+    --navy:   #101010;
+    --teal:   #7D7C86;
+    --gold:   #404044;
+    --orange: #2C68ED;
 
     /* Apple surface palette */
-    --surface-bg:       #F5F5F7;
+    --surface-bg:       #F2F2F3;
     --surface-card:     #FFFFFF;
-    --border:           #D2D2D7;
-    --border-subtle:    #E8E8ED;
-    --text-primary:     #1D1D1F;
-    --text-secondary:   #6E6E73;
-    --text-tertiary:    #AEAEB2;
+    --border:           #C8C8CC;
+    --border-subtle:    #E2E2E4;
+    --text-primary:     #101010;
+    --text-secondary:   #7D7C86;
+    --text-tertiary:    #AEAEB4;
   }
 
   * { box-sizing: border-box; }
@@ -42,29 +42,29 @@
 
   /* ── Accessibility: high contrast ────────────────────────────────────── */
   html.high-contrast {
-    --text-secondary: #1D1D1F;
-    --text-tertiary:  #3A3A3C;
-    --border:         #1D1D1F;
-    --border-subtle:  #6E6E73;
+    --text-secondary: #101010;
+    --text-tertiary:  #404044;
+    --border:         #101010;
+    --border-subtle:  #7D7C86;
   }
-  html.high-contrast .card { border-color: #6E6E73; }
+  html.high-contrast .card { border-color: #7D7C86; }
   html.high-contrast .text-slate-400,
-  html.high-contrast .text-slate-500 { color: #3A3A3C !important; }
+  html.high-contrast .text-slate-500 { color: #404044 !important; }
   html.high-contrast .border-slate-100,
   html.high-contrast .border-slate-200 { border-color: #86868B !important; }
 
   body {
     @apply antialiased;
-    background-color: #F5F5F7;
-    color: #1D1D1F;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+    background-color: #F2F2F3;
+    color: #101010;
+    font-family: var(--font-inter), Inter, -apple-system, BlinkMacSystemFont,
                  'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    color: #1D1D1F;
+    color: #101010;
     font-weight: 600;
     letter-spacing: -0.02em;
   }
@@ -91,7 +91,7 @@
   .card {
     background: #FFFFFF;
     border-radius: 18px;
-    border: 1px solid #E8E8ED;
+    border: 1px solid #E2E2E4;
     box-shadow: 0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04);
   }
   .card-hover {
@@ -108,10 +108,10 @@
            text-white text-sm font-semibold
            transition-all duration-150 active:scale-[0.97]
            focus:outline-none focus:ring-2 focus:ring-offset-2;
-    background: #0071E3;
+    background: #2C68ED;
     focus-ring-color: rgba(0, 113, 227, 0.4);
   }
-  .btn-primary:hover { background: #0077ED; }
+  .btn-primary:hover { background: #3D74EE; }
   .btn-primary:focus { box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.3); }
 
   .btn-secondary {
@@ -119,9 +119,9 @@
            text-white text-sm font-semibold
            transition-all duration-150 active:scale-[0.97]
            focus:outline-none;
-    background: #1D1D1F;
+    background: #101010;
   }
-  .btn-secondary:hover { background: #2C2C2E; }
+  .btn-secondary:hover { background: #262628; }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full
@@ -129,24 +129,24 @@
            transition-all duration-150 active:scale-[0.97]
            focus:outline-none;
     background: #FFFFFF;
-    color: #1D1D1F;
-    border: 1px solid #D2D2D7;
+    color: #101010;
+    border: 1px solid #C8C8CC;
   }
-  .btn-outline:hover { background: #F5F5F7; border-color: #AEAEB2; }
+  .btn-outline:hover { background: #F2F2F3; border-color: #AEAEB4; }
 
   .btn-teal {
     @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full
            text-white text-sm font-semibold
            transition-all duration-150 active:scale-[0.97]
            focus:outline-none;
-    background: #1D1D1F;
+    background: #101010;
   }
-  .btn-teal:hover { background: #3A3A3C; }
+  .btn-teal:hover { background: #404044; }
 
   /* ── Progress ─────────────────────────────────────────────────────── */
   .progress-track {
     @apply h-2 rounded-full overflow-hidden;
-    background: #E8E8ED;
+    background: #E2E2E4;
   }
   .progress-fill {
     @apply h-full rounded-full transition-all duration-500;
@@ -160,30 +160,30 @@
   /* Lifecycle status of something raised (a question, a request, an item in
      the Needs-you queue). One definition, shared by every badge that names a
      stage — replaces the ad-hoc colour maps that had drifted apart. */
-  .status-received { background:#F5F5F7; color:#6E6E73; border:1px solid #D2D2D7; }
+  .status-received { background:#F2F2F3; color:#7D7C86; border:1px solid #C8C8CC; }
   .status-review   { background:#FFFBF0; color:#995500; border:1px solid #FFE4B0; }
-  .status-progress { background:#F0F7FF; color:#0071E3; border:1px solid #CCE4FF; }
+  .status-progress { background:#EEF3FE; color:#2C68ED; border:1px solid #D5E1FB; }
   .status-done     { background:#F0FFF4; color:#1A7F37; border:1px solid #B0EACC; }
 
   /* ── Phase badges (grayscale Apple style) ─────────────────────────── */
-  .phase-foundation { background:#F5F5F7; color:#1D1D1F; border:1px solid #D2D2D7; }
-  .phase-onboarding { background:#F0F7FF; color:#0071E3; border:1px solid #CCE4FF; }
-  .phase-embedding  { background:#F5F5F7; color:#3A3A3C; border:1px solid #D2D2D7; }
-  .phase-optimise   { background:#1D1D1F; color:#FFFFFF; border:1px solid #1D1D1F; }
+  .phase-foundation { background:#F2F2F3; color:#101010; border:1px solid #C8C8CC; }
+  .phase-onboarding { background:#EEF3FE; color:#2C68ED; border:1px solid #D5E1FB; }
+  .phase-embedding  { background:#F2F2F3; color:#404044; border:1px solid #C8C8CC; }
+  .phase-optimise   { background:#101010; color:#FFFFFF; border:1px solid #101010; }
 
   /* ── Form inputs ──────────────────────────────────────────────────── */
   .input {
     @apply w-full px-4 py-3 text-sm
-           placeholder:text-[#AEAEB2]
+           placeholder:text-[#AEAEB4]
            transition-colors duration-150
            focus:outline-none;
     background: #FFFFFF;
-    color: #1D1D1F;
-    border: 1px solid #D2D2D7;
+    color: #101010;
+    border: 1px solid #C8C8CC;
     border-radius: 12px;
   }
   .input:focus {
-    border-color: #0071E3;
+    border-color: #2C68ED;
     box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
   }
 }
@@ -219,7 +219,7 @@
 .hub-fade    { animation: hubFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
 .hub-shimmer {
-  background: linear-gradient(100deg, #FFFFFF 18%, #66ADFF 42%, #99C8FF 52%, #FFFFFF 74%);
+  background: linear-gradient(100deg, #FFFFFF 18%, #80A4F4 42%, #ABC3F8 52%, #FFFFFF 74%);
   background-size: 220% auto;
   -webkit-background-clip: text;
   background-clip: text;

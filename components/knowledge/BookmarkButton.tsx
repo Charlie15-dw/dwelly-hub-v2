@@ -35,8 +35,8 @@ export default function BookmarkButton({
         className={cn(
           'inline-flex items-center gap-2 text-sm font-semibold px-3.5 py-2 rounded-xl border transition disabled:opacity-50',
           saved
-            ? 'bg-[#0071E3]/10 text-[#0071E3] border-[#0071E3]/20'
-            : 'bg-white text-[#6E6E73] border-[#E8E8ED] hover:border-[#1D1D1F]/30',
+            ? 'bg-[#2C68ED]/10 text-[#2C68ED] border-[#2C68ED]/20'
+            : 'bg-white text-[#7D7C86] border-[#E2E2E4] hover:border-[#101010]/30',
           className,
         )}
       >
@@ -55,7 +55,7 @@ export default function BookmarkButton({
       aria-label={saved ? 'Remove bookmark' : 'Save article'}
       className={cn(
         'p-1.5 rounded-full transition disabled:opacity-40',
-        saved ? 'text-[#0071E3]' : 'text-[#AEAEB2] hover:text-[#1D1D1F]',
+        saved ? 'text-[#2C68ED]' : 'text-[#AEAEB4] hover:text-[#101010]',
         className,
       )}
     >

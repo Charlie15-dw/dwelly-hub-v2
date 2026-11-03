@@ -91,15 +91,15 @@ export default function ContentCompletionButton({
       <div className="flex items-center gap-3">
         <div className={cn(
           'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-          done ? 'bg-[#34C759]/15 text-[#34C759]' : 'bg-[#F5F5F7] text-[#AEAEB2]',
+          done ? 'bg-[#34C759]/15 text-[#34C759]' : 'bg-[#F2F2F3] text-[#AEAEB4]',
         )}>
           {done ? <Check className="w-5 h-5" aria-hidden /> : <Circle className="w-5 h-5" aria-hidden />}
         </div>
         <div>
-          <p className="text-sm font-bold text-[#1D1D1F]">
+          <p className="text-sm font-bold text-[#101010]">
             {done ? `${label} complete` : `Worked through the ${label}?`}
           </p>
-          <p className="text-xs text-[#6E6E73]">
+          <p className="text-xs text-[#7D7C86]">
             {error
               ? 'Couldn\u2019t save — please try again in a moment.'
               : done
@@ -115,8 +115,8 @@ export default function ContentCompletionButton({
         className={cn(
           'text-sm font-semibold rounded-xl px-4 py-2.5 transition flex items-center gap-2 flex-shrink-0 disabled:opacity-60',
           done
-            ? 'bg-white border border-[#D2D2D7] text-[#6E6E73] hover:bg-[#F5F5F7]'
-            : 'bg-[#1D1D1F] text-white hover:bg-[#1D1D1F]/90',
+            ? 'bg-white border border-[#C8C8CC] text-[#7D7C86] hover:bg-[#F2F2F3]'
+            : 'bg-[#101010] text-white hover:bg-[#101010]/90',
         )}
       >
         {saving && <Loader2 className="w-4 h-4 animate-spin" aria-hidden />}

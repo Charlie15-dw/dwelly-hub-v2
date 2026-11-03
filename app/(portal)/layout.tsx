@@ -30,7 +30,7 @@ export default async function PortalLayout({ children }: { children: React.React
     return (
       <UserProvider>
         <SettingsProvider>
-          <div className="relative min-h-[100dvh] bg-[#F5F5F7]">
+          <div className="relative min-h-[100dvh] bg-[#F2F2F3]">
             <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
               <div className="hub-orb-a absolute -top-32 -right-24 w-[32rem] h-[32rem] rounded-full bg-orange-500/[0.06] blur-3xl" />
             </div>
@@ -51,7 +51,7 @@ export default async function PortalLayout({ children }: { children: React.React
     <SidebarProvider>
     <CommandPalette />
     <ActivityTracker />
-    <div className="relative h-[100dvh] overflow-hidden bg-[#F5F5F7]">
+    <div className="relative h-[100dvh] overflow-hidden bg-[#F2F2F3]">
       {/* Ambient backdrop — a whisper of the sign-in / Hub vibe behind every page */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="hub-orb-a absolute -top-32 -right-24 w-[32rem] h-[32rem] rounded-full bg-orange-500/[0.06] blur-3xl" />

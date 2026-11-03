@@ -175,7 +175,7 @@ export default async function Crm2AssessmentsPage() {
         <div className="progress-track mt-4">
           <div
             className="progress-fill"
-            style={{ width: `${passedPct}%`, background: passedPct === 100 ? '#1A7F37' : '#0071E3' }}
+            style={{ width: `${passedPct}%`, background: passedPct === 100 ? '#1A7F37' : '#2C68ED' }}
           />
         </div>
       </div>

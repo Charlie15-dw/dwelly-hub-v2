@@ -55,7 +55,7 @@ function Term({ text, def }: { text: string; def: string }) {
         onClick={() => setOpen((o) => !o)}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
-        className="text-[#0071E3] underline decoration-dotted decoration-[#0071E3]/40 underline-offset-2 hover:decoration-[#0071E3] transition"
+        className="text-[#2C68ED] underline decoration-dotted decoration-[#2C68ED]/40 underline-offset-2 hover:decoration-[#2C68ED] transition"
         aria-label={`Definition of ${text}`}
       >
         {text}
@@ -63,10 +63,10 @@ function Term({ text, def }: { text: string; def: string }) {
       {open && (
         <span
           role="tooltip"
-          className="absolute left-0 bottom-full mb-1.5 z-20 w-64 rounded-xl border border-[#E8E8ED] bg-white shadow-lg p-3 text-left hub-fade"
+          className="absolute left-0 bottom-full mb-1.5 z-20 w-64 rounded-xl border border-[#E2E2E4] bg-white shadow-lg p-3 text-left hub-fade"
         >
-          <span className="block text-xs font-bold text-[#1D1D1F]">{text}</span>
-          <span className="block text-xs text-[#6E6E73] leading-relaxed mt-1">{def}</span>
+          <span className="block text-xs font-bold text-[#101010]">{text}</span>
+          <span className="block text-xs text-[#7D7C86] leading-relaxed mt-1">{def}</span>
         </span>
       )}
     </span>

@@ -31,8 +31,8 @@ export default function ElevatedMeet() {
 
       <section className="hub-fade relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#0071E3]/30 blur-3xl" />
-          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#0071E3]/12 blur-3xl" />
+          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#2C68ED]/30 blur-3xl" />
+          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#2C68ED]/12 blur-3xl" />
           <div
             className="absolute inset-0 opacity-[0.12]"
             style={{
@@ -85,7 +85,7 @@ export default function ElevatedMeet() {
               <li key={s.key} className="flex items-start gap-3.5">
                 <span className={
                   'flex items-center justify-center w-6 h-6 rounded-full flex-shrink-0 mt-0.5 ' +
-                  (done ? 'bg-[#0071E3] text-white' : current ? 'bg-[#0071E3]/15 text-[#0071E3] ring-2 ring-[#0071E3]/30' : 'bg-[#E8E8ED] text-[var(--text-tertiary)]')
+                  (done ? 'bg-[#2C68ED] text-white' : current ? 'bg-[#2C68ED]/15 text-[#2C68ED] ring-2 ring-[#2C68ED]/30' : 'bg-[#E2E2E4] text-[var(--text-tertiary)]')
                 }>
                   {done ? <Check className="w-3.5 h-3.5" strokeWidth={3} aria-hidden /> : <span className="text-[11px] font-bold">{i + 1}</span>}
                 </span>
@@ -101,14 +101,14 @@ export default function ElevatedMeet() {
 
       {/* Contribute a topic — routes to the existing anonymous channel */}
       <Link href="/hub/ask" className="hub-fade-3 card card-hover p-5 flex items-center gap-4 group">
-        <div className="w-11 h-11 rounded-xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0">
+        <div className="w-11 h-11 rounded-xl bg-[#2C68ED]/10 text-[#2C68ED] flex items-center justify-center flex-shrink-0">
           <MessageSquarePlus className="w-5 h-5" aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-[15px] font-semibold text-navy">Add a topic for the first meet</p>
           <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">Goes in anonymously through Q&amp;A — no name attached.</p>
         </div>
-        <ArrowRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
+        <ArrowRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
       </Link>
 
       <p className="text-[13px] text-[var(--text-tertiary)]">

@@ -165,21 +165,21 @@ export default function ButtonAdvisor() {
   }
 
   return (
-    <div className="rounded-2xl border border-[#E8E8ED] bg-white overflow-hidden">
+    <div className="rounded-2xl border border-[#E2E2E4] bg-white overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-3 px-5 py-4 bg-[#F5F5F7] border-b border-[#E8E8ED]">
-        <div className="w-9 h-9 rounded-xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0">
+      <div className="flex items-center gap-3 px-5 py-4 bg-[#F2F2F3] border-b border-[#E2E2E4]">
+        <div className="w-9 h-9 rounded-xl bg-[#2C68ED]/10 text-[#2C68ED] flex items-center justify-center flex-shrink-0">
           <Wand2 className="w-4 h-4" aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold text-[#1D1D1F]">Which button? — advisor</p>
-          <p className="text-xs text-[#6E6E73] mt-0.5">Answer two quick questions and I’ll point you to the right action.</p>
+          <p className="text-sm font-bold text-[#101010]">Which button? — advisor</p>
+          <p className="text-xs text-[#7D7C86] mt-0.5">Answer two quick questions and I’ll point you to the right action.</p>
         </div>
         {(catId || sitIdx !== null) && (
           <button
             type="button"
             onClick={reset}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#6E6E73] hover:text-[#1D1D1F] transition flex-shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#7D7C86] hover:text-[#101010] transition flex-shrink-0"
           >
             <RotateCcw className="w-3.5 h-3.5" aria-hidden /> Start over
           </button>
@@ -190,20 +190,20 @@ export default function ButtonAdvisor() {
         {/* Step 1 — pick a category */}
         {!category && (
           <>
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#AEAEB2] mb-3">What are you trying to do?</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#AEAEB4] mb-3">What are you trying to do?</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {CATEGORIES.map((c) => (
                 <button
                   key={c.id}
                   type="button"
                   onClick={() => { setCatId(c.id); setSitIdx(null) }}
-                  className="text-left rounded-xl border border-[#E8E8ED] p-3.5 hover:border-[#0071E3]/40 hover:bg-[#F0F7FF] transition group"
+                  className="text-left rounded-xl border border-[#E2E2E4] p-3.5 hover:border-[#2C68ED]/40 hover:bg-[#EEF3FE] transition group"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-semibold text-[#1D1D1F]">{c.label}</span>
-                    <ChevronRight className="w-4 h-4 text-[#D2D2D7] group-hover:text-[#0071E3] transition flex-shrink-0" aria-hidden />
+                    <span className="text-sm font-semibold text-[#101010]">{c.label}</span>
+                    <ChevronRight className="w-4 h-4 text-[#C8C8CC] group-hover:text-[#2C68ED] transition flex-shrink-0" aria-hidden />
                   </div>
-                  <p className="text-xs text-[#6E6E73] mt-1 leading-relaxed">{c.blurb}</p>
+                  <p className="text-xs text-[#7D7C86] mt-1 leading-relaxed">{c.blurb}</p>
                 </button>
               ))}
             </div>
@@ -213,24 +213,24 @@ export default function ButtonAdvisor() {
         {/* Step 2 — pick the situation */}
         {category && !situation && (
           <>
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#AEAEB2] mb-3">{category.label} — which fits?</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#AEAEB4] mb-3">{category.label} — which fits?</p>
             <div className="space-y-2.5">
               {category.situations.map((s, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => setSitIdx(i)}
-                  className="w-full text-left rounded-xl border border-[#E8E8ED] p-3.5 hover:border-[#0071E3]/40 hover:bg-[#F0F7FF] transition group flex items-center justify-between gap-3"
+                  className="w-full text-left rounded-xl border border-[#E2E2E4] p-3.5 hover:border-[#2C68ED]/40 hover:bg-[#EEF3FE] transition group flex items-center justify-between gap-3"
                 >
-                  <span className="text-sm text-[#1D1D1F] leading-relaxed">{s.q}</span>
-                  <ChevronRight className="w-4 h-4 text-[#D2D2D7] group-hover:text-[#0071E3] transition flex-shrink-0" aria-hidden />
+                  <span className="text-sm text-[#101010] leading-relaxed">{s.q}</span>
+                  <ChevronRight className="w-4 h-4 text-[#C8C8CC] group-hover:text-[#2C68ED] transition flex-shrink-0" aria-hidden />
                 </button>
               ))}
             </div>
             <button
               type="button"
               onClick={() => setCatId(null)}
-              className="mt-4 text-xs font-semibold text-[#6E6E73] hover:text-[#1D1D1F] transition"
+              className="mt-4 text-xs font-semibold text-[#7D7C86] hover:text-[#101010] transition"
             >
               ← Different kind of decision
             </button>
@@ -240,24 +240,24 @@ export default function ButtonAdvisor() {
         {/* Result */}
         {situation && (
           <div className="hub-fade">
-            <p className="text-xs text-[#6E6E73] leading-relaxed">{situation.q}</p>
+            <p className="text-xs text-[#7D7C86] leading-relaxed">{situation.q}</p>
             <div className="mt-3 rounded-xl border border-[#B0EACC] bg-[#F0FFF4] p-4">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" aria-hidden />
-                <p className="text-sm font-bold text-[#1D1D1F]">{situation.action}</p>
+                <p className="text-sm font-bold text-[#101010]">{situation.action}</p>
               </div>
-              <p className="text-sm text-[#3A3A3C] leading-relaxed mt-2">{situation.why}</p>
+              <p className="text-sm text-[#404044] leading-relaxed mt-2">{situation.why}</p>
             </div>
             {situation.watch && (
               <div className="mt-2.5 rounded-xl border border-[#FFE4B0] bg-[#FFFBF0] p-3.5 flex gap-2.5">
                 <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" aria-hidden />
-                <p className="text-sm text-[#3A3A3C] leading-relaxed"><span className="font-semibold">Watch out:</span> {situation.watch}</p>
+                <p className="text-sm text-[#404044] leading-relaxed"><span className="font-semibold">Watch out:</span> {situation.watch}</p>
               </div>
             )}
             <button
               type="button"
               onClick={() => setSitIdx(null)}
-              className="mt-4 text-xs font-semibold text-[#6E6E73] hover:text-[#1D1D1F] transition"
+              className="mt-4 text-xs font-semibold text-[#7D7C86] hover:text-[#101010] transition"
             >
               ← Back to {category?.label.toLowerCase()}
             </button>

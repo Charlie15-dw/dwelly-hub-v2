@@ -32,11 +32,11 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
 
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm">
-        <Link href="/training" className="text-[#6E6E73] hover:text-[#1D1D1F] flex items-center gap-1.5 transition-colors">
+        <Link href="/training" className="text-[#7D7C86] hover:text-[#101010] flex items-center gap-1.5 transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" /> Training Guide
         </Link>
-        <span className="text-[#D2D2D7]">/</span>
-        <span className="text-[#1D1D1F] font-medium">{page.title}</span>
+        <span className="text-[#C8C8CC]">/</span>
+        <span className="text-[#101010] font-medium">{page.title}</span>
       </div>
 
       {/* Page header */}
@@ -45,13 +45,13 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
           <div className="flex items-start gap-4">
             <div className={cn(
               'w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0',
-              isCompliance ? 'bg-red-100' : 'bg-[#F5F5F7]',
+              isCompliance ? 'bg-red-100' : 'bg-[#F2F2F3]',
             )}>
               {page.icon}
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                <h1 className="text-2xl font-bold tracking-tight text-[#1D1D1F]">
+                <h1 className="text-2xl font-bold tracking-tight text-[#101010]">
                   {page.title}
                 </h1>
                 {isCompliance && (
@@ -60,9 +60,9 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
                   </span>
                 )}
               </div>
-              <p className="text-[#6E6E73] text-sm leading-relaxed max-w-xl">{page.subtitle}</p>
+              <p className="text-[#7D7C86] text-sm leading-relaxed max-w-xl">{page.subtitle}</p>
               <div className="flex items-center gap-4 mt-3">
-                <span className="flex items-center gap-1.5 text-xs text-[#AEAEB2]">
+                <span className="flex items-center gap-1.5 text-xs text-[#AEAEB4]">
                   <Clock className="w-3.5 h-3.5" aria-hidden /> {page.readTime}
                 </span>
                 {page.notionUrl && (
@@ -70,7 +70,7 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
                     href={page.notionUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-xs text-[#0071E3] hover:underline font-medium"
+                    className="flex items-center gap-1.5 text-xs text-[#2C68ED] hover:underline font-medium"
                   >
                     <ExternalLink className="w-3.5 h-3.5" aria-hidden />
                     Open in Notion
@@ -90,21 +90,21 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
 
               case 'heading':
                 return (
-                  <h2 key={i} className="text-xl font-bold text-[#1D1D1F] tracking-tight pt-2">
+                  <h2 key={i} className="text-xl font-bold text-[#101010] tracking-tight pt-2">
                     {block.text}
                   </h2>
                 )
 
               case 'subheading':
                 return (
-                  <h3 key={i} className="text-base font-semibold text-[#1D1D1F] mt-4">
+                  <h3 key={i} className="text-base font-semibold text-[#101010] mt-4">
                     {block.text}
                   </h3>
                 )
 
               case 'paragraph':
                 return (
-                  <p key={i} className="text-sm text-[#3A3A3C] leading-relaxed">
+                  <p key={i} className="text-sm text-[#404044] leading-relaxed">
                     {block.text}
                   </p>
                 )
@@ -114,10 +114,10 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
                   <ol key={i} className="space-y-3">
                     {block.items?.map((item, j) => (
                       <li key={j} className="flex gap-3.5">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#1D1D1F] text-white text-xs font-bold flex items-center justify-center mt-0.5">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#101010] text-white text-xs font-bold flex items-center justify-center mt-0.5">
                           {j + 1}
                         </span>
-                        <p className="text-sm text-[#3A3A3C] leading-relaxed flex-1">{item}</p>
+                        <p className="text-sm text-[#404044] leading-relaxed flex-1">{item}</p>
                       </li>
                     ))}
                   </ol>
@@ -128,8 +128,8 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
                   <ul key={i} className="space-y-2">
                     {block.items?.map((item, j) => (
                       <li key={j} className="flex gap-3">
-                        <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#1D1D1F] mt-2" />
-                        <p className="text-sm text-[#3A3A3C] leading-relaxed">{item}</p>
+                        <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#101010] mt-2" />
+                        <p className="text-sm text-[#404044] leading-relaxed">{item}</p>
                       </li>
                     ))}
                   </ul>
@@ -137,7 +137,7 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
 
               case 'callout': {
                 const calloutStyles: Record<string, { bg: string; border: string; icon: React.ElementType; iconColor: string }> = {
-                  info:      { bg: 'bg-[#F0F7FF]', border: 'border-[#CCE4FF]',   icon: Info,         iconColor: 'text-[#0071E3]' },
+                  info:      { bg: 'bg-[#EEF3FE]', border: 'border-[#D5E1FB]',   icon: Info,         iconColor: 'text-[#2C68ED]' },
                   tip:       { bg: 'bg-[#F0FFF4]', border: 'border-[#B0EACC]',   icon: Lightbulb,    iconColor: 'text-green-600' },
                   warning:   { bg: 'bg-[#FFFBF0]', border: 'border-[#FFE4B0]',   icon: AlertTriangle, iconColor: 'text-amber-500' },
                   important: { bg: 'bg-red-50',    border: 'border-red-200',      icon: AlertTriangle, iconColor: 'text-red-500' },
@@ -147,7 +147,7 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
                 return (
                   <div key={i} className={cn('rounded-2xl p-4 border flex gap-3', style.bg, style.border)}>
                     <Icon className={cn('w-4 h-4 flex-shrink-0 mt-0.5', style.iconColor)} aria-hidden />
-                    <p className="text-sm leading-relaxed text-[#3A3A3C]">{block.text}</p>
+                    <p className="text-sm leading-relaxed text-[#404044]">{block.text}</p>
                   </div>
                 )
               }
@@ -162,22 +162,22 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
 
               case 'table':
                 return block.headers && block.rows ? (
-                  <div key={i} className="overflow-x-auto rounded-xl border border-[#E8E8ED]">
+                  <div key={i} className="overflow-x-auto rounded-xl border border-[#E2E2E4]">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-[#F5F5F7] border-b border-[#E8E8ED]">
+                        <tr className="bg-[#F2F2F3] border-b border-[#E2E2E4]">
                           {block.headers.map((h, j) => (
-                            <th key={j} className="px-4 py-3 text-left text-xs font-semibold text-[#6E6E73] uppercase tracking-wide">
+                            <th key={j} className="px-4 py-3 text-left text-xs font-semibold text-[#7D7C86] uppercase tracking-wide">
                               {h}
                             </th>
                           ))}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#F5F5F7]">
+                      <tbody className="divide-y divide-[#F2F2F3]">
                         {block.rows.map((row, j) => (
-                          <tr key={j} className="hover:bg-[#F5F5F7]/60 transition-colors">
+                          <tr key={j} className="hover:bg-[#F2F2F3]/60 transition-colors">
                             {row.map((cell, k) => (
-                              <td key={k} className="px-4 py-3 text-[#3A3A3C] leading-relaxed">
+                              <td key={k} className="px-4 py-3 text-[#404044] leading-relaxed">
                                 {cell}
                               </td>
                             ))}
@@ -191,19 +191,19 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
               case 'image':
                 return block.src ? (
                   <figure key={i} className="space-y-2">
-                    <div className="rounded-xl border border-[#E8E8ED] overflow-hidden bg-[#F5F5F7]">
+                    <div className="rounded-xl border border-[#E2E2E4] overflow-hidden bg-[#F2F2F3]">
                       {/* Static screenshot; next/image is unnecessary here. */}
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={block.src} alt={block.text ?? ''} className="w-full h-auto block" loading="lazy" />
                     </div>
                     {block.text && (
-                      <figcaption className="text-xs text-[#6E6E73] text-center leading-relaxed">{block.text}</figcaption>
+                      <figcaption className="text-xs text-[#7D7C86] text-center leading-relaxed">{block.text}</figcaption>
                     )}
                   </figure>
                 ) : null
 
               case 'divider':
-                return <hr key={i} className="border-[#E8E8ED]" />
+                return <hr key={i} className="border-[#E2E2E4]" />
 
               default:
                 return null
@@ -213,11 +213,11 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
       ) : (
         /* Placeholder — shown until Notion content is loaded */
         <div className="card p-10 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-[#F5F5F7] flex items-center justify-center mx-auto mb-4">
-            <BookOpen className="w-6 h-6 text-[#AEAEB2]" aria-hidden />
+          <div className="w-14 h-14 rounded-2xl bg-[#F2F2F3] flex items-center justify-center mx-auto mb-4">
+            <BookOpen className="w-6 h-6 text-[#AEAEB4]" aria-hidden />
           </div>
-          <h2 className="text-base font-semibold text-[#1D1D1F] mb-2">Content loading soon</h2>
-          <p className="text-sm text-[#6E6E73] leading-relaxed max-w-sm mx-auto mb-6">
+          <h2 className="text-base font-semibold text-[#101010] mb-2">Content loading soon</h2>
+          <p className="text-sm text-[#7D7C86] leading-relaxed max-w-sm mx-auto mb-6">
             The full written guide for this section is being imported from Notion.
             In the meantime, you can read it directly on the Notion page.
           </p>
@@ -242,10 +242,10 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
             href={`/training/${prev.id}`}
             className="card card-hover p-4 flex items-center gap-3 group"
           >
-            <ChevronLeft className="w-4 h-4 text-[#AEAEB2] flex-shrink-0 group-hover:text-[#0071E3] transition-colors" />
+            <ChevronLeft className="w-4 h-4 text-[#AEAEB4] flex-shrink-0 group-hover:text-[#2C68ED] transition-colors" />
             <div className="min-w-0">
-              <p className="text-[10px] text-[#AEAEB2] uppercase tracking-wide font-medium">Previous</p>
-              <p className="text-sm font-semibold text-[#1D1D1F] truncate mt-0.5">{prev.title}</p>
+              <p className="text-[10px] text-[#AEAEB4] uppercase tracking-wide font-medium">Previous</p>
+              <p className="text-sm font-semibold text-[#101010] truncate mt-0.5">{prev.title}</p>
             </div>
           </Link>
         ) : <div />}
@@ -256,10 +256,10 @@ export default async function TrainingSectionPage({ params }: { params: { id: st
             className="card card-hover p-4 flex items-center justify-end gap-3 text-right group"
           >
             <div className="min-w-0">
-              <p className="text-[10px] text-[#AEAEB2] uppercase tracking-wide font-medium">Next</p>
-              <p className="text-sm font-semibold text-[#1D1D1F] truncate mt-0.5">{next.title}</p>
+              <p className="text-[10px] text-[#AEAEB4] uppercase tracking-wide font-medium">Next</p>
+              <p className="text-sm font-semibold text-[#101010] truncate mt-0.5">{next.title}</p>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#AEAEB2] flex-shrink-0 group-hover:text-[#0071E3] transition-colors" />
+            <ChevronRight className="w-4 h-4 text-[#AEAEB4] flex-shrink-0 group-hover:text-[#2C68ED] transition-colors" />
           </Link>
         ) : <div />}
       </div>

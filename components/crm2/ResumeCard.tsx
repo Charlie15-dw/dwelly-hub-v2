@@ -81,7 +81,7 @@ export default function ResumeCard({
         {/* Within-guide progress across the twelve. */}
         <div className="mt-4 flex items-center gap-3">
           <div className="progress-track flex-1">
-            <div className="progress-fill" style={{ width: `${pct}%`, background: '#0071E3' }} />
+            <div className="progress-fill" style={{ width: `${pct}%`, background: '#2C68ED' }} />
           </div>
           <span className="text-[12.5px] font-medium text-[var(--text-secondary)] tabular-nums flex-shrink-0">
             {guidesDone}/{guidesTotal}

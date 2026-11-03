@@ -33,8 +33,8 @@ export default function ElevatedLawFeed() {
       {/* Hero */}
       <section className="hub-fade relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#0071E3]/30 blur-3xl" />
-          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#0071E3]/12 blur-3xl" />
+          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#2C68ED]/30 blur-3xl" />
+          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#2C68ED]/12 blur-3xl" />
           <div
             className="absolute inset-0 opacity-[0.12]"
             style={{
@@ -139,7 +139,7 @@ export default function ElevatedLawFeed() {
                     <Link
                       key={id}
                       href={`/knowledge/${id}`}
-                      className="text-[12.5px] font-semibold text-[#0071E3] hover:underline"
+                      className="text-[12.5px] font-semibold text-[#2C68ED] hover:underline"
                     >
                       {article.title}
                     </Link>

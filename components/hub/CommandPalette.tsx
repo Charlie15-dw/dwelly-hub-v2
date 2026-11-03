@@ -26,7 +26,7 @@ const KIND_ACCENT: Record<SearchKind, string> = {
   glossary: 'text-blue-700 bg-blue-50',
   emergency: 'text-red-600 bg-red-50',
   update: 'text-indigo-700 bg-indigo-100',
-  crm2: 'text-[#0071E3] bg-[#0071E3]/10',
+  crm2: 'text-[#2C68ED] bg-[#2C68ED]/10',
 }
 
 export default function CommandPalette() {

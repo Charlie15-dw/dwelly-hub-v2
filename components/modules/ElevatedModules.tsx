@@ -74,8 +74,8 @@ export default function ElevatedModules({ modules }: { modules: ModuleRow[] }) {
           <span className="text-[15px] text-[var(--text-tertiary)]">/ {total}</span>
         </div>
         <div className="flex-1 min-w-0 space-y-2">
-          <div className="h-2 rounded-full bg-[#E8E8ED] overflow-hidden">
-            <span className="hub-bar block h-full bg-[#0071E3]" style={{ width: `${pct}%` }} />
+          <div className="h-2 rounded-full bg-[#E2E2E4] overflow-hidden">
+            <span className="hub-bar block h-full bg-[#2C68ED]" style={{ width: `${pct}%` }} />
           </div>
           <p className="text-[13.5px] text-[var(--text-secondary)]">
             {inProgress.length > 0 ? `${inProgress.length} in progress · ` : ''}{notStarted.length} not started · {completedCount} completed
@@ -112,14 +112,14 @@ export default function ElevatedModules({ modules }: { modules: ModuleRow[] }) {
               .filter(m => section === 'all' || m.section === section)
               .map(m => (
                 <Link key={m.id} href={`/modules/${m.id}`} className="group flex items-center gap-4 px-6 py-[18px] border-t border-slate-100 first:border-t-0 hover:bg-slate-50 transition-colors">
-                  <span className="w-5 h-5 rounded-full bg-[#F5F5F7] border border-[#D2D2D7] flex items-center justify-center flex-shrink-0">
+                  <span className="w-5 h-5 rounded-full bg-[#F2F2F3] border border-[#C8C8CC] flex items-center justify-center flex-shrink-0">
                     <InfinityIcon className="w-3 h-3 text-[var(--text-secondary)]" aria-hidden />
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-[15.5px] font-semibold text-navy truncate">{m.title}</p>
                     <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">Reference · always available, no assessment</p>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
+                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
                 </Link>
               ))}
           </div>
@@ -143,7 +143,7 @@ export default function ElevatedModules({ modules }: { modules: ModuleRow[] }) {
                   <p className="text-[15.5px] font-semibold text-navy truncate">{m.title}</p>
                   <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">Completed · {SECTION_LABELS[m.section]}</p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover/row:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
+                <ChevronRight className="w-4 h-4 text-slate-300 group-hover/row:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
               </Link>
             ))}
           </div>
@@ -168,7 +168,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
         'text-[13px] font-medium px-3.5 py-1.5 rounded-full border transition-colors ' +
         (active
           ? 'bg-navy text-white border-navy'
-          : 'bg-white text-[var(--text-secondary)] border-[#D2D2D7] hover:border-[#0071E3] hover:text-navy')
+          : 'bg-white text-[var(--text-secondary)] border-[#C8C8CC] hover:border-[#2C68ED] hover:text-navy')
       }
     >
       {children}
@@ -192,8 +192,8 @@ function Group({ title, children, fade }: { title: string; children: React.React
 function ModuleRowLink({ m }: { m: ModuleRow }) {
   return (
     <Link href={`/modules/${m.id}`} className="group flex items-center gap-4 px-6 py-[18px] border-t border-slate-100 first:border-t-0 hover:bg-slate-50 transition-colors">
-      <span className="w-5 h-5 rounded-full bg-[#0071E3]/10 flex items-center justify-center flex-shrink-0">
-        <Play className="w-2.5 h-2.5 text-[#0071E3] fill-[#0071E3]" aria-hidden />
+      <span className="w-5 h-5 rounded-full bg-[#2C68ED]/10 flex items-center justify-center flex-shrink-0">
+        <Play className="w-2.5 h-2.5 text-[#2C68ED] fill-[#2C68ED]" aria-hidden />
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-[15.5px] font-semibold text-navy truncate">{m.title}</p>
@@ -202,12 +202,12 @@ function ModuleRowLink({ m }: { m: ModuleRow }) {
           {m.progress > 0 && !m.completed ? ` · ${m.progress}% watched` : ''}
         </p>
         {m.progress > 0 && !m.completed && (
-          <div className="mt-2 h-1 rounded-full bg-[#E8E8ED] overflow-hidden max-w-[220px]">
-            <span className="block h-full bg-[#0071E3]" style={{ width: `${m.progress}%` }} />
+          <div className="mt-2 h-1 rounded-full bg-[#E2E2E4] overflow-hidden max-w-[220px]">
+            <span className="block h-full bg-[#2C68ED]" style={{ width: `${m.progress}%` }} />
           </div>
         )}
       </div>
-      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
+      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
     </Link>
   )
 }

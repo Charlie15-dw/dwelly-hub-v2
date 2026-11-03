@@ -12,6 +12,7 @@ import { redirect } from 'next/navigation'
 import { createServerClient, createServiceClient } from '@/lib/supabase/server'
 import { isHubBeta, isHubElevated, isMaintenancePreview } from '@/lib/preview'
 import { canAccessCrm2 } from '@/lib/crm2-access'
+import { canSitAssessment } from '@/lib/departments'
 import { CRM2_LESSONS, CRM2_CAPSTONE_MODULE_ID, CRM2_CAPSTONE_SAMPLE } from '@/lib/crm2-content'
 import { MAINTENANCE_LESSONS } from '@/lib/crm2-maintenance-content'
 import QuizClient, { type QuizCategory } from './QuizClient'
@@ -252,17 +253,29 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
   let elevated = false
   // The learner's display name, for the certificate awarded on certified courses.
   let learnerName: string | undefined
+  // Department gate — mirrors the DB's "Users can insert own results respecting
+  // department" RLS policy (scripts/supabase-departments.sql), but checked here
+  // too so a cross-department learner sees an explanation instead of a silent
+  // insert failure after sitting the whole quiz.
+  let departmentBlocked = false
   try {
     const auth = createServerClient()
     const { data: { user } } = await auth.auth.getUser()
     beta = isHubBeta(user?.email)
     elevated = isHubElevated(user?.email)
-    if (isKnowledgeCourse && user) {
+    if (user) {
       const { data: profile } = await auth
-        .from('user_profiles').select('full_name').eq('id', user.id).maybeSingle()
-      learnerName = profile?.full_name?.trim()
-        || user.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-        || undefined
+        .from('user_profiles').select('full_name, department, role').eq('id', user.id).maybeSingle()
+      if (isKnowledgeCourse) {
+        learnerName = profile?.full_name?.trim()
+          || user.email?.split('@')[0]?.replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+          || undefined
+      }
+      const { data: overrides } = await auth
+        .from('assessment_overrides')
+        .select('department, assessment_id')
+        .eq('user_id', user.id)
+      departmentBlocked = !canSitAssessment(profile?.department, profile?.role, moduleId, overrides ?? [])
     }
   } catch {
     // Non-critical — quiz still loads without the beta confidence UI.
@@ -363,6 +376,7 @@ export default async function QuizPage({ params }: { params: { id: string } }) {
       backLabel={backLabel}
       wasReset={wasReset}
       lockedByDb={lockedByDb}
+      departmentBlocked={departmentBlocked}
       lastAttempt={lastAttempt}
       beta={beta}
       elevated={elevated}

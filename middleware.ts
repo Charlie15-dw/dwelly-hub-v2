@@ -3,9 +3,8 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { isHubPreview } from '@/lib/preview'
 import {
-  ONBOARDING_HOME,
-  isGraduated,
-  onboardingRedirect,
+  roleSkipsOnboarding,
+  resolveGateRedirect,
   type OnboardingProfile,
 } from '@/lib/onboarding-gate'
 
@@ -65,36 +64,51 @@ export async function middleware(request: NextRequest) {
     return redirectTo('/')
   }
 
-  // Load the onboarding profile for signed-in users, so we can both route the
-  // landing page and seal the Hub off from anyone still in onboarding. Only
-  // fetched where it's actually needed (the landing page or a protected route),
-  // and fail-open on any read error so a hiccup never traps a user.
+  // Load the onboarding profile + welcome-step completion for signed-in users,
+  // so we can both route the landing page and seal the Hub off from anyone
+  // still mid-gate. Only fetched where it's actually needed (the landing page
+  // or a protected route), and fail-open on any read error so a hiccup never
+  // traps a user. Managers/admins skip both gates entirely, so their welcome
+  // rows are never fetched.
   let onboarding: OnboardingProfile | null = null
+  let completedWelcomeIds: string[] = []
   if (user && (pathname === '/' || !isPublic)) {
     try {
       const { data } = await supabase
         .from('user_profiles')
-        .select('role, onboarding_stage, onboarding_bypass')
+        .select('role, department, onboarding_stage, onboarding_bypass')
         .eq('id', user.id)
         .maybeSingle()
       onboarding = (data as OnboardingProfile | null) ?? null
+
+      if (onboarding && !roleSkipsOnboarding(onboarding.role)) {
+        const { data: welcomeRows } = await supabase
+          .from('content_completions')
+          .select('content_id')
+          .eq('user_id', user.id)
+          .eq('content_type', 'onboarding')
+        completedWelcomeIds = (welcomeRows ?? []).map((r) => r.content_id)
+      }
     } catch {
       onboarding = null
+      completedWelcomeIds = []
     }
   }
 
   // If already logged in and visiting the login page → redirect to their home.
-  // Onboarding users go to their staged journey; otherwise Hub / dashboard.
+  // Gated users go to whichever gate they're still in (welcome, then PM's
+  // staged journey); otherwise Hub / dashboard.
   if (user && pathname === '/') {
-    if (!isGraduated(onboarding)) return redirectTo(ONBOARDING_HOME)
+    const dest = resolveGateRedirect(pathname, onboarding, completedWelcomeIds)
+    if (dest) return redirectTo(dest)
     const home = isHubPreview(user.email) ? '/hub' : '/dashboard'
     return redirectTo(home)
   }
 
-  // Seal the full Hub off from users still in onboarding — they may only reach
-  // their stage's content pages and the getting-started shell.
+  // Seal the full Hub off from anyone still mid-gate — they may only reach
+  // the welcome steps, or (once past welcome) their stage's content pages.
   if (user && !isPublic) {
-    const dest = onboardingRedirect(pathname, onboarding)
+    const dest = resolveGateRedirect(pathname, onboarding, completedWelcomeIds)
     if (dest && dest !== pathname) return redirectTo(dest)
   }
 

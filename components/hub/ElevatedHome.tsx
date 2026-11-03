@@ -30,7 +30,7 @@ const CERT_LABEL: Record<CertificationStatus, string> = {
 // developing (in progress), nothing for not-started.
 function sectionFill(status: CompetencyStatus): string {
   if (status === 'proficient') return 'linear-gradient(90deg,#E9C767,#C9A84C)'
-  if (status === 'developing') return '#0071E3'
+  if (status === 'developing') return '#2C68ED'
   return 'rgba(255,255,255,0.25)'
 }
 
@@ -71,7 +71,7 @@ export default function ElevatedHome({
     <div className="space-y-8 max-w-[900px]">
       {/* 1 — Hero: greeting, one honest sentence, progress ring */}
       <section className="hub-fade relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel px-9 py-8">
-        <div className="hub-orb-a pointer-events-none absolute -top-28 -right-16 w-[300px] h-[300px] rounded-full bg-[#0071E3]/30 blur-3xl" aria-hidden />
+        <div className="hub-orb-a pointer-events-none absolute -top-28 -right-16 w-[300px] h-[300px] rounded-full bg-[#2C68ED]/30 blur-3xl" aria-hidden />
         <div className="hub-orb-b pointer-events-none absolute -bottom-32 -left-10 w-[300px] h-[300px] rounded-full bg-[#C9A84C]/20 blur-3xl" aria-hidden />
 
         <div className="relative flex items-center gap-11 flex-wrap">
@@ -99,7 +99,7 @@ export default function ElevatedHome({
                 cy="98"
                 r={RING_R}
                 fill="none"
-                stroke="#0071E3"
+                stroke="#2C68ED"
                 strokeWidth="12"
                 strokeLinecap="round"
                 strokeDasharray={RING_C}
@@ -173,8 +173,8 @@ export default function ElevatedHome({
               key={a.id}
               className={
                 a.earned
-                  ? 'relative overflow-hidden bg-white border border-[#E8E8ED] rounded-2xl px-3 py-[18px] flex flex-col items-center gap-2 shadow-card'
-                  : 'relative bg-[#F5F5F7] border border-[#E8E8ED] rounded-2xl px-3 py-[18px] flex flex-col items-center gap-2'
+                  ? 'relative overflow-hidden bg-white border border-[#E2E2E4] rounded-2xl px-3 py-[18px] flex flex-col items-center gap-2 shadow-card'
+                  : 'relative bg-[#F2F2F3] border border-[#E2E2E4] rounded-2xl px-3 py-[18px] flex flex-col items-center gap-2'
               }
             >
               {a.earned ? (

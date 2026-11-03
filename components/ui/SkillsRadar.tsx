@@ -48,7 +48,7 @@ export default function SkillsRadar({ scores }: { scores: SkillScore[] }) {
               key={level}
               points={polygonPoints(count, RADIUS * level)}
               fill="none"
-              stroke="#E8E8ED"
+              stroke="#E2E2E4"
               strokeWidth={level === 1 ? 1.5 : 0.8}
             />
           ))}
@@ -60,7 +60,7 @@ export default function SkillsRadar({ scores }: { scores: SkillScore[] }) {
               <line
                 key={i}
                 x1={CENTER} y1={CENTER} x2={x} y2={y}
-                stroke="#E8E8ED" strokeWidth={0.8}
+                stroke="#E2E2E4" strokeWidth={0.8}
               />
             )
           })}
@@ -69,7 +69,7 @@ export default function SkillsRadar({ scores }: { scores: SkillScore[] }) {
           <polygon
             points={dataPoints}
             fill="rgba(0,113,227,0.12)"
-            stroke="#0071E3"
+            stroke="#2C68ED"
             strokeWidth={2}
             strokeLinejoin="round"
           />
@@ -78,7 +78,7 @@ export default function SkillsRadar({ scores }: { scores: SkillScore[] }) {
           {scores.map((s, i) => {
             const pct = Math.min(s.value / s.max, 1)
             const [x, y] = polarToCartesian(i * step, RADIUS * pct)
-            return <circle key={i} cx={x} cy={y} r={3.5} fill="#0071E3" />
+            return <circle key={i} cx={x} cy={y} r={3.5} fill="#2C68ED" />
           })}
 
           {/* Labels */}

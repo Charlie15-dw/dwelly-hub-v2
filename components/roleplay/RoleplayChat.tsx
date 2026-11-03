@@ -21,12 +21,12 @@ const CATEGORY_COLOURS: Record<string, string> = {
   maintenance:'bg-orange-50 text-orange-700 border-orange-200',
   noise:      'bg-violet-50 text-violet-700 border-violet-200',
   eviction:   'bg-slate-100 text-slate-700 border-slate-200',
-  renewal:    'bg-[#F0F7FF] text-[#0071E3] border-[#CCE4FF]',
+  renewal:    'bg-[#EEF3FE] text-[#2C68ED] border-[#D5E1FB]',
   deposit:    'bg-emerald-50 text-emerald-700 border-emerald-200',
 }
 
 const DIFFICULTY_COLOURS = {
-  foundation:   'bg-[#F5F5F7] text-[#6E6E73] border-[#D2D2D7]',
+  foundation:   'bg-[#F2F2F3] text-[#7D7C86] border-[#C8C8CC]',
   intermediate: 'bg-amber-50 text-amber-700 border-amber-200',
   advanced:     'bg-red-50 text-red-700 border-red-200',
 }
@@ -165,8 +165,8 @@ export default function RoleplayChat() {
         {/* Random start */}
         <div className="card p-5 flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <p className="text-sm font-bold text-[#1D1D1F]">Ready to begin?</p>
-            <p className="text-xs text-[#6E6E73] mt-0.5">
+            <p className="text-sm font-bold text-[#101010]">Ready to begin?</p>
+            <p className="text-xs text-[#7D7C86] mt-0.5">
               A scenario will be randomly assigned — or choose one below.
             </p>
           </div>
@@ -183,7 +183,7 @@ export default function RoleplayChat() {
         <div>
           <button
             onClick={() => setShowScenarios(v => !v)}
-            className="flex items-center gap-2 text-sm font-semibold text-[#1D1D1F] mb-3"
+            className="flex items-center gap-2 text-sm font-semibold text-[#101010] mb-3"
           >
             {showScenarios ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             Browse all {ROLEPLAY_SCENARIOS.length} scenarios
@@ -203,12 +203,12 @@ export default function RoleplayChat() {
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-[#1D1D1F] leading-snug">{sc.title}</p>
+                    <p className="text-sm font-bold text-[#101010] leading-snug">{sc.title}</p>
                     <span className={cn('inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border', CATEGORY_COLOURS[sc.category])}>
                       {sc.categoryLabel}
                     </span>
                   </div>
-                  <p className="text-xs text-[#6E6E73] leading-relaxed line-clamp-2">{sc.situation.slice(0, 90)}…</p>
+                  <p className="text-xs text-[#7D7C86] leading-relaxed line-clamp-2">{sc.situation.slice(0, 90)}…</p>
                 </button>
               ))}
             </div>
@@ -225,12 +225,12 @@ export default function RoleplayChat() {
       <div className="card p-4">
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#1D1D1F] flex items-center justify-center flex-shrink-0 text-lg">
+            <div className="w-10 h-10 rounded-full bg-[#101010] flex items-center justify-center flex-shrink-0 text-lg">
               {scenario.moodEmoji}
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                <p className="text-sm font-bold text-[#1D1D1F]">{scenario.tenantName}</p>
+                <p className="text-sm font-bold text-[#101010]">{scenario.tenantName}</p>
                 <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', CATEGORY_COLOURS[scenario.category])}>
                   {scenario.categoryLabel}
                 </span>
@@ -238,7 +238,7 @@ export default function RoleplayChat() {
                   {scenario.difficulty.charAt(0).toUpperCase() + scenario.difficulty.slice(1)}
                 </span>
               </div>
-              <p className="text-xs text-[#6E6E73]">{scenario.title} · Mood: <span className="font-medium text-[#1D1D1F]">{scenario.moodLabel}</span></p>
+              <p className="text-xs text-[#7D7C86]">{scenario.title} · Mood: <span className="font-medium text-[#101010]">{scenario.moodLabel}</span></p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -248,14 +248,14 @@ export default function RoleplayChat() {
                 'flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border transition-all',
                 showTip
                   ? 'bg-amber-50 text-amber-700 border-amber-200'
-                  : 'bg-[#F5F5F7] text-[#6E6E73] border-[#D2D2D7] hover:bg-white',
+                  : 'bg-[#F2F2F3] text-[#7D7C86] border-[#C8C8CC] hover:bg-white',
               )}
             >
               <Lightbulb className="w-3.5 h-3.5" /> Coaching tip
             </button>
             <button
               onClick={newScenario}
-              className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border bg-[#F5F5F7] text-[#6E6E73] border-[#D2D2D7] hover:bg-white transition-all"
+              className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border bg-[#F2F2F3] text-[#7D7C86] border-[#C8C8CC] hover:bg-white transition-all"
             >
               <RefreshCw className="w-3.5 h-3.5" /> New scenario
             </button>
@@ -276,9 +276,9 @@ export default function RoleplayChat() {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {/* Scenario context banner */}
-          <div className="rounded-xl bg-[#F5F5F7] border border-[#E8E8ED] p-3 text-center">
-            <p className="text-[11px] text-[#6E6E73] leading-relaxed">
-              <span className="font-semibold text-[#1D1D1F]">Scenario: </span>{scenario.situation}
+          <div className="rounded-xl bg-[#F2F2F3] border border-[#E2E2E4] p-3 text-center">
+            <p className="text-[11px] text-[#7D7C86] leading-relaxed">
+              <span className="font-semibold text-[#101010]">Scenario: </span>{scenario.situation}
             </p>
           </div>
 
@@ -288,7 +288,7 @@ export default function RoleplayChat() {
               className={cn('flex gap-2.5', msg.role === 'user' ? 'justify-end' : 'justify-start')}
             >
               {msg.role === 'assistant' && (
-                <div className="w-7 h-7 rounded-full bg-[#1D1D1F] flex items-center justify-center flex-shrink-0 mt-0.5 text-sm">
+                <div className="w-7 h-7 rounded-full bg-[#101010] flex items-center justify-center flex-shrink-0 mt-0.5 text-sm">
                   {scenario.moodEmoji}
                 </div>
               )}
@@ -296,14 +296,14 @@ export default function RoleplayChat() {
                 className={cn(
                   'max-w-[78%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
                   msg.role === 'assistant'
-                    ? 'bg-[#F5F5F7] text-[#1D1D1F] rounded-tl-sm'
-                    : 'bg-[#1D1D1F] text-white rounded-tr-sm',
+                    ? 'bg-[#F2F2F3] text-[#101010] rounded-tl-sm'
+                    : 'bg-[#101010] text-white rounded-tr-sm',
                 )}
               >
                 {msg.content}
               </div>
               {msg.role === 'user' && (
-                <div className="w-7 h-7 rounded-full bg-[#0071E3] flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-full bg-[#2C68ED] flex items-center justify-center flex-shrink-0 mt-0.5">
                   <User className="w-3.5 h-3.5 text-white" />
                 </div>
               )}
@@ -313,13 +313,13 @@ export default function RoleplayChat() {
           {/* Typing indicator */}
           {loading && (
             <div className="flex gap-2.5 justify-start">
-              <div className="w-7 h-7 rounded-full bg-[#1D1D1F] flex items-center justify-center flex-shrink-0 text-sm">
+              <div className="w-7 h-7 rounded-full bg-[#101010] flex items-center justify-center flex-shrink-0 text-sm">
                 {scenario.moodEmoji}
               </div>
-              <div className="bg-[#F5F5F7] rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#AEAEB2] animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#AEAEB2] animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#AEAEB2] animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="bg-[#F2F2F3] rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#AEAEB4] animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#AEAEB4] animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#AEAEB4] animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
           )}
@@ -328,10 +328,10 @@ export default function RoleplayChat() {
         </div>
 
         {/* Input */}
-        <div className="border-t border-[#E8E8ED] p-3 flex gap-2.5 items-end bg-white">
+        <div className="border-t border-[#E2E2E4] p-3 flex gap-2.5 items-end bg-white">
           <div className="flex items-center gap-1.5 mr-1">
-            <User className="w-3.5 h-3.5 text-[#6E6E73]" aria-hidden />
-            <span className="text-[11px] font-medium text-[#6E6E73]">You (PM)</span>
+            <User className="w-3.5 h-3.5 text-[#7D7C86]" aria-hidden />
+            <span className="text-[11px] font-medium text-[#7D7C86]">You (PM)</span>
           </div>
           <textarea
             ref={inputRef}
@@ -340,7 +340,7 @@ export default function RoleplayChat() {
             onKeyDown={handleKeyDown}
             placeholder="Type your response as the property manager…"
             rows={1}
-            className="flex-1 resize-none text-sm text-[#1D1D1F] placeholder:text-[#AEAEB2] bg-[#F5F5F7] border border-[#E8E8ED] rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#0071E3] focus:ring-2 focus:ring-[#0071E3]/20 transition-all leading-relaxed"
+            className="flex-1 resize-none text-sm text-[#101010] placeholder:text-[#AEAEB4] bg-[#F2F2F3] border border-[#E2E2E4] rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#2C68ED] focus:ring-2 focus:ring-[#2C68ED]/20 transition-all leading-relaxed"
             style={{ maxHeight: '120px' }}
             onInput={e => {
               const el = e.currentTarget
@@ -356,8 +356,8 @@ export default function RoleplayChat() {
             className={cn(
               'w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all',
               input.trim() && !loading
-                ? 'bg-[#1D1D1F] hover:bg-[#3A3A3C] text-white'
-                : 'bg-[#F5F5F7] text-[#AEAEB2] cursor-not-allowed',
+                ? 'bg-[#101010] hover:bg-[#404044] text-white'
+                : 'bg-[#F2F2F3] text-[#AEAEB4] cursor-not-allowed',
             )}
             aria-label="Send message"
           >
@@ -367,8 +367,8 @@ export default function RoleplayChat() {
       </div>
 
       {/* Footer hint */}
-      <p className="text-[11px] text-[#AEAEB2] text-center">
-        Press <kbd className="font-mono bg-[#F5F5F7] border border-[#E8E8ED] px-1.5 py-0.5 rounded text-[10px]">Enter</kbd> to send · <kbd className="font-mono bg-[#F5F5F7] border border-[#E8E8ED] px-1.5 py-0.5 rounded text-[10px]">Shift + Enter</kbd> for new line · Click "New scenario" to restart with a different situation
+      <p className="text-[11px] text-[#AEAEB4] text-center">
+        Press <kbd className="font-mono bg-[#F2F2F3] border border-[#E2E2E4] px-1.5 py-0.5 rounded text-[10px]">Enter</kbd> to send · <kbd className="font-mono bg-[#F2F2F3] border border-[#E2E2E4] px-1.5 py-0.5 rounded text-[10px]">Shift + Enter</kbd> for new line · Click "New scenario" to restart with a different situation
       </p>
     </div>
   )

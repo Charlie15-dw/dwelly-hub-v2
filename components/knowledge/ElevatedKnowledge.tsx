@@ -22,7 +22,7 @@ const CATEGORY_META: Record<Category, { label: string; icon: LucideIcon; dot: st
   legal:         { label: 'Legal & Compliance', icon: Scale,         dot: 'bg-red-500' },
   standards:     { label: 'Property Standards', icon: Home,          dot: 'bg-emerald-500' },
   finance:       { label: 'Finance',            icon: BarChart2,     dot: 'bg-amber-500' },
-  communication: { label: 'Communication',      icon: MessageCircle, dot: 'bg-[#0071E3]' },
+  communication: { label: 'Communication',      icon: MessageCircle, dot: 'bg-[#2C68ED]' },
   landlord:      { label: 'Landlord Relations', icon: Handshake,     dot: 'bg-violet-500' },
   portals:       { label: 'Portals',            icon: MonitorSmartphone, dot: 'bg-cyan-500' },
 }
@@ -79,7 +79,7 @@ export default function ElevatedKnowledge() {
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder="Search the knowledge base…"
-          className="w-full pl-11 pr-11 py-3.5 text-[15px] rounded-2xl border border-[#D2D2D7] bg-white shadow-sm focus:border-[#0071E3] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/15 transition"
+          className="w-full pl-11 pr-11 py-3.5 text-[15px] rounded-2xl border border-[#C8C8CC] bg-white shadow-sm focus:border-[#2C68ED] focus:outline-none focus:ring-2 focus:ring-[#2C68ED]/15 transition"
         />
         {query && (
           <button
@@ -108,8 +108,8 @@ export default function ElevatedKnowledge() {
           className={
             'inline-flex items-center gap-1.5 text-[13px] font-medium px-3.5 py-1.5 rounded-full border transition-colors ' +
             (savedOnly
-              ? 'bg-[#0071E3]/10 text-[#0071E3] border-[#0071E3]/30'
-              : 'bg-white text-[var(--text-secondary)] border-[#D2D2D7] hover:border-[#0071E3] hover:text-navy')
+              ? 'bg-[#2C68ED]/10 text-[#2C68ED] border-[#2C68ED]/30'
+              : 'bg-white text-[var(--text-secondary)] border-[#C8C8CC] hover:border-[#2C68ED] hover:text-navy')
           }
         >
           <Bookmark className={cn('w-3.5 h-3.5', savedOnly && 'fill-current')} aria-hidden />
@@ -121,19 +121,19 @@ export default function ElevatedKnowledge() {
       {!isFiltering && featured && (
         <Link
           href={`/knowledge/${featured.id}`}
-          className="hub-fade-2 card card-hover p-6 flex items-start gap-5 group border-[#0071E3]/20 bg-gradient-to-br from-[#F0F7FF] to-white block"
+          className="hub-fade-2 card card-hover p-6 flex items-start gap-5 group border-[#2C68ED]/20 bg-gradient-to-br from-[#EEF3FE] to-white block"
         >
           <div className="flex-1 min-w-0">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#0071E3] mb-1">
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#2C68ED] mb-1">
               <Sparkles className="w-3 h-3" aria-hidden /> Start here
             </span>
-            <h3 className="text-lg font-semibold text-navy group-hover:text-[#0071E3] transition-colors">{featured.title}</h3>
+            <h3 className="text-lg font-semibold text-navy group-hover:text-[#2C68ED] transition-colors">{featured.title}</h3>
             <p className="text-sm text-[var(--text-secondary)] mt-1 leading-relaxed line-clamp-2">{featured.subtitle}</p>
             <span className="inline-flex items-center gap-1.5 text-xs text-[var(--text-tertiary)] mt-3">
               <Clock className="w-3.5 h-3.5" aria-hidden /> {featured.readTime}
             </span>
           </div>
-          <ArrowRight className="w-5 h-5 text-[#0071E3] flex-shrink-0 mt-1 group-hover:translate-x-0.5 transition-transform" aria-hidden />
+          <ArrowRight className="w-5 h-5 text-[#2C68ED] flex-shrink-0 mt-1 group-hover:translate-x-0.5 transition-transform" aria-hidden />
         </Link>
       )}
 
@@ -186,7 +186,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
         'text-[13px] font-medium px-3.5 py-1.5 rounded-full border transition-colors ' +
         (active
           ? 'bg-navy text-white border-navy'
-          : 'bg-white text-[var(--text-secondary)] border-[#D2D2D7] hover:border-[#0071E3] hover:text-navy')
+          : 'bg-white text-[var(--text-secondary)] border-[#C8C8CC] hover:border-[#2C68ED] hover:text-navy')
       }
     >
       {children}
@@ -202,18 +202,18 @@ function ArticleRow({ article, saved }: { article: KnowledgeArticle; saved: bool
   const cat = CATEGORY_META[article.category]
   return (
     <Link href={`/knowledge/${article.id}`} className="group flex items-center gap-4 px-6 py-[18px] border-t border-slate-100 first:border-t-0 hover:bg-slate-50 transition-colors">
-      <span className="w-8 h-8 rounded-lg bg-[#F5F5F7] flex items-center justify-center flex-shrink-0">
+      <span className="w-8 h-8 rounded-lg bg-[#F2F2F3] flex items-center justify-center flex-shrink-0">
         <cat.icon className="w-4 h-4 text-[var(--text-secondary)]" aria-hidden />
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-[15.5px] font-semibold text-navy truncate">{article.title}</p>
         <p className="text-[13px] text-[var(--text-secondary)] mt-0.5 truncate">{article.subtitle}</p>
       </div>
-      {saved && <Bookmark className="w-3.5 h-3.5 text-[#0071E3] fill-[#0071E3] flex-shrink-0" aria-label="Saved" />}
+      {saved && <Bookmark className="w-3.5 h-3.5 text-[#2C68ED] fill-[#2C68ED] flex-shrink-0" aria-label="Saved" />}
       <span className="hidden sm:flex items-center gap-1.5 text-xs text-[var(--text-tertiary)] flex-shrink-0">
         <Clock className="w-3.5 h-3.5" aria-hidden /> {article.readTime}
       </span>
-      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0071E3] transition-colors flex-shrink-0" aria-hidden />
+      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#2C68ED] transition-colors flex-shrink-0" aria-hidden />
     </Link>
   )
 }

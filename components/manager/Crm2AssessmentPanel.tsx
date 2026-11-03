@@ -131,7 +131,7 @@ export default function Crm2AssessmentPanel({
   return (
     <div className="card overflow-hidden">
       <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-[#0071E3]" aria-hidden />
+        <Sparkles className="w-4 h-4 text-[#2C68ED]" aria-hidden />
         <h2 className="text-sm font-bold text-navy">CRM 2.0 Assessments</h2>
         <span className="ml-auto text-xs text-slate-400">Private preview · 80% to pass</span>
       </div>

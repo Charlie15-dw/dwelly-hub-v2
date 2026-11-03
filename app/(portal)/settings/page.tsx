@@ -27,7 +27,7 @@ function Toggle({
       />
       <span
         className={`relative inline-flex w-10 h-5 rounded-full transition-colors duration-200 ${
-          checked ? 'bg-[#0071E3]' : 'bg-slate-200'
+          checked ? 'bg-[#2C68ED]' : 'bg-slate-200'
         }`}
       >
         <span
@@ -77,7 +77,7 @@ function SectionHeader({
 }) {
   return (
     <div className="flex items-center gap-2 mb-4">
-      <Icon className="w-4 h-4 text-[#0071E3]" />
+      <Icon className="w-4 h-4 text-[#2C68ED]" />
       <h2 className="text-sm font-semibold text-navy uppercase tracking-wide">{title}</h2>
     </div>
   )
@@ -100,7 +100,7 @@ export default function SettingsPage() {
 
       {/* ── Page Header ── */}
       <div className="flex items-center gap-3">
-        <SettingsIcon className="w-5 h-5 text-[#0071E3]" />
+        <SettingsIcon className="w-5 h-5 text-[#2C68ED]" />
         <div>
           <h1 className="text-xl font-bold text-navy">Settings</h1>
           <p className="text-xs text-slate-500 mt-0.5">Manage your profile and preferences</p>
@@ -204,7 +204,7 @@ export default function SettingsPage() {
                     value={time}
                     checked={settings.learning.preferredTime === time}
                     onChange={() => setLearning('preferredTime', time)}
-                    className="accent-[#0071E3]"
+                    className="accent-[#2C68ED]"
                   />
                   <span className="text-sm text-navy capitalize">{time}</span>
                 </label>
@@ -216,7 +216,7 @@ export default function SettingsPage() {
           <div>
             <div className="flex justify-between items-center mb-2">
               <p className="text-sm font-semibold text-navy">Weekly Goal</p>
-              <span className="text-sm font-semibold text-[#0071E3]">
+              <span className="text-sm font-semibold text-[#2C68ED]">
                 {settings.learning.weeklyGoal} {settings.learning.weeklyGoal === 1 ? 'hour' : 'hours'}
               </span>
             </div>
@@ -226,7 +226,7 @@ export default function SettingsPage() {
               max={10}
               value={settings.learning.weeklyGoal}
               onChange={(e) => setLearning('weeklyGoal', Number(e.target.value))}
-              className="w-full h-1.5 rounded-full appearance-none bg-slate-200 accent-[#0071E3] cursor-pointer"
+              className="w-full h-1.5 rounded-full appearance-none bg-slate-200 accent-[#2C68ED] cursor-pointer"
             />
             <div className="flex justify-between text-xs text-slate-400 mt-1">
               <span>1 hr</span>
@@ -266,7 +266,7 @@ export default function SettingsPage() {
                   onClick={() => setAccessibility('textSize', size)}
                   className={`px-4 py-1.5 rounded-lg text-sm border transition-colors capitalize ${
                     settings.accessibility.textSize === size
-                      ? 'bg-[#0071E3] text-white border-[#0071E3] font-semibold'
+                      ? 'bg-[#2C68ED] text-white border-[#2C68ED] font-semibold'
                       : 'bg-white text-navy border-slate-200 hover:border-slate-300'
                   }`}
                 >

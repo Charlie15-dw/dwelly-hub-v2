@@ -211,21 +211,21 @@ export default function ScenarioDrills() {
   }
 
   return (
-    <div className="rounded-2xl border border-[#E8E8ED] bg-white overflow-hidden">
+    <div className="rounded-2xl border border-[#E2E2E4] bg-white overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-3 px-5 py-4 bg-[#F5F5F7] border-b border-[#E8E8ED]">
-        <div className="w-9 h-9 rounded-xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center flex-shrink-0">
+      <div className="flex items-center gap-3 px-5 py-4 bg-[#F2F2F3] border-b border-[#E2E2E4]">
+        <div className="w-9 h-9 rounded-xl bg-[#2C68ED]/10 text-[#2C68ED] flex items-center justify-center flex-shrink-0">
           <MessageSquareText className="w-4 h-4" aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold text-[#1D1D1F]">Scenario drills</p>
-          <p className="text-xs text-[#6E6E73] mt-0.5">Work a real job decision-by-decision and get instant feedback.</p>
+          <p className="text-sm font-bold text-[#101010]">Scenario drills</p>
+          <p className="text-xs text-[#7D7C86] mt-0.5">Work a real job decision-by-decision and get instant feedback.</p>
         </div>
         {scenario && (
           <button
             type="button"
             onClick={reset}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#6E6E73] hover:text-[#1D1D1F] transition flex-shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#7D7C86] hover:text-[#101010] transition flex-shrink-0"
           >
             <RotateCcw className="w-3.5 h-3.5" aria-hidden /> Pick another
           </button>
@@ -241,14 +241,14 @@ export default function ScenarioDrills() {
                 key={s.id}
                 type="button"
                 onClick={() => start(s)}
-                className="w-full text-left rounded-xl border border-[#E8E8ED] p-3.5 hover:border-[#0071E3]/40 hover:bg-[#F0F7FF] transition group"
+                className="w-full text-left rounded-xl border border-[#E2E2E4] p-3.5 hover:border-[#2C68ED]/40 hover:bg-[#EEF3FE] transition group"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <span className="text-sm font-semibold text-[#1D1D1F]">{s.title}</span>
-                  <ChevronRight className="w-4 h-4 text-[#D2D2D7] group-hover:text-[#0071E3] transition flex-shrink-0" aria-hidden />
+                  <span className="text-sm font-semibold text-[#101010]">{s.title}</span>
+                  <ChevronRight className="w-4 h-4 text-[#C8C8CC] group-hover:text-[#2C68ED] transition flex-shrink-0" aria-hidden />
                 </div>
-                <p className="text-xs text-[#6E6E73] mt-1 leading-relaxed">{s.intro}</p>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#AEAEB2] mt-2">
+                <p className="text-xs text-[#7D7C86] mt-1 leading-relaxed">{s.intro}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#AEAEB4] mt-2">
                   {s.steps.length} {s.steps.length === 1 ? 'decision' : 'decisions'}
                 </p>
               </button>
@@ -260,14 +260,14 @@ export default function ScenarioDrills() {
         {scenario && step && !finished && (
           <div>
             <div className="flex items-center justify-between gap-3 mb-3">
-              <p className="text-xs font-semibold uppercase tracking-wider text-[#AEAEB2]">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#AEAEB4]">
                 {scenario.title} · decision {stepIdx + 1} of {scenario.steps.length}
               </p>
             </div>
             {stepIdx === 0 && (
-              <p className="text-sm text-[#6E6E73] leading-relaxed mb-3 italic">{scenario.intro}</p>
+              <p className="text-sm text-[#7D7C86] leading-relaxed mb-3 italic">{scenario.intro}</p>
             )}
-            <p className="text-sm font-semibold text-[#1D1D1F] leading-relaxed">{step.prompt}</p>
+            <p className="text-sm font-semibold text-[#101010] leading-relaxed">{step.prompt}</p>
 
             <div className="mt-3 space-y-2.5">
               {step.choices.map((c, i) => {
@@ -281,15 +281,15 @@ export default function ScenarioDrills() {
                     disabled={answered}
                     className={cn(
                       'w-full text-left rounded-xl border p-3.5 transition flex items-start gap-3',
-                      !answered && 'border-[#E8E8ED] hover:border-[#0071E3]/40 hover:bg-[#F0F7FF]',
+                      !answered && 'border-[#E2E2E4] hover:border-[#2C68ED]/40 hover:bg-[#EEF3FE]',
                       showState && c.correct && 'border-[#B0EACC] bg-[#F0FFF4]',
                       answered && isPicked && !c.correct && 'border-red-200 bg-red-50',
-                      answered && !isPicked && !c.correct && 'border-[#E8E8ED] opacity-60',
+                      answered && !isPicked && !c.correct && 'border-[#E2E2E4] opacity-60',
                     )}
                   >
                     {answered && c.correct && <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" aria-hidden />}
                     {answered && isPicked && !c.correct && <XCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" aria-hidden />}
-                    <span className="text-sm text-[#1D1D1F] leading-relaxed">{c.label}</span>
+                    <span className="text-sm text-[#101010] leading-relaxed">{c.label}</span>
                   </button>
                 )
               })}
@@ -300,8 +300,8 @@ export default function ScenarioDrills() {
               <div className={cn(
                 'mt-3 rounded-xl border p-3.5 text-sm leading-relaxed hub-fade',
                 step.choices[picked].correct
-                  ? 'border-[#B0EACC] bg-[#F0FFF4] text-[#3A3A3C]'
-                  : 'border-[#FFE4B0] bg-[#FFFBF0] text-[#3A3A3C]',
+                  ? 'border-[#B0EACC] bg-[#F0FFF4] text-[#404044]'
+                  : 'border-[#FFE4B0] bg-[#FFFBF0] text-[#404044]',
               )}>
                 {step.choices[picked].feedback}
               </div>
@@ -312,7 +312,7 @@ export default function ScenarioDrills() {
               <button
                 type="button"
                 onClick={next}
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#0071E3] hover:gap-2.5 transition-all"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#2C68ED] hover:gap-2.5 transition-all"
               >
                 {isLast ? 'See how you did' : 'Next decision'} <ChevronRight className="w-4 h-4" aria-hidden />
               </button>
@@ -323,13 +323,13 @@ export default function ScenarioDrills() {
         {/* Summary */}
         {scenario && finished && (
           <div className="text-center py-4 hub-fade">
-            <div className="w-14 h-14 rounded-2xl bg-[#0071E3]/10 text-[#0071E3] flex items-center justify-center mx-auto">
+            <div className="w-14 h-14 rounded-2xl bg-[#2C68ED]/10 text-[#2C68ED] flex items-center justify-center mx-auto">
               <Trophy className="w-7 h-7" aria-hidden />
             </div>
-            <p className="text-lg font-bold text-[#1D1D1F] mt-3">
+            <p className="text-lg font-bold text-[#101010] mt-3">
               {correctCount} of {scenario.steps.length} right
             </p>
-            <p className="text-sm text-[#6E6E73] mt-1">
+            <p className="text-sm text-[#7D7C86] mt-1">
               {correctCount === scenario.steps.length
                 ? 'Nailed it — that’s exactly how the job should run.'
                 : 'Good effort — revisit the feedback and try it again.'}
@@ -338,14 +338,14 @@ export default function ScenarioDrills() {
               <button
                 type="button"
                 onClick={() => start(scenario)}
-                className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-xl border border-[#E8E8ED] bg-white text-[#1D1D1F] hover:border-[#1D1D1F]/30 transition"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-xl border border-[#E2E2E4] bg-white text-[#101010] hover:border-[#101010]/30 transition"
               >
                 <RotateCcw className="w-4 h-4" aria-hidden /> Try again
               </button>
               <button
                 type="button"
                 onClick={reset}
-                className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-xl bg-[#0071E3] text-white hover:bg-[#0077ED] transition"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-xl bg-[#2C68ED] text-white hover:bg-[#3D74EE] transition"
               >
                 Another scenario <ChevronRight className="w-4 h-4" aria-hidden />
               </button>

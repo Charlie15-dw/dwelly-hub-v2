@@ -74,7 +74,7 @@ export default function ReassignButton({ userId, moduleId, moduleName, pending =
       title={`Reassign ${moduleName}`}
       className={cn(
         'inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg border transition-colors',
-        'border-[#0071E3]/30 text-[#0071E3] hover:bg-[#0071E3]/8',
+        'border-[#2C68ED]/30 text-[#2C68ED] hover:bg-[#2C68ED]/8',
         status === 'loading' && 'opacity-50 cursor-not-allowed',
       )}
     >

@@ -65,7 +65,7 @@ export default async function Crm2CertificatePage() {
 
       {/* Controls — hidden on paper */}
       <div className="print:hidden flex items-center justify-between gap-4">
-        <Link href="/hub/crm-2" className="text-sm text-[#6E6E73] hover:text-[#1D1D1F] flex items-center gap-1.5 transition">
+        <Link href="/hub/crm-2" className="text-sm text-[#7D7C86] hover:text-[#101010] flex items-center gap-1.5 transition">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to CRM 2.0
         </Link>
         <PrintButton label="Print / Save as PDF" />

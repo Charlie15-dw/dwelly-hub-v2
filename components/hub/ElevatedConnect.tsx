@@ -55,8 +55,8 @@ export default function ElevatedConnect({ latest }: { latest: { title: string; d
       {/* Hero */}
       <section className="hub-fade relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#0071E3]/30 blur-3xl" />
-          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#0071E3]/12 blur-3xl" />
+          <div className="hub-orb-a absolute -top-24 -right-16 w-[26rem] h-[26rem] rounded-full bg-[#2C68ED]/30 blur-3xl" />
+          <div className="hub-orb-b absolute -bottom-28 -left-16 w-[22rem] h-[22rem] rounded-full bg-[#2C68ED]/12 blur-3xl" />
           <div
             className="absolute inset-0 opacity-[0.12]"
             style={{
@@ -94,10 +94,10 @@ export default function ElevatedConnect({ latest }: { latest: { title: string; d
                   Coming soon
                 </span>
               ) : (
-                <ArrowRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#0071E3] transition-colors mt-1" aria-hidden />
+                <ArrowRight className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#2C68ED] transition-colors mt-1" aria-hidden />
               )}
             </div>
-            <h3 className="text-[16px] font-bold text-navy mt-4 group-hover:text-[#0071E3] transition-colors">{label}</h3>
+            <h3 className="text-[16px] font-bold text-navy mt-4 group-hover:text-[#2C68ED] transition-colors">{label}</h3>
             <p className="text-[13.5px] text-[var(--text-secondary)] mt-1 leading-relaxed flex-1">{description}</p>
             {href === '/hub/updates' && latest && (
               <p className="text-[12px] text-[var(--text-tertiary)] mt-3 pt-3 border-t border-navy-100">

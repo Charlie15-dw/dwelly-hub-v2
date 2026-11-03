@@ -312,7 +312,7 @@ export default function ManagerDashboard({
           {/* Team Learning Profiles */}
           <div className="card overflow-hidden">
             <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2">
-              <Brain className="w-4 h-4 text-[#0071E3]" aria-hidden />
+              <Brain className="w-4 h-4 text-[#2C68ED]" aria-hidden />
               <h2 className="text-sm font-bold text-navy">Team Learning Profiles</h2>
             </div>
             <div className="p-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -342,7 +342,7 @@ export default function ManagerDashboard({
                         </div>
                         <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-[#0071E3] rounded-full"
+                            className="h-full bg-[#2C68ED] rounded-full"
                             style={{ width: `${member.lp.confidence_pct ?? 0}%` }}
                           />
                         </div>

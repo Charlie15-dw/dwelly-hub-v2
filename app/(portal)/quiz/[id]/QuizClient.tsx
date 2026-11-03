@@ -77,6 +77,11 @@ export interface QuizClientProps {
   // assessment_results, so it can never pick up another user's completions.
   lockedByDb?: boolean
   lastAttempt?: { score: number; passed: boolean; completedAt: string }
+  // true when this assessment belongs to a department other than the
+  // learner's own and no admin override exists (see lib/departments.ts). The
+  // DB enforces the same rule independently via RLS; this just explains it
+  // instead of letting someone sit the whole quiz before a silent save failure.
+  departmentBlocked?: boolean
   // beta-gated features (confidence-based scoring)
   beta?: boolean
   // elevated review variant (gated to the two review accounts) — turns on the
@@ -106,6 +111,7 @@ export default function QuizClient({
   wasReset = false,
   lockedByDb = false,
   lastAttempt,
+  departmentBlocked = false,
   beta = false,
   elevated = false,
   certTitle,
@@ -403,6 +409,29 @@ export default function QuizClient({
     saveToSupabase()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showResults])
+
+  // ── Department-blocked screen ───────────────────────────────────────────────
+  // Takes priority over the completion lock below — there's no point telling
+  // someone they're "locked out" of an assessment that was never theirs to sit.
+  if (departmentBlocked) {
+    return (
+      <div className="max-w-2xl mx-auto space-y-5">
+        <Link href={backHref} className="text-sm text-slate-500 hover:text-navy flex items-center gap-1.5 transition-colors">
+          <ArrowLeft className="w-4 h-4" /> {backLabel}
+        </Link>
+        <div className="card p-10 text-center">
+          <div className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-5 bg-slate-100">
+            <Lock className="w-9 h-9 text-slate-400" aria-hidden />
+          </div>
+          <h2 className="text-xl font-bold text-navy mb-2">Not part of your training track</h2>
+          <p className="text-sm text-slate-500 mb-6 max-w-sm mx-auto leading-relaxed">
+            This assessment belongs to a different department&apos;s track. If you need access,
+            ask an admin to grant you an override.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   // ── Locked screen ─────────────────────────────────────────────────────────
   // lockedByDb is the server's verdict; runtimeLocked catches a stale (cached)
@@ -859,7 +888,7 @@ export default function QuizClient({
       <div className="max-w-[720px] mx-auto space-y-6">
         {/* Verdict hero */}
         <section className="relative overflow-hidden rounded-3xl bg-navy text-white shadow-panel px-8 py-7">
-          <div className="hub-orb-a pointer-events-none absolute -top-24 -right-16 w-60 h-60 rounded-full bg-[#0071E3]/25 blur-3xl" aria-hidden />
+          <div className="hub-orb-a pointer-events-none absolute -top-24 -right-16 w-60 h-60 rounded-full bg-[#2C68ED]/25 blur-3xl" aria-hidden />
           <div className="relative space-y-3">
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50">{moduleTitle}</p>
             <div className="flex items-center gap-4">
@@ -938,7 +967,7 @@ export default function QuizClient({
         )}
 
         {passed && !isReleaseQuiz && !isCrm2Quiz && (
-          <div className="rounded-2xl border border-[#0071E3]/20 bg-[#0071E3]/6 px-5 py-4">
+          <div className="rounded-2xl border border-[#2C68ED]/20 bg-[#2C68ED]/6 px-5 py-4">
             <p className="text-sm font-semibold text-navy mb-1">Recall checks scheduled</p>
             <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
               To beat the forgetting curve, you&apos;ll get a 3-question email recall check in 3, 7 and 30 days. Each takes under 2 minutes and won&apos;t affect your score.
@@ -1110,7 +1139,7 @@ export default function QuizClient({
               { n: `${passmark}%`, l: 'Pass mark' },
               { n: `~${mins} min`, l: 'To complete' },
             ].map(s => (
-              <div key={s.l} className="rounded-2xl bg-[#F5F5F7] px-4 py-3.5 text-center">
+              <div key={s.l} className="rounded-2xl bg-[#F2F2F3] px-4 py-3.5 text-center">
                 <p className="text-xl font-semibold text-navy tabular-nums">{s.n}</p>
                 <p className="text-[12px] text-[var(--text-secondary)] mt-0.5">{s.l}</p>
               </div>

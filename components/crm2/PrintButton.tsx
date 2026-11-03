@@ -10,7 +10,7 @@ export default function PrintButton({ label = 'Print' }: { label?: string }) {
     <button
       type="button"
       onClick={() => window.print()}
-      className="print:hidden inline-flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-xl bg-[#0071E3] text-white hover:bg-[#0077ED] transition"
+      className="print:hidden inline-flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-xl bg-[#2C68ED] text-white hover:bg-[#3D74EE] transition"
     >
       <Printer className="w-4 h-4" aria-hidden /> {label}
     </button>

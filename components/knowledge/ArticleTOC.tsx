@@ -70,13 +70,13 @@ export default function ArticleTOC({
       aria-label="On this page"
     >
       <div className="flex items-center justify-between mb-2.5">
-        <p className="text-[11px] font-bold uppercase tracking-widest text-[#AEAEB2]">On this page</p>
-        <span className="text-[11px] font-semibold tabular-nums text-[#AEAEB2]">{progress}%</span>
+        <p className="text-[11px] font-bold uppercase tracking-widest text-[#AEAEB4]">On this page</p>
+        <span className="text-[11px] font-semibold tabular-nums text-[#AEAEB4]">{progress}%</span>
       </div>
-      <div className="h-1 rounded-full bg-[#E8E8ED] overflow-hidden mb-3">
-        <div className="h-full bg-[#0071E3] transition-[width] duration-150 ease-out" style={{ width: `${progress}%` }} />
+      <div className="h-1 rounded-full bg-[#E2E2E4] overflow-hidden mb-3">
+        <div className="h-full bg-[#2C68ED] transition-[width] duration-150 ease-out" style={{ width: `${progress}%` }} />
       </div>
-      <ul className="border-l border-[#E8E8ED]">
+      <ul className="border-l border-[#E2E2E4]">
         {headings.map(h => (
           <li key={h.id}>
             <a
@@ -85,8 +85,8 @@ export default function ArticleTOC({
               className={cn(
                 'block text-xs leading-snug py-1.5 pl-3 -ml-px border-l transition-colors',
                 active === h.id
-                  ? 'border-[#0071E3] text-[#0071E3] font-semibold'
-                  : 'border-transparent text-[#6E6E73] hover:text-[#1D1D1F]',
+                  ? 'border-[#2C68ED] text-[#2C68ED] font-semibold'
+                  : 'border-transparent text-[#7D7C86] hover:text-[#101010]',
               )}
             >
               {h.text}

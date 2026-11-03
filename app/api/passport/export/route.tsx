@@ -21,8 +21,8 @@ const NAVY    = '#1B2A4A'
 const TEAL    = '#6ECFCC'
 const GOLD     = '#C9A84C'
 const GOLD_DK  = '#A9863A'
-const LIGHT   = '#F5F5F7'
-const MID     = '#6E6E73'
+const LIGHT   = '#F2F2F3'
+const MID     = '#7D7C86'
 const RED     = '#DC2626'
 const AMBER   = '#D97706'
 const GREEN   = '#059669'
@@ -101,7 +101,7 @@ const s = StyleSheet.create({
   compHead:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 },
   compName:    { fontSize: 8.5, fontFamily: 'Helvetica-Bold', color: NAVY },
   compStatus:  { fontSize: 7.5, fontFamily: 'Helvetica-Bold' },
-  barBg:       { height: 5, backgroundColor: '#E8E8ED', borderRadius: 3 },
+  barBg:       { height: 5, backgroundColor: '#E2E2E4', borderRadius: 3 },
   barFill:     { height: 5, borderRadius: 3 },
   compFoot:    { flexDirection: 'row', justifyContent: 'space-between', marginTop: 3 },
   compMeta:    { fontSize: 7, color: MID },
@@ -122,7 +122,7 @@ const s = StyleSheet.create({
   badgeState:  { fontSize: 6, fontFamily: 'Helvetica-Bold', letterSpacing: 0.8, marginTop: 3 },
 
   // Footer
-  footer:      { position: 'absolute', bottom: 22, left: 34, right: 34, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#E8E8ED', paddingTop: 6 },
+  footer:      { position: 'absolute', bottom: 22, left: 34, right: 34, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#E2E2E4', paddingTop: 6 },
   footerText:  { fontSize: 7, color: GREY },
   footerBrand: { fontSize: 7, color: MID, fontFamily: 'Helvetica-Bold' },
 })
@@ -212,7 +212,7 @@ function Medallion({ earned }: { earned: boolean }) {
   return (
     <Svg width={38} height={38}>
       <Circle cx={19} cy={19} r={17} fill={earned ? GOLD : '#EAEAEF'} />
-      <Circle cx={19} cy={19} r={17} fill="none" stroke={earned ? GOLD_DK : '#D2D2D7'} strokeWidth={1.4} />
+      <Circle cx={19} cy={19} r={17} fill="none" stroke={earned ? GOLD_DK : '#C8C8CC'} strokeWidth={1.4} />
       {earned ? (
         <Path d="M 11 19.5 L 16.5 25 L 27 13.5" stroke="#FFFFFF" strokeWidth={2.6} fill="none" strokeLinecap="round" strokeLinejoin="round" />
       ) : (

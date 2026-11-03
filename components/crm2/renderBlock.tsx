@@ -86,7 +86,7 @@ export function renderBlock(block: Crm2Block, i: number, glossary: GlossaryEntry
                 key={j}
                 className={cn(
                   'flex gap-4 items-start',
-                  emphasised && 'rounded-xl bg-[#F0F7FF]/60 border border-[#CCE4FF] -mx-3.5 px-3.5 py-3',
+                  emphasised && 'rounded-xl bg-[#EEF3FE]/60 border border-[#D5E1FB] -mx-3.5 px-3.5 py-3',
                 )}
               >
                 <span
